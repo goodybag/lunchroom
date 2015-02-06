@@ -3,10 +3,11 @@ var transform = require('vinyl-transform');
 var pkg       = require('./package.json');
 var config    = require('./config');
 var server    = require('./server');
+var db        = require('./db');
 
 var scripts = {
-  public: ['public/js/*.js', 'public/js/**/*.js']
-, server: ['*.js', 'config/*.js', 'server/*.js', 'server/**/*.js', 'server/**/**/*.js']
+  public: ['./public/js/*.js', './public/js/**/*.js']
+, server: ['*.js', './config/*.js', './server/*.js', './server/**/*.js', './server/**/**/*.js']
 };
 
 scripts.lint = scripts.public.concat(['*.js', 'test/*.js']);
@@ -46,5 +47,9 @@ gulp.task( 'server', function(){
   server.listen( config.http.port );
 });
 
-gulp.task( 'build', [ 'lint', 'less', 'compile-frontend-js' ] );
+gulp.task( 'create-tables', function( done ){
+  db.dirac.createTables( done );
+});
+
+gulp.task( 'build', [ 'lint', 'less', 'compile-frontend-js', 'create-tables' ] );
 gulp.task( 'default', [ 'build', 'server', 'watch' ] );
