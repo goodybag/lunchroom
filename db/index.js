@@ -1,10 +1,14 @@
 var dirac = require('dirac');
 var config = require('../config');
 
-dirac.init(config.db.connectionStr);
-
+dirac.use( dirac.relationships() );
 dirac.use( dirac.dir( __dirname + '/dals' ) );
+dirac.register( require('express-dirac-session/dal') );
 
-dirac.sync();
+dirac.init( config.db.connectionStr );
 
-module.exports = dirac.dals;
+for ( var key in dirac.dals ){
+  module.exports[ key ] = dirac.dals[ key ];
+}
+
+module.exports.dirac = dirac;
