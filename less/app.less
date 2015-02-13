@@ -1,12 +1,17 @@
 @font-avenir-url: "/dist/font/avenir";
 @import "../node_modules/font-avenir/font.less";
 
+@import "../node_modules/cater/less/variables.less";
+@import "../node_modules/cater/less/mixins.less";
+
 @import "./variables.less";
 @import "./mixins.less";
 
-@import "../node_modules/cater/less/mixins.less";
+// Components
+@import "../node_modules/cater/less/components/navbar.less";
+@import "../node_modules/cater/less/components/nav.less";
 
-// Componets
+@import "./components/container.less";
 
 html {
   background-color:     @body-bg-color;
