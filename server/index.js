@@ -4,6 +4,8 @@ var config  = require('../config');
 
 hbs.handlebars = require('handlebars');
 
+require('../lib/register-helpers')( hbs.handlebars );
+
 server.set( 'view engine', 'hbs' );
 server.set( 'views', __dirname );
 
