@@ -1,9 +1,12 @@
 var gulp      = require('gulp');
 var transform = require('vinyl-transform');
+var alias     = require('alias-module');
 var pkg       = require('./package.json');
 var config    = require('./config');
 var server    = require('./server');
 var db        = require('./db');
+
+gulp.util     = require('gulp-util');
 
 var scripts = {
   public: ['./public/js/*.js', './public/js/**/*.js']
@@ -39,17 +42,33 @@ gulp.task( 'lint', function(){
 
 gulp.task( 'watch', function(){
   gulp.watch( scripts.lint, ['lint'] );
-  gulp.watch( scripts.public, ['compile-frontend-js'] );
+  gulp.watch( scripts.public, [ 'alias-modules', 'compile-frontend-js'] );
   gulp.watch( ['less/*.less', 'less/**/*.less'], ['less'] );
+  gulp.watch( ['server/*.js', 'server/**/*.js', 'server/**/**/*.js'], [ 'stop-server', 'server'] );
 });
 
-gulp.task( 'server', function(){
-  server.listen( config.http.port );
+gulp.task( 'server', function( done ){
+  server = server.listen( config.http.port, function( error ){
+    if ( error ) return done( error );
+
+    gulp.util.log( 'Server started on port ' + gulp.util.colors.blue( config.http.port ) );
+
+    done();
+  });
+});
+
+gulp.task( 'stop-server', function( done ){
+  gulp.util.log('Stopping server');
+  server.close( done );
 });
 
 gulp.task( 'create-tables', function( done ){
   db.dirac.createTables( done );
 });
 
-gulp.task( 'build', [ 'lint', 'less', 'compile-frontend-js', 'create-tables' ] );
+gulp.task( 'alias-modules', function(){
+  alias( 'utils', __dirname + '/lib/utils/server.js' );
+});
+
+gulp.task( 'build', [ 'lint', 'less', 'alias-modules', 'compile-frontend-js', 'create-tables' ] );
 gulp.task( 'default', [ 'build', 'server', 'watch' ] );
