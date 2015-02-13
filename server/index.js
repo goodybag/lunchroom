@@ -1,6 +1,8 @@
-var server  = module.exports = require('express')();
+var express = require('express');
 var hbs     = require('hbs');
 var config  = require('../config');
+
+var server  = module.exports = express();
 
 hbs.handlebars = require('handlebars');
 
@@ -11,6 +13,8 @@ server.set( 'views', __dirname );
 
 server.use( require('body-parser').json() );
 server.use( require('body-parser').urlencoded({ extended: true }) );
+
+server.use( express.static('public') );
 
 server.use( function( req, res, next ){
   res.locals.config = config;

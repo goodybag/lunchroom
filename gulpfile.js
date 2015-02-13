@@ -70,5 +70,14 @@ gulp.task( 'alias-modules', function(){
   alias( 'utils', __dirname + '/lib/utils/server.js' );
 });
 
-gulp.task( 'build', [ 'lint', 'less', 'alias-modules', 'compile-frontend-js', 'create-tables' ] );
+gulp.task( 'fonts', function(){
+  return gulp.src('./node_modules/font-avenir/font/*')
+    .pipe( gulp.dest('./public/dist/font/avenir') );
+});
+
+gulp.task( 'build', [
+  'lint', 'less', 'alias-modules'
+, 'compile-frontend-js', 'create-tables'
+]);
+
 gulp.task( 'default', [ 'build', 'server', 'watch' ] );
