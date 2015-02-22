@@ -20,6 +20,7 @@
     "express": "^4.11.2",
     "express-dirac-session": "^1.0.1",
     "font-avenir": "goodybag/font-avenir",
+    "diet-tags": "goodybag/diet-tags",
     "gulp": "^3.8.10",
     "gulp-copy": "0.0.2",
     "gulp-jshint": "^1.9.2",

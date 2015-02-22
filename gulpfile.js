@@ -75,8 +75,14 @@ gulp.task( 'fonts', function(){
     .pipe( gulp.dest('./public/dist/font/avenir') );
 });
 
+gulp.task( 'less-modules', function(){
+  return gulp.src('./node_modules/diet-tags/img/*')
+    .pipe( gulp.dest('./public/dist/img') );
+});
+
 gulp.task( 'build', [
-  'lint', 'less', 'alias-modules'
+  'lint', 'less', 'less-modules'
+, 'fonts', 'alias-modules'
 , 'compile-frontend-js', 'create-tables'
 ]);
 
