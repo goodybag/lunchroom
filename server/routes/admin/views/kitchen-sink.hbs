@@ -4,20 +4,21 @@
 <section class="page-section" id="section-item-tiles">
   <div class="container">
     <div class="tiles item-tiles">
-      <div class="tile item-tile">
-        <div class="tile-cover" style="background-image: url('https://cdn.filepicker.io/api/file/JEjlpwrGSrK4D9VjpHkc/convert?cache=true&fit=scale');">
+      {{#each items}}
+        <div class="tile item-tile">
+          <div class="tile-cover" style="background-image: url('{{coverPhotoUrl}}?cache=true&fit=scale');">
+          </div>
+          <div class="tile-info">
+            <h3 class="tile-title">{{name}}</h3>
+            <ul class="diet-tags">
+              {{#each tags}}
+                <li class="diet-tag diet-tag-{{this}}"></li>
+              {{/each}}
+            </ul>
+            <div class="item-price">${{price.toDollars}}</div>
+          </div>
         </div>
-        <div class="tile-info">
-          <h3 class="tile-title">Pirata Dos Tacos Box</h3>
-          <ul class="diet-tags">
-            <li class="diet-tag diet-tag-gluten-free"></li>
-            <li class="diet-tag diet-tag-vegan"></li>
-            <li class="diet-tag diet-tag-vegetarian"></li>
-            <li class="diet-tag diet-tag-spicy"></li>
-          </ul>
-          <div class="item-price">$10.90</div>
-        </div>
-      </div>
+      {{/each}}
     </div>
   </div>
 </section>

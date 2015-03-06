@@ -6,6 +6,8 @@ var utils     = require('../../lib/utils');
 utils.extend( module.exports, require('stdm') );
 utils.extend( module.exports, require('dirac-middleware') );
 
+module.exports.locals = require('express-locals');
+
 fs.readdirSync( __dirname )
   .filter( function( filename ){
     return filename !== 'index.js';
