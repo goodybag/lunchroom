@@ -3,10 +3,9 @@ var transform = require('vinyl-transform');
 var alias     = require('alias-module');
 var pkg       = require('./package.json');
 var config    = require('./config');
-var server    = require('./server');
-var db        = require('./db');
-
 gulp.util     = require('gulp-util');
+
+var server;
 
 var scripts = {
   public: ['./public/js/*.js', './public/js/**/*.js']
@@ -48,7 +47,7 @@ gulp.task( 'watch', function(){
 });
 
 gulp.task( 'server', function( done ){
-  server = server.listen( config.http.port, function( error ){
+  server = require('./server').listen( config.http.port, function( error ){
     if ( error ) return done( error );
 
     gulp.util.log( 'Server started on port ' + gulp.util.colors.blue( config.http.port ) );
@@ -63,7 +62,7 @@ gulp.task( 'stop-server', function( done ){
 });
 
 gulp.task( 'create-tables', function( done ){
-  db.dirac.createTables( done );
+  require('./db').dirac.createTables( done );
 });
 
 gulp.task( 'alias-modules', function(){
