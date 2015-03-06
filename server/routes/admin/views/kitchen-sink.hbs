@@ -1,6 +1,12 @@
 {{#extend "body"}}
 <h1>Kitchen Sink</h1>
 
+<section class="page-section hero-unit" id="section-intro">
+  <div class="container">
+    <h1>Ohai there.</h1>
+  </div>
+</section>
+
 <section class="page-section" id="section-item-tiles">
   <div class="container">
     <div class="tiles item-tiles">
@@ -11,11 +17,11 @@
           <div class="tile-info">
             <h3 class="tile-title">{{name}}</h3>
             <ul class="diet-tags">
-              {{#each tags}}
+              {{#each dietTags}}
                 <li class="diet-tag diet-tag-{{this}}"></li>
               {{/each}}
             </ul>
-            <div class="item-price">${{price.toDollars}}</div>
+            <div class="item-price">${{dollars price}}</div>
           </div>
         </div>
       {{/each}}
