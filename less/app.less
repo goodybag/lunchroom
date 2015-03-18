@@ -12,10 +12,12 @@
 
 // Components
 @import "../node_modules/cater/less/components/navbar.less";
+
 @import "../node_modules/cater/less/components/nav.less";
 @import "../node_modules/cater/less/components/tile.less";
 
 @import "./components/container.less";
+@import "./components/buttons.less";
 @import "./components/hero-unit.less";
 @import "./components/item-tiles.less";
 
@@ -40,4 +42,4 @@ html, body {
   padding: 0;
 }
 
-#components > .diet-tags( '/dist/img', 22px );
+#components > .diet-tags( '/dist/img', @diet-tags-size );

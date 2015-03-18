@@ -14,7 +14,7 @@
 
 .item-tile .tile-info {
   padding-top: 4px;
-  padding-bottom: 6px;
+  padding-bottom: 4px;
 }
 
 .item-tile .tile-title {
@@ -23,5 +23,29 @@
 
 .tile-info > .diet-tags,
 .tile-info > .item-price {
-  margin-top: 4px;
+  margin-top: 5px;
+}
+
+.tile-info > .diet-tags {
+  height: @diet-tags-size;
+}
+
+.tile-info > .item-price {
+  font-size: 13px;
+}
+
+.item-tile .btn-add {
+  float: right;
+  margin-top: -40px;
+  #components > .btn-size( 36px, 12px, 1px, 1px, 14px );
+  padding-left: 30px;
+  font-weight: 600;
+
+  &:before {
+    content: "+";
+    position: absolute;
+    left: 10px;
+    top: 16px;
+    font-size: 20px;
+  }
 }
