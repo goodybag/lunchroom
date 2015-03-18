@@ -1,0 +1,36 @@
+// TODO mixin-ify
+@tabs-color: @palette-gray-dark;
+
+.tabs {
+  display: inline-block;
+  font-size: 0;
+  color: @tabs-color;
+}
+
+.tabs > a {
+  display: inline-block;
+  text-align: center;
+  padding: 7px 20px;
+  text-decoration: none;
+  font-size: 14px;
+  line-height: 17px;
+  font-weight: bold;
+  border: 1px solid @palette-gray;
+  color: @palette-gray;
+}
+
+.tabs > a ~ a {
+  border-left: 0px;
+}
+
+.tabs > a.active {
+  color: @tabs-color;
+  background-color: white;
+  border: 1px solid @palette-white;
+}
+
+.tabs > a small {
+  display: block;
+  font-size: 12px;
+  font-weight: normal;
+}
