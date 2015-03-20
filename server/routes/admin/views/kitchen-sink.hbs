@@ -67,9 +67,8 @@
 <section class="page-section" id="section-checkout-info">
   <div class="container">
     <fieldset class="checkout-info form-vertical">
-      <div class="inner">
-        <div class="user-info">
-          <h3 class="section-title">Your Info</h3>
+      <div class="user-info">
+        <h3 class="section-title">Your Info</h3>
           <div class="form-group">
             <label for="">Name</label>
             <input type="text" class="form-control">
@@ -78,30 +77,29 @@
             <label for="">Email</label>
             <input type="email" class="form-control">
           </div>
-        </div>
-        <div class="payment-info">
-          <h3 class="section-title">Payment Info</h3>
-          <div class="form-group">
+      </div>
+      <div class="payment-info">
+        <h3 class="section-title">Payment Info</h3>
+          <div class="form-group form-group-member-name">
             <label for="">Name on card</label>
-            <input type="text" class="form-control">
+            <input type="text" class="form-control" name="card_member_name">
           </div>
           <div class="inline-form-group-list">
-            <div class="form-group">
+            <div class="form-group form-group-card-number">
               <label for="">Card number</label>
-              <input type="text" class="form-control">
+              <input type="text" class="form-control" name="card_number">
             </div>
-            <div class="form-group">
+            <div class="form-group form-group-card-cvv">
               <label for="">CVV</label>
-              <input type="text" class="form-control">
+              <input type="text" class="form-control" name="card_cvv">
             </div>
-            <div class="form-group">
+            <div class="form-group form-group-expiration">
               <label for="">Expiration date</label>
-              <input type="text" class="form-control" placeholder="MM">
+              <input type="text" class="form-control" placeholder="MM" name="card_expiration_month">
               /
-              <input type="text" class="form-control" placeholder="YY">
+              <input type="text" class="form-control" placeholder="YY" name="card_expiration_year">
             </div>
           </div>
-        </div>
       </div>
     </fieldset>
   </div>

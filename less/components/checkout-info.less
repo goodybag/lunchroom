@@ -6,18 +6,87 @@
   padding: 20px 0;
   border: solid 1px @palette-gray;
 
+  .user-info {
+    #grid > .column(3);
+    #grid > .col-width( @size: 2, @prop: margin-left );
+    #grid > .col-width( @size: 1, @prop: margin-right );
+  }
+
+  .payment-info {
+    #grid .column(4);
+  }
+
   .form-group {
     display: block;
-    width: 70%;
   }
-}
 
-.checkout-info > .inner {
-  width: 100%;
-  padding: 0 80px;
-}
+  .form-group.expiration {
+    vertical-align: middle;
+  }
 
-.checkout-info .user-info,
-.checkout-info .payment-info {
-  #grid > .column-percent( 50%, 0 );
+  .form-group-member-name {
+    #grid > .column(3);
+    margin-left: 0;
+
+    + .inline-form-group-list {
+      clear: left;
+    }
+  }
+
+  .form-group-card-number {
+    #grid > .column(2);
+    // Override dumb selector in cater forms.less
+    margin-top: 10px!important;
+  }
+
+  .form-group-card-cvv {
+    #grid > .column(1);
+  }
+
+  .form-group-expiration {
+    #grid > .column(2);
+    vertical-align: middle;
+    float: none;
+  }
+
+  [name="card_expiration_month"],
+  [name="card_expiration_year"] {
+    display: inline-block;
+    vertical-align: middle;
+    #grid > .col-width(1);
+  }
+
+  @media screen and (max-width: @container-width) {
+    .form-group-member-name {
+      width: 100%;
+      margin-left: 0;
+    }
+
+    .form-group-card-number {
+      width: 76%;
+    }
+
+    .form-group-card-cvv {
+      width: 22%;
+    }
+
+    .form-group-expiration {
+      width: 100%;
+      margin-left: 0;
+    }
+  }
+
+  @media screen and (max-width: @breakpoint-mobile) {
+    padding-left: 12px;
+    padding-right: 12px;
+
+    .user-info {
+      margin-left: 0;
+      margin-right: 0;
+    }
+
+    .form-group-card-cvv {
+      margin-left: 2%;
+    }
+  }
 }
