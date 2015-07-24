@@ -16,15 +16,12 @@ scripts.lint = scripts.public.concat(['*.js', 'test/*.js']);
 scripts.lint = scripts.lint.concat( scripts.server );
 
 gulp.task( 'compile-frontend-js', function(){
-  return gulp.src('./public/js/app.js')
-  .pipe( transform( function( filename ){
-    return require('browserify')({
+  return require('browserify')({
       debug: true
     })
-    .add( filename )
-    .bundle();
-  }))
-  .pipe( gulp.dest('public/dist') );
+    .add('./public/js/app.js')
+    .bundle()
+    .pipe( fs.createWriteStream('./public/dist/app.js') );
 });
 
 gulp.task( 'less', function(){
