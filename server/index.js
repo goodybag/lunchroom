@@ -1,6 +1,7 @@
 var express = require('express');
 var hbs     = require('hbs');
 var config  = require('../config');
+var m       = require('./middleware');
 
 var server  = module.exports = express();
 
@@ -20,6 +21,10 @@ server.use( function( req, res, next ){
   res.locals.config = config;
   return next();
 });
+
+server.get('/landing', m.view('views/landing-1', {
+  layout: 'views/landing-layout'
+}));
 
 server.use( '/', require('./routes/lunchrooms') );
 server.use( '/admin', require('./routes/admin') );

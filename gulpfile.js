@@ -1,3 +1,4 @@
+var fs        = require('fs');
 var gulp      = require('gulp');
 var transform = require('vinyl-transform');
 var alias     = require('alias-module');
@@ -30,6 +31,12 @@ gulp.task( 'less', function(){
     .pipe( gulp.dest('public/dist') );
 });
 
+gulp.task( 'less-landing', function(){
+  return gulp.src('less/landing-page.less')
+    .pipe( require('gulp-less')() )
+    .pipe( gulp.dest('public/dist') );
+});
+
 gulp.task( 'lint', function(){
   return gulp.src( scripts.lint )
     .pipe( require('gulp-jshint')( pkg.jshint || {} ) )
@@ -39,7 +46,7 @@ gulp.task( 'lint', function(){
 gulp.task( 'watch', function(){
   gulp.watch( scripts.lint, ['lint'] );
   gulp.watch( scripts.public, [ 'alias-modules', 'compile-frontend-js'] );
-  gulp.watch( ['less/*.less', 'less/**/*.less'], ['less'] );
+  gulp.watch( ['less/*.less', 'less/**/*.less'], ['less', 'less-landing'] );
   gulp.watch( ['server/*.js', 'server/**/*.js', 'server/**/**/*.js'], [ 'stop-server', 'server'] );
 });
 
@@ -77,7 +84,7 @@ gulp.task( 'less-modules', function(){
 });
 
 gulp.task( 'build', [
-  'lint', 'less', 'less-modules'
+  'lint', 'less', 'less-landing', 'less-modules'
 , 'fonts', 'alias-modules'
 , 'compile-frontend-js', 'create-tables'
 ]);

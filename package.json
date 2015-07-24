@@ -22,6 +22,7 @@
     "express-dirac-session": "^1.0.1",
     "express-locals": "^1.0.1",
     "font-avenir": "goodybag/font-avenir",
+    "grunt-contrib-lesselements": "^0.9.0",
     "gulp": "^3.8.10",
     "gulp-copy": "0.0.2",
     "gulp-jshint": "^1.9.2",
@@ -35,6 +36,7 @@
     "loglog": "^0.2.2",
     "loglog-dev-tools": "^1.0.7",
     "mocha": "^2.1.0",
+    "normalize-css": "^2.3.1",
     "stdm": "0.0.4",
     "usd": "^1.0.1",
     "vinyl-transform": "^1.0.0"
