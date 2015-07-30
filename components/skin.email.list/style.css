@@ -1,0 +1,16 @@
+
+.ui.basic.table.GBL_Skin_invisibleTable td {
+	border-top: 0px !important;
+}
+.ui.basic.table.GBL_Skin_lessPadding td {
+	padding-top: 3px;
+	padding-bottom: 3px;
+}
+
+.ui.table tr.GBL_Skin_invisibleRowBorder td {
+	border-top: 0px !important;
+}
+.ui.table tr.GBL_Skin_lessPadding td {
+	padding-top: 3px !important;
+	padding-bottom: 3px !important;
+}

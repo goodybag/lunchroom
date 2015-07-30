@@ -1,0 +1,25 @@
+
+UL.GBL_DEV_Views__menu {
+	margin: 5;
+	padding: 0;
+	list-style-type: none;
+	text-align: center;
+	width: 100%;
+}
+
+UL.GBL_DEV_Views__menu > LI.menu {
+	margin-left: 3px;
+	margin-right: 3px;
+	border: 1px solid black;
+	padding: 3px;
+	padding-left: 10px;
+	padding-right: 10px;
+	font-weight: bold;
+	display: inline;
+}
+
+UL.GBL_DEV_Views__menu > LI.menu:hover {
+	color: #fff;
+	background-color: #369;
+	cursor: pointer;
+}
