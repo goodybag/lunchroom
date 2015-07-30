@@ -17,7 +17,7 @@ function init {
 
 
 	function ensureDependencies {
-		BO_format "$VERBOSE" "HEADER" "Building lunchroom-mockup"
+		BO_format "$VERBOSE" "HEADER" "Building lunchroom"
 		pushd "$__BO_DIR__" > /dev/null
 
 			# http://stackoverflow.com/a/22639444/330439
