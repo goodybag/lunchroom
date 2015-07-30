@@ -20,9 +20,13 @@ exports.up = function (knex, Promise) {
 			//       LIKELY ALSO WANT TO MAKE CHANGES
 			//       here './api.schema.js'!
 
-			t.text('firstName').notNullable();
-			t.text('lastName').notNullable();
+			t.text('token').notNullable();
+			t.text('consumer_id').notNullable();
+			t.text('vendor_id').notNullable();
+			t.text('subscribe_time').notNullable();
+			t.text('confirmed_time').notNullable();
 			t.text('email').notNullable();
+			t.text('confirmedEmail').notNullable();
 
 		});
 };

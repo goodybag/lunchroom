@@ -56,6 +56,7 @@ var appContext = require("../stores/ui.AppContext").for({
 		menus: require("../stores/ui.Menus").for(storeContext),
 		consumers: require("../stores/ui.Consumers").for(storeContext),
 		consumerGroups: require("../stores/ui.ConsumerGroups").for(storeContext),
+		consumerGroupSubscriptions: require("../stores/ui.ConsumerGroupSubscriptions").for(storeContext),
 		cart: require("../stores/ui.Cart").for(storeContext),
 		orders: require("../stores/ui.Orders").for(storeContext),
 		orderStatus: require("../stores/ui.OrderStatus").for(storeContext)

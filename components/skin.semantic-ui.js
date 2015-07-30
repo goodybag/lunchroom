@@ -122,6 +122,11 @@ exports.views = {
 		"component": require("./GBL_Model_Consumers/index"),
 		"config": {}
 	},
+	"Model_ConsumerGroupSubscriptions": {
+		"group": "model",
+		"component": require("./GBL_Model_ConsumerGroupSubscriptions/index"),
+		"config": {}
+	},
 	"Model_Cart": {
 		"group": "model",
 		"component": require("./GBL_Model_Cart/index"),

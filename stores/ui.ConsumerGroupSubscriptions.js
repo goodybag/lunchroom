@@ -1,0 +1,88 @@
+
+const COMMON = require("./ui._common");
+
+const ENDPOINT = COMMON.makeEndpointUrl("consumer-group-subscriptions");
+
+
+
+var Record = COMMON.API.BACKBONE.Model.extend({
+	idAttribute: "id"
+});
+
+var Store = COMMON.API.BACKBONE.Collection.extend({
+	model: Record,
+	url: ENDPOINT,
+	parse: function(data) {
+		return data.data.map(function (record) {
+			return COMMON.API.UNDERSCORE.extend(record.attributes, {
+				id: record.id
+			});
+		});
+	}
+});
+
+
+var store = new Store();
+
+exports.for = function (context) {
+
+/*
+	if (context.ids) {
+		var deferred = COMMON.API.Q.defer();
+		context.ids = context.ids.filter(function (id) {
+			return !store._byId[id];
+		});
+		if (context.ids.length > 0) {
+			store.once("sync", function () {
+				deferred.resolve(store);
+			});
+			// TODO: Ensure new entries are added to collection
+			//       instead of removing all other entries.
+			store.fetch({
+				reset: false,
+				remove: false,
+				data: $.param({
+					"filter[token]": context.ids.join(",")
+				})
+			});
+		} else {
+			deferred.resolve(store);
+		}
+		return deferred.promise;
+	}
+*/
+
+	// @see http://ampersandjs.com/docs#ampersand-state
+	var Model = store.Model = COMMON.API.AMPERSAND_STATE.extend({
+		props: {
+			id: "string",
+	        token: "string",
+	        consumer_id: "string",
+	        vendor_id: "string",
+	        subscribe_time: "string",
+	        confirmed_time: "string",
+	        email: "string",
+	        confirmedEmail: "string"
+		}
+	});
+
+	store.modelRecords = function (records) {
+		return records.map(function (record, i) {
+			// Store model on backbone row so we can re-use it on subsequent calls.
+			// NOTE: We purposfully store the model using `records[i]` instead of `record`
+			//       as `record` 
+			if (store._byId[records[i].get("id")].__model) {
+				return store._byId[records[i].get("id")].__model;
+			}
+			var fields = {};
+			Object.keys(Model.prototype._definition).forEach(function (field) {
+				if (!records[i].has(field)) return;
+				fields[field] = records[i].get(field);
+			});
+			return store._byId[records[i].get("id")].__model = new Model(fields);
+		});
+	}
+
+	return store;
+}
+

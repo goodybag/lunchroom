@@ -15,16 +15,27 @@ module.exports = {
             //       LIKELY ALSO WANT TO MAKE CHANGES
             //       here './db.schema.js'!
 
-            firstName: {
+            token: {
                 type: 'string'
             },
-            lastName: {
+            consumer_id: {
+                type: 'string'
+            },
+            vendor_id: {
+                type: 'string'
+            },
+            subscribe_time: {
+                type: 'string'
+            },
+            confirmed_time: {
                 type: 'string'
             },
             email: {
                 type: 'string'
+            },
+            confirmedEmail: {
+                type: 'string'
             }
-
         }
     }
 };
