@@ -7,6 +7,7 @@
 @import "../node_modules/grunt-contrib-lesselements/elements.less";
 
 @import "../node_modules/cater/less/variables.less";
+@import "./variables.less";
 @import "../node_modules/cater/less/mixins.less";
 @import "../node_modules/cater/less/animations.less";
 
@@ -43,8 +44,78 @@
 @import "../node_modules/cater/less/components/tooltip.less";
 @import "../node_modules/cater/less/components/window-pane.less";
 
+@import "./components/navbar.less";
+@import "./components/hero-unit.less";
+@import "./components/page-section.less";
+@import "./components/marketing-points.less";
+
 // Base
 @import "../node_modules/cater/less/base.less";
 @import "../node_modules/cater/less/typography.less";
 @import "../node_modules/cater/less/forms.less";
 @import "../node_modules/cater/less/buttons.less";
+
+
+.navbar {
+  position: absolute;
+}
+
+.section-dark {
+  background: @palette-gray-dark;
+  color: #fff;
+}
+
+.primary-section {
+  &:extend(.section-dark);
+}
+
+.hero-unit {
+  background: url('/img/photo_background.png');
+  background-size: cover;
+  .cta-form {
+    @cta-form-width: 600px;
+    width: @cta-form-width;
+    margin: 50px auto 40px;
+
+    @media screen and ( max-width: @cta-form-width ){
+      padding: 0;
+      margin-top: @gutter-width;
+      &,
+      .email-wrapper,
+      .submit-wrapper {
+        width: 100%!important;
+      }
+    }
+
+    > .form-group {
+      #grid > .row();
+    }
+  }
+
+  .email-wrapper,
+  .submit-wrapper {
+    float: left;
+    padding: 0 @gutter-width / 2;
+
+    > input,
+    > button {
+      width: 100%;
+    }
+  }
+
+  .email-wrapper {
+    width: 60%;
+  }
+
+  .submit-wrapper {
+    width: 40%;
+  }
+}
+
+.marketing-points p {
+  text-align: center;
+}
+
+#restaurants .logo-list {
+  margin-top: 80px;
+}

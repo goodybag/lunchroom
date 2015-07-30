@@ -1,3 +1,86 @@
 {{#extend "body"}}
-<h1>Herro, werld</h1>
+{{!-- TODO: Pull out into partial? Or put in layout --}}
+<!--<Navbar>-->
+<header class="navbar collapsed navbar-transparent navbar-transparent-dark">
+  <div class="container">
+    <a href="/">
+      {{!-- TODO: Swap with real logo --}}
+      <img src="/img/logo_goodybag_white.png" alt="Goodybag.com" class="navbar-logo">
+    </a>
+
+    <ul class="nav navbar-nav navbar-right">
+      <li>
+        <a href="#">Contact Us</a>
+      </li>
+    </ul>
+  </div>
+</header>
+<!--</Navbar>-->
+
+<section class="page-section hero-unit primary-section" id="email-signup-cta">
+  <div class="container">
+    <h1 class="section-header">Delicious meals delivered every day.</h1>
+    <p>Your choice of lunch brought to you at work. Launches August 1st, 2015.</p>
+    <form action="#" class="cta-form form">
+      <div class="form-group">
+        <div class="email-wrapper">
+          <input type="email" name="email">
+        </div>
+        <div class="submit-wrapper">
+          <button class="btn btn-primary">Get notified</button>
+        </div>
+      </div>
+      <p class="form-explanation">Enter your email to receive daily menus when we launch!</p>
+    </form>
+    <h2 class="outro-header">Share the love! Send this page to your coworkers.</h2>
+  </div>
+</section>
+
+<section class="page-section" id="how-it-works">
+  <div class="container">
+    <h1 class="section-title">How it'll work</h1>
+    <div class="marketing-points">
+      <div class="point">
+        <img src="/img/icons_step1.png" alt="Restaurant rotation">
+        <p>One restaurant featured each day.</p>
+      </div>
+      <div class="point">
+        <img src="/img/icons_step2.png" alt="Order deadline">
+        <p>Order by 10 AM.</p>
+      </div>
+      <div class="point">
+        <img src="/img/icons_step3.png" alt="Delivery notification">
+        <p>We'll deliver your food at 12 and text you when it arrives!</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="page-section section-dark" id="new-menu-everyday">
+  <div class="container">
+    <h1 class="section-title">A new menu every day</h1>
+    <img src="/img/browsers_3mockups.png" class="section-screenshot" alt="Menu screenshot">
+  </div>
+</section>
+
+<section class="page-section" id="restaurants">
+  <div class="container">
+    <h1 class="section-title">A few restaurants you can expect</h1>
+    <ul class="logo-list">
+      <li><img src="/img/logo_trudys.png" alt="Trudy's"></li>
+      <li><img src="/img/logo_micklethwait.png" alt="Micklethwait"></li>
+      <li><img src="/img/logo_torchys.png" alt="Torchy's Tacos"></li>
+      <li><img src="/img/logo_zoes.png" alt="Zoe's Kitchen"></li>
+      <li><img src="/img/logo_madammams.png" alt="Madam Mam's"></li>
+    </ul>
+  </div>
+</section>
+
+<footer class="footer">
+  <ul class="nav footer-nav">
+    <li><a href="/contact-us">Contact Us</a></li>
+    <li><a href="/legal">Terms of service</a></li>
+    <li><a href="/privacy">Privacy policy</a></li>
+  </ul>
+</footer>
 {{/extend}}

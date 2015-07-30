@@ -3,9 +3,26 @@
 ///////////////
 
 .hero-unit {
-  font-size: 2em;
+  font-size: 1.3em;
   background: @palette-gray-dark;
   color: @palette-white;
-  padding: 50px 0 0;
+  padding: 160px 0 132px;
   margin-bottom: 20px;
+  text-shadow: 0 0 12px rgba( 0, 0, 0, 0.6 );
+
+  .section-header {
+    font-weight: 700;
+
+    + p {
+      margin-top: -40px;
+      font-size: 1.3em;
+      font-weight: 500;
+    }
+  }
+
+  .outro-header {
+    font-size: 1.3em;
+    font-weight: 500;
+    margin-top: 90px
+  }
 }
