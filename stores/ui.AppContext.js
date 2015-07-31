@@ -4,12 +4,14 @@ const UNDERSCORE = require('underscore');
 const PAGE = require('page');
 const AMPERSAND_STATE = require('ampersand-state');
 const MOMENT = require("moment");
+const Q = require("q");
 const HEAD = head;
 
 exports.for = function (overrides) {
 
 	// TODO: Init from session.
 	var config = {
+		sessionToken: JSON.parse(decodeURIComponent($('head > meta[name="session.token"]').attr("value"))),
 		context: JSON.parse(decodeURIComponent($('head > meta[name="app.context"]').attr("value"))),
 		initialized: false,
 		ready: false,
@@ -30,6 +32,9 @@ exports.for = function (overrides) {
 	}
 
 	var appContext = new AppContext(config);
+
+
+	COMMON.init(appContext.sessionToken, appContext.context);
 
 
 	const PATHNAME = window.location.pathname;
@@ -166,10 +171,6 @@ exports.for = function (overrides) {
 
 			initLiveNotify();
 
-			COMMON.init({
-// TODO: Config ...
-			});
-
 			appContext.ready = true;
 		}
 
@@ -231,8 +232,36 @@ exports.for = function (overrides) {
 
 		} else {
 
-			handleSelectedViewInit();
-			finalizeInit();
+console.log("context", context);
+
+			function initializeDefaultsForContext () {
+				var all = [];
+				if (
+					context.query &&
+					context.query.dbfilter
+				) {
+					if (context.query.dbfilter.consumer_group_id) {
+						all.push(Q.fcall(function () {
+
+							return appContext.stores.consumerGroups.loadForId(
+								context.query.dbfilter.consumer_group_id
+							);
+
+						}));
+					}
+				}
+				return Q.all(all);
+			}
+
+			return initializeDefaultsForContext().then(function () {
+
+				handleSelectedViewInit();
+				finalizeInit();
+
+			}).fail(function (err) {
+				console.error("Error initializing context", err);
+				throw err;
+			});
 		}
 	});
 
@@ -243,6 +272,7 @@ exports.for = function (overrides) {
 // @see http://ampersandjs.com/docs#ampersand-state
 var AppContext = AMPERSAND_STATE.extend({
 	props: {
+		sessionToken: "string",
 		context: "object",
 		initialized: "boolean",
 		ready: "boolean",

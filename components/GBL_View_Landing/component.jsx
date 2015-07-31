@@ -7,10 +7,28 @@ exports.for = function (module, Context) {
 
 		appContextView: "Landing",
 
+	    onMount: function () {
+			this.props.appContext.stores.consumerGroups.on("sync", this._trigger_forceUpdate);
+	    },
+
+	    onUnmount: function () {
+			this.props.appContext.stores.consumerGroups.off("sync", this._trigger_forceUpdate);
+	    },
+
 	    render: function () {
 	    	var self = this;
 
+	        var consumerGroups = self.props.appContext.stores.consumerGroups;
+
+			var consumerGroup = self.modelRecordsWithStore(consumerGroups, consumerGroups.where())[0];
+
 	        return {
+	        	consumerGroup: consumerGroup,
+
+	        	subscribeWithEmail: function (email) {
+
+					self.props.appContext.stores.consumerGroupSubscriptions.subscribeWithEmail(consumerGroup.get("id"), email);
+				}
 	        };
 	    }
 	});

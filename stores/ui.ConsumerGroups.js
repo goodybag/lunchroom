@@ -63,6 +63,22 @@ exports.for = function (context) {
 		}
 	});
 
+	store.loadForId = function (consumer_group_id) {
+		var self = this;
+		return COMMON.API.Q.denodeify(function (callback) {
+	        self.fetch({
+	            reset: true,
+	            remove: true,
+	            data: $.param({
+	                "filter[id]": consumer_group_id
+	            }),
+	            success: function () {
+	            	return callback(null);
+	            }
+	        });
+		})();
+	}
+
 	store.modelRecords = function (records) {
 		return records.map(function (record, i) {
 			// Store model on backbone row so we can re-use it on subsequent calls.

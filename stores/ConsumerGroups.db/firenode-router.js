@@ -8,6 +8,28 @@ exports.for = function (API) {
 
 	exports.processRequest = function (req, arg) {
 
+		var session = req._FireNodeContext.session;
+		if (
+			session &&
+			session.dbfilter
+		) {
+
+			req._FireNodeContext.addLayer({
+				config: {
+					query: {
+						dbfilter: session.dbfilter
+					},
+					clientContext: {
+						query: {
+							dbfilter: session.dbfilter
+						}
+					}
+				}
+			});
+
+			return false;
+		}
+
 		return DB.getKnex()('consumer-groups').where({
 			"alias": arg
 		}).select('id').then(function (result) {
@@ -34,6 +56,11 @@ exports.for = function (API) {
 								consumer_group_id: result[0].id
 							}
 						}
+					}
+				},
+				session: {
+					dbfilter: {
+						consumer_group_id: result[0].id
 					}
 				}
 			});

@@ -24,9 +24,10 @@ exports.makeEndpointUrl = function (name) {
 
 
 
-exports.init = function () {
+exports.init = function (sessionToken, context) {
 
-	var client = new FIRENODE.Client();
+	var client = new FIRENODE.Client(sessionToken, context);
+
 
 
 console.log("FIRENODE.client", client);

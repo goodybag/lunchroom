@@ -30,7 +30,7 @@ module.exports = {
             confirmed_time: {
                 type: 'string'
             },
-            email: {
+            subscribeEmail: {
                 type: 'string'
             },
             confirmedEmail: {

@@ -21,12 +21,12 @@ exports.up = function (knex, Promise) {
 			//       here './api.schema.js'!
 
 			t.text('token').notNullable();
-			t.text('consumer_id').notNullable();
+			t.text('consumer_id');
 			t.text('consumer_group_id').notNullable();
-			t.text('subscribe_time').notNullable();
-			t.text('confirmed_time').notNullable();
-			t.text('email').notNullable();
-			t.text('confirmedEmail').notNullable();
+			t.timestamp('subscribe_time').notNullable().defaultTo(knex.raw('now()'));
+			t.text('confirmed_time');
+			t.text('subscribeEmail').notNullable();
+			t.text('confirmedEmail');
 
 		});
 };

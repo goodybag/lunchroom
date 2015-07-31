@@ -5,6 +5,7 @@ const HTTP = require('http');
 const SEND = require('send');
 const EXPRESS = require("express");
 const BODY_PARSER = require('body-parser');
+const COOKIE_PARSER = require('cookie-parser');
 const MORGAN = require('morgan');
 const API_ENDPOINTS = require("./server/db/api.endpoints");
 const BOOKSHELF_KNEX_POSTGRESQL = require("./server/db/bookshelf.knex.postgresql");
@@ -17,6 +18,37 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
 	function initAPI (app) {
 
 		app.use(MORGAN("combined"));
+
+		app.get(/^(\/(?:vendor|order)-[^\/]+)?(\/.*)$/, function (req, res, next) {
+
+			var path = req.params[1];
+			if (path === "/") path = "/index.html";
+
+			if (API.DEBUG) {
+				console.log("Template '" + path + "' for url '" + req.url + "'");
+			}
+
+			if (
+				path === "/index.htm" ||
+				path === "/harness.htm"
+			) {
+				var content = FS.readFileSync(PATH.join(__dirname, "www", path), "utf8");
+				content = content.replace(
+					/\{\{sessionToken\}\}/,
+					encodeURIComponent(JSON.stringify(req._FireNodeContext.sessionToken || null))
+				);
+				content = content.replace(
+					/\{\{encodedContext\}\}/,
+					encodeURIComponent(JSON.stringify(req._FireNodeContext.config.clientContext || {}))
+				);
+				res.writeHead(200, {
+					"Content-Type": "text/html"
+				});
+				return res.end(content);
+			}
+
+			return next();
+		});
 
 		app.use(BODY_PARSER.urlencoded({extended: true}));
 		app.use(BODY_PARSER.json({
@@ -81,39 +113,35 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
 			}).on("error", next).pipe(res);
 		});
 
-		app.get(/^(\/(?:vendor|order)-[^\/]+)?(\/.*)$/, function (req, res, next) {
+		app.get(/^(\/.*)$/, function (req, res, next) {
 
-			var path = req.params[1];
+			var path = req.params[0];
 			if (path === "/") path = "/index.html";
 
 			if (API.DEBUG) {
 				console.log("Template '" + path + "' for url '" + req.url + "'");
 			}
 
-			if (
-				path === "/index.htm" ||
-				path === "/harness.htm"
-			) {
-				var content = FS.readFileSync(PATH.join(__dirname, "www", path), "utf8");
-				content = content.replace(
-					/\{\{encodedContext\}\}/,
-					encodeURIComponent(JSON.stringify(req._FireNodeContext.config.clientContext || {}))
-				);
-				res.writeHead(200, {
-					"Content-Type": "text/html"
-				});
-				return res.end(content);
+			if (/\.html?$/.test(path)) {
+				// We let privateApp handle route.
+				return next();
 			}
 
 			return SEND(req, path, {
 				root: PATH.join(__dirname, "www")
-			}).on("error", next).pipe(res);
+			}).on("error", function (err) {
+				if (err.code === "ENOENT") {
+					// We ignore not found errors and proceed to the private routes.
+					return next();
+				}
+				return next(err);
+			}).pipe(res);
 		});
 	}
 
-	var app = EXPRESS();
+	var publicApp = EXPRESS();
 
-	app.use(function (req, res, next) {
+	publicApp.use(function (req, res, next) {
 
 		var origin = null;
         if (req.headers.origin) {
@@ -144,8 +172,10 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
 	} catch (err) {
 		console.error("Error connecting to PostgreSQL", err.message);
 	}
-	initAPI(app);
-	initStatic(app);
+	initStatic(publicApp);
+
+	var privateApp = EXPRESS();
+	initAPI(privateApp);
 
 	return FIRENODE.for(API).then(function (FIRENODE) {
 
@@ -160,16 +190,31 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
 
 		var server = HTTP.createServer(function (req, res) {
 
-			firenode.attachToRequest(req, res).then(function (proceed) {
-				if (!proceed) return;
+			try {
 
-				app(req, res);
+				publicApp(req, res, function (err) {
+					if (err) throw err;
 
-			}).fail(function (err) {
+					COOKIE_PARSER()(req, res, function (err) {
+						if (err) throw err;
+
+						firenode.attachToRequest(req, res).then(function (proceed) {
+							if (!proceed) return;
+
+							privateApp(req, res);
+
+						}).fail(function (err) {
+							throw err;
+						});
+
+					});
+				});
+
+			} catch (err) {
 				console.error(err.stack);
 				res.writeHead(500);
 				res.end("Internal Server Error");
-			});
+			}
 		});
 
 		firenode.attachToServer(server);

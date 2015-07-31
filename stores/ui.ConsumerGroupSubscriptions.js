@@ -61,10 +61,48 @@ exports.for = function (context) {
 	        consumer_group_id: "string",
 	        subscribe_time: "string",
 	        confirmed_time: "string",
-	        email: "string",
+	        subscribeEmail: "string",
 	        confirmedEmail: "string"
 		}
 	});
+
+	store.subscribeWithEmail = function (consumer_group_id, email) {
+		var self = this;
+		return COMMON.API.Q.denodeify(function (callback) {
+
+			var payload = {
+				data: {
+					type: "consumer-group-subscriptions",
+					attributes: {
+						consumer_group_id: consumer_group_id,
+						subscribeEmail: email
+					}
+				}
+			};
+
+			return $.ajax({
+				method: "POST",
+				url: ENDPOINT + "/",
+				contentType: "application/vnd.api+json",
+				headers: {
+					"Accept": "application/vnd.api+json"
+				},
+    			dataType: "json",
+				data: JSON.stringify(payload)
+			})
+			.done(function (response) {
+
+				return callback(null);
+			})
+			.fail(function(err) {
+
+// TODO: Ask user to submit again.
+console.log("error!", err.stack);
+
+				return callback(err);
+			});
+		})();
+	}
 
 	store.modelRecords = function (records) {
 		return records.map(function (record, i) {

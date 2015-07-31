@@ -27,7 +27,7 @@ exports.for = function (context) {
 	var store = new Store();
 
 
-	store.fetch();
+//	store.fetch();
 
 
 	// @see http://ampersandjs.com/docs#ampersand-state

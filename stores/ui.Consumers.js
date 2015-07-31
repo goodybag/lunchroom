@@ -43,7 +43,7 @@ entities.on("all", function(eventName) {
 });
 */
 
-	entities.fetch();
+//	entities.fetch();
 
 	return entities;
 }
