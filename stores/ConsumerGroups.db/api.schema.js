@@ -18,7 +18,16 @@ module.exports = {
             title: {
                 type: 'string'
             },
-            description: {
+            alias: {
+                type: 'string'
+            },
+            contact: {
+                type: 'string'
+            },
+            address: {
+                type: 'string'
+            },
+            pickupLocation: {
                 type: 'string'
             },
             orderTax: {

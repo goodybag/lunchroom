@@ -60,7 +60,8 @@
           "DEEPMERGE": "deepmerge",
           "ASSERT": "assert",
           "Q": "q",
-          "REQUEST": "request"
+          "REQUEST": "request",
+          "FIRENODE_CONSUMER_GROUP_ROUTER": "./stores/ConsumerGroups.db/firenode-router.js"
         }
       }
     },

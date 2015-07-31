@@ -22,7 +22,7 @@ exports.up = function (knex, Promise) {
 
 			t.text('token').notNullable();
 			t.text('consumer_id').notNullable();
-			t.text('vendor_id').notNullable();
+			t.text('consumer_group_id').notNullable();
 			t.text('subscribe_time').notNullable();
 			t.text('confirmed_time').notNullable();
 			t.text('email').notNullable();

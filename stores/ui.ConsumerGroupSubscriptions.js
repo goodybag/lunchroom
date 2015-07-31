@@ -58,7 +58,7 @@ exports.for = function (context) {
 			id: "string",
 	        token: "string",
 	        consumer_id: "string",
-	        vendor_id: "string",
+	        consumer_group_id: "string",
 	        subscribe_time: "string",
 	        confirmed_time: "string",
 	        email: "string",

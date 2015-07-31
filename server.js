@@ -151,15 +151,25 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
 
 		// TODO: Augment this config dynamically by looking at API schema and
 		//       security files for each backend route in `./stores`.
-		var firenode = new FIRENODE.Server(API.config.firenode);
+		var firenode = new FIRENODE.Server(API.config.firenode, {
+			// TODO: Load these dynamically when loading config.
+			instances: {
+				"07-lunchroom/consumer-group-router/0": API.FIRENODE_CONSUMER_GROUP_ROUTER
+			}
+		});
 
 		var server = HTTP.createServer(function (req, res) {
 
-			if (!firenode.attachToRequest(req, res)) {
-				return;
-			}
+			firenode.attachToRequest(req, res).then(function (proceed) {
+				if (!proceed) return;
 
-			return app(req, res);
+				app(req, res);
+
+			}).fail(function (err) {
+				console.error(err.stack);
+				res.writeHead(500);
+				res.end("Internal Server Error");
+			});
 		});
 
 		firenode.attachToServer(server);

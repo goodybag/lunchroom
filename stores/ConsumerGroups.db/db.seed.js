@@ -23,7 +23,7 @@ exports.seed = function (knex, Promise) {
 */
 
 	records.push({
-		"id": i,
+		"id": 1,
 		"title": "Bazaar Voice",
 		"alias": "bazaarvoice",
 		contact: "Gillian Lambert",

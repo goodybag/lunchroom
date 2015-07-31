@@ -21,6 +21,7 @@ exports.up = function (knex, Promise) {
 			//       here './api.schema.js'!
 
 			t.text('title').notNullable();
+			t.text('alias').notNullable();
 			t.text('contact').notNullable();
 			t.text('address').notNullable();
 			t.text('pickupLocation').notNullable();

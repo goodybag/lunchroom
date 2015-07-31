@@ -21,7 +21,7 @@ module.exports = {
             consumer_id: {
                 type: 'string'
             },
-            vendor_id: {
+            consumer_group_id: {
                 type: 'string'
             },
             subscribe_time: {

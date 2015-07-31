@@ -20,6 +20,10 @@ const EMAIL_COMPONENTS = {
 exports.RootView = require("./GBL_DEV_Views/skin.semantic-ui.jsx");
 
 exports.views = {
+	"Home": {
+		"component": require("./GBL_View_Home/skin.semantic-ui.jsx"),
+		"config": {}
+	},
 	"Landing": {
 		"component": require("./GBL_View_Landing/skin.semantic-ui.jsx"),
 		"config": {}
