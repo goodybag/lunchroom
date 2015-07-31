@@ -20,6 +20,29 @@
     }
   }
 
+  @media screen and ( max-width: @breakpoint-tablet ){
+    .section-header + p {
+      margin-top: 10px;
+    }
+  }
+
+  @media screen and ( max-width: @breakpoint-mobile ){
+    padding-top: 100px;
+    padding-bottom: 90px;
+
+    .section-header {
+      font-size: 1.2em;
+    }
+
+    .section-header + p {
+      font-size: 1em;
+    }
+
+    .submit-wrapper {
+      margin-top: 12px;
+    }
+  }
+
   .outro-header {
     font-size: 1.3em;
     font-weight: 500;

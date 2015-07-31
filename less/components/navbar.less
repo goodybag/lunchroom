@@ -25,3 +25,13 @@
 body {
   padding-top: 0;
 }
+
+@media screen and (max-width: @breakpoint-mobile) {
+  .navbar:before {
+    content: none;
+  }
+
+  .navbar .navbar-right {
+    margin-top: -20px!important;
+  }
+}
