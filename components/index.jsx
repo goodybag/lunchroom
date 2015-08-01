@@ -70,7 +70,7 @@ storeContext.appContext = appContext;
 
 appContext.on("change:ready", function () {
 
-	if (appContext.context.type) return;
+	if (!appContext.context.dev) return;
 
 	// DEV: Init cart
 	appContext.stores.cart.addItem("1");
@@ -86,6 +86,9 @@ appContext.on("change:ready", function () {
 	 	"card[expire-month]": "4",
 	 	"card[expire-year]": "2018"
 	});
+
+	$('#form-subscribe input[type="email"]').val("christoph@christophdorn.com");
+
 });
 
 

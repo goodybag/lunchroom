@@ -114,6 +114,8 @@ exports.init = function (config) {
 		});
 	}
 
+	// TODO: Only run migration and seeds if DB schema has changed.
+
 	return ensureMigration().then(function () {
 
 		console.log('########################################');

@@ -6,7 +6,7 @@ exports.for = function (API) {
 
 	var exports = {};
 
-	exports.processRequest = function (req, arg) {
+	exports.processRequest = function (req, res, opts) {
 
 		var session = req._FireNodeContext.session;
 		if (
@@ -27,11 +27,41 @@ exports.for = function (API) {
 				}
 			});
 
+			if (
+				!opts.arg &&
+				session.dbfilter.consumer_group_id
+			) {
+				// Redirect to alias url for consumer group.
+
+				return DB.getKnex()('consumer-groups').where({
+					"id": session.dbfilter.consumer_group_id
+				}).select('alias').then(function (result) {
+
+					if (result.length === 0) {
+						// This should not happen but just in case.
+						req._FireNodeContext.resetSession();
+						req._FireNodeContext.addLayer({
+							config: {
+								externalRedirect: "/"
+							}
+						});
+						return false;
+					}
+
+					req._FireNodeContext.addLayer({
+						config: {
+							externalRedirect: "/" + result[0].alias
+						}
+					});
+					return false;
+				});
+			}
+
 			return false;
 		}
 
 		return DB.getKnex()('consumer-groups').where({
-			"alias": arg
+			"alias": opts.arg
 		}).select('id').then(function (result) {
 
 			if (result.length === 0) {

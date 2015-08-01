@@ -13,7 +13,6 @@
     "bookshelf": "^0.8.1",
     "bower": "^1.4.1",
     "canonical-json": "0.0.4",
-    "cookie-parser": "^1.3.5",
     "deepmerge": "^0.2.10",
     "express": "^4.12.4",
     "express-routebuilder": "^2.1.0",
@@ -62,7 +61,8 @@
           "ASSERT": "assert",
           "Q": "q",
           "REQUEST": "request",
-          "FIRENODE_CONSUMER_GROUP_ROUTER": "./stores/ConsumerGroups.db/firenode-router.js"
+          "consumer-group-router": "./stores/ConsumerGroups.db/firenode-router.js",
+          "consumer-group-subscription-router": "./stores/ConsumerGroupSubscriptions.db/firenode-router.js"
         }
       }
     },

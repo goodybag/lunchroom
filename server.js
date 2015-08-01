@@ -5,7 +5,6 @@ const HTTP = require('http');
 const SEND = require('send');
 const EXPRESS = require("express");
 const BODY_PARSER = require('body-parser');
-const COOKIE_PARSER = require('cookie-parser');
 const MORGAN = require('morgan');
 const API_ENDPOINTS = require("./server/db/api.endpoints");
 const BOOKSHELF_KNEX_POSTGRESQL = require("./server/db/bookshelf.knex.postgresql");
@@ -184,7 +183,8 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
 		var firenode = new FIRENODE.Server(API.config.firenode, {
 			// TODO: Load these dynamically when loading config.
 			instances: {
-				"07-lunchroom/consumer-group-router/0": API.FIRENODE_CONSUMER_GROUP_ROUTER
+				"07-lunchroom/consumer-group-router/0": API["consumer-group-router"],
+				"07-lunchroom/consumer-group-subscription-router/0": API["consumer-group-subscription-router"]
 			}
 		});
 
@@ -195,18 +195,13 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
 				publicApp(req, res, function (err) {
 					if (err) throw err;
 
-					COOKIE_PARSER()(req, res, function (err) {
-						if (err) throw err;
+					API.Q.when(firenode.attachToRequest(req, res)).then(function (proceed) {
+						if (!proceed) return;
 
-						firenode.attachToRequest(req, res).then(function (proceed) {
-							if (!proceed) return;
+						privateApp(req, res);
 
-							privateApp(req, res);
-
-						}).fail(function (err) {
-							throw err;
-						});
-
+					}).fail(function (err) {
+						throw err;
 					});
 				});
 

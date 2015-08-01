@@ -5,44 +5,70 @@ const ENDPOINTS = require('endpoints');
 const EXTEND = require("extend");
 const UUID = require("uuid");
 
+const DB = require("../../server/db/bookshelf.knex.postgresql");
 const SERVICES = require("../../server/services");
 
 
 var store = EXTEND(false, {}, ENDPOINTS.Store.bookshelf);
-store.create = function (model, data) {
+store.create = function (model, data, request) {
+
 
 	return SERVICES.for({}).then(function (SERVICES) {
+
+
+		function sendSubscriptionConfirmation (consumerGroupSubscription) {
+
+			return DB.getKnex()('consumer-groups').where({
+				"id": consumerGroupSubscription.consumer_group_id
+			}).then(function (result) {
+
+				if (result.length !== 1) {
+					throw new Error("No record found for id: " + consumerGroupSubscription.consumer_group_id);
+				}
+
+				try {
+
+					// TODO: Confirm subscription
+
+					SERVICES.email.send("Confirm_Subscription", {
+			            "to": [
+			                {
+			                    "email": data.attributes.subscribeEmail,
+			                    "name": data.attributes.subscribeEmail,
+			                    "type": "to"
+			                }
+			            ],
+			            "data": {
+			            	consumerGroup: result[0],
+			            	consumerGroupSubscription: consumerGroupSubscription
+			            }
+			        }, request).then(function () {
+
+						console.log("Email sent!");
+
+					}).fail(function (err) {
+						console.error(err.stack);
+					});
+
+				} catch (err) {
+					console.error(err.stack);
+				}
+
+			});
+		}
+
 
 		// Generate new hash ID for order on creation.
 		data.attributes.token = UUID.v4();
 
 		return ENDPOINTS.Store.bookshelf.create.call(store, model, data).then(function (resp) {
 
-			try {
+			return sendSubscriptionConfirmation(
+				data.attributes
+			).then(function () {
 
-				// TODO: Confirm subscription
-
-				SERVICES.email.send("Order_Placed", {
-		            "to": [
-		                {
-		                    "email": data.attributes.subscribeEmail,
-		                    "name": data.attributes.subscribeEmail,
-		                    "type": "to"
-		                }
-		            ]
-		        }).then(function () {
-
-					console.log("Email sent!");
-
-				}).fail(function (err) {
-					console.error(err.stack);
-				});
-
-			} catch (err) {
-				console.error(err.stack);
-			}
-
-			return resp;
+				return resp;
+			});
 		});
 	});
 }
