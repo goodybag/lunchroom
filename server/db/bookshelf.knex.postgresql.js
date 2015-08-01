@@ -11,7 +11,7 @@ const LIVE_NOTIFY = require("../live-notify");
 var knex = null;
 var bookshelf = null;
 
-exports.init = function (config) {
+exports.init = function (config, options) {
 
 	config.debug = true;
 	config.client = "pg";
@@ -27,6 +27,13 @@ exports.init = function (config) {
 	config.seeds = {
 		directory: PATH.join(__dirname, "knex.seeds")
 	};
+
+
+	console.log("DB user", config.connection.user);
+	console.log("DB database", config.connection.database);
+	console.log("DB host", config.connection.host);
+	console.log("DB port", config.connection.port);
+
 
 	// @see http://knexjs.org/#Installation-node
 	knex = KNEX(config);
@@ -114,20 +121,28 @@ exports.init = function (config) {
 		});
 	}
 
-	// TODO: Only run migration and seeds if DB schema has changed.
 
-	return ensureMigration().then(function () {
+	function runMigrationsAndSeed () {
 
-		console.log('########################################');
-		console.log('# Running seeds ...');
-		console.log('########################################');
-		
-		return knex.seed.run();
-	}).then(function () {
+		if (options.enableAutoMigration !== true) {
+			return Q.resolve();
+		}
 
+		// TODO: Only run migration and seeds if DB schema has changed.
+
+		return ensureMigration().then(function () {
+
+			console.log('########################################');
+			console.log('# Running seeds ...');
+			console.log('########################################');
+			
+			return knex.seed.run();
+		});
+	}
+
+	return runMigrationsAndSeed().then(function () {
 
 		LIVE_NOTIFY.attachToDatabase(config.connection);
-
 
 	});
 }

@@ -171,7 +171,9 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
 
 	try {
 		BOOKSHELF_KNEX_POSTGRESQL.init({
-			connection: API.config.db.postgresql
+			connection: API.config.db.postgresql,
+		}, {
+			enableAutoMigration: API.config.db.enableAutoMigration || false
 		});
 	} catch (err) {
 		console.error("Error connecting to PostgreSQL", err.message);
