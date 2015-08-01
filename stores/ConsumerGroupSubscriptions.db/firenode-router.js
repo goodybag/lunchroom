@@ -8,44 +8,33 @@ exports.for = function (API) {
 
 	exports.processRequest = function (req, res, opts) {
 
-		if (req._FireNodeContext.config.router.action === "confirm") {
+		return DB.getKnex()('consumer-group-subscriptions').where({
+			"token": opts.arg
+		}).select('id', 'subscribeEmail', 'confirmedEmail', 'consumer_group_id', 'consumer_group_id').then(function (result) {
 
-			return DB.getKnex()('consumer-group-subscriptions').where({
-				"token": opts.arg
-			}).select('id', 'subscribeEmail', 'confirmedEmail', 'consumer_group_id').then(function (result) {
+			if (result.length === 0) {
+				res.writeHead(404);
+				res.end("Not Found!");
+				return true;
+			}
 
-				if (result.length === 0) {
-					res.writeHead(404);
-					res.end("Not Found!");
-					return true;
-				}
-
-				function successResponse () {
-					req._FireNodeContext.resetSession();
-					req._FireNodeContext.addLayer({
-						config: {
-							externalRedirect: "/",
-							query: {
-								dbfilter: {
-									consumer_group_id: result[0].id
-								}
-							},
-							clientContext: {
-								query: {
-									dbfilter: {
-										consumer_group_id: result[0].id
-									}
-								}
-							}
-						},
-						session: {
-							dbfilter: {
-								consumer_group_id: result[0].id
-							}
+			function successResponse () {
+				req._FireNodeContext.resetSession();
+				req._FireNodeContext.addLayer({
+					config: {
+						externalRedirect: "/"
+					},
+					session: {
+						dbfilter: {
+							consumer_group_id: result[0].consumer_group_id,
+							email: result[0].subscribeEmail
 						}
-					});
-					return false;
-				}
+					}
+				});
+				return false;
+			}
+
+			if (req._FireNodeContext.config.router.action === "confirm") {
 
 				if (result[0].subscribeEmail === result[0].confirmedEmail) {
 					return successResponse();
@@ -59,12 +48,24 @@ exports.for = function (API) {
 
 					return successResponse();
 				});
-			});
-		}
 
-		res.writeHead(404);
-		res.end("Not Found!");
-		return true;
+			} else
+			if (req._FireNodeContext.config.router.action === "unsubscribe") {
+
+				return DB.getKnex()('consumer-group-subscriptions').where({
+					"id": result[0].id
+				}).update({
+					"confirmedEmail": "unsubscribed"
+				}).then(function () {
+
+					return successResponse();
+				});
+			}
+
+			res.writeHead(404);
+			res.end("Not Found!");
+			return true;
+		});
 	}
 
 	return exports;

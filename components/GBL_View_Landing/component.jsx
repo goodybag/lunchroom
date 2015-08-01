@@ -19,11 +19,14 @@ exports.for = function (module, Context) {
 	    	var self = this;
 
 	        var consumerGroups = self.props.appContext.stores.consumerGroups;
-
 			var consumerGroup = self.modelRecordsWithStore(consumerGroups, consumerGroups.where())[0];
+
+	        var consumerGroupSubscriptions = self.props.appContext.stores.consumerGroupSubscriptions;
+			var consumerGroupSubscription = self.modelRecordsWithStore(consumerGroupSubscriptions, consumerGroupSubscriptions.where())[0];
 
 	        return {
 	        	consumerGroup: consumerGroup,
+	        	consumerGroupSubscription: consumerGroupSubscription,
 
 	        	subscribeWithEmail: function (email) {
 

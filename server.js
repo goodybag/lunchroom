@@ -36,9 +36,14 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
 					/\{\{sessionToken\}\}/,
 					encodeURIComponent(JSON.stringify(req._FireNodeContext.sessionToken || null))
 				);
+
+				var clientContext = (req._FireNodeContext.config.clientContext || {});
+				var session = req._FireNodeContext.session;
+				clientContext.dbfilter = ((session && session.dbfilter) || {});
+
 				content = content.replace(
 					/\{\{encodedContext\}\}/,
-					encodeURIComponent(JSON.stringify(req._FireNodeContext.config.clientContext || {}))
+					encodeURIComponent(JSON.stringify(clientContext))
 				);
 				res.writeHead(200, {
 					"Content-Type": "text/html"

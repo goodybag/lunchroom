@@ -9,8 +9,8 @@ require("./component.jsx").for(module, {
 	    	$('#form-subscribe DIV.button.submit', element),
 	    	'click',
 	    	function () {
-    			var errorMessage = $('#form-subscribe DIV.message.negative', element);
-    			var successMessage = $('DIV.message.success', element);
+    			var errorMessage = $('#form-subscribe DIV[data-message="form-error"]', element);
+    			var successMessage = $('DIV[data-message="form-sent"]', element);
 
     			errorMessage.addClass("hidden");
     			successMessage.addClass("hidden");
@@ -35,6 +35,23 @@ require("./component.jsx").for(module, {
 				$("#form-subscribe").html("");
 	    	}
 	    );
+
+		var consumerGroupSubscription = Context.consumerGroupSubscription;
+
+		if (consumerGroupSubscription) {
+    		var emailElement = $('#form-subscribe input[type="email"]', element);
+    		emailElement.val(consumerGroupSubscription.get("subscribeEmail"));
+
+    		if (
+    			consumerGroupSubscription.get("subscribeEmail")
+    			===
+    			consumerGroupSubscription.get("confirmedEmail")
+    		) {
+    			$('#form-subscribe DIV[data-message="subscription-confirmed"]', element).removeClass("hidden");
+    		} else {
+    			$('#form-subscribe DIV[data-message="subscription-pending"]', element).removeClass("hidden");
+    		}
+		}
 	},
 
 	getHTML: function (Context) {
@@ -60,6 +77,14 @@ require("./component.jsx").for(module, {
 			);
 		}
 
+		var consumerGroupSubscription = Context.consumerGroupSubscription;
+
+		var UnsubscribeLink = "";
+		if (consumerGroupSubscription) {
+			var unsubscribeLink = window.location.origin + "/a/us/" + consumerGroupSubscription.get("token");
+			UnsubscribeLink = <a href={unsubscribeLink}>Unsubscribe</a>;
+		}
+
         return (
         	<div className="ui one column centered grid">
 
@@ -71,13 +96,20 @@ require("./component.jsx").for(module, {
 
 						<form id="form-subscribe" className="ui form">
 
-							<div className="ui form">
+							<div className="ui success form">
 							  <div className="field">
 							    <label>E-mail</label>
 							    <input type="email" placeholder=""/>
 							  </div>
 
-							<div className="ui negative hidden message">
+							  <div data-message="subscription-confirmed" className="ui success hidden message">
+							    <p>Your subscription is confirmed for this email address! {UnsubscribeLink}</p>
+							  </div>
+							  <div data-message="subscription-pending" className="ui negative hidden message">
+							    <p>Your subscription for this email address is pending. Click Submit to resend.</p>
+							  </div>
+
+							<div data-message="form-error" className="ui negative hidden message">
 							  <i className="close icon"></i>
 							  <div className="header">
 							    Oops!
@@ -90,22 +122,12 @@ require("./component.jsx").for(module, {
 
 						</form>
 
-					  <div className="ui success hidden message">
+					  <div data-message="form-sent" className="ui success hidden message">
 					    <div className="header">Form Completed</div>
 					    <p>We have sent you an email to confirm your subscription!</p>
 					  </div>
 
 					</div>
-				</div>
-
-			    <div className="row">
-
-				    <div className="eight wide column">
-
-						<a href="/bazaarvoice/todo-day-context-id-hash">Go to Menu</a>
-
-					</div>
-
 				</div>
 
 			</div>

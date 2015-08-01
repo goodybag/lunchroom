@@ -63,6 +63,14 @@ store.create = function (model, data, request) {
 
 		return ENDPOINTS.Store.bookshelf.create.call(store, model, data).then(function (resp) {
 
+			request._FireNodeContext.addLayer({
+				session: {
+					dbfilter: {
+						email: data.attributes.subscribeEmail
+					}
+				}
+			});
+
 			return sendSubscriptionConfirmation(
 				data.attributes
 			).then(function () {

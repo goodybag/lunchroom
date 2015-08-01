@@ -14,19 +14,6 @@ exports.for = function (API) {
 			session.dbfilter
 		) {
 
-			req._FireNodeContext.addLayer({
-				config: {
-					query: {
-						dbfilter: session.dbfilter
-					},
-					clientContext: {
-						query: {
-							dbfilter: session.dbfilter
-						}
-					}
-				}
-			});
-
 			if (
 				!opts.arg &&
 				session.dbfilter.consumer_group_id
@@ -60,6 +47,19 @@ exports.for = function (API) {
 			return false;
 		}
 
+		if (!opts.arg) {
+
+			// Redirect to default consumer group.
+
+			req._FireNodeContext.resetSession();
+			req._FireNodeContext.addLayer({
+				config: {
+					externalRedirect: "/bazaarvoice"
+				}
+			});
+			return false;
+		}
+
 		return DB.getKnex()('consumer-groups').where({
 			"alias": opts.arg
 		}).select('id').then(function (result) {
@@ -74,20 +74,6 @@ exports.for = function (API) {
 			}
 
 			req._FireNodeContext.addLayer({
-				config: {
-					query: {
-						dbfilter: {
-							consumer_group_id: result[0].id
-						}
-					},
-					clientContext: {
-						query: {
-							dbfilter: {
-								consumer_group_id: result[0].id
-							}
-						}
-					}
-				},
 				session: {
 					dbfilter: {
 						consumer_group_id: result[0].id

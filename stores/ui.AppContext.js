@@ -103,7 +103,7 @@ exports.for = function (overrides) {
 
 				// NOTE: This will not work if only the Hash changes.
 				//       In those cases you need to redirect to a new URL.
-				window.location.href = window.location.origin + PATHNAME + view;
+				window.location.href = window.location.origin + view;
 			} else {
 
 				// We are selecting a new view and updating the URL using PUSH-STATE
@@ -237,16 +237,20 @@ console.log("context", context);
 			function initializeDefaultsForContext () {
 				var all = [];
 				if (
-					context.query &&
-					context.query.dbfilter
+					context.dbfilter
 				) {
-					if (context.query.dbfilter.consumer_group_id) {
+					if (context.dbfilter.consumer_group_id) {
 						all.push(Q.fcall(function () {
-
 							return appContext.stores.consumerGroups.loadForId(
-								context.query.dbfilter.consumer_group_id
+								context.dbfilter.consumer_group_id
 							);
-
+						}));
+					}
+					if (context.dbfilter.email) {
+						all.push(Q.fcall(function () {
+							return appContext.stores.consumerGroupSubscriptions.loadForEmail(
+								context.dbfilter.email
+							);
 						}));
 					}
 				}

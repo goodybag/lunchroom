@@ -104,6 +104,22 @@ console.log("error!", err.stack);
 		})();
 	}
 
+	store.loadForEmail = function (email) {
+		var self = this;
+		return COMMON.API.Q.denodeify(function (callback) {
+	        self.fetch({
+	            reset: true,
+	            remove: true,
+	            data: $.param({
+	                "filter[email]": email
+	            }),
+	            success: function () {
+	            	return callback(null);
+	            }
+	        });
+		})();
+	}
+
 	store.modelRecords = function (records) {
 		return records.map(function (record, i) {
 			// Store model on backbone row so we can re-use it on subsequent calls.
