@@ -121,6 +121,13 @@
 			                }
                			}
                     },
+                    "staging.lunchroom.goodybag.com": {
+            			"config": {
+			                "email": {
+			                    "actionBaseUrl": "http://staging.lunchroom.goodybag.com/a"
+			                }
+               			}
+                	},
                     "goodybag-lunchroom.herokuapp.com": {
             			"config": {
 			                "email": {

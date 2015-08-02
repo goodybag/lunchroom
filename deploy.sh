@@ -19,6 +19,9 @@ function init {
 		BO_format "$VERBOSE" "HEADER" "Pushing to Heroku"
 		pushd "$__BO_DIR__" > /dev/null
 
+	echo "ERROR: Cannot deploy manually. This project is setup to deploy from github to heroku using a webhook."
+	return;
+
 		if ! BO_has heroku ; then
 			echo "ERROR: 'heroku' command not found! Install Heroku toolbelt first: https://toolbelt.heroku.com/"
 			exit 1
