@@ -1,0 +1,28 @@
+{
+    "@github.com~sourcemint~sm.expand~0/map": {
+        "@github.com~sourcemint~sm.expand~0/locations": {
+            "binaries": "node_modules/.bin/{bin}",
+            "mappings": "node_modules/{alias}",
+            "registries": "{{env.HOME}}/.bash.origin.cache/{uid}/source/installed/{rev}",
+            "sources": ".deps/{uid}/source/installed/{rev}"
+        },
+        "mappings": {
+            "endpoints": "github.com~cadorn~endpoints~0/master",
+            "firenode-for-jsonapi": "github.com~firenode~firenode-for-jsonapi~0/master"
+        },
+        "sources": {
+            "github.com~cadorn~endpoints~0": {
+                "master": {
+                    "installer": "npm",
+                    "uri": "git://git@github.com:cadorn/endpoints.git#b1b82313be03e07869aa5acf0f9b89b05815f4aa(master)"
+                }
+            },
+            "github.com~firenode~firenode-for-jsonapi~0": {
+                "master": {
+                    "installer": "npm",
+                    "uri": "git://git@github.com:firenode/firenode-for-jsonapi.git#e8be7f9f5f271e98dbbb899612efd886eb8cf18e(master)"
+                }
+            }
+        }
+    }
+}
