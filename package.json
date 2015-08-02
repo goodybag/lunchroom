@@ -2,6 +2,9 @@
   "name": "lunchroom",
   "private": true,
   "main": "server.js",
+  "scripts": {
+    "install": "./install"
+  },
   "dependencies": {
     "ampersand-model": "^5.0.3",
     "ampersand-react-mixin": "^0.1.3",

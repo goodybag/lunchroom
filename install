@@ -1,0 +1,9 @@
+#!/usr/bin/env node
+
+
+console.log("INSTALL APP!");
+
+
+console.log(process.env);
+
+
