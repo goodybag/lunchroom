@@ -54,8 +54,42 @@ function init {
 		BO_format "$VERBOSE" "FOOTER"
 	}
 
+	function bundleAssets {
+		BO_format "$VERBOSE" "HEADER" "Bundle Assets"
+
+echo "TODO"
+
+		BO_format "$VERBOSE" "FOOTER"
+	}
+
+	function bundleApp {
+		BO_format "$VERBOSE" "HEADER" "Bundle App"
+
+echo "TODO"
+		
+		BO_format "$VERBOSE" "FOOTER"
+	}
+
+	function uglifyBundles {
+		BO_format "$VERBOSE" "HEADER" "Uglify Bundles"
+		pushd "$__BO_DIR__" > /dev/null
+
+			"node_modules/.bin/uglifyjs" \
+				"www/assets.js" \
+				".components.built/bundle.js" \
+				-o "www/app.build.min.js" \
+				-c -m
+
+		popd > /dev/null
+		BO_format "$VERBOSE" "FOOTER"
+	}
+
+
 	ensureDependencies
 	copyStyle
+	bundleAssets
+	bundleApp
+	uglifyBundles
 
 }
 init $@

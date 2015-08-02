@@ -15,11 +15,13 @@ const HTTP = require('http');
 const SEND = require('send');
 const EXPRESS = require("express");
 const BODY_PARSER = require('body-parser');
+const COMPRESSION = require('compression');
 const MORGAN = require('morgan');
 const API_ENDPOINTS = require("./server/db/api.endpoints");
 const BOOKSHELF_KNEX_POSTGRESQL = require("./server/db/bookshelf.knex.postgresql");
 const LIVE_NOTIFY = require("./server/live-notify");
 const FIRENODE = require("firenode-for-jsonapi/server");
+const UGLIFY = require("uglify-js");
 
 
 require('org.pinf.genesis.lib').forModule(require, module, function (API, exports) {
@@ -98,6 +100,8 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
 	}
 
 	function initStatic (app) {
+
+		app.use(COMPRESSION());
 
 		app.get(/^\/dev\.skin\.style\.css$/, function (req, res, next) {
 			return API.REQUEST("https://raw.githubusercontent.com/goodybag/lunchroom-style/clobber/style.css", function (err, response, body) {
