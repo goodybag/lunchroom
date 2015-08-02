@@ -24,8 +24,6 @@ const FIRENODE = require("firenode-for-jsonapi/server");
 
 require('org.pinf.genesis.lib').forModule(require, module, function (API, exports) {
 
-console.log("API.config", API.config);
-
 	function initAPI (app) {
 
 		app.use(MORGAN("combined"));
@@ -42,10 +40,9 @@ console.log("API.config", API.config);
 			if (/\.html?/.test(path)) {
 				var content = FS.readFileSync(PATH.join(__dirname, "www", path), "utf8");
 
-				content = content.replace(
-					/\{\{skinUrl\}\}/,
-					req._FireNodeContext.config.skinUrl || ""
-				);
+				content = content.replace(/\{\{skinUrl\}\}/, req._FireNodeContext.config.skinUrl || "");
+				content = content.replace(/\{\{assetsUrl\}\}/, req._FireNodeContext.config.assetsUrl || "");
+				content = content.replace(/\{\{bundleUrl\}\}/, req._FireNodeContext.config.bundleUrl || "");
 
 				content = content.replace(
 					/\{\{sessionToken\}\}/,
@@ -122,6 +119,13 @@ console.log("API.config", API.config);
 			var styleBasePath = require.resolve("07-lunchroom-style/package.json");
 			return SEND(req, "/style.css", {
 				root: PATH.dirname(styleBasePath)
+			}).on("error", next).pipe(res);
+		});
+
+		app.get(/^\/bundle\.js$/, function (req, res, next) {
+			var path = req.params[0];
+			return SEND(req, path, {
+				root: PATH.join(__dirname, ".components.built")
 			}).on("error", next).pipe(res);
 		});
 

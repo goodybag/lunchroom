@@ -18,6 +18,7 @@ function getSkin () {
 	}
 }
 
+require("semantic-ui-css/semantic.js");
 
 
 // ##################################################

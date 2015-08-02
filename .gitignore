@@ -1,5 +1,6 @@
 /node_modules/
 /bower_components/
-/.components.built/
+/.components.built/*.hot-update.js
+/.components.built/*.hot-update.json
 /www/assets.js
 /www/assets.css

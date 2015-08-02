@@ -99,6 +99,8 @@
                     "goodybag-lunchroom-staging.herokuapp.com": {
                         "config": {
                             "skinUrl": "//lunchroom-stage.goodybag.com:8083/lunchroom/assets/semantic-ui-css/semantic.css",
+                            "assetsUrl": "/assets.js",
+                            "bundleUrl": "/bundle.js",
                             "clientContext": {
                                 "dev": true,
                                 "type": "lunchroom",

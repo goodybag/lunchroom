@@ -33,12 +33,11 @@
 		    document.getElementsByTagName("head")[0].appendChild(script);
 		}
 
-		loadScript('//' + window.location.hostname + ':8083/lunchroom/assets.js', function () {
+		loadScript('{{assetsUrl}}', function () {
 //			loadScript('//' + window.location.hostname + ':8084/lunchroom/assets/react/react-with-addons.js', function () {
 
 		        head.load([
-		        	('//' + window.location.hostname + ':8083/lunchroom/assets/semantic-ui-css/semantic.js'),
-		        	('//' + window.location.hostname + ':8084/lunchroom/components/bundle.js')
+		        	('{{bundleUrl}}')
 				]);
 //			});
 		});
