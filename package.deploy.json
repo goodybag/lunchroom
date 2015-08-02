@@ -3,7 +3,7 @@
         "@github.com~sourcemint~sm.expand~0/locations": {
             "binaries": "node_modules/.bin/{bin}",
             "mappings": "node_modules/{alias}",
-            "sources": "node_modules/{uid}/{rev}"
+            "sources": "node_modules/{uid}"
         },
         "mappings": {
             "endpoints": "github.com~cadorn~endpoints~0/master",
