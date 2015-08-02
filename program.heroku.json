@@ -102,7 +102,7 @@
                             "assetsUrl": "/assets.js",
                             "bundleUrl": "/bundle.js",
                             "clientContext": {
-                                "dev": true,
+                                "dev": false,
                                 "type": "lunchroom",
                                 "overrideSkinUri": "/dev.skin.style.css"
                             },
