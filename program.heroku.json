@@ -45,6 +45,9 @@
                     "/admin": {
                         "lastMatchingRoute": true
                     },
+                    "/admin-A3C9D2B6-201C-422E-BF63-D536C480332F": {
+                    	"lastMatchingRoute": true
+                    },
                     "/components/GBL_DEV_Views/mockups/": {},
                     "/api/v1/": {
                         "lastMatchingRoute": true,

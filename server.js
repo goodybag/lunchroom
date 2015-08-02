@@ -109,10 +109,18 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
 		});
 
 		app.get(/^\/landing\.skin\.style\.css$/, function (req, res, next) {
+			return API.REQUEST("https://raw.githubusercontent.com/goodybag/lunchroom-style/clobber/landing.style.css", function (err, response, body) {
+				res.writeHead(200, {
+					"Content-Type": "text/css"
+				});
+				return res.end(body);
+			});
+/*
 			var styleBasePath = require.resolve("07-lunchroom-style/package.json");
 			return SEND(req, "/landing.style.css", {
 				root: PATH.dirname(styleBasePath)
 			}).on("error", next).pipe(res);
+*/
 		});
 
 		app.get(/^\/skin\.style\.css$/, function (req, res, next) {
