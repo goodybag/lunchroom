@@ -48,10 +48,6 @@
     "endpoints",
     "firenode-for-jsonapi"
   ],
-  "bundledDependencies": [
-    "endpoints",
-    "firenode-for-jsonapi"
-  ],
   "config": {
     "pio.pinf.io/0": {
       "runtime": "default-nodejs-server",
