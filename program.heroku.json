@@ -8,6 +8,7 @@
     },
     "config": {
         "lunchroom/0": {
+            "port": "{{env.PORT}}",
             "db": {
                 "postgresql": {
                     "user": "lunchroom_dev",
