@@ -21,9 +21,20 @@
             },
             "firenode": {
                 "config": {
-                    "db": {
-                        "dbname": "dev DB!!"
-                    }
+	                "skinUrl": "//lunchroom-stage.goodybag.com:8083/lunchroom/assets/semantic-ui-css/semantic.css",
+	                "assetsUrl": "/assets.js",
+	                "bundleUrl": "/bundle.js",
+	                "clientContext": {
+	                    "dev": false,
+	                    "type": "lunchroom",
+	                    "overrideSkinUri": "/dev.skin.style.css"
+	                },
+	                "db": {
+	                    "dbname": "lunchroom stage DB"
+	                },
+	                "email": {
+	                    "actionBaseUrl": "http://goodybag-lunchroom-staging.herokuapp.com/a"
+	                }
                 },
                 "routes": {
                     "/": {
@@ -40,12 +51,6 @@
                                 "selectedView": "Home",
                                 "lockedView": "Home"
                             }
-                        }
-                    },
-                    "/admin": {
-                        "lastMatchingRoute": true,
-                        "config": {
-                            "internalUri": "/harness.htm"
                         }
                     },
                     "/admin-A3C9D2B6-201C-422E-BF63-D536C480332F": {
@@ -92,8 +97,10 @@
                             "router": {
                                 "impl": "07-lunchroom/consumer-group-router/0"
                             },
+                            "skinUrl": "/dist/landing-page.css",
                             "internalUri": "/landing.htm",
                             "clientContext": {
+                                "overrideSkinUri": "/landing.skin.style.css",
                                 "sessionCookieName": "gblsid",
                                 "selectedView": "Landing",
                                 "lockedView": "Landing,ContactUs,TermsOfService,PrivacyPolicy"
@@ -105,36 +112,6 @@
                             "clientContext": {
                                 "selectedView": "Menu_Web",
                                 "lockedView": ""
-                            }
-                        }
-                    }
-                },
-                "hosts": {
-                    "goodybag-lunchroom-staging.herokuapp.com": {
-                        "config": {
-                            "skinUrl": "//lunchroom-stage.goodybag.com:8083/lunchroom/assets/semantic-ui-css/semantic.css",
-                            "assetsUrl": "/assets.js",
-                            "bundleUrl": "/bundle.js",
-                            "clientContext": {
-                                "dev": false,
-                                "type": "lunchroom",
-                                "overrideSkinUri": "/dev.skin.style.css"
-                            },
-                            "db": {
-                                "dbname": "lunchroom stage DB"
-                            },
-                            "email": {
-                                "actionBaseUrl": "http://goodybag-lunchroom-staging.herokuapp.com/a"
-                            }
-                        },
-                        "routes": {
-                            "^/(.+)$": {
-                                "config": {
-                                    "skinUrl": "/dist/landing-page.css",
-                                    "clientContext": {
-                                        "overrideSkinUri": "/landing.skin.style.css"
-                                    }
-                                }
                             }
                         }
                     }
