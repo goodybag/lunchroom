@@ -1,12 +1,8 @@
 {
     "@github.com~sourcemint~sm.expand~0/map": {
-        "@github.com~sourcemint~sm.expand~0/settings": {
-            "relativeMappings": true
-        },
         "@github.com~sourcemint~sm.expand~0/locations": {
             "binaries": "node_modules/.bin/{bin}",
-            "mappings": "node_modules/{alias}",
-            "sources": "node_modules/{uid}"
+            "sources": "node_modules/{alias}"
         },
         "mappings": {
             "endpoints": "github.com~cadorn~endpoints~0/master",
