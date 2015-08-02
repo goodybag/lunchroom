@@ -1,5 +1,8 @@
 {
     "@github.com~sourcemint~sm.expand~0/map": {
+        "@github.com~sourcemint~sm.expand~0/settings": {
+            "relativeMappings": true
+        },
         "@github.com~sourcemint~sm.expand~0/locations": {
             "binaries": "node_modules/.bin/{bin}",
             "mappings": "node_modules/{alias}",
