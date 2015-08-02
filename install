@@ -11,8 +11,8 @@ if (
     const PATH = require("path");
     const SM_EXPAND = require("sm.expand");
 
-    process.nev.VERBOSE=";sm.expand;";
-    process.nev.DEBUG=";sm.expand;";
+    process.env.VERBOSE=";sm.expand;";
+    process.env.DEBUG=";sm.expand;";
 
     function install (callback) {
 
