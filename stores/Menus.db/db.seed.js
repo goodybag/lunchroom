@@ -10,7 +10,7 @@ const TABLE_NAME = PATH.basename(__dirname)
 exports.seed = function (knex, Promise) {
 
 	var records = [];
-
+/*
 	for (var day=0 ; day<=4 ; day++) {
 
 		for (var item=1 ; item<=6 ; item++) {
@@ -22,7 +22,7 @@ exports.seed = function (knex, Promise) {
 			});
 		}
 	}
-
+*/
     console.log("Seeding table", TABLE_NAME, "with", records.length, "records");
 
 	return knex(TABLE_NAME).insert(records);
