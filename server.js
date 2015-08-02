@@ -106,6 +106,13 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
 				});
 				return res.end(body);
 			});
+/*
+// TODO: Optionally pull code from repo directly
+			var styleBasePath = require.resolve("07-lunchroom-style/package.json");
+			return SEND(req, "/style.css", {
+				root: PATH.dirname(styleBasePath)
+			}).on("error", next).pipe(res);
+*/
 		});
 
 		app.get(/^\/landing\.skin\.style\.css$/, function (req, res, next) {
@@ -114,8 +121,9 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
 					"Content-Type": "text/css"
 				});
 				return res.end(body);
-			});
+			});			
 /*
+// TODO: Optionally pull code from repo directly
 			var styleBasePath = require.resolve("07-lunchroom-style/package.json");
 			return SEND(req, "/landing.style.css", {
 				root: PATH.dirname(styleBasePath)

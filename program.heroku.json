@@ -51,7 +51,12 @@
                     "/admin-A3C9D2B6-201C-422E-BF63-D536C480332F": {
                     	"lastMatchingRoute": true,
                         "config": {
-                            "internalUri": "/harness.htm"
+                            "internalUri": "/harness.htm",
+                            "clientContext": {
+                                "selectedView": "",
+                                "type": "",
+                                "overrideSkinUri": ""
+                            }
                         }
                     },
                     "/components/GBL_DEV_Views/mockups/": {},
@@ -123,16 +128,6 @@
                             }
                         },
                         "routes": {
-                            "/admin-A3C9D2B6-201C-422E-BF63-D536C480332F": {
-                                "config": {
-                                    "internalUri": "/harness.htm",
-                                    "clientContext": {
-                                        "selectedView": "",
-                                        "type": "",
-                                        "overrideSkinUri": ""
-                                    }
-                                }
-                            },
                             "^/(.+)$": {
                                 "config": {
                                     "skinUrl": "/dist/landing-page.css",
