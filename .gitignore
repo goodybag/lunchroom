@@ -2,5 +2,3 @@
 /bower_components/
 /.components.built/*.hot-update.js
 /.components.built/*.hot-update.json
-/www/assets.js
-/www/assets.css
