@@ -20,7 +20,7 @@
             "github.com~firenode~firenode-for-jsonapi~0": {
                 "master": {
                     "installer": "npm",
-                    "uri": "git://git@github.com:firenode/firenode-for-jsonapi.git#03f9e60dab5c097925bce00be42aec958c8ace0b(master)"
+                    "uri": "git://git@github.com:firenode/firenode-for-jsonapi.git#226336b6b30a755d85d5b813ae1894852da1539b(master)"
                 }
             },
             "github.com~pinf-io~io.pinf.service.mandrill~0": {
