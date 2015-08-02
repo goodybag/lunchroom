@@ -79,7 +79,7 @@ appContext.on("change:ready", function () {
 	var order = appContext.stores.orders.getOrder(appContext.todayId);
 	order.set("form", {
 	 	"info[name]": "Bill Smith",
-	 	"info[email]": "bill@smith.com",
+	 	"info[email]": "cadorn.test@gmail.com",
 	 	"card[name]": "Bill Smith",
 	 	"card[cvc]": "123",
 	 	"card[number]": "1234 1234 1234 1234",
@@ -87,7 +87,7 @@ appContext.on("change:ready", function () {
 	 	"card[expire-year]": "2018"
 	});
 
-	$('#form-subscribe input[type="email"]').val("christoph@christophdorn.com");
+	$('#form-subscribe input[type="email"]').val("cadorn.test@gmail.com");
 
 });
 

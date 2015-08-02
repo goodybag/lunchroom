@@ -27,11 +27,14 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
 				console.log("Template '" + path + "' for url '" + req.url + "'");
 			}
 
-			if (
-				path === "/index.htm" ||
-				path === "/harness.htm"
-			) {
+			if (/\.html?/.test(path)) {
 				var content = FS.readFileSync(PATH.join(__dirname, "www", path), "utf8");
+
+				content = content.replace(
+					/\{\{skinUrl\}\}/,
+					req._FireNodeContext.config.skinUrl || ""
+				);
+
 				content = content.replace(
 					/\{\{sessionToken\}\}/,
 					encodeURIComponent(JSON.stringify(req._FireNodeContext.sessionToken || null))
@@ -200,7 +203,12 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
 			try {
 
 				publicApp(req, res, function (err) {
-					if (err) throw err;
+					if (err) {
+						console.error(err.stack);
+						res.writeHead(500);
+						res.end("Internal Server Error");
+						return;
+					}
 
 					API.Q.when(firenode.attachToRequest(req, res)).then(function (proceed) {
 						if (!proceed) return;

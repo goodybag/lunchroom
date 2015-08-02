@@ -68,6 +68,12 @@ exports.for = function (module, context) {
 
 			console.info("Start Render View: " + selectedViewAlias);
 
+			if (!selectedViewAlias) {
+				return (
+					<div>No view selected</div>
+				);
+			}
+
 	    	var viewInfo = views[selectedViewAlias] || null;
 	    	var ViewMockup = null;
 	    	if (viewInfo) {

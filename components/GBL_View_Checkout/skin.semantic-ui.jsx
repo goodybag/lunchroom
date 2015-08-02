@@ -91,6 +91,19 @@ require("./component.jsx").for(module, {
 
 		var panel = null;
 
+		if (!Context.eventToday) {
+
+			panel = (
+				<div className="sixteen wide column">
+					<div className="ui message">
+					  <div className="header">
+					    No active event!
+					  </div>
+					</div>
+				</div>
+			);
+
+		} else
 		if (Context.items.length === 0) {
 
 			panel = (

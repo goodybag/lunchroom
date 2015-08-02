@@ -43,13 +43,30 @@
 //			});
 		});
     </script>
+	<style>
+
+	.hidden {
+		display: none !important;
+	}
+
+	DIV.ui.message {
+		margin-bottom: 10px;
+		background-color:rgba(0, 0, 0, 0.5);
+	}
+
+	DIV.ui.success.message {
+		border: 2px solid #00FF00;
+	}
+
+	DIV.ui.negative.message {
+		border: 2px solid #FF0000;
+	}
+
+	</style>
     <meta name="session.token" value="{{sessionToken}}"/>
     <meta name="app.context" value="{{encodedContext}}"/>
 </head>
-<body skin="semantic-ui" class="site">
-
-    <div class="ui basic segment" id="GBL_DEV_Views">
-    </div>
+<body class="page" id="GBL_DEV_Views">
 
 </body>
 </html>

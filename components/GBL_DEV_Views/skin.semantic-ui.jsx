@@ -20,6 +20,12 @@ require("./component.jsx").for(module, {
 			!Context.isTopFrame ||
 			Context.appContext.context.type
 		) {
+			return (
+				<Context.ViewComponent
+					appContext={Context.appContext}
+				/>
+			);
+/*			
 	        return (
 				<div className="ui grid">
 				    <div className="sixteen wide column">
@@ -28,7 +34,8 @@ require("./component.jsx").for(module, {
 						/>
 				    </div>
 				</div>
-	        );	
+	        );
+*/	        
 		}
 
 		var mockup = "";

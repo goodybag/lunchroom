@@ -25,9 +25,9 @@ exports.for = function (overrides) {
 
 	UNDERSCORE.extend(config, overrides || {});
 
-	if (config.context.skinUri) {
+	if (config.context.overrideSkinUri) {
 		HEAD.load([
-			config.context.skinUri + "?t=" + Date.now()
+			config.context.overrideSkinUri + "?t=" + Date.now()
 		]);
 	}
 
@@ -90,14 +90,20 @@ exports.for = function (overrides) {
 
 		PAGE('*', function load(ctx) {
 			var pathname = ctx.pathname;
+//debugger;
+console.log("ON PAGE CHANGE ctx", ctx);
 
 			var view = pathname.replace(PATHNAME, "").replace(/^#/, "");
 
+console.log("view", view);
+console.log("pathname", pathname);
 			if (
-				/^\//.test(pathname) &&
+				/^\//.test(view) &&
 				appContext.lockedView &&
-				pathname !== appContext.lockedView
+				view !== appContext.lockedView &&
+				appContext.lockedView.split(",").indexOf(view) === -1
 			) {
+console.log("REDIRECT TO", window.location.origin + view);
 				// We are selecting a new view and updating the URL using a REDIRECT which
 				// loads the new page from the server.
 
@@ -105,6 +111,7 @@ exports.for = function (overrides) {
 				//       In those cases you need to redirect to a new URL.
 				window.location.href = window.location.origin + view;
 			} else {
+console.log("SET VIEW", view);
 
 				// We are selecting a new view and updating the URL using PUSH-STATE
 				// without reloading the page.
@@ -116,10 +123,17 @@ exports.for = function (overrides) {
 
 		appContext.on("change:selectedView", function () {
 
+
+console.log("ON VIEW CHANGE appContext.selectedView", appContext.selectedView);
+console.log("ON VIEW CHANGE appContext.lockedView", appContext.lockedView);
+
+
 			if (
 				appContext.lockedView &&
-				appContext.selectedView !== appContext.lockedView
+				appContext.selectedView !== appContext.lockedView &&
+				appContext.lockedView.split(",").indexOf(appContext.selectedView) === -1
 			) {
+console.log("REDIRECT TO", window.location.origin + PATHNAME + "#" + appContext.selectedView);
 				// We are selecting a new view and updating the URL using a REDIRECT which
 				// loads the new page from the server.
 
@@ -128,11 +142,18 @@ exports.for = function (overrides) {
 				window.location.href = window.location.origin + PATHNAME + "#" + appContext.selectedView;
 			} else {
 
+console.log("SET PAGE1", PATHNAME + "#" + appContext.selectedView);
+
 				// We are selecting a new view and updating the URL using PUSH-STATE
 				// without reloading the page.
 
 				if (handleSelectedViewInit()) return;
-				PAGE(PATHNAME + "#" + appContext.selectedView);
+console.log("SET PAGE2", PATHNAME + "#" + appContext.selectedView);
+
+				PAGE.redirect(PATHNAME + "#" + appContext.selectedView);
+
+//				PAGE(PATHNAME + "#" + appContext.selectedView);
+console.log("SET PAGE DONE", PATHNAME + "#" + appContext.selectedView);
 			}
 		});
 
