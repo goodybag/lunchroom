@@ -6,7 +6,9 @@
         },
         "mappings": {
             "endpoints": "github.com~cadorn~endpoints~0/master",
-            "firenode-for-jsonapi": "github.com~firenode~firenode-for-jsonapi~0/master"
+            "firenode-for-jsonapi": "github.com~firenode~firenode-for-jsonapi~0/master",
+            "io.pinf.service.mandrill": "github.com~pinf-io~io.pinf.service.mandrill~0/master",
+            "io.pinf.service.twilio": "github.com~pinf-io~io.pinf.service.twilio~0/master"            
         },
         "sources": {
             "github.com~cadorn~endpoints~0": {
@@ -20,7 +22,19 @@
                     "installer": "npm",
                     "uri": "git://git@github.com:firenode/firenode-for-jsonapi.git#e8be7f9f5f271e98dbbb899612efd886eb8cf18e(master)"
                 }
-            }
+            },
+            "github.com~pinf-io~io.pinf.service.mandrill~0": {
+                "master": {
+                    "installer": "npm",
+                    "uri": "git://git@github.com:pinf-io/io.pinf.service.mandrill.git#a51fb03ad7c31ee5a4ff47db2dbe851fab6e78de(master)"
+                }
+            },
+            "github.com~pinf-io~io.pinf.service.twilio~0": {
+                "master": {
+                    "installer": "npm",
+                    "uri": "git://git@github.com:pinf-io/io.pinf.service.twilio.git#dd0667af51870e53fc1767f861ef46936b70db0d(master)"
+                }
+            }            
         }
     }
 }
