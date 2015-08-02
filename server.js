@@ -124,7 +124,7 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
 
 		app.get(/^\/bundle\.js$/, function (req, res, next) {
 			var path = req.params[0];
-			return SEND(req, path, {
+			return SEND(req, "bundle.js", {
 				root: PATH.join(__dirname, ".components.built")
 			}).on("error", next).pipe(res);
 		});
