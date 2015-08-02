@@ -22,12 +22,11 @@
             "firenode": {
 				"config": {
 	                "skinUrl": "//lunchroom-stage.goodybag.com:8083/lunchroom/assets/semantic-ui-css/semantic.css",
-	                "assetsUrl": "/assets.js",
-	                "bundleUrl": "/bundle.js",
+                    "assetsUrl": "/app.build.min.js",
+                    "bundleUrl": "",
 	                "clientContext": {
 	                    "dev": false,
-	                    "type": "lunchroom",
-	                    "overrideSkinUri": "/dev.skin.style.css"
+	                    "type": "lunchroom"
 	                },
 	                "db": {
 	                    "dbname": "lunchroom stage DB"
@@ -56,8 +55,7 @@
                             "internalUri": "/harness.htm",
                             "clientContext": {
                                 "selectedView": "",
-                                "type": "",
-                                "overrideSkinUri": ""
+                                "type": ""
                             }
                         }
                     },
@@ -97,7 +95,6 @@
                             "skinUrl": "/dist/landing-page.css",
                             "internalUri": "/landing.htm",
                             "clientContext": {
-                                "overrideSkinUri": "/landing.skin.style.css",
                                 "sessionCookieName": "gblsid",
                                 "selectedView": "Landing",
                                 "lockedView": "Landing,ContactUs,TermsOfService,PrivacyPolicy"
