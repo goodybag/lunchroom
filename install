@@ -11,7 +11,7 @@ if (
     const PATH = require("path");
     const SM_EXPAND = require("sm.expand");
 
-    function install (_callback) {
+    function install (callback) {
 
     	return SM_EXPAND.api({
 		    // TODO: Export 'package.deploy.json' into deploy branch on publish automatically.
