@@ -43,10 +43,16 @@
                         }
                     },
                     "/admin": {
-                        "lastMatchingRoute": true
+                        "lastMatchingRoute": true,
+                        "config": {
+                            "internalUri": "/harness.htm"
+                        }
                     },
                     "/admin-A3C9D2B6-201C-422E-BF63-D536C480332F": {
-                    	"lastMatchingRoute": true
+                    	"lastMatchingRoute": true,
+                        "config": {
+                            "internalUri": "/harness.htm"
+                        }
                     },
                     "/components/GBL_DEV_Views/mockups/": {},
                     "/api/v1/": {
