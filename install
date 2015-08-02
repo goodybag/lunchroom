@@ -17,8 +17,8 @@ if (
     function install (callback) {
 
     	return SM_EXPAND.api({
-		    // TODO: Export 'package.deploy.json' into deploy branch on publish automatically.
-    		filename: PATH.join(__dirname, "package.deploy.json")
+		    // TODO: Export 'sm.deploy.json' into deploy branch on publish automatically.
+    		filename: PATH.join(__dirname, "sm.deploy.json")
     	})().then(function () {
 
 			return callback(null);

@@ -1,4 +1,14 @@
 
+if (
+	process.env.NODE &&
+	/\/\.heroku\//.test(process.env.NODE)
+) {
+	process.env.PINF_PROGRAM_PATH = __dirname + "/program.heroku.json";
+	process.env.VERBOSE = "1";
+	process.env.DEBUG = "1";
+}
+
+
 const PATH = require("path");
 const FS = require("fs");
 const HTTP = require('http');
@@ -13,6 +23,8 @@ const FIRENODE = require("firenode-for-jsonapi/server");
 
 
 require('org.pinf.genesis.lib').forModule(require, module, function (API, exports) {
+
+console.log("API.config", API.config);
 
 	function initAPI (app) {
 
@@ -232,10 +244,11 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
 		LIVE_NOTIFY.attachToClientServer(server);
 
 
-		server.listen(
-			API.config.port,
-			API.config.bind
-		);
+		if (API.config.bind) {
+			server.listen(parseInt(API.config.port), API.config.bind);
+		} else {
+			server.listen(parseInt(API.config.port));
+		}
 
 		console.log("Server listening at: http://" + API.config.bind + ":" + API.config.port);
 
