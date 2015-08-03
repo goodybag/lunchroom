@@ -51,7 +51,8 @@ exports.init = function (config, options) {
 				if (tables[tableName]) return Q.resolve();
 				//return knex.schema.dropTable(tableName).then(function () {
 					console.log("[db] Create table: " + tableName);
-					return knex.schema.createTable(tableName);
+					return knex.schema.createTable(tableName, function (table) {
+					});
 				//});
 			}
 
