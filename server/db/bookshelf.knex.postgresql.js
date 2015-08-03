@@ -15,18 +15,6 @@ exports.init = function (config, options) {
 
 	config.debug = true;
 	config.client = "pg";
-	config.migrations = {
-		directory: PATH.join(process.env.PIO_SERVICE_DATA_BASEPATH || __dirname, "knex.migrations"),
-		tableName: 'migrations'
-    };
-
-    if (!FS.existsSync(config.migrations.directory)) {
-    	FS.mkdirsSync(config.migrations.directory);
-    }
-
-	config.seeds = {
-		directory: PATH.join(__dirname, "knex.seeds")
-	};
 
 
 	console.log("DB user", config.connection.user);
@@ -41,106 +29,235 @@ exports.init = function (config, options) {
 	// @see http://bookshelfjs.org/#installation
 	bookshelf = BOOKSHELF(knex);
 
-	console.log('Running migrations & seeds...');
 
+	function ensureSchema () {
 
-	function ensureMigration () {
+		// @see http://dataprotocols.org/json-table-schema/
+		// @docs http://knexjs.org/#Schema
 
-//return knex.raw('SELECT datname FROM pg_database WHERE datistemplate = false;', config).then(function(resp) {
-//return knex.raw("SELECT * FROM information_schema WHERE table_schema = 'public';", config).then(function(resp) {
-//return knex.raw("DELETE FROM information_schema WHERE table_schema = 'public' AND table_name = 'items';", config).then(function(resp) {
-//console.log("resp", resp);
-//});
+		function getExistingTables () {
+			return knex.raw("SELECT * FROM pg_catalog.pg_tables WHERE schemaname = 'public'").then(function(resp) {
+				var rows = {};
+				resp.rows.forEach(function (row) {
+					rows[row.tablename] = true;
+				});
+				return rows;
+			});
+		}
 
-		function rollbackAll () {
-			
-			console.log('########################################');
-			console.log('# Rolling back all migrations ...');
-			console.log('########################################');
+		return getExistingTables().then(function (tables) {
 
-			function rollback () {
-				return knex.migrate.currentVersion().then(function (migrationVersion) {
-					
-					console.log("migrationVersion", migrationVersion);
+			function ensureTable (tableName, schema) {
+				if (tables[tableName]) return Q.resolve();
+				console.log("[db] Create table: " + tableName);
+				return knex.schema.createTable(tableName);
+			}
 
-					if (migrationVersion === "none") {
-						// Nothing more to rollback
-						return;
-					}
-					console.log("Trigger rollback for: " + migrationVersion);
-					return knex.migrate.rollback().then(function () {
-						return rollback();
+			function getExistingFields (tableName) {
+				return knex.raw("select column_name, data_type, character_maximum_length from INFORMATION_SCHEMA.COLUMNS where table_name = '" + tableName + "'").then(function (resp) {
+					var rows = {};
+					resp.rows.forEach(function (row) {
+						rows[row.column_name] = true;
+					});
+					return rows;
+				});
+			}
+
+			function ensureFields (tableName, schema) {
+				return getExistingFields(tableName).then(function (existingFields) {
+
+					return knex.schema.table(tableName, function (table) {
+
+						return Q.all(schema.fields.map(function (field) {
+							if (existingFields[field.name]) return Q.resolve();
+
+							// TODO: Modify column on change.
+
+							console.log("[db] Create field: " + field.name);
+
+							var fieldDef = null;
+
+							// Field type
+							if (field.constraints && field.constraints.autoincrement === true) {
+								fieldDef = table.increments(field.name);
+							} else
+							// TODO: implement other field types.
+							if (field.type === "timestamp") {
+								fieldDef = table.timestamp(field.name);
+							} else
+							if (field.type === "string" || !field.type) {
+								fieldDef = table.text(field.name);
+							}
+
+							// Field extras
+							if (field.constraints) {
+								if (field.constraints.required === true) {
+									fieldDef = fieldDef.notNullable();
+								}
+								if (field.constraints.unique === true) {
+									fieldDef = fieldDef.unique();
+								}
+							}
+
+							if (field.default) {
+								if (field.default === "Date.now()") {
+									fieldDef = fieldDef.defaultTo(knex.raw('now()'));
+								} else {
+									fieldDef = fieldDef.defaultTo(field.default);
+								}
+							}
+						}));
 					});
 				});
 			}
 
-			return rollback().then(function () {
-				return knex("migrations").del().then(function () {
-					return QFS.removeTree(config.migrations.directory).then(function () {
-						return QFS.makeDirectory(config.migrations.directory);
-					});
+			var schema = require("../data/schema.json");
+
+			return Q.all(Object.keys(schema.tables).map(function (tableName) {
+				return ensureTable(tableName, schema.tables[tableName]).then(function () {
+					return ensureFields(tableName, schema.tables[tableName]);
 				});
+			}));
+		});
+	}
+
+	function ensureData (name) {
+
+		var done = Q.resolve();
+
+		function insertRecords (table, records) {
+			done = Q.when(done, function () {
+			    console.log("Seeding table", table, "with", records.length, "records");
+			    return records.map(function (record) {
+
+			    	// First ensure record is deleted.
+			    	// TODO: Instead of deleting, fetch record and diff it and insert/update changes.
+			    	return knex(table).where(
+			    		// TODO: Use primary key field.
+			    		'id',
+			    		record.id
+			    	).del().then(function () {
+
+						return knex(table).insert(record);
+			    	});
+			    });
 			});
 		}
 
-		function makeMigration () {
-			var nextMigration = "database";
-			var nextMigrationSourcePath = PATH.join(__dirname, "database.schema.js");
+		// TODO: Import from cater for given IDs once 'overrides' are implemented
+		//       instead of pulling from file.
+		var data = require("../data/" + name + ".js");
 
-			console.log('########################################');
-			console.log('# Make migration: ' + nextMigration);
-			console.log('########################################');
+		if (data.seeds) {
+			for (var table in data.seeds) {
+				insertRecords(
+					table,
+					Object.keys(data.seeds[table]).map(function (id) {
+						return data.seeds[table][id];
+					})
+				);
+			}
+		}
 
-			return knex.migrate.make(nextMigration).then(function (nextMigrationProvisionedPath) {
+		if (data.cater.events) {
 
-				// Copy our latest migration to the migrations file.
-				return QFS.copy(
-					nextMigrationSourcePath,
-					nextMigrationProvisionedPath
-				).then(function () {
-					// There is a migration that needs to be applied.
-					return PATH.basename(nextMigrationProvisionedPath);
+			var records = {
+				vendors: {},
+				items: {}
+			};
+
+			for (var id in data.cater.events) {
+
+				var event = data.cater.events[id];
+
+				records.vendors[event.record.restaurant_id] = {
+					id: event.record.restaurant_id,
+					title: event.overrides.vendor.title,
+					adminAccessToken: event.overrides.vendor.adminAccessToken,
+					description: ""
+				};
+
+				event.record.items.forEach(function (item) {
+					records.items[item.id] = {
+						"id": item.id,
+						"vendor_id": event.record.restaurant_id,
+						"title": item.name,
+						"photo_url": item.photo_url,
+						"price": item.price,
+					};
 				});
+			}
+
+			for (var table in records) {
+				insertRecords(
+					table,
+					Object.keys(records[table]).map(function (id) {
+						return records[table][id];
+					})
+				);
+			}
+		}
+
+		return done;
+	}
+
+	function ensureTriggersAndFunctions () {
+
+		var TABLE_NAME = "order-status";
+
+		// @see http://bjorngylling.com/2011-04-13/postgres-listen-notify-with-node-js.html
+		// @see http://www.postgresql.org/docs/9.1/static/sql-createfunction.html
+		var query = [
+			'CREATE OR REPLACE FUNCTION notify_order_status_changed() RETURNS trigger AS $$',
+			'DECLARE',
+			'BEGIN',
+			"  PERFORM pg_notify('order_status_changed', TG_TABLE_NAME || ',id,' || NEW.id );",
+			'  RETURN new;',
+			'END;',
+			'$$ LANGUAGE plpgsql;'
+		];
+
+		return knex.raw(query.join(" ")).then(function(resp) {
+
+			return knex.raw('DROP TRIGGER IF EXISTS order_status_changed ON "' + TABLE_NAME + '";').then(function(resp) {
+
+				// @see http://www.postgresql.org/docs/9.1/static/sql-createtrigger.html
+				var query = [
+					'CREATE TRIGGER order_status_changed AFTER INSERT ON "' + TABLE_NAME + '"',
+					'FOR EACH ROW EXECUTE PROCEDURE notify_order_status_changed();'
+				];
+
+				return knex.raw(query.join(" "));
 			});
-		}
+		});
+	};
 
-		function runMigration () {
+	function ensureSchemaAndData () {
+
+		// TODO: Only run if DB schema or data has changed.
+
+		console.log('########################################');
+		console.log('# Ensuring schema ...');
+		console.log('########################################');
+
+		return ensureSchema().then(function () {
+
 			console.log('########################################');
-			console.log('# Running latest migration ...');
+			console.log('# Loading data ...');
 			console.log('########################################');
 
-			return knex.migrate.latest();
-		}
+			return ensureData("data.01").then(function () {
 
-		return rollbackAll().then(function () {
+				console.log('########################################');
+				console.log('# Ensuring triggers and function ...');
+				console.log('########################################');
 
-			return makeMigration().then(function () {
-
-				return runMigration();
+				return ensureTriggersAndFunctions();
 			});
 		});
 	}
 
-
-	function runMigrationsAndSeed () {
-
-		if (options.enableAutoMigration !== true) {
-			return Q.resolve();
-		}
-
-		// TODO: Only run migration and seeds if DB schema has changed.
-
-		return ensureMigration().then(function () {
-
-			console.log('########################################');
-			console.log('# Running seeds ...');
-			console.log('########################################');
-			
-			return knex.seed.run();
-		});
-	}
-
-	return runMigrationsAndSeed().then(function () {
+	return ensureSchemaAndData().then(function () {
 
 		LIVE_NOTIFY.attachToDatabase(config.connection);
 

@@ -1,0 +1,400 @@
+{
+	"tables": {
+		"consumer-groups": {
+			"primaryKey": "id",
+			"fields": [
+				{
+					"name": "id",
+					"constraints": {
+						"required": true,
+						"unique": true,
+						"autoincrement": true
+					}
+				},
+				{
+					"name": "title",
+					"constraints": {
+						"required": true
+					}
+				},
+				{
+					"name": "alias",
+					"constraints": {
+						"required": true
+					}
+				},
+				{
+					"name": "contact",
+					"constraints": {
+						"required": true
+					}
+				},
+				{
+					"name": "address",
+					"constraints": {
+						"required": true
+					}
+				},
+				{
+					"name": "pickupLocation",
+					"constraints": {
+						"required": true
+					}
+				},
+				{
+					"name": "orderTax",
+					"constraints": {
+						"required": true
+					}
+				}
+			]
+		},
+		"consumer-group-subscriptions": {
+			"primaryKey": "id",
+			"fields": [
+				{
+					"name": "id",
+					"constraints": {
+						"required": true,
+						"unique": true,
+						"autoincrement": true
+					}
+				},
+				{
+					"name": "token",
+					"constraints": {
+						"required": true
+					}
+				},
+				{
+					"name": "consumer_id"
+				},
+				{
+					"name": "consumer_group_id",
+					"constraints": {
+						"required": true
+					}
+				},
+				{
+					"name": "subscribe_time",
+					"type": "timestamp",
+					"default": "Date.now()",
+					"constraints": {
+						"required": true
+					}
+				},
+				{
+					"name": "confirmed_time",
+					"type": "timestamp"
+				},
+				{
+					"name": "subscribeEmail",
+					"constraints": {
+						"required": true
+					}
+				},
+				{
+					"name": "confirmedEmail"
+				}
+			]
+		},
+		"consumers": {
+			"primaryKey": "id",
+			"fields": [
+				{
+					"name": "id",
+					"constraints": {
+						"required": true,
+						"unique": true,
+						"autoincrement": true
+					}
+				},
+				{
+					"name": "firstName",
+					"constraints": {
+						"required": true
+					}
+				},
+				{
+					"name": "lastName",
+					"constraints": {
+						"required": true
+					}
+				},
+				{
+					"name": "email",
+					"constraints": {
+						"required": true
+					}
+				}
+			]
+		},
+		"events": {
+			"primaryKey": "id",
+			"fields": [
+				{
+					"name": "id",
+					"constraints": {
+						"required": true,
+						"unique": true,
+						"autoincrement": true
+					}
+				},
+				{
+					"name": "day_id",
+					"constraints": {
+						"required": true
+					}
+				},
+				{
+					"name": "consumer_group_id",
+					"constraints": {
+						"required": true
+					}
+				},
+				{
+					"name": "orderByTime",
+					"type": "timestamp",
+					"constraints": {
+						"required": true
+					}
+				},
+				{
+					"name": "deliveryStartTime",
+					"type": "timestamp",
+					"constraints": {
+						"required": true
+					}
+				},
+				{
+					"name": "deliveryEndTime",
+					"type": "timestamp",
+					"constraints": {
+						"required": true
+					}
+				},
+				{
+					"name": "goodybagFee",
+					"constraints": {
+						"required": true
+					}
+				}
+			]
+		},
+		"items": {
+			"primaryKey": "id",
+			"fields": [
+				{
+					"name": "id",
+					"constraints": {
+						"required": true,
+						"unique": true,
+						"autoincrement": true
+					}
+				},
+				{
+					"name": "vendor_id",
+					"constraints": {
+						"required": true
+					}
+				},
+				{
+					"name": "title",
+					"constraints": {
+						"required": true
+					}
+				},
+				{
+					"name": "photo_url",
+					"constraints": {
+						"required": true
+					}
+				},
+				{
+					"name": "description"
+				},
+				{
+					"name": "properties"
+				},
+				{
+					"name": "options"
+				},
+				{
+					"name": "price",
+					"constraints": {
+						"required": true
+					}
+				}
+			]
+		},
+		"menus": {
+			"primaryKey": "id",
+			"fields": [
+				{
+					"name": "id",
+					"constraints": {
+						"required": true,
+						"unique": true,
+						"autoincrement": true
+					}
+				},
+				{
+					"name": "event_id",
+					"constraints": {
+						"required": true
+					}
+				},
+				{
+					"name": "vendor_id",
+					"constraints": {
+						"required": true
+					}
+				},
+				{
+					"name": "item_id",
+					"constraints": {
+						"required": true
+					}
+				}
+			]
+		},
+		"orders": {
+			"primaryKey": "id",
+			"fields": [
+				{
+					"name": "id",
+					"constraints": {
+						"required": true,
+						"unique": true,
+						"autoincrement": true
+					}
+				},
+				{
+					"name": "orderHashId",
+					"constraints": {
+						"required": true
+					}
+				},
+				{
+					"name": "time",
+					"type": "timestamp",
+					"default": "Date.now()",
+					"constraints": {
+						"required": true
+					}
+				},
+				{
+					"name": "day_id",
+					"constraints": {
+						"required": true
+					}
+				},
+				{
+					"name": "form",
+					"constraints": {
+						"required": true
+					}
+				},
+				{
+					"name": "items",
+					"constraints": {
+						"required": true
+					}
+				},
+				{
+					"name": "event",
+					"constraints": {
+						"required": true
+					}
+				},
+				{
+					"name": "vendor_ids",
+					"constraints": {
+						"required": true
+					}
+				},
+				{
+					"name": "orderFrom",
+					"constraints": {
+						"required": true
+					}
+				},
+				{
+					"name": "deliveryStartTime",
+					"type": "timestamp",
+					"constraints": {
+						"required": true
+					}
+				},
+				{
+					"name": "deliveryEndTime",
+					"type": "timestamp",
+					"constraints": {
+						"required": true
+					}
+				}
+			]
+		},
+		"order-status": {
+			"primaryKey": "id",
+			"fields": [
+				{
+					"name": "id",
+					"constraints": {
+						"required": true,
+						"unique": true,
+						"autoincrement": true
+					}
+				},
+				{
+					"name": "orderHashId",
+					"constraints": {
+						"required": true
+					}
+				},
+				{
+					"name": "status",
+					"constraints": {
+						"required": true
+					}
+				},
+				{
+					"name": "time",
+					"type": "timestamp",
+					"default": "Date.now()",
+					"constraints": {
+						"required": true
+					}
+				}
+			]
+		},
+		"vendors": {
+			"primaryKey": "id",
+			"fields": [
+				{
+					"name": "id",
+					"constraints": {
+						"required": true,
+						"unique": true,
+						"autoincrement": true
+					}
+				},
+				{
+					"name": "title",
+					"constraints": {
+						"required": true
+					}
+				},
+				{
+					"name": "description"
+				},
+				{
+					"name": "adminAccessToken",
+					"constraints": {
+						"required": true
+					}
+				}
+			]
+		}
+	}
+}

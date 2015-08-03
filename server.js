@@ -209,8 +209,26 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
 	});
 
 	try {
+
+		var postgresqlConfig = {};
+		for (var id in API.config.db) {
+			var m = id.match(/^postgresql(\[([^=]+)='([^\]]+)'\])?$/);
+			if (m) {
+				if (m[2]) {
+					if (typeof process.env[m[2]] !== "string") {
+						throw new Error("Environment variable '" + m[2] + "' must be set!");
+					}
+					if (m[3] === process.env[m[2]]) {
+						postgresqlConfig = API.DEEPMERGE(postgresqlConfig, API.config.db[id]);
+					}
+				} else {
+					postgresqlConfig = API.DEEPMERGE(postgresqlConfig, API.config.db[id]);
+				}
+			}
+		}
+
 		BOOKSHELF_KNEX_POSTGRESQL.init({
-			connection: API.config.db.postgresql,
+			connection: postgresqlConfig
 		}, {
 			enableAutoMigration: API.config.db.enableAutoMigration || false
 		});

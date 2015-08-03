@@ -11,12 +11,19 @@
             "port": "{{env.PORT}}",
             "db": {
                 "postgresql": {
-                    "user": "lunchroom_dev",
-                    "password": "1E07DEEC-DE21-4E84-B47F-104C5070259A",
-                    "database": "lunchroom_dev",
                     "host": "192.241.203.208",
                     "port": 8089,
                     "ssl": true
+                },
+                "postgresql[APP_DOMAIN='lunchroom.goodybag.com']": {
+                    "user": "lunchroom_prod",
+                    "password": "6EBC5F9A-C9AC-4C97-9A74-EC20313B0EC7",
+                    "database": "lunchroom_prod"
+                },
+                "postgresql[APP_DOMAIN='staging.lunchroom.goodybag.com']": {
+                    "user": "lunchroom_prod_stage",
+                    "password": "CABE1112-152C-44EA-8466-56E971906298",
+                    "database": "lunchroom_prod_stage"
                 }
             },
             "firenode": {
