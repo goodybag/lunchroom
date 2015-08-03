@@ -106,12 +106,14 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
 		var fileCache = {};
 
 		app.get(/^\/dev\.skin\.style\.css$/, function (req, res, next) {
-			var styleBasePath = require.resolve("07-lunchroom-style/package.json");
-			if (FS.existsSync(PATH.join(styleBasePath, "../style.css"))) {
+
+			try {
+				var styleBasePath = require.resolve("07-lunchroom-style/package.json");
 				return SEND(req, "/style.css", {
 					root: PATH.dirname(styleBasePath)
 				}).on("error", next).pipe(res);
-			}
+			} catch (err) {}
+
 			res.writeHead(200, {
 				"Content-Type": "text/css"
 			});
@@ -125,12 +127,14 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
 		});
 
 		app.get(/^\/landing\.skin\.style\.css$/, function (req, res, next) {
-			var styleBasePath = require.resolve("07-lunchroom-style/package.json");
-			if (FS.existsSync(PATH.join(styleBasePath, "../landing.style.css"))) {
+
+			try {
+				var styleBasePath = require.resolve("07-lunchroom-style/package.json");
 				return SEND(req, "/landing.style.css", {
 					root: PATH.dirname(styleBasePath)
 				}).on("error", next).pipe(res);
-			}
+			} catch (err) {}
+
 			res.writeHead(200, {
 				"Content-Type": "text/css"
 			});
