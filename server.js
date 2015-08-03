@@ -103,36 +103,44 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
 
 		app.use(COMPRESSION());
 
+		var fileCache = {};
+
 		app.get(/^\/dev\.skin\.style\.css$/, function (req, res, next) {
+			var styleBasePath = require.resolve("07-lunchroom-style/package.json");
+			if (FS.existsSync(PATH.join(styleBasePath, "../style.css"))) {
+				return SEND(req, "/style.css", {
+					root: PATH.dirname(styleBasePath)
+				}).on("error", next).pipe(res);
+			}
+			res.writeHead(200, {
+				"Content-Type": "text/css"
+			});
+			if (fileCache["/style.css"]) {
+				return res.end(fileCache["/style.css"]);
+			}
 			return API.REQUEST("https://raw.githubusercontent.com/goodybag/lunchroom-style/clobber/style.css", function (err, response, body) {
-				res.writeHead(200, {
-					"Content-Type": "text/css"
-				});
+				fileCache["/style.css"] = body;
 				return res.end(body);
 			});
-/*
-// TODO: Optionally pull code from repo directly
-			var styleBasePath = require.resolve("07-lunchroom-style/package.json");
-			return SEND(req, "/style.css", {
-				root: PATH.dirname(styleBasePath)
-			}).on("error", next).pipe(res);
-*/
 		});
 
 		app.get(/^\/landing\.skin\.style\.css$/, function (req, res, next) {
+			var styleBasePath = require.resolve("07-lunchroom-style/package.json");
+			if (FS.existsSync(PATH.join(styleBasePath, "../landing.style.css"))) {
+				return SEND(req, "/landing.style.css", {
+					root: PATH.dirname(styleBasePath)
+				}).on("error", next).pipe(res);
+			}
+			res.writeHead(200, {
+				"Content-Type": "text/css"
+			});
+			if (fileCache["/landing.style.css"]) {
+				return res.end(fileCache["/landing.style.css"]);
+			}
 			return API.REQUEST("https://raw.githubusercontent.com/goodybag/lunchroom-style/clobber/landing.style.css", function (err, response, body) {
-				res.writeHead(200, {
-					"Content-Type": "text/css"
-				});
+				fileCache["/landing.style.css"] = body;
 				return res.end(body);
 			});			
-/*
-// TODO: Optionally pull code from repo directly
-			var styleBasePath = require.resolve("07-lunchroom-style/package.json");
-			return SEND(req, "/landing.style.css", {
-				root: PATH.dirname(styleBasePath)
-			}).on("error", next).pipe(res);
-*/
 		});
 
 		app.get(/^\/skin\.style\.css$/, function (req, res, next) {

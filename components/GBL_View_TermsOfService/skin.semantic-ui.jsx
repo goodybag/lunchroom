@@ -9,11 +9,9 @@ require("./component.jsx").for(module, {
 
 
         return (
-        	<div className="ui grid">
+        	<div className="ui grid page-content">
 
 	        	{Context.appContext.view.components.Header}
-
-	        	{Context.appContext.view.components.Menu.for(Context)}
 
 			    <div className="sixteen wide column">
 

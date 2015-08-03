@@ -104,7 +104,8 @@
                             "clientContext": {
                                 "sessionCookieName": "gblsid",
                                 "selectedView": "Landing",
-                                "lockedView": "Landing,ContactUs,TermsOfService,PrivacyPolicy"
+                                "lockedView": "Landing,ContactUs,TermsOfService,PrivacyPolicy",
+                                "overrideSkinUri": "/landing.skin.style.css"
                             }
                         }
                     },

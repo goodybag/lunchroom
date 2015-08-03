@@ -54,7 +54,7 @@
 /******/ 	
 /******/ 	
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "1e9f8333c6b2d8f0e254"; // eslint-disable-line no-unused-vars
+/******/ 	var hotCurrentHash = "d7ce77a36a7c02249f8b"; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentParents = []; // eslint-disable-line no-unused-vars
 /******/ 	
@@ -35253,7 +35253,7 @@
 	module.exports = (
 	    React.createElement("div", {id: "page-header", className: "sixteen wide column"}, 
 
-	    	React.createElement("h1", {className: "ui header"}, "Goodybag")
+	    	React.createElement("h1", {className: "ui header"}, React.createElement("a", {href: "#", "data-link": "#Landing"}, "Goodybag"))
 
 	    )
 	);
@@ -37008,11 +37008,9 @@
 
 
 	        return (
-	        	React.createElement("div", {className: "ui grid"}, 
+	        	React.createElement("div", {className: "ui grid page-content"}, 
 
 		        	Context.appContext.view.components.Header, 
-
-		        	Context.appContext.view.components.Menu.for(Context), 
 
 				    React.createElement("div", {className: "sixteen wide column"}, 
 
@@ -37128,11 +37126,9 @@
 
 
 	        return (
-	        	React.createElement("div", {className: "ui grid"}, 
+	        	React.createElement("div", {className: "ui grid page-content"}, 
 
 		        	Context.appContext.view.components.Header, 
-
-		        	Context.appContext.view.components.Menu.for(Context), 
 
 				    React.createElement("div", {className: "sixteen wide column"}, 
 
@@ -37225,11 +37221,9 @@
 
 
 	        return (
-	        	React.createElement("div", {className: "ui grid"}, 
+	        	React.createElement("div", {className: "ui grid page-content"}, 
 
 		        	Context.appContext.view.components.Header, 
-
-		        	Context.appContext.view.components.Menu.for(Context), 
 
 				    React.createElement("div", {className: "sixteen wide column"}, 
 
