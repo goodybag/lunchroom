@@ -24,7 +24,6 @@
   ],
   "dependencies": {
     "jquery": "~2.1.4",
-    "cortexjs": "~0.7.0",
     "headjs": "~1.0.3"
   }
 }

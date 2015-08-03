@@ -1,0 +1,8 @@
+{
+    "environments": ["node", "browser"],
+
+    "loopClosures": "iife",
+    "disallowVars": false,
+    "disallowDuplicated": false,
+    "disallowUnknownReferences": false
+}
