@@ -49,8 +49,10 @@ exports.init = function (config, options) {
 
 			function ensureTable (tableName, schema) {
 				if (tables[tableName]) return Q.resolve();
-				console.log("[db] Create table: " + tableName);
-				return knex.schema.createTable(tableName);
+				//return knex.schema.dropTable(tableName).then(function () {
+					console.log("[db] Create table: " + tableName);
+					return knex.schema.createTable(tableName);
+				//});
 			}
 
 			function getExistingFields (tableName) {
@@ -68,8 +70,8 @@ exports.init = function (config, options) {
 
 					return knex.schema.table(tableName, function (table) {
 
-						return Q.all(schema.fields.map(function (field) {
-							if (existingFields[field.name]) return Q.resolve();
+						schema.fields.forEach(function (field) {
+							if (existingFields[field.name]) return;
 
 							// TODO: Modify column on change.
 
@@ -106,7 +108,8 @@ exports.init = function (config, options) {
 									fieldDef = fieldDef.defaultTo(field.default);
 								}
 							}
-						}));
+
+						});
 					});
 				});
 			}
