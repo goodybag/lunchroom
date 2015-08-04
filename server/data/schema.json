@@ -141,6 +141,12 @@
 					}
 				},
 				{
+					"name": "token",
+					"constraints": {
+						"required": true
+					}
+				},
+				{
 					"name": "day_id",
 					"constraints": {
 						"required": true
@@ -167,7 +173,7 @@
 					}
 				},
 				{
-					"name": "deliveryEndTime",
+					"name": "pickupEndTime",
 					"type": "timestamp",
 					"constraints": {
 						"required": true
@@ -175,6 +181,12 @@
 				},
 				{
 					"name": "goodybagFee",
+					"constraints": {
+						"required": true
+					}
+				},
+				{
+					"name": "tip",
 					"constraints": {
 						"required": true
 					}
@@ -327,7 +339,7 @@
 					}
 				},
 				{
-					"name": "deliveryEndTime",
+					"name": "pickupEndTime",
 					"type": "timestamp",
 					"constraints": {
 						"required": true

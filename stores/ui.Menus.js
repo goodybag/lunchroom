@@ -49,6 +49,88 @@ exports.for = function (context) {
 		});
 	}
 
+	store.loadForEvent = function (event_id) {
+		var self = this;
+		return COMMON.API.Q.denodeify(function (callback) {
+	        self.fetch({
+	            data: $.param({
+	                "filter[event_id]": ""+event_id
+	            }),
+	            success: function () {
+	            	return callback(null);
+	            }
+	        });
+		})();
+	}
+
+	store.addItem = function (event_id, vendor_id, item_id) {
+		var self = this;
+		return COMMON.API.Q.denodeify(function (callback) {
+
+			var payload = {
+				data: {
+					type: "menus",
+					attributes: {
+						event_id: event_id,
+						vendor_id: vendor_id,
+						item_id: item_id
+					}
+				}
+			};
+
+			return $.ajax({
+				method: "POST",
+				url: ENDPOINT + "/",
+				contentType: "application/vnd.api+json",
+				headers: {
+					"Accept": "application/vnd.api+json"
+				},
+    			dataType: "json",
+				data: JSON.stringify(payload)
+			})
+			.done(function (response) {
+				return callback(null, response.data.id);
+			})
+			.fail(function(err) {
+
+// TODO: Ask user to submit again.
+console.log("error!", err.stack);
+
+				return callback(err);
+			});
+		})();
+	}
+
+	store.removeAtId = function (id) {
+		var self = this;
+		return COMMON.API.Q.denodeify(function (callback) {
+
+			var payload = {
+				data: {
+					type: "menus",
+					attributes: {
+						id: id
+					}
+				}
+			};
+
+			return $.ajax({
+				method: "DELETE",
+				url: ENDPOINT + "/" + id
+			})
+			.done(function (response) {
+				return callback(null);
+			})
+			.fail(function(err) {
+
+// TODO: Ask user to submit again.
+console.log("error!", err.stack);
+
+				return callback(err);
+			});
+		})();
+	}
+
 	store.modelRecords = function (records) {
 		return COMMON.resolveForeignKeys(store, records, {
 			"vendor_id": {

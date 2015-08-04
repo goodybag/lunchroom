@@ -19,15 +19,5 @@ exports.map = {
         '/:id': CONTROLLER.read(),
         '/:id/:related': CONTROLLER.readRelated(),
         '/:id/links/:relation': CONTROLLER.readRelation()
-    },
-    patch: {
-        '/:id': CONTROLLER.update({
-           schema: SCHEMA
-        }),
-        '/:id/links/:relation': CONTROLLER.updateRelation()
-    },
-    delete: {
-        '/:id': CONTROLLER.destroy(),
-        '/:id/links/:relation': CONTROLLER.destroyRelation()
     }
 };

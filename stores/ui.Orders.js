@@ -100,7 +100,7 @@ exports.for = function (context) {
 	        items: "object",
 	        event: "object",
 	        "deliveryStartTime": "string",
-	        "deliveryEndTime": "string",
+	        "pickupEndTime": "string",
 	        "orderFrom": "string",
 	        "vendor_ids": "string",
 	        "statusInfo": "object"
@@ -292,7 +292,7 @@ console.log("TODO: trigger save of order info in local storage so nothing is los
 						return context.appContext.stores.events.modelRecord(today).then(function (today) {
 
 							order.set("deliveryStartTime", today.get("deliveryStartTime"));
-							order.set("deliveryEndTime", today.get("deliveryEndTime"));
+							order.set("pickupEndTime", today.get("pickupEndTime"));
 							order.set("event", today.getAttributes({
 								props: true,
 								session: true,

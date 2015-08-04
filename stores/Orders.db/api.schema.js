@@ -42,7 +42,7 @@ module.exports = {
             deliveryStartTime: {
                 type: 'string'
             },
-            deliveryEndTime: {
+            pickupEndTime: {
                 type: 'string'
             }
         }

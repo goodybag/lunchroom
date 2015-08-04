@@ -18,7 +18,7 @@ exports.seed = function (knex, Promise) {
 			"consumer_group_id": 1,
 			"orderByTime": MOMENT().add(1, 'hour').add(day, 'days').format(),
 			"deliveryStartTime": MOMENT().add(3, 'hour').add(day, 'days').format(),
-			"deliveryEndTime": MOMENT().add(3, 'hour').add(30, 'minutes').add(day, 'days').format(),
+			"pickupEndTime": MOMENT().add(3, 'hour').add(30, 'minutes').add(day, 'days').format(),
 			"goodybagFee": "5"
 		});
 	}

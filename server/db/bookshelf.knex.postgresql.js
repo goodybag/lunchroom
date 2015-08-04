@@ -69,9 +69,13 @@ exports.init = function (config, options) {
 			function ensureFields (tableName, schema) {
 				return getExistingFields(tableName).then(function (existingFields) {
 
+					var schemaFields = {};
+
 					return knex.schema.table(tableName, function (table) {
 
+						// Add new fields.
 						schema.fields.forEach(function (field) {
+							schemaFields[field.name] = true;
 							if (existingFields[field.name]) return;
 
 							// TODO: Modify column on change.
@@ -111,6 +115,16 @@ exports.init = function (config, options) {
 							}
 
 						});
+					}).then(function () {
+
+						// Drop 'required' constraint on old fields to ensure we
+						// can insert ne records while ignoring old fields.
+						return Q.all(Object.keys(existingFields).map(function (name) {
+							if (schemaFields[name]) return Q.resolve();
+							return knex.raw('ALTER TABLE "' + tableName + '" ALTER COLUMN "' + name + '" DROP NOT NULL;').then(function (resp) {
+
+							});
+						}));
 					});
 				});
 			}

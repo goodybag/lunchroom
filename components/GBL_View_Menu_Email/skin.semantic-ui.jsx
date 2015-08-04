@@ -8,39 +8,41 @@ require("./component.jsx").for(module, {
 
 
 		var Items = "";
-		// TODO: Base on active selection.
-		Items = (
-			<div className="sixteen wide column">
-				<div className="ui cards">
+		if (Context.items.length > 0) {
+			// TODO: Base on active selection.
+			Items = (
+				<div className="sixteen wide column">
+					<div className="ui cards">
 
-					{Context.items.map(function (item) {								
-{
-// ##################################################
-// # Menu item summary card
-// ##################################################
-}
+						{Context.items.map(function (item) {								
+	{
+	// ##################################################
+	// # Menu item summary card
+	// ##################################################
+	}
 
-						return (
-						  <div key={item.get('id')} className="card">
-						    <a data-link="#Menu_Web" className="image">
-						      <img src="https://cdn.filepicker.io/api/file/6PqREn6qQHWCQsPdKJXK/convert?cache=true&fit=scale"/>
-						    </a>
-						    <div className="content">
-						      <a className="header">{item.get("item.title")}</a>
-						      <div className="meta">
-						        HOT
-						      </div>
-						      <div className="description">
-							    <b>${item.get("item.format.price")}</b> &nbsp;&nbsp;&nbsp; {item.get("item.description")}
+							return (
+							  <div key={item.get('id')} className="card">
+							    <a data-link="#Menu_Web" className="image">
+							      <img src="https://cdn.filepicker.io/api/file/6PqREn6qQHWCQsPdKJXK/convert?cache=true&fit=scale"/>
+							    </a>
+							    <div className="content">
+							      <a className="header">{item.get("item.title")}</a>
+							      <div className="meta">
+							        HOT
+							      </div>
+							      <div className="description">
+								    <b>${item.get("item.format.price")}</b> &nbsp;&nbsp;&nbsp; {item.get("item.description")}
+								  </div>
+							    </div>
 							  </div>
-						    </div>
-						  </div>
-						);
-					})}
+							);
+						})}
 
-				</div>
-		    </div>
-		);
+					</div>
+			    </div>
+			);
+		}
 
         return (
         	<div className="ui grid">

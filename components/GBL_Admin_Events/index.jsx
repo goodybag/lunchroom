@@ -6,10 +6,45 @@ const COMPONENT = require("../GBL_ReactComponent");
 module.exports = COMPONENT.create({
 
     afterRender: function (Context, element) {
+        var self = this;
 
         Context.ensureForNodes(
             $('.ui.dropdown', element),
             'dropdown()'
+        );
+
+        Context.ensureForNodes(
+          $('button[data-link="action:deselectEvent"]', element),
+          'click',
+          function () {
+              self.props.selectedEvent = null;
+              self._trigger_forceUpdate();
+              return false;
+          }
+        );
+
+        Context.ensureForNodes(
+          $('#form-vendor-filter [data-fieldname="vendor_id"]', element),
+          'dropdown()', {
+            onChange: function(value, text) {
+              self.props.selectedVendor = value;
+              self.props.appContext.stores.items.loadForVendor(self.props.selectedVendor).then(function () {
+                self._trigger_forceUpdate();
+              });
+            }
+          }
+        );
+
+        Context.ensureForNodes(
+          $('#form-create [data-fieldname="day_id"]', element),
+          'dropdown()', {
+            onChange: function(value, text) {
+              self.props.selectedDay = value;
+              self.props.appContext.stores.events.loadForDay(self.props.selectedDay).then(function () {
+                self._trigger_forceUpdate();
+              });
+            }
+          }
         );
 
         // Form submission
@@ -17,78 +52,252 @@ module.exports = COMPONENT.create({
             $('#form-create BUTTON.button.form-submit', element),
             'click',
             function () {
+
+                $('#form-create').removeClass("error");
+
+                var error = false;
                 var values = {};
-                $('#form-create .dropdown[data-fieldname]').each(function() {
-                    if (!values) return;
-                    var name = $(this).attr("data-fieldname");
-                    var value = $(this).dropdown('get value');
-                    if (typeof value === "object") {
-                        alert("You must specify the '" + name + "' field!");
-                        values = null;
+                $('#form-create [data-fieldname]').each(function() {
+
+                    var elm = $(this);
+
+                    elm.removeClass("error");
+
+                    var name = elm.attr("data-fieldname");
+
+                    var value = null;
+                    if (elm.hasClass("dropdown")) {
+                      value = elm.dropdown('get value');
+                    } else {
+                      value = elm.val();
+                    }
+
+                    if (typeof value === "object" || !value) {
+                        elm.addClass("error");
+                        error = true;
                         return;
                     }
                     values[name] = value;
                 });
-                if (!values) return false;
-                Context.appContext.stores.events.createEvent(values);
+                if (error) {
+                  $('#form-create').addClass("error");
+                } else {
+                  Context.appContext.stores.events.createEvent(values);
+                }
                 return false;
             }
         );
+
+
+        Context.ensureForNodes(
+            $('TABLE.events-table', element),
+            'click',
+            function (event) {
+              self.props.selectedEvent = $(event.target).parentsUntil("TBODY", "TR").attr("data-id") || null;
+              self.props.appContext.stores.menus.loadForEvent(self.props.selectedEvent).then(function () {
+                self._trigger_forceUpdate();
+              });
+              return false;
+            }
+        );
+
+        Context.ensureForNodes(
+            $('TABLE.available-items-table', element),
+            'click',
+            function (event) {
+              var item_id = $(event.target).parentsUntil("TBODY", "TR").attr("data-id") || null;
+              self.props.appContext.stores.menus.addItem(
+                self.props.selectedEvent,
+                self.props.selectedVendor,
+                item_id
+              ).then(function () {
+                return self.props.appContext.stores.menus.loadForEvent(self.props.selectedEvent).then(function () {
+                  self._trigger_forceUpdate();
+                });
+              });
+            }
+        );
+
+        Context.ensureForNodes(
+            $('TABLE.menu-items-table', element),
+            'click',
+            function (event) {
+              var item_id = $(event.target).parentsUntil("TBODY", "TR").attr("data-id") || null;
+              self.props.appContext.stores.menus.removeAtId(item_id).then(function () {
+                return self.props.appContext.stores.menus.loadForEvent(self.props.selectedEvent).then(function () {
+                  self._trigger_forceUpdate();
+                });
+              });
+            }
+        );
+
+
+        // Init on load.
+
+        if (self.props.selectedVendor) {
+          var elm = $('#form-vendor-filter [data-fieldname="vendor_id"]');
+          if (elm.dropdown('get value') !== self.props.selectedVendor) {
+            elm.dropdown('set selected', self.props.selectedVendor);
+          }
+        }
+
+
+
+        function fillEventCreateForm (values) {
+          $('#form-create [data-fieldname]').each(function() {
+
+            var elm = $(this);
+            var name = elm.attr("data-fieldname");
+            var value = values[name] || "";
+
+            if (elm.hasClass("dropdown")) {
+              elm.dropdown('set selected', value);
+            } else {
+              elm.val(value);
+            }
+          });
+        }
+
+        fillEventCreateForm({
+          consumer_group_id: 1,
+          orderByTime: COMPONENT.API.MOMENT().add(1, 'h').format("H:mm"),
+          deliveryStartTime: COMPONENT.API.MOMENT().add(2, 'h').format("H:mm"),
+          pickupEndTime: COMPONENT.API.MOMENT().add(2, 'h').add(15, 'm').format("H:mm"),
+          tip: "10",
+          goodybagFee: "5.00"
+        });
+
     },
 
     getHTML: function (Context) {
 
         const React = Context.REACT;
 
-        return (
-          <div>
-            <h1>Events Admin</h1>
 
+        var Panel = null;
+        if (Context.selectedEvent) {
+
+
+          Panel = (
             <div className="ui segment">
+              <button className="ui button" data-link="action:deselectEvent">Back to all events</button>
 
-                <form id="form-create" className="ui form">
+              <table className="ui celled selectable table events-table">
+                <thead>
+                  <tr>
+                      <th>Date</th>
+                      <th>Delivery Time</th>
+                      <th>Company</th>
+                      <th>Pickup</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>{Context.selectedEvent.get("format.deliveryDate")}</td>
+                    <td>{Context.selectedEvent.get("format.deliveryTime")}</td>
+                    <td>{Context.selectedEvent.get("consumerGroup.title")}</td>
+                    <td>{Context.selectedEvent.get("consumerGroup.pickupLocation")}</td>
+                  </tr>
+                </tbody>
+              </table>
 
-                    <div className="ui compact menu">
-                      <div className="ui label">
-                        Tip
-                      </div>
-                        <div className="ui simple dropdown item">
-                          <div className="text">5%</div>
-                          <i className="dropdown icon"></i>
+
+              <div className="ui grid">
+                <div className="eight wide left floated column">
+
+                  <h2 className="ui header">Available Dishes</h2>
+
+                  <form id="form-vendor-filter" className="ui form">
+                    <div className="fields">
+                      <div className="field">
+                        <div data-fieldname="vendor_id" className="ui floating dropdown labeled button">
+                          <span className="text">Select Restaurant</span>
                           <div className="menu">
-                            <div className="item">10%</div>
-                            <div className="item">15%</div>
-                            <div className="item">20%</div>
+                            <div className="ui icon search input">
+                              <i className="search icon"></i>
+                              <input type="text" placeholder="Search restaurants ..."/>
+                            </div>
+                            <div className="scrolling menu">
+                                {Context.vendors.map(function(item) {
+                                    return (
+                                        <div className="item" data-value={item.get("id")}>
+                                          {item.get("title")}
+                                        </div>
+                                    );
+                                })}
+                            </div>
                           </div>
                         </div>
-                    </div>
-
-                    <div className="ui labeled input">
-                      <div className="ui label">
-                        Tax
-                      </div>
-                      <input type="text" placeholder="5%"/>
-                    </div>
-
-                    <div className="ui labeled input">
-                      <div className="ui label">
-                        Goodybag Fee
-                      </div>
-                      <input type="text" placeholder="5.00"/>
-                    </div>
-
-                    <div data-fieldname="day_id" className="ui selection dropdown">
-                      <div className="default text">Day</div>
-                      <i className="dropdown icon"></i>
-                      <div className="menu">
-                        {Context.days.map(function(item) {
-                            return <div className="item" data-value={item[0]}>{item[1]}</div>
-                        })}
                       </div>
                     </div>
+                  </form>
 
+                  <table className="ui celled table available-items-table">
+                    <thead>
+                      <tr>
+                          <th>Name</th>
+                          <th>Photo</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {Context.selectedVendorItems.map(function(item) {
+                          var Row = (
+                              <tr key={item.id} data-id={item.id}>
+                                <td>{item.get("title")}</td>
+                                <td><img className="ui centered image" src={item.get("photo_url")} height="70"/></td>
+                              </tr>
+                          );
+                          return Row;
+                      })}
+                    </tbody>
+                  </table>
+
+                </div>
+                <div className="eight wide right floated column">
+
+                  <h2 className="ui header">Dishes on Menu</h2>
+
+                  <table className="ui celled table menu-items-table">
+                    <thead>
+                      <tr>
+                          <th>Name</th>
+                          <th>Photo</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {Context.menuItems.map(function(item) {
+                          var Row = (
+                              <tr key={item.id} data-id={item.id}>
+                                <td>{item.get("item.title")}</td>
+                                <td><img className="ui centered image" src={item.get("item.photo_url")} height="70"/></td>
+                              </tr>
+                          );
+                          return Row;
+                      })}
+                    </tbody>
+                  </table>
+
+                </div>
+              </div>
+
+            </div>
+          );
+        } else {
+          Panel = [(
+            <div className="ui segment">
+
+              <form id="form-create" className="ui form">
+
+                <div className="ui error message">
+                  <div className="header">Please correct fields!</div>
+                </div>
+
+                <div className="fields">
+
+                  <div className="field">
+                    <label>Company</label>
                     <div data-fieldname="consumer_group_id" className="ui floating dropdown labeled button">
-                      <span className="text">Select Company</span>
+                      <span className="text">Select</span>
                       <div className="menu">
                         <div className="ui icon search input">
                           <i className="search icon"></i>
@@ -105,38 +314,78 @@ module.exports = COMPONENT.create({
                         </div>
                       </div>
                     </div>
+                  </div>
 
-                    <div data-fieldname="vendor_id" className="ui floating dropdown labeled button">
-                      <span className="text">Select Restaurant</span>
+                </div>
+
+                <div className="fields">
+
+                  <div className="field">
+                    <label>Day</label>
+                    <div data-fieldname="day_id" className="ui selection dropdown">
+                      <div className="default text">Select</div>
+                      <i className="dropdown icon"></i>
                       <div className="menu">
-                        <div className="ui icon search input">
-                          <i className="search icon"></i>
-                          <input type="text" placeholder="Search restaurants ..."/>
-                        </div>
-                        <div className="scrolling menu">
-                            {Context.vendors.map(function(item) {
-                                return (
-                                    <div className="item" data-value={item.get("id")}>
-                                      {item.get("title")}
-                                    </div>
-                                );
-                            })}
-                        </div>
+                        {Context.days.map(function(item) {
+                            return <div className="item" data-value={item[0]}>{item[1]}</div>
+                        })}
                       </div>
                     </div>
+                  </div>
 
+                  <div className="field">
+                    <label>Order By</label>
+                    <input type="text" data-fieldname="orderByTime"/>
+                  </div>
+
+                  <div className="field">
+                    <label>Delivery Start</label>
+                    <input type="text" data-fieldname="deliveryStartTime"/>
+                  </div>
+
+                  <div className="field">
+                    <label>Pickup By</label>
+                    <input type="text" data-fieldname="pickupEndTime"/>
+                  </div>
+
+                </div>
+
+                <div className="fields">
+
+                  <div className="field">
+                    <label>Tip</label>
+                    <div className="ui selection dropdown" data-fieldname="tip">
+                      <div className="default text">Select</div>
+                      <i className="dropdown icon"></i>
+                      <div className="menu">
+                        <div className="item" data-value="5">5%</div>
+                        <div className="item" data-value="10">10%</div>
+                        <div className="item" data-value="15">15%</div>
+                        <div className="item" data-value="20">20%</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="field">
+                    <label>Goodybag Fee</label>
+                    <input type="text" data-fieldname="goodybagFee"/>
+                  </div>
+                  <div className="field">
+                    <label>&nbsp;</label>
                     <button className="ui primary small button form-submit">
                         Create Menu
                     </button>
+                  </div>
 
-                </form>
+                </div>
+                  
+              </form>
             </div>
-
-            <table className="ui celled table">
+          ), (
+            <table className="ui celled selectable table events-table">
               <thead>
                 <tr>
                     <th>Date</th>
-                    <th>Time</th>
+                    <th>Delivery Time</th>
                     <th>Company</th>
                     <th>Pickup</th>
                 </tr>
@@ -146,7 +395,7 @@ module.exports = COMPONENT.create({
                 {Context.events.map(function(item) {
 
                     var Row = (
-                        <tr key={item.id}>
+                        <tr key={item.id} data-id={item.id}>
                           <td>{item.get("format.deliveryDate")}</td>
                           <td>{item.get("format.deliveryTime")}</td>
                           <td>{item.get("consumerGroup.title")}</td>
@@ -159,7 +408,13 @@ module.exports = COMPONENT.create({
 
               </tbody>
             </table>
+          )];
+        }
 
+        return (
+          <div>
+            <h1>Events Admin</h1>
+            {Panel}
           </div>
         );
     }
@@ -167,12 +422,8 @@ module.exports = COMPONENT.create({
 }, {
 
     onMount: function () {
-        this.props.appContext.stores.events.on("sync", this._trigger_forceUpdate);
         this.props.appContext.stores.vendors.on("sync", this._trigger_forceUpdate);
         this.props.appContext.stores.consumerGroups.on("sync", this._trigger_forceUpdate);
-
-        this.props.appContext.stores.events.reset();
-        this.props.appContext.stores.events.fetch();
 
         this.props.appContext.stores.vendors.reset();
         this.props.appContext.stores.vendors.fetch();
@@ -182,7 +433,6 @@ module.exports = COMPONENT.create({
     },
 
     onUnmount: function () {
-        this.props.appContext.stores.events.off("sync", this._trigger_forceUpdate);
         this.props.appContext.stores.vendors.off("sync", this._trigger_forceUpdate);
         this.props.appContext.stores.consumerGroups.off("sync", this._trigger_forceUpdate);
     },
@@ -205,15 +455,58 @@ module.exports = COMPONENT.create({
 
         var consumerGroups = self.props.appContext.stores.consumerGroups;
 
+        var items = self.props.appContext.stores.items;
+
+        var menus = self.props.appContext.stores.menus;
+
+
+        var eventRecords = [];
+        if (self.props.selectedDay) {
+          eventRecords = self.modelRecordsWithStore(events, events.where({
+            day_id: self.props.selectedDay
+          }));
+        }
+
+        var selectedEvent = null;
+        var selectedVendorItems = [];
+        var menuItems = [];
+        if (self.props.selectedEvent) {
+
+          selectedEvent = self.modelRecordsWithStore(events, events.where({
+            id: self.props.selectedEvent
+          }))[0] || null;
+
+          menuItems = self.modelRecordsWithStore(menus, menus.where({
+            event_id: self.props.selectedEvent
+          }));
+
+          if (self.props.selectedVendor) {
+
+            console.log("get items for vendor selector", self.props.selectedVendor);
+
+            selectedVendorItems = self.modelRecordsWithStore(items, items.where({
+              vendor_id: ""+self.props.selectedVendor
+            }));
+
+            console.log("selectedVendorItems", selectedVendorItems);
+
+          }
+
+        }
+
         return {
 
             days: days,
 
-            events: self.modelRecordsWithStore(events, events.where()),
+            events: eventRecords,
 
             vendors: self.modelRecordsWithStore(vendors, vendors.where()),
 
-            consumerGroups: self.modelRecordsWithStore(consumerGroups, consumerGroups.where())
+            consumerGroups: self.modelRecordsWithStore(consumerGroups, consumerGroups.where()),
+
+            selectedEvent: selectedEvent,
+            selectedVendorItems: selectedVendorItems,
+            menuItems: menuItems
         };
     }
 });

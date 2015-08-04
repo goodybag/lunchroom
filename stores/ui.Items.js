@@ -119,6 +119,20 @@ exports.for = function (context) {
 		});
 	}
 
+	store.loadForVendor = function (vendor_id) {
+		var self = this;
+		return COMMON.API.Q.denodeify(function (callback) {
+	        self.fetch({
+	            data: $.param({
+	                "filter[vendor_id]": ""+vendor_id
+	            }),
+	            success: function () {
+	            	return callback(null);
+	            }
+	        });
+		})();
+	}
+
 	store.resolveRecordsAndWait = function (records, options) {
 
 		return COMMON.resolveForeignKeys(store, records, {

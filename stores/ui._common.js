@@ -145,12 +145,12 @@ exports.makeFormatter = function (type) {
 		return {
 			deps: [
 				"deliveryStartTime",
-				"deliveryEndTime"
+				"pickupEndTime"
 			],
             fn: function () {
             	var deliveryStartTime = API.MOMENT(this.deliveryStartTime);
-            	var deliveryEndTime = API.MOMENT(this.deliveryEndTime);
-            	return deliveryStartTime.format("hh:mm") + "-" + deliveryEndTime.format("hh:mm A");
+            	var pickupEndTime = API.MOMENT(this.pickupEndTime);
+            	return deliveryStartTime.format("hh:mm") + "-" + pickupEndTime.format("hh:mm A");
             }
 	    };
 	} else

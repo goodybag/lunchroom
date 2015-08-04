@@ -22,24 +22,35 @@ var Store = COMMON.API.BACKBONE.Collection.extend({
 
 	createEvent: function (fields) {
 		var self = this;
+
 		return COMMON.API.Q.denodeify(function (callback) {
 
-			var data = {};
-			for (var name in self.Model.prototype._definition) {
-				if (typeof fields[name] !== "undefined") {
-					data[name] = "" + fields[name];
+			function getDataForFields (fields) {
+				var data = {};
+				for (var name in self.Model.prototype._definition) {
+					if (typeof fields[name] !== "undefined") {
+						data[name] = "" + fields[name];
+					}
 				}
-			}
+				data["goodybagFee"] = data["goodybagFee"] * 100;
 
-// TODO: Set these values as well.
-			data.orderByTime = COMMON.API.MOMENT().add(1, 'hour').format();
-			data.deliveryStartTime = COMMON.API.MOMENT().add(3, 'hour').format();
-			data.deliveryEndTime = COMMON.API.MOMENT().add(3, 'hour').add(30, 'minutes').format();
+				data["orderByTime"] = COMMON.API.MOMENT(
+					data["day_id"] + ":" + data["orderByTime"], "YYYY-MM-DD:H:mm"
+				).format();
+				data["deliveryStartTime"] = COMMON.API.MOMENT(
+					data["day_id"] + ":" + data["deliveryStartTime"], "YYYY-MM-DD:H:mm"
+				).format();
+				data["pickupEndTime"] = COMMON.API.MOMENT(
+					data["day_id"] + ":" + data["pickupEndTime"], "YYYY-MM-DD:H:mm"
+				).format();
+
+				return data;
+			}
 
 			var payload = {
 				data: {
 					type: "events",
-					attributes: data
+					attributes: getDataForFields(fields)
 				}
 			};
 
@@ -58,7 +69,7 @@ var Store = COMMON.API.BACKBONE.Collection.extend({
 		        self.reset();
 		        self.fetch();
 
-				return callback(null);
+				return callback(null, response.data);
 			})
 			.fail(function(err) {
 
@@ -87,9 +98,11 @@ exports.for = function (context) {
 	        day_id: "string",
 	        "orderByTime": "string",
 	        "deliveryStartTime": "string",
-	        "deliveryEndTime": "string",
+	        "pickupEndTime": "string",
 	        "consumer_group_id": "string",
 	        "goodybagFee": "string",
+	        "tip": "string",
+	        "token": "token",
 	        // TODO: Add these dynamically using foreign model.
 	        "consumerGroup.title": "string",
 	        "consumerGroup.contact": "string",
@@ -185,6 +198,20 @@ exports.for = function (context) {
 		return this.models.filter(function (model) {
 			return (model.get('day_id') === dayId);
 		});
+	}
+
+	store.loadForDay = function (day_id) {
+		var self = this;
+		return COMMON.API.Q.denodeify(function (callback) {
+	        self.fetch({
+	            data: $.param({
+	                "filter[day_id]": day_id
+	            }),
+	            success: function () {
+	            	return callback(null);
+	            }
+	        });
+		})();
 	}
 
 	store.modelRecords = function (records) {

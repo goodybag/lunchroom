@@ -18,6 +18,9 @@ const classProps = {
     filters: {
         id: function (qb, value) {
             return qb.whereIn('id', value);
+        },
+        vendor_id: function (qb, value) {
+            return qb.whereIn('vendor_id', value);
         }
     },
     relations: [

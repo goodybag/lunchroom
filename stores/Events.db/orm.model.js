@@ -18,6 +18,9 @@ const classProps = {
     filters: {
         id: function (qb, value) {
             return qb.whereIn('id', value);
+        },
+        day_id: function (qb, value) {
+            return qb.whereIn('day_id', value);
         }
     },
     relations: [
