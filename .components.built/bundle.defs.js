@@ -54,7 +54,7 @@
 /******/ 	
 /******/ 	
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "d7ce77a36a7c02249f8b"; // eslint-disable-line no-unused-vars
+/******/ 	var hotCurrentHash = "48cea4df44c42963f72c"; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentParents = []; // eslint-disable-line no-unused-vars
 /******/ 	
@@ -1419,7 +1419,7 @@
 			    	'click',
 			    	function () {
 			    		var link = $(this).attr("data-link");
-			    		if (!/^#/.test(link)) return;
+			    		if (!/^#/.test(link)) return;		    		
 						component._render_Context.appContext.selectedView = link.replace(/^#/, "");
 			    	}
 			    );
@@ -35992,39 +35992,41 @@
 
 
 			var Items = "";
-			// TODO: Base on active selection.
-			Items = (
-				React.createElement("div", {className: "sixteen wide column"}, 
-					React.createElement("div", {className: "ui cards"}, 
+			if (Context.items.length > 0) {
+				// TODO: Base on active selection.
+				Items = (
+					React.createElement("div", {className: "sixteen wide column"}, 
+						React.createElement("div", {className: "ui cards"}, 
 
-						Context.items.map(function (item) {								
-	{
-	// ##################################################
-	// # Menu item summary card
-	// ##################################################
-	}
+							Context.items.map(function (item) {								
+		{
+		// ##################################################
+		// # Menu item summary card
+		// ##################################################
+		}
 
-							return (
-							  React.createElement("div", {key: item.get('id'), className: "card"}, 
-							    React.createElement("a", {"data-link": "#Menu_Web", className: "image"}, 
-							      React.createElement("img", {src: "https://cdn.filepicker.io/api/file/6PqREn6qQHWCQsPdKJXK/convert?cache=true&fit=scale"})
-							    ), 
-							    React.createElement("div", {className: "content"}, 
-							      React.createElement("a", {className: "header"}, item.get("item.title")), 
-							      React.createElement("div", {className: "meta"}, 
-							        "HOT"
-							      ), 
-							      React.createElement("div", {className: "description"}, 
-								    React.createElement("b", null, "$", item.get("item.format.price")), "     ", item.get("item.description")
+								return (
+								  React.createElement("div", {key: item.get('id'), className: "card"}, 
+								    React.createElement("a", {"data-link": "#Menu_Web", className: "image"}, 
+								      React.createElement("img", {src: "https://cdn.filepicker.io/api/file/6PqREn6qQHWCQsPdKJXK/convert?cache=true&fit=scale"})
+								    ), 
+								    React.createElement("div", {className: "content"}, 
+								      React.createElement("a", {className: "header"}, item.get("item.title")), 
+								      React.createElement("div", {className: "meta"}, 
+								        "HOT"
+								      ), 
+								      React.createElement("div", {className: "description"}, 
+									    React.createElement("b", null, "$", item.get("item.format.price")), "     ", item.get("item.description")
+									  )
+								    )
 								  )
-							    )
-							  )
-							);
-						})
+								);
+							})
 
-					)
-			    )
-			);
+						)
+				    )
+				);
+			}
 
 	        return (
 	        	React.createElement("div", {className: "ui grid"}, 
@@ -36167,42 +36169,85 @@
 
 
 			var Items = "";
-			// TODO: Base on active selection.
-			Items = (
-				React.createElement("div", {className: "sixteen wide column"}, 
-					Object.keys(Context.days).map(function(day) {
+			if (Context.items.length > 0) {
+				// TODO: Base on active selection.
+				Items = (
+					React.createElement("div", {className: "sixteen wide column"}, 
+						Object.keys(Context.days).map(function(day) {
 
-						function makeOptions (item) {
-							var Options = [];
-							var options = JSON.parse(item.get("item.options") || "{}");
-							Object.keys(options).forEach(function (name) {
-								Options.push(
-									React.createElement("div", {className: "two fields"}, 
-										React.createElement("div", {className: "ui pointing right label"}, name), 
-										React.createElement("select", {"data-option": name, className: "ui dropdown"}, 
-										    React.createElement("option", {value: ""}, "Please select ..."), 
-											options[name].map(function (value) {
-										    	return React.createElement("option", {className: "item", key: value, value: value}, value)
-									    	})												  
+							function makeOptions (item) {
+								var Options = [];
+								var options = JSON.parse(item.get("item.options") || "{}");
+								Object.keys(options).forEach(function (name) {
+									Options.push(
+										React.createElement("div", {className: "two fields"}, 
+											React.createElement("div", {className: "ui pointing right label"}, name), 
+											React.createElement("select", {"data-option": name, className: "ui dropdown"}, 
+											    React.createElement("option", {value: ""}, "Please select ..."), 
+												options[name].map(function (value) {
+											    	return React.createElement("option", {className: "item", key: value, value: value}, value)
+										    	})												  
+											)
 										)
-									)
-								);
-							});
-							if (Options.length === 0) Options = "";
-							return Options;
-						}
+									);
+								});
+								if (Options.length === 0) Options = "";
+								return Options;
+							}
 
-			        	return (
-							React.createElement("div", {key: day, className: "ui bottom attached tab segment", "data-tab": day}, 
+				        	return (
+								React.createElement("div", {key: day, className: "ui bottom attached tab segment", "data-tab": day}, 
 
-								React.createElement("div", {className: "ui cards"}, 
+									React.createElement("div", {className: "ui cards"}, 
 
-									Context.items[day].map(function (item) {								
-	{
-	// ##################################################
-	// # Menu item summary card
-	// ##################################################
-	}
+										Context.items[day].map(function (item) {								
+		{
+		// ##################################################
+		// # Menu item summary card
+		// ##################################################
+		}
+
+											var Spiciness = "";
+											var properties = JSON.parse(item.get("item.properties") || "{}");
+											if (properties && properties.Spiciness) {
+												Spiciness = (React.createElement("div", null, properties.Spiciness));
+											}
+
+											var OrderButton = "";
+											if (Context.days[day].get("canOrder")) {
+												OrderButton = (
+													React.createElement("div", {"data-link": "action:add", "data-id": item.get('item_id'), "data-day": day, className: "ui bottom attached button"}, 
+												      React.createElement("i", {className: "add icon"}), 
+												      "Add Dish"
+												    )
+												);
+											}
+
+											return (
+											  React.createElement("div", {key: item.get('id'), "data-id": item.get('item_id'), "data-day": day, className: "card item-block"}, 
+											    React.createElement("a", {className: "image", "data-link": "action:show-detail"}, 
+											      React.createElement("img", {src: "https://cdn.filepicker.io/api/file/6PqREn6qQHWCQsPdKJXK/convert?cache=true&fit=scale"})
+											    ), 
+											    React.createElement("div", {className: "content"}, 
+											      React.createElement("a", {className: "header"}, item.get("item.title")), 
+											      React.createElement("div", {className: "meta"}, 
+											        Spiciness
+											      ), 
+											      React.createElement("div", {className: "description"}, 
+												    React.createElement("b", null, "$", item.get("item.format.price")), "     ", item.get("item.description")
+												  )
+											    ), 
+											    React.createElement("form", {className: "ui fluid form"}, 
+												    makeOptions(item)
+											    ), 
+											    OrderButton
+											  )
+											);
+										})
+
+									), 
+
+									Context.items[day].map(function (item) {
 
 										var Spiciness = "";
 										var properties = JSON.parse(item.get("item.properties") || "{}");
@@ -36210,83 +36255,42 @@
 											Spiciness = (React.createElement("div", null, properties.Spiciness));
 										}
 
-										var OrderButton = "";
-										if (Context.days[day].get("canOrder")) {
-											OrderButton = (
-												React.createElement("div", {"data-link": "action:add", "data-id": item.get('item_id'), "data-day": day, className: "ui bottom attached button"}, 
-											      React.createElement("i", {className: "add icon"}), 
+										return (
+											React.createElement("div", {key: item.get('id'), "data-id": item.get('item_id'), "data-day": day, className: "ui modal item-block"}, 
+											  React.createElement("i", {className: "close icon"}), 
+											  React.createElement("div", {className: "header"}, 
+											  	item.get("item.title")
+											  ), 
+											  React.createElement("div", {className: "content"}, 
+											    React.createElement("div", {className: "ui medium image"}, 
+											      React.createElement("img", {src: "https://cdn.filepicker.io/api/file/6PqREn6qQHWCQsPdKJXK/convert?cache=true&fit=scale"})
+											    ), 
+											    React.createElement("div", {className: "description"}, 
+											    	React.createElement("p", null, Spiciness), 
+											        React.createElement("p", null, React.createElement("b", null, "$", item.get("item.format.price")), "     ", item.get("item.description")), 
+											        React.createElement("form", {className: "ui fluid form"}, 
+													    makeOptions(item)
+											    	)
+											    )
+											  ), 
+											  React.createElement("div", {className: "actions"}, 
+											    React.createElement("div", {className: "ui black deny button"}, 
+											      "No thanks!"
+											    ), 
+											    React.createElement("div", {"data-link": "action:add", className: "ui positive right labeled icon button"}, 
 											      "Add Dish"
 											    )
-											);
-										}
-
-										return (
-										  React.createElement("div", {key: item.get('id'), "data-id": item.get('item_id'), "data-day": day, className: "card item-block"}, 
-										    React.createElement("a", {className: "image", "data-link": "action:show-detail"}, 
-										      React.createElement("img", {src: "https://cdn.filepicker.io/api/file/6PqREn6qQHWCQsPdKJXK/convert?cache=true&fit=scale"})
-										    ), 
-										    React.createElement("div", {className: "content"}, 
-										      React.createElement("a", {className: "header"}, item.get("item.title")), 
-										      React.createElement("div", {className: "meta"}, 
-										        Spiciness
-										      ), 
-										      React.createElement("div", {className: "description"}, 
-											    React.createElement("b", null, "$", item.get("item.format.price")), "     ", item.get("item.description")
 											  )
-										    ), 
-										    React.createElement("form", {className: "ui fluid form"}, 
-											    makeOptions(item)
-										    ), 
-										    OrderButton
-										  )
+											)
 										);
 									})
 
-								), 
-
-								Context.items[day].map(function (item) {
-
-									var Spiciness = "";
-									var properties = JSON.parse(item.get("item.properties") || "{}");
-									if (properties && properties.Spiciness) {
-										Spiciness = (React.createElement("div", null, properties.Spiciness));
-									}
-
-									return (
-										React.createElement("div", {key: item.get('id'), "data-id": item.get('item_id'), "data-day": day, className: "ui modal item-block"}, 
-										  React.createElement("i", {className: "close icon"}), 
-										  React.createElement("div", {className: "header"}, 
-										  	item.get("item.title")
-										  ), 
-										  React.createElement("div", {className: "content"}, 
-										    React.createElement("div", {className: "ui medium image"}, 
-										      React.createElement("img", {src: "https://cdn.filepicker.io/api/file/6PqREn6qQHWCQsPdKJXK/convert?cache=true&fit=scale"})
-										    ), 
-										    React.createElement("div", {className: "description"}, 
-										    	React.createElement("p", null, Spiciness), 
-										        React.createElement("p", null, React.createElement("b", null, "$", item.get("item.format.price")), "     ", item.get("item.description")), 
-										        React.createElement("form", {className: "ui fluid form"}, 
-												    makeOptions(item)
-										    	)
-										    )
-										  ), 
-										  React.createElement("div", {className: "actions"}, 
-										    React.createElement("div", {className: "ui black deny button"}, 
-										      "No thanks!"
-										    ), 
-										    React.createElement("div", {"data-link": "action:add", className: "ui positive right labeled icon button"}, 
-										      "Add Dish"
-										    )
-										  )
-										)
-									);
-								})
-
-							)
-			        	);
-			        })
-			    )
-			);
+								)
+				        	);
+				        })
+				    )
+				);
+			}
 
 	        return (
 	        	React.createElement("div", {className: "ui grid"}, 
@@ -37320,10 +37324,45 @@
 	module.exports = COMPONENT.create({
 
 	    afterRender: function (Context, element) {
+	        var self = this;
 
 	        Context.ensureForNodes(
 	            $('.ui.dropdown', element),
 	            'dropdown()'
+	        );
+
+	        Context.ensureForNodes(
+	          $('button[data-link="action:deselectEvent"]', element),
+	          'click',
+	          function () {
+	              self.props.selectedEvent = null;
+	              self._trigger_forceUpdate();
+	              return false;
+	          }
+	        );
+
+	        Context.ensureForNodes(
+	          $('#form-vendor-filter [data-fieldname="vendor_id"]', element),
+	          'dropdown()', {
+	            onChange: function(value, text) {
+	              self.props.selectedVendor = value;
+	              self.props.appContext.stores.items.loadForVendor(self.props.selectedVendor).then(function () {
+	                self._trigger_forceUpdate();
+	              });
+	            }
+	          }
+	        );
+
+	        Context.ensureForNodes(
+	          $('#form-create [data-fieldname="day_id"]', element),
+	          'dropdown()', {
+	            onChange: function(value, text) {
+	              self.props.selectedDay = value;
+	              self.props.appContext.stores.events.loadForDay(self.props.selectedDay).then(function () {
+	                self._trigger_forceUpdate();
+	              });
+	            }
+	          }
 	        );
 
 	        // Form submission
@@ -37331,78 +37370,252 @@
 	            $('#form-create BUTTON.button.form-submit', element),
 	            'click',
 	            function () {
+
+	                $('#form-create').removeClass("error");
+
+	                var error = false;
 	                var values = {};
-	                $('#form-create .dropdown[data-fieldname]').each(function() {
-	                    if (!values) return;
-	                    var name = $(this).attr("data-fieldname");
-	                    var value = $(this).dropdown('get value');
-	                    if (typeof value === "object") {
-	                        alert("You must specify the '" + name + "' field!");
-	                        values = null;
+	                $('#form-create [data-fieldname]').each(function() {
+
+	                    var elm = $(this);
+
+	                    elm.removeClass("error");
+
+	                    var name = elm.attr("data-fieldname");
+
+	                    var value = null;
+	                    if (elm.hasClass("dropdown")) {
+	                      value = elm.dropdown('get value');
+	                    } else {
+	                      value = elm.val();
+	                    }
+
+	                    if (typeof value === "object" || !value) {
+	                        elm.addClass("error");
+	                        error = true;
 	                        return;
 	                    }
 	                    values[name] = value;
 	                });
-	                if (!values) return false;
-	                Context.appContext.stores.events.createEvent(values);
+	                if (error) {
+	                  $('#form-create').addClass("error");
+	                } else {
+	                  Context.appContext.stores.events.createEvent(values);
+	                }
 	                return false;
 	            }
 	        );
+
+
+	        Context.ensureForNodes(
+	            $('TABLE.events-table', element),
+	            'click',
+	            function (event) {
+	              self.props.selectedEvent = $(event.target).parentsUntil("TBODY", "TR").attr("data-id") || null;
+	              self.props.appContext.stores.menus.loadForEvent(self.props.selectedEvent).then(function () {
+	                self._trigger_forceUpdate();
+	              });
+	              return false;
+	            }
+	        );
+
+	        Context.ensureForNodes(
+	            $('TABLE.available-items-table', element),
+	            'click',
+	            function (event) {
+	              var item_id = $(event.target).parentsUntil("TBODY", "TR").attr("data-id") || null;
+	              self.props.appContext.stores.menus.addItem(
+	                self.props.selectedEvent,
+	                self.props.selectedVendor,
+	                item_id
+	              ).then(function () {
+	                return self.props.appContext.stores.menus.loadForEvent(self.props.selectedEvent).then(function () {
+	                  self._trigger_forceUpdate();
+	                });
+	              });
+	            }
+	        );
+
+	        Context.ensureForNodes(
+	            $('TABLE.menu-items-table', element),
+	            'click',
+	            function (event) {
+	              var item_id = $(event.target).parentsUntil("TBODY", "TR").attr("data-id") || null;
+	              self.props.appContext.stores.menus.removeAtId(item_id).then(function () {
+	                return self.props.appContext.stores.menus.loadForEvent(self.props.selectedEvent).then(function () {
+	                  self._trigger_forceUpdate();
+	                });
+	              });
+	            }
+	        );
+
+
+	        // Init on load.
+
+	        if (self.props.selectedVendor) {
+	          var elm = $('#form-vendor-filter [data-fieldname="vendor_id"]');
+	          if (elm.dropdown('get value') !== self.props.selectedVendor) {
+	            elm.dropdown('set selected', self.props.selectedVendor);
+	          }
+	        }
+
+
+
+	        function fillEventCreateForm (values) {
+	          $('#form-create [data-fieldname]').each(function() {
+
+	            var elm = $(this);
+	            var name = elm.attr("data-fieldname");
+	            var value = values[name] || "";
+
+	            if (elm.hasClass("dropdown")) {
+	              elm.dropdown('set selected', value);
+	            } else {
+	              elm.val(value);
+	            }
+	          });
+	        }
+
+	        fillEventCreateForm({
+	          consumer_group_id: 1,
+	          orderByTime: COMPONENT.API.MOMENT().add(1, 'h').format("H:mm"),
+	          deliveryStartTime: COMPONENT.API.MOMENT().add(2, 'h').format("H:mm"),
+	          pickupEndTime: COMPONENT.API.MOMENT().add(2, 'h').add(15, 'm').format("H:mm"),
+	          tip: "10",
+	          goodybagFee: "5.00"
+	        });
+
 	    },
 
 	    getHTML: function (Context) {
 
 	        var React = Context.REACT;
 
-	        return (
-	          React.createElement("div", null, 
-	            React.createElement("h1", null, "Events Admin"), 
 
+	        var Panel = null;
+	        if (Context.selectedEvent) {
+
+
+	          Panel = (
 	            React.createElement("div", {className: "ui segment"}, 
+	              React.createElement("button", {className: "ui button", "data-link": "action:deselectEvent"}, "Back to all events"), 
 
-	                React.createElement("form", {id: "form-create", className: "ui form"}, 
+	              React.createElement("table", {className: "ui celled selectable table events-table"}, 
+	                React.createElement("thead", null, 
+	                  React.createElement("tr", null, 
+	                      React.createElement("th", null, "Date"), 
+	                      React.createElement("th", null, "Delivery Time"), 
+	                      React.createElement("th", null, "Company"), 
+	                      React.createElement("th", null, "Pickup")
+	                  )
+	                ), 
+	                React.createElement("tbody", null, 
+	                  React.createElement("tr", null, 
+	                    React.createElement("td", null, Context.selectedEvent.get("format.deliveryDate")), 
+	                    React.createElement("td", null, Context.selectedEvent.get("format.deliveryTime")), 
+	                    React.createElement("td", null, Context.selectedEvent.get("consumerGroup.title")), 
+	                    React.createElement("td", null, Context.selectedEvent.get("consumerGroup.pickupLocation"))
+	                  )
+	                )
+	              ), 
 
-	                    React.createElement("div", {className: "ui compact menu"}, 
-	                      React.createElement("div", {className: "ui label"}, 
-	                        "Tip"
-	                      ), 
-	                        React.createElement("div", {className: "ui simple dropdown item"}, 
-	                          React.createElement("div", {className: "text"}, "5%"), 
-	                          React.createElement("i", {className: "dropdown icon"}), 
+
+	              React.createElement("div", {className: "ui grid"}, 
+	                React.createElement("div", {className: "eight wide left floated column"}, 
+
+	                  React.createElement("h2", {className: "ui header"}, "Available Dishes"), 
+
+	                  React.createElement("form", {id: "form-vendor-filter", className: "ui form"}, 
+	                    React.createElement("div", {className: "fields"}, 
+	                      React.createElement("div", {className: "field"}, 
+	                        React.createElement("div", {"data-fieldname": "vendor_id", className: "ui floating dropdown labeled button"}, 
+	                          React.createElement("span", {className: "text"}, "Select Restaurant"), 
 	                          React.createElement("div", {className: "menu"}, 
-	                            React.createElement("div", {className: "item"}, "10%"), 
-	                            React.createElement("div", {className: "item"}, "15%"), 
-	                            React.createElement("div", {className: "item"}, "20%")
+	                            React.createElement("div", {className: "ui icon search input"}, 
+	                              React.createElement("i", {className: "search icon"}), 
+	                              React.createElement("input", {type: "text", placeholder: "Search restaurants ..."})
+	                            ), 
+	                            React.createElement("div", {className: "scrolling menu"}, 
+	                                Context.vendors.map(function(item) {
+	                                    return (
+	                                        React.createElement("div", {className: "item", "data-value": item.get("id")}, 
+	                                          item.get("title")
+	                                        )
+	                                    );
+	                                })
+	                            )
 	                          )
 	                        )
-	                    ), 
+	                      )
+	                    )
+	                  ), 
 
-	                    React.createElement("div", {className: "ui labeled input"}, 
-	                      React.createElement("div", {className: "ui label"}, 
-	                        "Tax"
-	                      ), 
-	                      React.createElement("input", {type: "text", placeholder: "5%"})
-	                    ), 
-
-	                    React.createElement("div", {className: "ui labeled input"}, 
-	                      React.createElement("div", {className: "ui label"}, 
-	                        "Goodybag Fee"
-	                      ), 
-	                      React.createElement("input", {type: "text", placeholder: "5.00"})
-	                    ), 
-
-	                    React.createElement("div", {"data-fieldname": "day_id", className: "ui selection dropdown"}, 
-	                      React.createElement("div", {className: "default text"}, "Day"), 
-	                      React.createElement("i", {className: "dropdown icon"}), 
-	                      React.createElement("div", {className: "menu"}, 
-	                        Context.days.map(function(item) {
-	                            return React.createElement("div", {className: "item", "data-value": item[0]}, item[1])
-	                        })
+	                  React.createElement("table", {className: "ui celled table available-items-table"}, 
+	                    React.createElement("thead", null, 
+	                      React.createElement("tr", null, 
+	                          React.createElement("th", null, "Name"), 
+	                          React.createElement("th", null, "Photo")
 	                      )
 	                    ), 
+	                    React.createElement("tbody", null, 
+	                      Context.selectedVendorItems.map(function(item) {
+	                          var Row = (
+	                              React.createElement("tr", {key: item.id, "data-id": item.id}, 
+	                                React.createElement("td", null, item.get("title")), 
+	                                React.createElement("td", null, React.createElement("img", {className: "ui centered image", src: item.get("photo_url"), height: "70"}))
+	                              )
+	                          );
+	                          return Row;
+	                      })
+	                    )
+	                  )
 
+	                ), 
+	                React.createElement("div", {className: "eight wide right floated column"}, 
+
+	                  React.createElement("h2", {className: "ui header"}, "Dishes on Menu"), 
+
+	                  React.createElement("table", {className: "ui celled table menu-items-table"}, 
+	                    React.createElement("thead", null, 
+	                      React.createElement("tr", null, 
+	                          React.createElement("th", null, "Name"), 
+	                          React.createElement("th", null, "Photo")
+	                      )
+	                    ), 
+	                    React.createElement("tbody", null, 
+	                      Context.menuItems.map(function(item) {
+	                          var Row = (
+	                              React.createElement("tr", {key: item.id, "data-id": item.id}, 
+	                                React.createElement("td", null, item.get("item.title")), 
+	                                React.createElement("td", null, React.createElement("img", {className: "ui centered image", src: item.get("item.photo_url"), height: "70"}))
+	                              )
+	                          );
+	                          return Row;
+	                      })
+	                    )
+	                  )
+
+	                )
+	              )
+
+	            )
+	          );
+	        } else {
+	          Panel = [(
+	            React.createElement("div", {className: "ui segment"}, 
+
+	              React.createElement("form", {id: "form-create", className: "ui form"}, 
+
+	                React.createElement("div", {className: "ui error message"}, 
+	                  React.createElement("div", {className: "header"}, "Please correct fields!")
+	                ), 
+
+	                React.createElement("div", {className: "fields"}, 
+
+	                  React.createElement("div", {className: "field"}, 
+	                    React.createElement("label", null, "Company"), 
 	                    React.createElement("div", {"data-fieldname": "consumer_group_id", className: "ui floating dropdown labeled button"}, 
-	                      React.createElement("span", {className: "text"}, "Select Company"), 
+	                      React.createElement("span", {className: "text"}, "Select"), 
 	                      React.createElement("div", {className: "menu"}, 
 	                        React.createElement("div", {className: "ui icon search input"}, 
 	                          React.createElement("i", {className: "search icon"}), 
@@ -37418,39 +37631,79 @@
 	                            })
 	                        )
 	                      )
-	                    ), 
+	                    )
+	                  )
 
-	                    React.createElement("div", {"data-fieldname": "vendor_id", className: "ui floating dropdown labeled button"}, 
-	                      React.createElement("span", {className: "text"}, "Select Restaurant"), 
+	                ), 
+
+	                React.createElement("div", {className: "fields"}, 
+
+	                  React.createElement("div", {className: "field"}, 
+	                    React.createElement("label", null, "Day"), 
+	                    React.createElement("div", {"data-fieldname": "day_id", className: "ui selection dropdown"}, 
+	                      React.createElement("div", {className: "default text"}, "Select"), 
+	                      React.createElement("i", {className: "dropdown icon"}), 
 	                      React.createElement("div", {className: "menu"}, 
-	                        React.createElement("div", {className: "ui icon search input"}, 
-	                          React.createElement("i", {className: "search icon"}), 
-	                          React.createElement("input", {type: "text", placeholder: "Search restaurants ..."})
-	                        ), 
-	                        React.createElement("div", {className: "scrolling menu"}, 
-	                            Context.vendors.map(function(item) {
-	                                return (
-	                                    React.createElement("div", {className: "item", "data-value": item.get("id")}, 
-	                                      item.get("title")
-	                                    )
-	                                );
-	                            })
-	                        )
+	                        Context.days.map(function(item) {
+	                            return React.createElement("div", {className: "item", "data-value": item[0]}, item[1])
+	                        })
 	                      )
-	                    ), 
+	                    )
+	                  ), 
 
+	                  React.createElement("div", {className: "field"}, 
+	                    React.createElement("label", null, "Order By"), 
+	                    React.createElement("input", {type: "text", "data-fieldname": "orderByTime"})
+	                  ), 
+
+	                  React.createElement("div", {className: "field"}, 
+	                    React.createElement("label", null, "Delivery Start"), 
+	                    React.createElement("input", {type: "text", "data-fieldname": "deliveryStartTime"})
+	                  ), 
+
+	                  React.createElement("div", {className: "field"}, 
+	                    React.createElement("label", null, "Pickup By"), 
+	                    React.createElement("input", {type: "text", "data-fieldname": "pickupEndTime"})
+	                  )
+
+	                ), 
+
+	                React.createElement("div", {className: "fields"}, 
+
+	                  React.createElement("div", {className: "field"}, 
+	                    React.createElement("label", null, "Tip"), 
+	                    React.createElement("div", {className: "ui selection dropdown", "data-fieldname": "tip"}, 
+	                      React.createElement("div", {className: "default text"}, "Select"), 
+	                      React.createElement("i", {className: "dropdown icon"}), 
+	                      React.createElement("div", {className: "menu"}, 
+	                        React.createElement("div", {className: "item", "data-value": "5"}, "5%"), 
+	                        React.createElement("div", {className: "item", "data-value": "10"}, "10%"), 
+	                        React.createElement("div", {className: "item", "data-value": "15"}, "15%"), 
+	                        React.createElement("div", {className: "item", "data-value": "20"}, "20%")
+	                      )
+	                    )
+	                  ), 
+	                  React.createElement("div", {className: "field"}, 
+	                    React.createElement("label", null, "Goodybag Fee"), 
+	                    React.createElement("input", {type: "text", "data-fieldname": "goodybagFee"})
+	                  ), 
+	                  React.createElement("div", {className: "field"}, 
+	                    React.createElement("label", null, " "), 
 	                    React.createElement("button", {className: "ui primary small button form-submit"}, 
 	                        "Create Menu"
 	                    )
+	                  )
 
 	                )
-	            ), 
-
-	            React.createElement("table", {className: "ui celled table"}, 
+	                  
+	              )
+	            )
+	          ), (
+	            React.createElement("table", {className: "ui celled selectable table events-table"}, 
 	              React.createElement("thead", null, 
 	                React.createElement("tr", null, 
 	                    React.createElement("th", null, "Date"), 
-	                    React.createElement("th", null, "Time"), 
+	                    React.createElement("th", null, "Delivery Time"), 
 	                    React.createElement("th", null, "Company"), 
 	                    React.createElement("th", null, "Pickup")
 	                )
@@ -37460,7 +37713,7 @@
 	                Context.events.map(function(item) {
 
 	                    var Row = (
-	                        React.createElement("tr", {key: item.id}, 
+	                        React.createElement("tr", {key: item.id, "data-id": item.id}, 
 	                          React.createElement("td", null, item.get("format.deliveryDate")), 
 	                          React.createElement("td", null, item.get("format.deliveryTime")), 
 	                          React.createElement("td", null, item.get("consumerGroup.title")), 
@@ -37473,7 +37726,13 @@
 
 	              )
 	            )
+	          )];
+	        }
 
+	        return (
+	          React.createElement("div", null, 
+	            React.createElement("h1", null, "Events Admin"), 
+	            Panel
 	          )
 	        );
 	    }
@@ -37481,12 +37740,8 @@
 	}, {
 
 	    onMount: function () {
-	        this.props.appContext.stores.events.on("sync", this._trigger_forceUpdate);
 	        this.props.appContext.stores.vendors.on("sync", this._trigger_forceUpdate);
 	        this.props.appContext.stores.consumerGroups.on("sync", this._trigger_forceUpdate);
-
-	        this.props.appContext.stores.events.reset();
-	        this.props.appContext.stores.events.fetch();
 
 	        this.props.appContext.stores.vendors.reset();
 	        this.props.appContext.stores.vendors.fetch();
@@ -37496,7 +37751,6 @@
 	    },
 
 	    onUnmount: function () {
-	        this.props.appContext.stores.events.off("sync", this._trigger_forceUpdate);
 	        this.props.appContext.stores.vendors.off("sync", this._trigger_forceUpdate);
 	        this.props.appContext.stores.consumerGroups.off("sync", this._trigger_forceUpdate);
 	    },
@@ -37519,15 +37773,58 @@
 
 	        var consumerGroups = self.props.appContext.stores.consumerGroups;
 
+	        var items = self.props.appContext.stores.items;
+
+	        var menus = self.props.appContext.stores.menus;
+
+
+	        var eventRecords = [];
+	        if (self.props.selectedDay) {
+	          eventRecords = self.modelRecordsWithStore(events, events.where({
+	            day_id: self.props.selectedDay
+	          }));
+	        }
+
+	        var selectedEvent = null;
+	        var selectedVendorItems = [];
+	        var menuItems = [];
+	        if (self.props.selectedEvent) {
+
+	          selectedEvent = self.modelRecordsWithStore(events, events.where({
+	            id: self.props.selectedEvent
+	          }))[0] || null;
+
+	          menuItems = self.modelRecordsWithStore(menus, menus.where({
+	            event_id: self.props.selectedEvent
+	          }));
+
+	          if (self.props.selectedVendor) {
+
+	            console.log("get items for vendor selector", self.props.selectedVendor);
+
+	            selectedVendorItems = self.modelRecordsWithStore(items, items.where({
+	              vendor_id: ""+self.props.selectedVendor
+	            }));
+
+	            console.log("selectedVendorItems", selectedVendorItems);
+
+	          }
+
+	        }
+
 	        return {
 
 	            days: days,
 
-	            events: self.modelRecordsWithStore(events, events.where()),
+	            events: eventRecords,
 
 	            vendors: self.modelRecordsWithStore(vendors, vendors.where()),
 
-	            consumerGroups: self.modelRecordsWithStore(consumerGroups, consumerGroups.where())
+	            consumerGroups: self.modelRecordsWithStore(consumerGroups, consumerGroups.where()),
+
+	            selectedEvent: selectedEvent,
+	            selectedVendorItems: selectedVendorItems,
+	            menuItems: menuItems
 	        };
 	    }
 	});
@@ -64348,12 +64645,12 @@
 			return {
 				deps: [
 					"deliveryStartTime",
-					"deliveryEndTime"
+					"pickupEndTime"
 				],
 	            fn: function () {
 	            	var deliveryStartTime = API.MOMENT(this.deliveryStartTime);
-	            	var deliveryEndTime = API.MOMENT(this.deliveryEndTime);
-	            	return deliveryStartTime.format("hh:mm") + "-" + deliveryEndTime.format("hh:mm A");
+	            	var pickupEndTime = API.MOMENT(this.pickupEndTime);
+	            	return deliveryStartTime.format("hh:mm") + "-" + pickupEndTime.format("hh:mm A");
 	            }
 		    };
 		} else
@@ -93851,24 +94148,35 @@
 
 		createEvent: function (fields) {
 			var self = this;
+
 			return COMMON.API.Q.denodeify(function (callback) {
 
-				var data = {};
-				for (var name in self.Model.prototype._definition) {
-					if (typeof fields[name] !== "undefined") {
-						data[name] = "" + fields[name];
+				function getDataForFields (fields) {
+					var data = {};
+					for (var name in self.Model.prototype._definition) {
+						if (typeof fields[name] !== "undefined") {
+							data[name] = "" + fields[name];
+						}
 					}
-				}
+					data["goodybagFee"] = data["goodybagFee"] * 100;
 
-	// TODO: Set these values as well.
-				data.orderByTime = COMMON.API.MOMENT().add(1, 'hour').format();
-				data.deliveryStartTime = COMMON.API.MOMENT().add(3, 'hour').format();
-				data.deliveryEndTime = COMMON.API.MOMENT().add(3, 'hour').add(30, 'minutes').format();
+					data["orderByTime"] = COMMON.API.MOMENT(
+						data["day_id"] + ":" + data["orderByTime"], "YYYY-MM-DD:H:mm"
+					).format();
+					data["deliveryStartTime"] = COMMON.API.MOMENT(
+						data["day_id"] + ":" + data["deliveryStartTime"], "YYYY-MM-DD:H:mm"
+					).format();
+					data["pickupEndTime"] = COMMON.API.MOMENT(
+						data["day_id"] + ":" + data["pickupEndTime"], "YYYY-MM-DD:H:mm"
+					).format();
+
+					return data;
+				}
 
 				var payload = {
 					data: {
 						type: "events",
-						attributes: data
+						attributes: getDataForFields(fields)
 					}
 				};
 
@@ -93887,7 +94195,7 @@
 			        self.reset();
 			        self.fetch();
 
-					return callback(null);
+					return callback(null, response.data);
 				})
 				.fail(function(err) {
 
@@ -93916,9 +94224,11 @@
 		        day_id: "string",
 		        "orderByTime": "string",
 		        "deliveryStartTime": "string",
-		        "deliveryEndTime": "string",
+		        "pickupEndTime": "string",
 		        "consumer_group_id": "string",
 		        "goodybagFee": "string",
+		        "tip": "string",
+		        "token": "token",
 		        // TODO: Add these dynamically using foreign model.
 		        "consumerGroup.title": "string",
 		        "consumerGroup.contact": "string",
@@ -94014,6 +94324,20 @@
 			return this.models.filter(function (model) {
 				return (model.get('day_id') === dayId);
 			});
+		}
+
+		store.loadForDay = function (day_id) {
+			var self = this;
+			return COMMON.API.Q.denodeify(function (callback) {
+		        self.fetch({
+		            data: $.param({
+		                "filter[day_id]": day_id
+		            }),
+		            success: function () {
+		            	return callback(null);
+		            }
+		        });
+			})();
 		}
 
 		store.modelRecords = function (records) {
@@ -94301,6 +94625,20 @@
 			});
 		}
 
+		store.loadForVendor = function (vendor_id) {
+			var self = this;
+			return COMMON.API.Q.denodeify(function (callback) {
+		        self.fetch({
+		            data: $.param({
+		                "filter[vendor_id]": ""+vendor_id
+		            }),
+		            success: function () {
+		            	return callback(null);
+		            }
+		        });
+			})();
+		}
+
 		store.resolveRecordsAndWait = function (records, options) {
 
 			return COMMON.resolveForeignKeys(store, records, {
@@ -94497,6 +94835,88 @@
 			return this.models.filter(function (model) {
 				return (typeof ids[model.get('event_id')] !== "undefined");
 			});
+		}
+
+		store.loadForEvent = function (event_id) {
+			var self = this;
+			return COMMON.API.Q.denodeify(function (callback) {
+		        self.fetch({
+		            data: $.param({
+		                "filter[event_id]": ""+event_id
+		            }),
+		            success: function () {
+		            	return callback(null);
+		            }
+		        });
+			})();
+		}
+
+		store.addItem = function (event_id, vendor_id, item_id) {
+			var self = this;
+			return COMMON.API.Q.denodeify(function (callback) {
+
+				var payload = {
+					data: {
+						type: "menus",
+						attributes: {
+							event_id: event_id,
+							vendor_id: vendor_id,
+							item_id: item_id
+						}
+					}
+				};
+
+				return $.ajax({
+					method: "POST",
+					url: ENDPOINT + "/",
+					contentType: "application/vnd.api+json",
+					headers: {
+						"Accept": "application/vnd.api+json"
+					},
+	    			dataType: "json",
+					data: JSON.stringify(payload)
+				})
+				.done(function (response) {
+					return callback(null, response.data.id);
+				})
+				.fail(function(err) {
+
+	// TODO: Ask user to submit again.
+	console.log("error!", err.stack);
+
+					return callback(err);
+				});
+			})();
+		}
+
+		store.removeAtId = function (id) {
+			var self = this;
+			return COMMON.API.Q.denodeify(function (callback) {
+
+				var payload = {
+					data: {
+						type: "menus",
+						attributes: {
+							id: id
+						}
+					}
+				};
+
+				return $.ajax({
+					method: "DELETE",
+					url: ENDPOINT + "/" + id
+				})
+				.done(function (response) {
+					return callback(null);
+				})
+				.fail(function(err) {
+
+	// TODO: Ask user to submit again.
+	console.log("error!", err.stack);
+
+					return callback(err);
+				});
+			})();
 		}
 
 		store.modelRecords = function (records) {
@@ -94978,7 +95398,7 @@
 		        items: "object",
 		        event: "object",
 		        "deliveryStartTime": "string",
-		        "deliveryEndTime": "string",
+		        "pickupEndTime": "string",
 		        "orderFrom": "string",
 		        "vendor_ids": "string",
 		        "statusInfo": "object"
@@ -95170,7 +95590,7 @@
 							return context.appContext.stores.events.modelRecord(today).then(function (today) {
 
 								order.set("deliveryStartTime", today.get("deliveryStartTime"));
-								order.set("deliveryEndTime", today.get("deliveryEndTime"));
+								order.set("pickupEndTime", today.get("pickupEndTime"));
 								order.set("event", today.getAttributes({
 									props: true,
 									session: true,
