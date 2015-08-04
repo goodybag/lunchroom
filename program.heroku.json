@@ -11,19 +11,21 @@
             "port": "{{env.PORT}}",
             "db": {
                 "postgresql": {
-                    "host": "192.241.203.208",
-                    "port": 8089,
                     "ssl": true
                 },
                 "postgresql[APP_DOMAIN='lunchroom.goodybag.com']": {
-                    "user": "lunchroom_prod",
-                    "password": "6EBC5F9A-C9AC-4C97-9A74-EC20313B0EC7",
-                    "database": "lunchroom_prod"
+                    "host": "ec2-107-21-253-234.compute-1.amazonaws.com",
+                    "port": 6002,
+                    "user": "uenn1nb98f3669",
+                    "password": "p5i82eo3fhl5m0etr22uimc8cmk",
+                    "database": "ddn7dgetbsvnkc"
                 },
                 "postgresql[APP_DOMAIN='staging.lunchroom.goodybag.com']": {
-                    "user": "lunchroom_prod_stage",
-                    "password": "CABE1112-152C-44EA-8466-56E971906298",
-                    "database": "lunchroom_prod_stage"
+                    "host": "ec2-107-21-240-156.compute-1.amazonaws.com",
+                    "port": 5732,
+                    "user": "u9e5uar8mdmlqt",
+                    "password": "p3m0t493t12oufb6shuj8q9saav",
+                    "database": "d6da1bd7tqk7k"
                 }
             },
             "firenode": {
