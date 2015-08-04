@@ -85,7 +85,16 @@ exports.create = function (Context, implementation) {
 	    displayName: implementation.displayName || 'GBL_ReactComponent',
 
 	    _trigger_forceUpdate: function () {
-			this.forceUpdate();
+	    	var self = this;
+	    	var self = this;
+	    	if (!self._debounced_trigger_forceUpdate) {
+	    		self._debounced_trigger_forceUpdate = API.UNDERSCORE.debounce(function () {
+console.log("actual forced updated");
+	    			self.forceUpdate();
+	    		}, 300);
+	    	}
+console.log("triggered forced updated");
+	    	self._debounced_trigger_forceUpdate();
 	    },
 		componentDidMount: function () {
 			this.props.appContext.on("change", this._trigger_forceUpdate);
@@ -109,22 +118,7 @@ exports.create = function (Context, implementation) {
 
 	        var _notify_onChange = API.UNDERSCORE.debounce(this._trigger_forceUpdate, 100);
 
-	        store.on("sync", _notify_onChange);
-
-	        return store.modelRecords(records, true).map(function(item) {
-
-                // Re-draw ourselves on item model changes.
-                item.once("change", _notify_onChange);
-
-                return item;
-            });
-	    },
-
-	    modelRecordsWithStore: function (store, records) {
-
-	        var _notify_onChange = API.UNDERSCORE.debounce(this._trigger_forceUpdate, 100);
-
-	        store.on("sync", _notify_onChange);
+	        store.once("sync", _notify_onChange);
 
 	        return store.modelRecords(records, true).map(function(item) {
 

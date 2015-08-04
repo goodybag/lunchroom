@@ -42,12 +42,12 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
 			if (/\.html?/.test(path)) {
 				var content = FS.readFileSync(PATH.join(__dirname, "www", path), "utf8");
 
-				content = content.replace(/\{\{skinUrl\}\}/, req._FireNodeContext.config.skinUrl || "");
-				content = content.replace(/\{\{assetsUrl\}\}/, req._FireNodeContext.config.assetsUrl || "");
-				content = content.replace(/\{\{bundleUrl\}\}/, req._FireNodeContext.config.bundleUrl || "");
+				content = content.replace(/\{\{skinUrl\}\}/g, req._FireNodeContext.config.skinUrl || "");
+				content = content.replace(/\{\{assetsUrl\}\}/g, req._FireNodeContext.config.assetsUrl || "");
+				content = content.replace(/\{\{bundleUrl\}\}/g, req._FireNodeContext.config.bundleUrl || "");
 
 				content = content.replace(
-					/\{\{sessionToken\}\}/,
+					/\{\{sessionToken\}\}/g,
 					encodeURIComponent(JSON.stringify(req._FireNodeContext.sessionToken || null))
 				);
 
@@ -56,7 +56,7 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
 				clientContext.dbfilter = ((session && session.dbfilter) || {});
 
 				content = content.replace(
-					/\{\{encodedContext\}\}/,
+					/\{\{encodedContext\}\}/g,
 					encodeURIComponent(JSON.stringify(clientContext))
 				);
 				res.writeHead(200, {

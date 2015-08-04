@@ -1,6 +1,8 @@
 /** @jsx React.DOM */
 'use strict'
 
+const COMPONENT = require("../GBL_ReactComponent");
+
 exports.for = function (module, context) {
 
 	// ##################################################
@@ -35,12 +37,10 @@ exports.for = function (module, context) {
 
 	    displayName: 'GBL_DEV_Views',
 
-	    _trigger_afterRender: function () {
 
+	    _trigger_syncLayout: function () {
 			var iframe = $("iframe", this.getDOMNode());
-
 			var height = iframe.parentsUntil(".ui.basic.segment > .grid", ".thirteen.wide.column").height();
-
 			iframe.css("width", "100%");
 			iframe.css("height", height + "px");
 	    },
@@ -48,14 +48,35 @@ exports.for = function (module, context) {
 	    _trigger_forceUpdate: function (payload) {
 			this.forceUpdate();
 	    },
+
+	    _window_resize_handler: function () {
+	    	var self = this;
+	    	if (!self._on_window_resize) {
+	    		self._on_window_resize = COMPONENT.API.UNDERSCORE.debounce(function () {
+	    			self._trigger_syncLayout();
+	    		}, 300);
+	    	}
+	    	self._on_window_resize();
+	    },
+
 		componentDidMount: function () {
 			this.props.appContext.on("change", this._trigger_forceUpdate);
-			this._trigger_afterRender();
+
+			$(window).on("resize", this._window_resize_handler);
+
+			this._trigger_syncLayout();
 	    },
 		componentDidUpdate: function () {
-			this._trigger_afterRender();
+			var self = this;
+			self._trigger_syncLayout();
+			setTimeout(function () {
+				self._trigger_syncLayout();
+			}, 500);
 	    },
 	    componentWillUnmount: function () {
+
+			$(window).off("resize", this._window_resize_handler);
+
 			this.props.appContext.off("change", this._trigger_forceUpdate);
 	    },
 

@@ -27,6 +27,7 @@ module.exports = COMPONENT.create({
           $('#form-vendor-filter [data-fieldname="vendor_id"]', element),
           'dropdown()', {
             onChange: function(value, text) {
+              if (self.props.selectedVendor === value) return;
               self.props.selectedVendor = value;
               self.props.appContext.stores.items.loadForVendor(self.props.selectedVendor).then(function () {
                 self._trigger_forceUpdate();
@@ -37,8 +38,11 @@ module.exports = COMPONENT.create({
 
         Context.ensureForNodes(
           $('#form-create [data-fieldname="day_id"]', element),
-          'dropdown()', {
-            onChange: function(value, text) {
+          'pickadate()',
+          {
+            onSet: function(context) {
+              var value = this.get('select', 'yyyy-mm-dd');
+              if (self.props.selectedDay === value) return;
               self.props.selectedDay = value;
               self.props.appContext.stores.events.loadForDay(self.props.selectedDay).then(function () {
                 self._trigger_forceUpdate();
@@ -46,6 +50,15 @@ module.exports = COMPONENT.create({
             }
           }
         );
+
+        var picker = $('#form-create [data-fieldname="day_id"]', element).pickadate('picker');
+        if (picker) {
+          if (self.props.selectedDay !== picker.get('select', 'yyyy-mm-dd')) {
+            picker.set('select', self.props.selectedDay, {
+              format: 'yyyy-mm-dd'
+            });
+          }
+        }
 
         // Form submission
         Context.ensureForNodes(
@@ -88,12 +101,13 @@ module.exports = COMPONENT.create({
             }
         );
 
-
         Context.ensureForNodes(
             $('TABLE.events-table', element),
             'click',
             function (event) {
-              self.props.selectedEvent = $(event.target).parentsUntil("TBODY", "TR").attr("data-id") || null;
+              var value = $(event.target).parentsUntil("TBODY", "TR").attr("data-id") || null;
+              if (self.props.selectedEvent === value) return;
+              self.props.selectedEvent = value;
               self.props.appContext.stores.menus.loadForEvent(self.props.selectedEvent).then(function () {
                 self._trigger_forceUpdate();
               });
@@ -142,18 +156,21 @@ module.exports = COMPONENT.create({
         }
 
 
-
         function fillEventCreateForm (values) {
           $('#form-create [data-fieldname]').each(function() {
-
             var elm = $(this);
             var name = elm.attr("data-fieldname");
+            if (typeof values[name] === "undefined") return;
             var value = values[name] || "";
 
             if (elm.hasClass("dropdown")) {
-              elm.dropdown('set selected', value);
+              if (elm.dropdown('get value') === "" || typeof elm.dropdown('get value') === "object") {
+                elm.dropdown('set selected', value);
+              }
             } else {
-              elm.val(value);
+              if (elm.val() === "") {
+                elm.val(value);
+              }
             }
           });
         }
@@ -322,15 +339,7 @@ module.exports = COMPONENT.create({
 
                   <div className="field">
                     <label>Day</label>
-                    <div data-fieldname="day_id" className="ui selection dropdown">
-                      <div className="default text">Select</div>
-                      <i className="dropdown icon"></i>
-                      <div className="menu">
-                        {Context.days.map(function(item) {
-                            return <div className="item" data-value={item[0]}>{item[1]}</div>
-                        })}
-                      </div>
-                    </div>
+                    <input type="text" data-fieldname="day_id"/>
                   </div>
 
                   <div className="field">
