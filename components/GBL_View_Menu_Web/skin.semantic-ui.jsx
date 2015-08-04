@@ -65,7 +65,8 @@ require("./component.jsx").for(module, {
 
 
 		var Items = "";
-		if (Context.items.length > 0) {
+		if (Object.keys(Context.items).length > 0) {
+
 			// TODO: Base on active selection.
 			Items = (
 				<div className="sixteen wide column">

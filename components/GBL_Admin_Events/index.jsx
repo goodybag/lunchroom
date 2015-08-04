@@ -194,6 +194,7 @@ module.exports = COMPONENT.create({
         var Panel = null;
         if (Context.selectedEvent) {
 
+          var menuUrl = window.location.origin + "/event-" + Context.selectedEvent.get("token");
 
           Panel = (
             <div className="ui segment">
@@ -217,6 +218,8 @@ module.exports = COMPONENT.create({
                   </tr>
                 </tbody>
               </table>
+
+              <p><a href={menuUrl}>{menuUrl}</a></p>
 
 
               <div className="ui grid">

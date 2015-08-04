@@ -14,11 +14,13 @@ var Store = COMMON.API.BACKBONE.Collection.extend({
 
 var store = new Store();
 
+/*
 for (var day=0 ; day<=4 ; day++) {
 	store.add({
 		"id": COMMON.API.MOMENT().add(day, 'days').format("YYYY-MM-DD")
 	});
 }
+*/
 
 exports.for = function (context) {
 
@@ -38,6 +40,17 @@ exports.for = function (context) {
 		    }
 		}
 	});
+
+	store.loadForEvent = function (event_id) {
+
+		var day_id = context.appContext.stores.events.get(event_id).get("day_id");
+
+		if (!store.get(day_id)) {
+			store.add({
+				"id": day_id
+			});
+		}
+	}
 
 	store.modelRecords = function (records) {
 		return records.map(function (record, i) {

@@ -214,6 +214,20 @@ exports.for = function (context) {
 		})();
 	}
 
+	store.loadForId = function (id) {
+		var self = this;
+		return COMMON.API.Q.denodeify(function (callback) {
+	        self.fetch({
+	            data: $.param({
+	                "filter[id]": id
+	            }),
+	            success: function () {
+	            	return callback(null);
+	            }
+	        });
+		})();
+	}
+
 	store.modelRecords = function (records) {
 		return COMMON.resolveForeignKeys(store, records, {
 			"consumer_group_id": {

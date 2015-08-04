@@ -43,6 +43,7 @@ exports.for = function (overrides) {
 
 		if (appContext.context.id) {
 
+/*
 			if (!(
 				appContext.selectedView === "Order_Placed" ||
 				appContext.selectedView === "Order_Arrived" ||
@@ -61,6 +62,7 @@ exports.for = function (overrides) {
 				appContext.selectedView = "Receipt";
 				return true;
 			}
+*/
 
 		} else {
 
@@ -91,19 +93,19 @@ exports.for = function (overrides) {
 		PAGE('*', function load(ctx) {
 			var pathname = ctx.pathname;
 //debugger;
-console.log("ON PAGE CHANGE ctx", ctx);
+//console.log("ON PAGE CHANGE ctx", ctx);
 
 			var view = pathname.replace(PATHNAME, "").replace(/^#/, "");
 
-console.log("view", view);
-console.log("pathname", pathname);
+//console.log("view", view);
+//console.log("pathname", pathname);
 			if (
 				/^\//.test(view) &&
 				appContext.lockedView &&
 				view !== appContext.lockedView &&
 				appContext.lockedView.split(",").indexOf(view) === -1
 			) {
-console.log("REDIRECT TO", window.location.origin + view);
+//console.log("REDIRECT TO", window.location.origin + view);
 				// We are selecting a new view and updating the URL using a REDIRECT which
 				// loads the new page from the server.
 
@@ -111,7 +113,7 @@ console.log("REDIRECT TO", window.location.origin + view);
 				//       In those cases you need to redirect to a new URL.
 				window.location.href = window.location.origin + view;
 			} else {
-console.log("SET VIEW", view);
+//console.log("SET VIEW", view);
 
 				// We are selecting a new view and updating the URL using PUSH-STATE
 				// without reloading the page.
@@ -123,17 +125,15 @@ console.log("SET VIEW", view);
 
 		appContext.on("change:selectedView", function () {
 
-
-console.log("ON VIEW CHANGE appContext.selectedView", appContext.selectedView);
-console.log("ON VIEW CHANGE appContext.lockedView", appContext.lockedView);
-
+//console.log("ON VIEW CHANGE appContext.selectedView", appContext.selectedView);
+//console.log("ON VIEW CHANGE appContext.lockedView", appContext.lockedView);
 
 			if (
 				appContext.lockedView &&
 				appContext.selectedView !== appContext.lockedView &&
 				appContext.lockedView.split(",").indexOf(appContext.selectedView) === -1
 			) {
-console.log("REDIRECT TO", window.location.origin + PATHNAME + "#" + appContext.selectedView);
+//console.log("REDIRECT TO", window.location.origin + PATHNAME + "#" + appContext.selectedView);
 				// We are selecting a new view and updating the URL using a REDIRECT which
 				// loads the new page from the server.
 
@@ -142,18 +142,18 @@ console.log("REDIRECT TO", window.location.origin + PATHNAME + "#" + appContext.
 				window.location.href = window.location.origin + PATHNAME + "#" + appContext.selectedView;
 			} else {
 
-console.log("SET PAGE1", PATHNAME + "#" + appContext.selectedView);
+//console.log("SET PAGE1", PATHNAME + "#" + appContext.selectedView);
 
 				// We are selecting a new view and updating the URL using PUSH-STATE
 				// without reloading the page.
 
 				if (handleSelectedViewInit()) return;
-console.log("SET PAGE2", PATHNAME + "#" + appContext.selectedView);
+//console.log("SET PAGE2", PATHNAME + "#" + appContext.selectedView);
 
 				PAGE.redirect(PATHNAME + "#" + appContext.selectedView);
 
 //				PAGE(PATHNAME + "#" + appContext.selectedView);
-console.log("SET PAGE DONE", PATHNAME + "#" + appContext.selectedView);
+//console.log("SET PAGE DONE", PATHNAME + "#" + appContext.selectedView);
 			}
 		});
 
@@ -197,7 +197,7 @@ console.log("SET PAGE DONE", PATHNAME + "#" + appContext.selectedView);
 
 		var context = appContext.context;
 
-		var m = PATHNAME.match(/\/(order|vendor)-([^\/]+)\//);
+		var m = PATHNAME.match(/\/(order|vendor|event)-([^\/]+)\/?/);
 		if (m) {
 			context.type = m[1];
 			context.id = m[2];
@@ -229,6 +229,22 @@ console.log("SET PAGE DONE", PATHNAME + "#" + appContext.selectedView);
 			}).fail(function (err) {
 				console.error("Error loading order!", err.stack);
 			});
+
+		} else
+		if (context.type === "event") {
+
+			if (context.dbfilter.event_id) {				
+				Q.all([
+					appContext.stores.events.loadForId(context.dbfilter.event_id),
+					appContext.stores.menus.loadForEvent(context.dbfilter.event_id)					
+				]).then(function() {
+
+					return appContext.stores.days.loadForEvent(context.dbfilter.event_id);
+
+				}).fail(function (err) {
+					console.error("Error loading data", err.stack);
+				});
+			}
 
 		} else
 		if (context.type === "vendor") {

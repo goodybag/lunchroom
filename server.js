@@ -30,7 +30,7 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
 
 		app.use(MORGAN("combined"));
 
-		app.get(/^(\/(?:vendor|order)-[^\/]+)?(\/.*)$/, function (req, res, next) {
+		app.get(/^(\/(?:vendor|order|event)-[^\/]+)?(\/.*)$/, function (req, res, next) {
 
 			var path = req.params[1];
 			if (path === "/") path = "/index.html";
@@ -259,6 +259,7 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
 		var firenode = new FIRENODE.Server(API.config.firenode, {
 			// TODO: Load these dynamically when loading config.
 			instances: {
+				"07-lunchroom/event-router/0": API["event-router"],
 				"07-lunchroom/consumer-group-router/0": API["consumer-group-router"],
 				"07-lunchroom/consumer-group-subscription-router/0": API["consumer-group-subscription-router"]
 			}

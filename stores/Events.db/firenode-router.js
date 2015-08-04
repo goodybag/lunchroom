@@ -9,18 +9,19 @@ exports.for = function (API) {
 	exports.processRequest = function (req, res, opts) {
 
 		var session = req._FireNodeContext.session;
+
 		if (
 			session &&
 			session.dbfilter &&
-			session.dbfilter.consumer_group_id
+			session.dbfilter.event_id
 		) {
 
 			if (!opts.arg) {
 				// Redirect to alias url for consumer group.
 
-				return DB.getKnex()('consumer-groups').where({
-					"id": session.dbfilter.consumer_group_id
-				}).select('alias').then(function (result) {
+				return DB.getKnex()('events').where({
+					"id": session.dbfilter.event_id
+				}).select('token').then(function (result) {
 
 					if (result.length === 0) {
 						// This should not happen but just in case.
@@ -35,7 +36,7 @@ exports.for = function (API) {
 
 					req._FireNodeContext.addLayer({
 						config: {
-							externalRedirect: "/" + result[0].alias
+							externalRedirect: "/event-" + result[0].token
 						}
 					});
 					return false;
@@ -45,21 +46,8 @@ exports.for = function (API) {
 			return false;
 		}
 
-		if (!opts.arg) {
-
-			// Redirect to default consumer group.
-
-			req._FireNodeContext.resetSession();
-			req._FireNodeContext.addLayer({
-				config: {
-					externalRedirect: "/bazaarvoice"
-				}
-			});
-			return false;
-		}
-
-		return DB.getKnex()('consumer-groups').where({
-			"alias": opts.arg
+		return DB.getKnex()('events').where({
+			"token": opts.arg
 		}).select('id').then(function (result) {
 
 			if (result.length === 0) {
@@ -74,7 +62,7 @@ exports.for = function (API) {
 			req._FireNodeContext.addLayer({
 				session: {
 					dbfilter: {
-						consumer_group_id: result[0].id
+						event_id: result[0].id
 					}
 				}
 			});
