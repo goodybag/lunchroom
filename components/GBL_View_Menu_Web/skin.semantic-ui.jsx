@@ -65,14 +65,9 @@ require("./component.jsx").for(module, {
 
 		var Panel = "";
 
-console.log("Context.eventToday", Context.eventToday);
-
-
 		if (Context.eventToday) {
 
-console.log("Context.eventToday", Context.eventToday.expired);
-
-			if (Context.eventToday.expired) {
+			if (Context.eventToday.ordersLocked) {
 
 				Panel = (
 					<div className="sixteen wide column">

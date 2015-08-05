@@ -64,6 +64,7 @@
           "config": "org.pinf.genesis.lib/0/config",
           "mandrill-send": "io.pinf.service.mandrill/0/send",
           "twilio-send": "io.pinf.service.twilio/0/send",
+          "MOMENT": "moment",
           "DEEPMERGE": "deepmerge",
           "ASSERT": "assert",
           "Q": "q",

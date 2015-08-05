@@ -50,6 +50,8 @@ exports.for = function (context) {
 				"id": day_id
 			});
 		}
+
+		return COMMON.API.Q.resolve();
 	}
 
 	store.modelRecords = function (records) {

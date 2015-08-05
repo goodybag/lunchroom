@@ -20,6 +20,48 @@ var Store = COMMON.API.BACKBONE.Collection.extend({
 		});
 	},
 
+	setReadyForEventId: function (event_id) {
+		var self = this;
+
+		return COMMON.API.Q.denodeify(function (callback) {
+
+			var payload = {
+				data: {
+					type: "events",
+					id: event_id,
+					attributes: {
+						"menuReady": true
+					}
+				}
+			};
+
+			return $.ajax({
+				method: "PATCH",
+				url: ENDPOINT + "/" + event_id,
+				contentType: "application/vnd.api+json",
+				headers: {
+					"Accept": "application/vnd.api+json"
+				},
+    			dataType: "json",
+				data: JSON.stringify(payload)
+			})
+			.done(function (response) {
+
+				return callback(null);
+			})
+			.fail(function(err) {
+
+// TODO: Ask user to submit again.
+console.log("error!", err.stack);
+
+				return callback(err);
+			});
+		})().then(function () {
+
+			return self.loadForId(event_id);
+		});
+	},
+
 	createEvent: function (fields) {
 		var self = this;
 
@@ -102,7 +144,10 @@ exports.for = function (context) {
 	        "consumer_group_id": "string",
 	        "goodybagFee": "string",
 	        "tip": "string",
-	        "token": "token",
+	        "token": "string",
+	        "menuReady": "boolean",
+	        "notificationsSent": "boolean",
+
 	        // TODO: Add these dynamically using foreign model.
 	        "consumerGroup.title": "string",
 	        "consumerGroup.contact": "string",
@@ -148,10 +193,11 @@ exports.for = function (context) {
 	            	}
 	            }
 		    },
-		    "expired": {
+		    "ordersLocked": {
 				deps: [
 					"orderByTime"
 				],
+				cache: false,
 	            fn: function () {
 	            	return COMMON.API.MOMENT().isAfter(this.orderByTime);
 	            }
@@ -160,6 +206,7 @@ exports.for = function (context) {
 				deps: [
 					"orderByTime"
 				],
+				cache: false,
 	            fn: function () {
 	            	var orderByTime = COMMON.API.MOMENT(this.orderByTime);
 	            	if (!orderByTime.isSame(COMMON.API.MOMENT(), 'day')) {
@@ -180,6 +227,7 @@ exports.for = function (context) {
 				deps: [
 					"orderByTime"
 				],
+				cache: false,
 	            fn: function () {
 	            	var orderByTime = COMMON.API.MOMENT(this.orderByTime);
 	            	if (orderByTime.isBefore(COMMON.API.MOMENT())) {
@@ -196,6 +244,24 @@ exports.for = function (context) {
 				],
 	            fn: function () {
 	            	return COMMON.API.NUMERAL(this.goodybagFee/100).format('0.00');
+	            }
+		    },
+		    "format.menuReady": {
+		    	deps: [
+					"menuReady"
+				],
+				cache: false,
+	            fn: function () {
+	            	return (this.menuReady ? "Yes" : "No");
+	            }
+		    },
+		    "format.notificationsSent": {
+		    	deps: [
+					"notificationsSent"
+				],
+				cache: false,
+	            fn: function () {
+	            	return (this.notificationsSent ? "Yes" : "No");
 	            }
 		    }
 	    }
@@ -247,7 +313,13 @@ exports.for = function (context) {
 		}).map(function (record, i) {
 			// Store model on backbone row so we can re-use it on subsequent calls.
 			if (store._byId[records[i].get("id")].__model) {
-				return store._byId[records[i].get("id")].__model;
+				var model = store._byId[records[i].get("id")].__model;
+				Object.keys(Model.prototype._definition).forEach(function (field) {
+					if (record.has(field) && model.get(field) !== record.get(field)) {
+						model.set(field, record.get(field));
+					}
+				});
+				return model;
 			}
 			var fields = {};
 			Object.keys(Model.prototype._definition).forEach(function (field) {
@@ -274,7 +346,13 @@ exports.for = function (context) {
 			return records.map(function (record, i) {
 				// Store model on backbone row so we can re-use it on subsequent calls.
 				if (store._byId[records[i].get("id")].__model) {
-					return store._byId[records[i].get("id")].__model;
+					var model = store._byId[records[i].get("id")].__model;
+					Object.keys(Model.prototype._definition).forEach(function (field) {
+						if (record.has(field) && model.get(field) !== record.get(field)) {
+							model.set(field, record.get(field));
+						}
+					});
+					return model;
 				}
 				var fields = {};
 				Object.keys(Model.prototype._definition).forEach(function (field) {

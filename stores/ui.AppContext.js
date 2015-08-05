@@ -241,7 +241,34 @@ exports.for = function (overrides) {
 					appContext.stores.menus.loadForEvent(context.dbfilter.event_id)					
 				]).then(function() {
 
-					return appContext.stores.days.loadForEvent(context.dbfilter.event_id);
+					return appContext.stores.days.loadForEvent(context.dbfilter.event_id).then(function () {
+
+						var today = appContext.stores.events.modelRecords(appContext.stores.events.getToday())[0];
+
+						function monitorOrderDeadline (today) {
+							var ordersLocked = null;
+							var interval = setInterval(function () {
+								if (ordersLocked === null) {
+									ordersLocked = today.ordersLocked;
+								} else
+								if (today.ordersLocked !== ordersLocked) {
+									ordersLocked = today.ordersLocked;
+									// Status has changed so we reload to lock the UI.
+									console.log("Lock event due to ordersLocked");
+									appContext.stores.events.loadForId(context.dbfilter.event_id).fail(function (err) {
+										console.error("Error loading event", err.stack);
+									});
+								}
+								if (ordersLocked && interval) {
+									clearInterval(interval);
+									interval = null;
+								}
+							}, 5 * 1000);
+						}
+
+						monitorOrderDeadline(today);
+
+					});
 
 				}).fail(function (err) {
 					console.error("Error loading data", err.stack);

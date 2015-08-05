@@ -92,6 +92,9 @@ exports.init = function (config, options) {
 							if (field.type === "timestamp") {
 								fieldDef = table.timestamp(field.name);
 							} else
+							if (field.type === "boolean") {
+								fieldDef = table.boolean(field.name);
+							} else
 							if (field.type === "string" || !field.type) {
 								fieldDef = table.text(field.name);
 							}
@@ -106,7 +109,7 @@ exports.init = function (config, options) {
 								}
 							}
 
-							if (field.default) {
+							if (typeof field.default !== "undefined") {
 								if (field.default === "Date.now()") {
 									fieldDef = fieldDef.defaultTo(knex.raw('now()'));
 								} else {
@@ -279,6 +282,11 @@ exports.init = function (config, options) {
 
 		LIVE_NOTIFY.attachToDatabase(config.connection);
 
+
+		return {
+			knex: knex
+//			database: config.connection.database
+		};
 	});
 }
 

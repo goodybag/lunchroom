@@ -190,6 +190,22 @@
 					"constraints": {
 						"required": true
 					}
+				},
+				{
+					"name": "menuReady",
+					"type": "boolean",
+					"default": false,
+					"constraints": {
+						"required": true
+					}
+				},
+				{
+					"name": "notificationsSent",
+					"type": "boolean",
+					"default": false,
+					"constraints": {
+						"required": true
+					}
 				}
 			]
 		},

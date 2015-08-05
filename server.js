@@ -22,6 +22,7 @@ const BOOKSHELF_KNEX_POSTGRESQL = require("./server/db/bookshelf.knex.postgresql
 const LIVE_NOTIFY = require("./server/live-notify");
 const FIRENODE = require("firenode-for-jsonapi/server");
 const UGLIFY = require("uglify-js");
+const JOBS = require("./server/jobs");
 
 
 require('org.pinf.genesis.lib').forModule(require, module, function (API, exports) {
@@ -241,9 +242,18 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
 
 		BOOKSHELF_KNEX_POSTGRESQL.init({
 			connection: postgresqlConfig
-		}, {
-			enableAutoMigration: API.config.db.enableAutoMigration || false
+		}).then(function (db) {
+
+			return JOBS.for({}).then(function (JOBS) {
+
+				return JOBS.monitorDatabase(db);
+
+			});
+
+		}).fail(function (err) {
+			throw err;
 		});
+
 	} catch (err) {
 		console.error("Error connecting to PostgreSQL", err.message);
 	}

@@ -13,11 +13,16 @@ exports.for = function (Context) {
 	    },
 
 	    onUnmount: function () {
+	    	if (this.eventsCheckInterval) {
+	    		clearInterval(this.eventsCheckInterval);
+	    		this.eventsCheckInterval = null;
+	    	}
 			this.props.appContext.stores.cart.off("update", this._trigger_forceUpdate);
 			this.props.appContext.stores.events.off("update", this._trigger_forceUpdate);
 	    },
 
 		afterRender: function (Context, element) {
+			var self = this;
 
 			$('.menu .item', element).tab();
 			$('.menu .item', element).on('click', function () {
@@ -42,6 +47,24 @@ exports.for = function (Context) {
 		    } else {
 		    	$('.button[data-link="#Checkout"]', element).addClass("disabled");
 		    }
+
+		    if (!self.eventsCheckInterval) {
+		    	var lastOrderTimer = null;
+		    	self.eventsCheckInterval = setInterval(function () {
+					if (lastOrderTimer === null) {
+						lastOrderTimer = Context.eventToday['format.orderTimer'];
+					} else
+					if (Context.eventToday['format.orderTimer'] !== lastOrderTimer) {
+						lastOrderTimer = Context.eventToday['format.orderTimer'];
+						self._trigger_forceUpdate();
+					}
+					if (Context.eventToday.ordersLocked && self.eventsCheckInterval) {
+						// Once orders are locked we can stop querying.
+						clearInterval(self.eventsCheckInterval);
+	    				self.eventsCheckInterval = null;
+					}
+				}, 1 * 1000);
+			}
 		},
 
 	    render: function () {
