@@ -3,7 +3,7 @@ exports.seeds = {
   "consumer-groups": {
     "1": {
       "id": 1,
-      "title": "Bazaar Voice",
+      "title": "Bazaarvoice",
       "alias": "bazaarvoice",
       contact: "Gillian Lambert",
       address: "7901 Cameron Rd<br/>Bldg 2, Ste. 300<br/>Austin, TX 78754",

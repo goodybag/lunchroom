@@ -30,6 +30,12 @@ require("./component.jsx").for(module, {
 	    	}
 	    );
 
+		Context.ensureForNodes(
+            $('.ui.dropdown', element),
+            'dropdown()'
+        );
+
+
 	    // Copy name from info to billing in form
 	    Context.ensureForNodes(
 	    	$('#form-order input[name="info[name]"]', element),
@@ -65,23 +71,29 @@ require("./component.jsx").for(module, {
 
 
 	    // Fill form with existing values if available.
-	    $('#form-order input', element).each(function () {
-	    	var values = Context.order.get("form");
-	    	if (!values) return;
-	    	if (values[$(this).attr("name")]) {
-	    		$(this).val(values[$(this).attr("name")]);
-	    	}
-	    });
-		$('#form-order select', element).each(function () {
-	    	var values = Context.order.get("form");
-	    	if (!values) return;
-			var select = $(this);
-	    	if (values[select.attr("name")]) {
-	    		if ($(this).attr("name") === "card[expire-month]") {
-					$('option[value="' + values[select.attr("name")] + '"]', select).prop('selected', true);
+    	var values = Context.order.get("form");
+    	if (values) {
+		    $('#form-order input', element).each(function () {
+		    	var elm = $(this);
+		    	var name = elm.attr("name");
+		    	if (values[name]) {
+		    		elm.val(values[name]);
 		    	}
-	    	}
-	    });
+		    });
+			$('#form-order select', element).each(function () {
+				var select = $(this);
+		    	if (values[select.attr("name")]) {
+		    		if ($(this).attr("name") === "card[expire-month]") {
+						$('option[value="' + values[select.attr("name")] + '"]', select).prop('selected', true);
+			    	}
+		    	}
+		    });
+		}
+
+		if (Context.eventToday) {
+			$('[data-fieldname="tip"]', element).dropdown('set selected', Context.eventToday.get("tip"));
+		}
+
 	},
 
 	getHTML: function (Context) {
@@ -269,17 +281,16 @@ require("./component.jsx").for(module, {
 					      <td></td>
 					      <td className="right aligned" colSpan="2">
 					      	Tip
-					      	<div className="ui compact menu">
-								<div className="ui simple dropdown item">
-								  <div className="text">5%</div>
-								  <i className="dropdown icon"></i>
-								  <div className="menu">
-								    <div className="item">10%</div>
-								    <div className="item">15%</div>
-								    <div className="item">20%</div>
-								  </div>
-								</div>
-							</div>
+					      	<div className="ui selection dropdown" data-fieldname="tip">
+	                          <div className="default text">Select</div>
+		                      <i className="dropdown icon"></i>
+		                      <div className="menu">
+		                        <div className="item" data-value="5">5%</div>
+		                        <div className="item" data-value="10">10%</div>
+		                        <div className="item" data-value="15">15%</div>
+		                        <div className="item" data-value="20">20%</div>
+		                      </div>
+		                    </div>
 					      </td>
 					      <td>
 					        $

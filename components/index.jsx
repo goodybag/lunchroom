@@ -73,22 +73,26 @@ appContext.on("change:ready", function () {
 
 	if (!appContext.context.dev) return;
 
-	// DEV: Init cart
-	appContext.stores.cart.addItem("1");
+	setTimeout(function () {
 
-	// DEV: Init order form
-	var order = appContext.stores.orders.getOrder(appContext.todayId);
-	order.set("form", {
-	 	"info[name]": "Bill Smith",
-	 	"info[email]": "cadorn.test@gmail.com",
-	 	"card[name]": "Bill Smith",
-	 	"card[cvc]": "123",
-	 	"card[number]": "1234 1234 1234 1234",
-	 	"card[expire-month]": "4",
-	 	"card[expire-year]": "2018"
-	});
+		// DEV: Init cart
+		appContext.stores.cart.addItem("1");
 
-	$('#form-subscribe input[type="email"]').val("cadorn.test@gmail.com");
+		// DEV: Init order form
+		var order = appContext.stores.orders.getOrder(appContext.todayId);
+		order.set("form", {
+		 	"info[name]": "Bill Smith",
+		 	"info[email]": "cadorn.test@gmail.com",
+		 	"card[name]": "Bill Smith",
+		 	"card[cvc]": "123",
+		 	"card[number]": "1234 1234 1234 1234",
+		 	"card[expire-month]": "4",
+		 	"card[expire-year]": "2018"
+		});
+
+		$('#form-subscribe input[type="email"]').val("cadorn.test@gmail.com");
+
+	}, 1000);
 
 });
 

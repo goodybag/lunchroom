@@ -148,6 +148,14 @@ exports.for = function (context) {
 	            	}
 	            }
 		    },
+		    "expired": {
+				deps: [
+					"orderByTime"
+				],
+	            fn: function () {
+	            	return COMMON.API.MOMENT().isAfter(this.orderByTime);
+	            }
+		    },
 		    "canOrder": {
 				deps: [
 					"orderByTime"
@@ -187,17 +195,18 @@ exports.for = function (context) {
 					"goodybagFee"
 				],
 	            fn: function () {
-	            	return COMMON.API.NUMERAL(this.goodybagFee).format('0.00');
+	            	return COMMON.API.NUMERAL(this.goodybagFee/100).format('0.00');
 	            }
 		    }
 	    }
 	});
 
 	store.getToday = function () {
-		var dayId = COMMON.API.MOMENT().format("YYYY-MM-DD");
-		return this.models.filter(function (model) {
-			return (model.get('day_id') === dayId);
-		});
+		var today = store.get(context.appContext.context.dbfilter.event_id);
+		if (!today) return [];
+		return [
+			today
+		];
 	}
 
 	store.loadForDay = function (day_id) {

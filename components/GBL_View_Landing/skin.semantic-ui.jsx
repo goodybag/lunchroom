@@ -54,7 +54,9 @@ require("./component.jsx").for(module, {
     		) {
     			$('DIV[data-message="subscription-confirmed"] .email', element).html(consumerGroupSubscription.get("subscribeEmail"));
     			$('DIV[data-message="subscription-confirmed"]', element).removeClass("hidden");
-    			$("#form-subscribe").addClass("hidden");
+
+    			$("#form-subscribe BUTTON.submit-button").html("Update Email");
+
     		} else {
     			$('#form-subscribe DIV[data-message="subscription-pending"]', element).removeClass("hidden");
     		}

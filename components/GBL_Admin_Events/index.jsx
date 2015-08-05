@@ -79,6 +79,10 @@ module.exports = COMPONENT.create({
                     var name = elm.attr("data-fieldname");
 
                     var value = null;
+
+                    if (elm.attr('data-fieldname') === 'day_id') {
+                      value = elm.pickadate('picker').get('select', 'yyyy-mm-dd');
+                    } else
                     if (elm.hasClass("dropdown")) {
                       value = elm.dropdown('get value');
                     } else {

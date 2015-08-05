@@ -154,6 +154,8 @@ exports.for = function (overrides) {
 
 //				PAGE(PATHNAME + "#" + appContext.selectedView);
 //console.log("SET PAGE DONE", PATHNAME + "#" + appContext.selectedView);
+
+				window.scrollTo(0, 0);
 			}
 		});
 

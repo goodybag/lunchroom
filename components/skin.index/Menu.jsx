@@ -124,19 +124,7 @@ exports.for = function (Context) {
 						{CompanyHeading},
 						(
 							<div className="ten wide column">
-								<div className="ui secondary inverted segment">
-									<div className="ui grid">
-									    <div className="eight wide column">
-										  <p>Join your company email list to receive the daily menu!</p>
-									    </div>
-									    <div className="eight wide column">
-									    	<div className="ui fluid input">
-											  <input type="text" placeholder="Email Address"/>
-											  <div className="ui button form-submit" tabindex="0">Subscribe</div>
-											</div>
-									    </div>
-									</div>
-								</div>
+
 							</div>
 						)
 					];

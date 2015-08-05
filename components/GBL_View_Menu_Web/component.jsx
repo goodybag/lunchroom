@@ -8,11 +8,13 @@ exports.for = function (module, Context) {
 		appContextView: "Menu_Web",
 
 	    onMount: function () {
+			this.props.appContext.stores.events.on("sync", this._trigger_forceUpdate);
 			this.props.appContext.stores.menus.on("sync", this._trigger_forceUpdate);
 			this.props.appContext.stores.items.on("sync", this._trigger_forceUpdate);
 	    },
 
 	    onUnmount: function () {
+			this.props.appContext.stores.events.off("sync", this._trigger_forceUpdate);
 			this.props.appContext.stores.menus.off("sync", this._trigger_forceUpdate);
 			this.props.appContext.stores.items.off("sync", this._trigger_forceUpdate);
 	    },
@@ -47,6 +49,8 @@ exports.for = function (module, Context) {
 	        });
 
 	        return {
+
+				eventToday: self.modelRecordsWithStore(events, events.getToday()).pop(),
 
 	        	// Info for each event (multiple menus grouped by 'Mon", "Tue", ...)
 	        	days: days,

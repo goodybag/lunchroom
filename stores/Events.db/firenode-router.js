@@ -13,35 +13,34 @@ exports.for = function (API) {
 		if (
 			session &&
 			session.dbfilter &&
-			session.dbfilter.event_id
+			session.dbfilter.event_id && 
+			!opts.arg
 		) {
 
-			if (!opts.arg) {
-				// Redirect to alias url for consumer group.
+			// Redirect to alias url for consumer group.
 
-				return DB.getKnex()('events').where({
-					"id": session.dbfilter.event_id
-				}).select('token').then(function (result) {
+			return DB.getKnex()('events').where({
+				"id": session.dbfilter.event_id
+			}).select('token').then(function (result) {
 
-					if (result.length === 0) {
-						// This should not happen but just in case.
-						req._FireNodeContext.resetSession();
-						req._FireNodeContext.addLayer({
-							config: {
-								externalRedirect: "/"
-							}
-						});
-						return false;
-					}
-
+				if (result.length === 0) {
+					// This should not happen but just in case.
+					req._FireNodeContext.resetSession();
 					req._FireNodeContext.addLayer({
 						config: {
-							externalRedirect: "/event-" + result[0].token
+							externalRedirect: "/"
 						}
 					});
 					return false;
+				}
+
+				req._FireNodeContext.addLayer({
+					config: {
+						externalRedirect: "/event-" + result[0].token
+					}
 				});
-			}
+				return false;
+			});
 
 			return false;
 		}

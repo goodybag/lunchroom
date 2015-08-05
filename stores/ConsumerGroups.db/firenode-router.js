@@ -49,7 +49,6 @@ exports.for = function (API) {
 
 			// Redirect to default consumer group.
 
-			req._FireNodeContext.resetSession();
 			req._FireNodeContext.addLayer({
 				config: {
 					externalRedirect: "/bazaarvoice"

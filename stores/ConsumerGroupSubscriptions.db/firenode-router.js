@@ -19,7 +19,6 @@ exports.for = function (API) {
 			}
 
 			function successResponse () {
-				req._FireNodeContext.resetSession();
 				req._FireNodeContext.addLayer({
 					config: {
 						externalRedirect: "/"

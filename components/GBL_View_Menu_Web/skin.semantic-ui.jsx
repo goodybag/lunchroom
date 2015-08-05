@@ -63,130 +63,162 @@ require("./component.jsx").for(module, {
 		// TODO: Remove this once we can inject 'React' automatically at build time.
 		const React = Context.REACT;
 
+		var Panel = "";
 
-		var Items = "";
-		if (Object.keys(Context.items).length > 0) {
+console.log("Context.eventToday", Context.eventToday);
 
-			// TODO: Base on active selection.
-			Items = (
-				<div className="sixteen wide column">
-					{Object.keys(Context.days).map(function(day) {
 
-						function makeOptions (item) {
-							var Options = [];
-							var options = JSON.parse(item.get("item.options") || "{}");
-							Object.keys(options).forEach(function (name) {
-								Options.push(
-									<div className="two fields">
-										<div className="ui pointing right label">{name}</div>
-										<select data-option={name} className="ui dropdown">
-										    <option value="">Please select ...</option>
-											{options[name].map(function (value) {
-										    	return <option className="item" key={value} value={value}>{value}</option>
-									    	})}												  
-										</select>
-									</div>
-								);
-							});
-							if (Options.length === 0) Options = "";
-							return Options;
-						}
+		if (Context.eventToday) {
 
-			        	return (
-							<div key={day} className="ui bottom attached tab segment" data-tab={day}>
+console.log("Context.eventToday", Context.eventToday.expired);
 
-								<div className="ui cards">
+			if (Context.eventToday.expired) {
 
-									{Context.items[day].map(function (item) {								
-	{
-	// ##################################################
-	// # Menu item summary card
-	// ##################################################
-	}
+				Panel = (
+					<div className="sixteen wide column">
 
-										var Spiciness = "";
-										var properties = JSON.parse(item.get("item.properties") || "{}");
-										if (properties && properties.Spiciness) {
-											Spiciness = (<div>{properties.Spiciness}</div>);
-										}
+				    	<h2 className="ui header">The order window for this event has closed!</h2>
 
-										var OrderButton = "";
-										if (Context.days[day].get("canOrder")) {
-											OrderButton = (
-												<div data-link="action:add" data-id={item.get('item_id')} data-day={day} className="ui bottom attached button">
-											      <i className="add icon"/>
-											      Add Dish
-											    </div>
-											);
-										}
+				    </div>
+				);
 
-										return (
-										  <div key={item.get('id')} data-id={item.get('item_id')} data-day={day} className="card item-block">
-										    <a className="image" data-link="action:show-detail">
-										      <img src="https://cdn.filepicker.io/api/file/6PqREn6qQHWCQsPdKJXK/convert?cache=true&fit=scale"/>
-										    </a>
-										    <div className="content">
-										      <a className="header">{item.get("item.title")}</a>
-										      <div className="meta">
-										        {Spiciness}
-										      </div>
-										      <div className="description">
-											    <b>${item.get("item.format.price")}</b> &nbsp;&nbsp;&nbsp; {item.get("item.description")}
-											  </div>
-										    </div>
-										    <form className="ui fluid form">
-											    {makeOptions(item)}
-										    </form>
-										    {OrderButton}
-										  </div>
+			} else {
+
+				var Items = "";
+				if (Object.keys(Context.items).length > 0) {
+
+					// TODO: Base on active selection.
+					Items = (
+						<div className="sixteen wide column">
+							{Object.keys(Context.days).map(function(day) {
+
+								function makeOptions (item) {
+									var Options = [];
+									var options = JSON.parse(item.get("item.options") || "{}");
+									Object.keys(options).forEach(function (name) {
+										Options.push(
+											<div className="two fields">
+												<div className="ui pointing right label">{name}</div>
+												<select data-option={name} className="ui dropdown">
+												    <option value="">Please select ...</option>
+													{options[name].map(function (value) {
+												    	return <option className="item" key={value} value={value}>{value}</option>
+											    	})}												  
+												</select>
+											</div>
 										);
-									})}
+									});
+									if (Options.length === 0) Options = "";
+									return Options;
+								}
 
-								</div>
+					        	return (
+									<div key={day} className="ui bottom attached tab segment" data-tab={day}>
 
-								{Context.items[day].map(function (item) {
+										<div className="ui cards">
 
-									var Spiciness = "";
-									var properties = JSON.parse(item.get("item.properties") || "{}");
-									if (properties && properties.Spiciness) {
-										Spiciness = (<div>{properties.Spiciness}</div>);
-									}
+											{Context.items[day].map(function (item) {								
 
-									return (
-										<div key={item.get('id')} data-id={item.get('item_id')} data-day={day} className="ui modal item-block">
-										  <i className="close icon"></i>
-										  <div className="header">
-										  	{item.get("item.title")}
-										  </div>
-										  <div className="content">
-										    <div className="ui medium image">
-										      <img src="https://cdn.filepicker.io/api/file/6PqREn6qQHWCQsPdKJXK/convert?cache=true&fit=scale"/>
-										    </div>
-										    <div className="description">
-										    	<p>{Spiciness}</p>
-										        <p><b>${item.get("item.format.price")}</b> &nbsp;&nbsp;&nbsp; {item.get("item.description")}</p>
-										        <form className="ui fluid form">
-												    {makeOptions(item)}
-										    	</form>
-										    </div>
-										  </div>
-										  <div className="actions">
-										    <div className="ui black deny button">
-										      No thanks!
-										    </div>
-										    <div data-link="action:add" className="ui positive right labeled icon button">
-										      Add Dish
-										    </div>
-										  </div>
+												var Spiciness = "";
+												var properties = JSON.parse(item.get("item.properties") || "{}");
+												if (properties && properties.Spiciness) {
+													Spiciness = (<div>{properties.Spiciness}</div>);
+												}
+
+												var OrderButton = "";
+												if (Context.days[day].get("canOrder")) {
+													OrderButton = (
+														<div data-link="action:add" data-id={item.get('item_id')} data-day={day} className="ui bottom attached button">
+													      <i className="add icon"/>
+													      Add Dish
+													    </div>
+													);
+												}
+
+												return (
+												  <div key={item.get('id')} data-id={item.get('item_id')} data-day={day} className="card item-block">
+												    <a className="image" data-link="action:show-detail">
+												      <img className="ui medium rounded image" src={item.get("item.photo_url")}/>
+												    </a>
+												    <div className="content">
+												      <a className="header">{item.get("item.title")}</a>
+												      <div className="meta">
+												        {Spiciness}
+												      </div>
+												      <div className="description">
+													    <b>${item.get("item.format.price")}</b> &nbsp;&nbsp;&nbsp; {item.get("item.description")}
+													  </div>
+												    </div>
+												    <form className="ui fluid form">
+													    {makeOptions(item)}
+												    </form>
+												    {OrderButton}
+												  </div>
+												);
+											})}
+
 										</div>
-									);
-								})}
 
-							</div>
-			        	);
-			        })}
-			    </div>
-			);
+										{Context.items[day].map(function (item) {
+
+											var Spiciness = "";
+											var properties = JSON.parse(item.get("item.properties") || "{}");
+											if (properties && properties.Spiciness) {
+												Spiciness = (<div>{properties.Spiciness}</div>);
+											}
+
+											return (
+												<div key={item.get('id')} data-id={item.get('item_id')} data-day={day} className="ui modal item-block">
+												  <i className="close icon"></i>
+												  <div className="header">
+												  	{item.get("item.title")}
+												  </div>
+												  <div className="content">
+												    <div className="ui medium image">
+												      <img className="ui medium rounded image" src={item.get("item.photo_url")}/>
+												    </div>
+												    <div className="description">
+												    	<p>{Spiciness}</p>
+												        <p><b>${item.get("item.format.price")}</b> &nbsp;&nbsp;&nbsp; {item.get("item.description")}</p>
+												        <form className="ui fluid form">
+														    {makeOptions(item)}
+												    	</form>
+												    </div>
+												  </div>
+												  <div className="actions">
+												    <div className="ui black deny button">
+												      No thanks!
+												    </div>
+												    <div data-link="action:add" className="ui positive right labeled icon button">
+												      Add Dish
+												    </div>
+												  </div>
+												</div>
+											);
+										})}
+
+									</div>
+					        	);
+					        })}
+					    </div>
+					);
+				}
+
+				Panel = [(
+					<div className="two column row">
+
+					    <div className="six wide left aligned column">
+
+					    	<h2 className="ui header">Restaurant Title</h2>
+
+					    </div>
+					    <div className="ten wide column">
+
+					    </div>
+				    </div>
+				), Items];
+
+			}
 		}
 
         return (
@@ -196,28 +228,7 @@ require("./component.jsx").for(module, {
 
 	        	{Context.appContext.view.components.Menu.for(Context)}
 
-{
-// ##################################################
-// # Page Header
-// ##################################################
-}
-				<div className="two column row">
-
-				    <div className="six wide left aligned column">
-
-				    	<h2 className="ui header">Tropical Smoothie Cafe</h2>
-
-				    </div>
-				    <div className="ten wide column">
-
-				    </div>
-			    </div>
-{
-// ##################################################
-// # Page Content (from selected tab)
-// ##################################################
-}
-			    {Items}
+				{Panel}
 
 			    {Context.appContext.view.components.Footer}
 

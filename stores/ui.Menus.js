@@ -38,7 +38,9 @@ exports.for = function (context) {
 	        item_id: "string",
 	        vendor_id: "string",
 	        // TODO: Add these dynamically using foreign model.
-	        "item.title": "string"
+	        "item.title": "string",
+	        "item.photo_url": "string",
+	        "item.price": "string"
 	    }
 	});
 
