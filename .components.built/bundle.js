@@ -54,7 +54,7 @@
 /******/ 	
 /******/ 	
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "c7f7cf06f487ae0354c4"; // eslint-disable-line no-unused-vars
+/******/ 	var hotCurrentHash = "201a3130c7d6f7e1697e"; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentParents = []; // eslint-disable-line no-unused-vars
 /******/ 	
@@ -35878,22 +35878,17 @@
 		  			React.createElement("section", {className: "page-section hero-unit primary-section", id: "email-signup-cta"}, 
 					  React.createElement("div", {className: "container"}, 
 					    React.createElement("h1", {className: "section-header"}, "Delicious meals delivered every day."), 
-					    React.createElement("p", null, "Your choice of lunch brought to you at work. Launches August 1st, 2015."), 
+					    React.createElement("p", null, "Your choice of lunch brought to you at work. Launches August 15th, 2015."), 
 
-						  React.createElement("div", {"data-message": "form-sent", className: "ui success hidden message"}, 
-						    React.createElement("div", {className: "header"}, "Form Completed"), 
-						    React.createElement("p", null, "We have sent you an email to confirm your subscription!")
+						  React.createElement("div", {"data-message": "form-sent", className: "hidden message"}, 
+						    React.createElement("p", null, "Got it! Check your inbox to confirm your subscription.")
 						  ), 
 
-						  React.createElement("div", {"data-message": "subscription-confirmed", className: "ui success hidden message"}, 
-						    React.createElement("p", null, "Your subscription is confirmed for ", React.createElement("b", {className: "email"}), "! ", UnsubscribeLink)
-						  ), 
+						  React.createElement("div", {"data-message": "subscription-confirmed", className: "hidden message"}), 
 
 					    React.createElement("form", {id: "form-subscribe", className: "cta-form form"}, 
 
-						  React.createElement("div", {"data-message": "subscription-pending", className: "ui negative hidden message"}, 
-						    React.createElement("p", null, "Your subscription for this email address is pending. You can re-send it.")
-						  ), 
+						  React.createElement("div", {"data-message": "subscription-pending", className: "hidden message"}), 
 
 							React.createElement("div", {"data-message": "form-error", className: "ui negative hidden message"}, 
 								React.createElement("i", {className: "close icon"}), 
