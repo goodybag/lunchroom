@@ -110,22 +110,17 @@ require("./component.jsx").for(module, {
 	  			<section className="page-section hero-unit primary-section" id="email-signup-cta">
 				  <div className="container">
 				    <h1 className="section-header">Delicious meals delivered every day.</h1>
-				    <p>Your choice of lunch brought to you at work. Launches August 1st, 2015.</p>
+				    <p>Your choice of lunch brought to you at work. Launches August 15th, 2015.</p>
 
-					  <div data-message="form-sent" className="ui success hidden message">
-					    <div className="header">Form Completed</div>
-					    <p>We have sent you an email to confirm your subscription!</p>
+					  <div data-message="form-sent" className="hidden message">
+					    <p>Got it! Check your inbox to confirm your subscription.</p>
 					  </div>
 
-					  <div data-message="subscription-confirmed" className="ui success hidden message">
-					    <p>Your subscription is confirmed for <b className="email"></b>! {UnsubscribeLink}</p>
-					  </div>
+					  <div data-message="subscription-confirmed" className="hidden message"></div>
 
 				    <form id="form-subscribe" className="cta-form form">
 
-					  <div data-message="subscription-pending" className="ui negative hidden message">
-					    <p>Your subscription for this email address is pending. You can re-send it.</p>
-					  </div>
+					  <div data-message="subscription-pending" className="hidden message"></div>
 
 						<div data-message="form-error" className="ui negative hidden message">
 							<i className="close icon"></i>
