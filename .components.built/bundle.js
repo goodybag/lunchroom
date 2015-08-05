@@ -54,7 +54,7 @@
 /******/ 	
 /******/ 	
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "48cea4df44c42963f72c"; // eslint-disable-line no-unused-vars
+/******/ 	var hotCurrentHash = "c7f7cf06f487ae0354c4"; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentParents = []; // eslint-disable-line no-unused-vars
 /******/ 	
@@ -1090,22 +1090,26 @@
 
 		if (!appContext.context.dev) return;
 
-		// DEV: Init cart
-		appContext.stores.cart.addItem("1");
+		setTimeout(function () {
 
-		// DEV: Init order form
-		var order = appContext.stores.orders.getOrder(appContext.todayId);
-		order.set("form", {
-		 	"info[name]": "Bill Smith",
-		 	"info[email]": "cadorn.test@gmail.com",
-		 	"card[name]": "Bill Smith",
-		 	"card[cvc]": "123",
-		 	"card[number]": "1234 1234 1234 1234",
-		 	"card[expire-month]": "4",
-		 	"card[expire-year]": "2018"
-		});
+			// DEV: Init cart
+			appContext.stores.cart.addItem("1");
 
-		$('#form-subscribe input[type="email"]').val("cadorn.test@gmail.com");
+			// DEV: Init order form
+			var order = appContext.stores.orders.getOrder(appContext.todayId);
+			order.set("form", {
+			 	"info[name]": "Bill Smith",
+			 	"info[email]": "cadorn.test@gmail.com",
+			 	"card[name]": "Bill Smith",
+			 	"card[cvc]": "123",
+			 	"card[number]": "1234 1234 1234 1234",
+			 	"card[expire-month]": "4",
+			 	"card[expire-year]": "2018"
+			});
+
+			$('#form-subscribe input[type="email"]').val("cadorn.test@gmail.com");
+
+		}, 1000);
 
 	});
 
@@ -1419,7 +1423,7 @@
 			    	'click',
 			    	function () {
 			    		var link = $(this).attr("data-link");
-			    		if (!/^#/.test(link)) return;		    		
+			    		if (!/^#/.test(link)) return;
 						component._render_Context.appContext.selectedView = link.replace(/^#/, "");
 			    	}
 			    );
@@ -1436,7 +1440,16 @@
 		    displayName: implementation.displayName || 'GBL_ReactComponent',
 
 		    _trigger_forceUpdate: function () {
-				this.forceUpdate();
+		    	var self = this;
+		    	var self = this;
+		    	if (!self._debounced_trigger_forceUpdate) {
+		    		self._debounced_trigger_forceUpdate = API.UNDERSCORE.debounce(function () {
+	console.log("actual forced updated");
+		    			self.forceUpdate();
+		    		}, 300);
+		    	}
+	console.log("triggered forced updated");
+		    	self._debounced_trigger_forceUpdate();
 		    },
 			componentDidMount: function () {
 				this.props.appContext.on("change", this._trigger_forceUpdate);
@@ -1460,22 +1473,7 @@
 
 		        var _notify_onChange = API.UNDERSCORE.debounce(this._trigger_forceUpdate, 100);
 
-		        store.on("sync", _notify_onChange);
-
-		        return store.modelRecords(records, true).map(function(item) {
-
-	                // Re-draw ourselves on item model changes.
-	                item.once("change", _notify_onChange);
-
-	                return item;
-	            });
-		    },
-
-		    modelRecordsWithStore: function (store, records) {
-
-		        var _notify_onChange = API.UNDERSCORE.debounce(this._trigger_forceUpdate, 100);
-
-		        store.on("sync", _notify_onChange);
+		        store.once("sync", _notify_onChange);
 
 		        return store.modelRecords(records, true).map(function(item) {
 
@@ -34399,6 +34397,8 @@
 	/** @jsx React.DOM *//** @jsx React.DOM */
 	'use strict'
 
+	const COMPONENT = __webpack_require__(15);
+
 	exports.for = function (module, context) {
 
 		// ##################################################
@@ -34433,12 +34433,10 @@
 
 		    displayName: 'GBL_DEV_Views',
 
-		    _trigger_afterRender: function () {
 
+		    _trigger_syncLayout: function () {
 				var iframe = $("iframe", this.getDOMNode());
-
 				var height = iframe.parentsUntil(".ui.basic.segment > .grid", ".thirteen.wide.column").height();
-
 				iframe.css("width", "100%");
 				iframe.css("height", height + "px");
 		    },
@@ -34446,14 +34444,35 @@
 		    _trigger_forceUpdate: function (payload) {
 				this.forceUpdate();
 		    },
+
+		    _window_resize_handler: function () {
+		    	var self = this;
+		    	if (!self._on_window_resize) {
+		    		self._on_window_resize = COMPONENT.API.UNDERSCORE.debounce(function () {
+		    			self._trigger_syncLayout();
+		    		}, 300);
+		    	}
+		    	self._on_window_resize();
+		    },
+
 			componentDidMount: function () {
 				this.props.appContext.on("change", this._trigger_forceUpdate);
-				this._trigger_afterRender();
+
+				$(window).on("resize", this._window_resize_handler);
+
+				this._trigger_syncLayout();
 		    },
 			componentDidUpdate: function () {
-				this._trigger_afterRender();
+				var self = this;
+				self._trigger_syncLayout();
+				setTimeout(function () {
+					self._trigger_syncLayout();
+				}, 500);
 		    },
 		    componentWillUnmount: function () {
+
+				$(window).off("resize", this._window_resize_handler);
+
 				this.props.appContext.off("change", this._trigger_forceUpdate);
 		    },
 
@@ -34572,6 +34591,11 @@
 				var consumerGroupSubscription = self.modelRecordsWithStore(consumerGroupSubscriptions, consumerGroupSubscriptions.where())[0];
 
 		        return {
+
+		        	config: {
+		        		doNothingOnEmptyEmailSubmit: true
+		        	},
+
 		        	consumerGroup: consumerGroup,
 		        	consumerGroupSubscription: consumerGroupSubscription,
 
@@ -34829,11 +34853,13 @@
 			appContextView: "Menu_Web",
 
 		    onMount: function () {
+				this.props.appContext.stores.events.on("sync", this._trigger_forceUpdate);
 				this.props.appContext.stores.menus.on("sync", this._trigger_forceUpdate);
 				this.props.appContext.stores.items.on("sync", this._trigger_forceUpdate);
 		    },
 
 		    onUnmount: function () {
+				this.props.appContext.stores.events.off("sync", this._trigger_forceUpdate);
 				this.props.appContext.stores.menus.off("sync", this._trigger_forceUpdate);
 				this.props.appContext.stores.items.off("sync", this._trigger_forceUpdate);
 		    },
@@ -34868,6 +34894,8 @@
 		        });
 
 		        return {
+
+					eventToday: self.modelRecordsWithStore(events, events.getToday()).pop(),
 
 		        	// Info for each event (multiple menus grouped by 'Mon", "Tue", ...)
 		        	days: days,
@@ -35278,11 +35306,16 @@
 		    },
 
 		    onUnmount: function () {
+		    	if (this.eventsCheckInterval) {
+		    		clearInterval(this.eventsCheckInterval);
+		    		this.eventsCheckInterval = null;
+		    	}
 				this.props.appContext.stores.cart.off("update", this._trigger_forceUpdate);
 				this.props.appContext.stores.events.off("update", this._trigger_forceUpdate);
 		    },
 
 			afterRender: function (Context, element) {
+				var self = this;
 
 				$('.menu .item', element).tab();
 				$('.menu .item', element).on('click', function () {
@@ -35307,6 +35340,24 @@
 			    } else {
 			    	$('.button[data-link="#Checkout"]', element).addClass("disabled");
 			    }
+
+			    if (!self.eventsCheckInterval) {
+			    	var lastOrderTimer = null;
+			    	self.eventsCheckInterval = setInterval(function () {
+						if (lastOrderTimer === null) {
+							lastOrderTimer = Context.eventToday['format.orderTimer'];
+						} else
+						if (Context.eventToday['format.orderTimer'] !== lastOrderTimer) {
+							lastOrderTimer = Context.eventToday['format.orderTimer'];
+							self._trigger_forceUpdate();
+						}
+						if (Context.eventToday.ordersLocked && self.eventsCheckInterval) {
+							// Once orders are locked we can stop querying.
+							clearInterval(self.eventsCheckInterval);
+		    				self.eventsCheckInterval = null;
+						}
+					}, 1 * 1000);
+				}
 			},
 
 		    render: function () {
@@ -35388,20 +35439,8 @@
 						CompanyHeading = [
 							{CompanyHeading:CompanyHeading},
 							(
-								React.createElement("div", {className: "ten wide column"}, 
-									React.createElement("div", {className: "ui secondary inverted segment"}, 
-										React.createElement("div", {className: "ui grid"}, 
-										    React.createElement("div", {className: "eight wide column"}, 
-											  React.createElement("p", null, "Join your company email list to receive the daily menu!")
-										    ), 
-										    React.createElement("div", {className: "eight wide column"}, 
-										    	React.createElement("div", {className: "ui fluid input"}, 
-												  React.createElement("input", {type: "text", placeholder: "Email Address"}), 
-												  React.createElement("div", {className: "ui button form-submit", tabindex: "0"}, "Subscribe")
-												)
-										    )
-										)
-									)
+								React.createElement("div", {className: "ten wide column"}
+
 								)
 							)
 						];
@@ -35747,14 +35786,16 @@
 
 		    		var emailElement = $('#form-subscribe input[type="email"]', element);
 		    		if (!emailElement.val()) {
-		    			$("p", errorMessage).html("You must enter your email address!");
-		    			errorMessage.removeClass("hidden");
-		    			emailElement.one("keyup", function () {
-			    			errorMessage.addClass("hidden");
-		    			});
-		    			setTimeout(function () {
-			    			errorMessage.addClass("hidden");
-		    			}, 5000);
+		    			if (Context.config.doNothingOnEmptyEmailSubmit !== true) {
+			    			$("p", errorMessage).html("You must enter your email address!");
+			    			errorMessage.removeClass("hidden");
+			    			emailElement.one("keyup", function () {
+				    			errorMessage.addClass("hidden");
+			    			});
+			    			setTimeout(function () {
+				    			errorMessage.addClass("hidden");
+			    			}, 5000);
+			    		}
 		    			return false;
 		    		}
 		    		// TODO: Validate email.
@@ -35781,7 +35822,9 @@
 	    		) {
 	    			$('DIV[data-message="subscription-confirmed"] .email', element).html(consumerGroupSubscription.get("subscribeEmail"));
 	    			$('DIV[data-message="subscription-confirmed"]', element).removeClass("hidden");
-	    			$("#form-subscribe").addClass("hidden");
+
+	    			$("#form-subscribe BUTTON.submit-button").html("Update Email");
+
 	    		} else {
 	    			$('#form-subscribe DIV[data-message="subscription-pending"]', element).removeClass("hidden");
 	    		}
@@ -36167,129 +36210,157 @@
 			// TODO: Remove this once we can inject 'React' automatically at build time.
 			const React = Context.REACT;
 
+			var Panel = "";
 
-			var Items = "";
-			if (Context.items.length > 0) {
-				// TODO: Base on active selection.
-				Items = (
-					React.createElement("div", {className: "sixteen wide column"}, 
-						Object.keys(Context.days).map(function(day) {
+			if (Context.eventToday) {
 
-							function makeOptions (item) {
-								var Options = [];
-								var options = JSON.parse(item.get("item.options") || "{}");
-								Object.keys(options).forEach(function (name) {
-									Options.push(
-										React.createElement("div", {className: "two fields"}, 
-											React.createElement("div", {className: "ui pointing right label"}, name), 
-											React.createElement("select", {"data-option": name, className: "ui dropdown"}, 
-											    React.createElement("option", {value: ""}, "Please select ..."), 
-												options[name].map(function (value) {
-											    	return React.createElement("option", {className: "item", key: value, value: value}, value)
-										    	})												  
-											)
-										)
-									);
-								});
-								if (Options.length === 0) Options = "";
-								return Options;
-							}
+				if (Context.eventToday.ordersLocked) {
 
-				        	return (
-								React.createElement("div", {key: day, className: "ui bottom attached tab segment", "data-tab": day}, 
+					Panel = (
+						React.createElement("div", {className: "sixteen wide column"}, 
 
-									React.createElement("div", {className: "ui cards"}, 
+					    	React.createElement("h2", {className: "ui header"}, "The order window for this event has closed!")
 
-										Context.items[day].map(function (item) {								
-		{
-		// ##################################################
-		// # Menu item summary card
-		// ##################################################
-		}
+					    )
+					);
 
-											var Spiciness = "";
-											var properties = JSON.parse(item.get("item.properties") || "{}");
-											if (properties && properties.Spiciness) {
-												Spiciness = (React.createElement("div", null, properties.Spiciness));
-											}
+				} else {
 
-											var OrderButton = "";
-											if (Context.days[day].get("canOrder")) {
-												OrderButton = (
-													React.createElement("div", {"data-link": "action:add", "data-id": item.get('item_id'), "data-day": day, className: "ui bottom attached button"}, 
-												      React.createElement("i", {className: "add icon"}), 
-												      "Add Dish"
-												    )
-												);
-											}
+					var Items = "";
+					if (Object.keys(Context.items).length > 0) {
 
-											return (
-											  React.createElement("div", {key: item.get('id'), "data-id": item.get('item_id'), "data-day": day, className: "card item-block"}, 
-											    React.createElement("a", {className: "image", "data-link": "action:show-detail"}, 
-											      React.createElement("img", {src: "https://cdn.filepicker.io/api/file/6PqREn6qQHWCQsPdKJXK/convert?cache=true&fit=scale"})
-											    ), 
-											    React.createElement("div", {className: "content"}, 
-											      React.createElement("a", {className: "header"}, item.get("item.title")), 
-											      React.createElement("div", {className: "meta"}, 
-											        Spiciness
-											      ), 
-											      React.createElement("div", {className: "description"}, 
-												    React.createElement("b", null, "$", item.get("item.format.price")), "     ", item.get("item.description")
-												  )
-											    ), 
-											    React.createElement("form", {className: "ui fluid form"}, 
-												    makeOptions(item)
-											    ), 
-											    OrderButton
-											  )
+						// TODO: Base on active selection.
+						Items = (
+							React.createElement("div", {className: "sixteen wide column"}, 
+								Object.keys(Context.days).map(function(day) {
+
+									function makeOptions (item) {
+										var Options = [];
+										var options = JSON.parse(item.get("item.options") || "{}");
+										Object.keys(options).forEach(function (name) {
+											Options.push(
+												React.createElement("div", {className: "two fields"}, 
+													React.createElement("div", {className: "ui pointing right label"}, name), 
+													React.createElement("select", {"data-option": name, className: "ui dropdown"}, 
+													    React.createElement("option", {value: ""}, "Please select ..."), 
+														options[name].map(function (value) {
+													    	return React.createElement("option", {className: "item", key: value, value: value}, value)
+												    	})												  
+													)
+												)
 											);
-										})
+										});
+										if (Options.length === 0) Options = "";
+										return Options;
+									}
 
-									), 
+						        	return (
+										React.createElement("div", {key: day, className: "ui bottom attached tab segment", "data-tab": day}, 
 
-									Context.items[day].map(function (item) {
+											React.createElement("div", {className: "ui cards"}, 
 
-										var Spiciness = "";
-										var properties = JSON.parse(item.get("item.properties") || "{}");
-										if (properties && properties.Spiciness) {
-											Spiciness = (React.createElement("div", null, properties.Spiciness));
-										}
+												Context.items[day].map(function (item) {								
 
-										return (
-											React.createElement("div", {key: item.get('id'), "data-id": item.get('item_id'), "data-day": day, className: "ui modal item-block"}, 
-											  React.createElement("i", {className: "close icon"}), 
-											  React.createElement("div", {className: "header"}, 
-											  	item.get("item.title")
-											  ), 
-											  React.createElement("div", {className: "content"}, 
-											    React.createElement("div", {className: "ui medium image"}, 
-											      React.createElement("img", {src: "https://cdn.filepicker.io/api/file/6PqREn6qQHWCQsPdKJXK/convert?cache=true&fit=scale"})
-											    ), 
-											    React.createElement("div", {className: "description"}, 
-											    	React.createElement("p", null, Spiciness), 
-											        React.createElement("p", null, React.createElement("b", null, "$", item.get("item.format.price")), "     ", item.get("item.description")), 
-											        React.createElement("form", {className: "ui fluid form"}, 
-													    makeOptions(item)
-											    	)
-											    )
-											  ), 
-											  React.createElement("div", {className: "actions"}, 
-											    React.createElement("div", {className: "ui black deny button"}, 
-											      "No thanks!"
-											    ), 
-											    React.createElement("div", {"data-link": "action:add", className: "ui positive right labeled icon button"}, 
-											      "Add Dish"
-											    )
-											  )
-											)
-										);
-									})
+													var Spiciness = "";
+													var properties = JSON.parse(item.get("item.properties") || "{}");
+													if (properties && properties.Spiciness) {
+														Spiciness = (React.createElement("div", null, properties.Spiciness));
+													}
 
-								)
-				        	);
-				        })
-				    )
-				);
+													var OrderButton = "";
+													if (Context.days[day].get("canOrder")) {
+														OrderButton = (
+															React.createElement("div", {"data-link": "action:add", "data-id": item.get('item_id'), "data-day": day, className: "ui bottom attached button"}, 
+														      React.createElement("i", {className: "add icon"}), 
+														      "Add Dish"
+														    )
+														);
+													}
+
+													return (
+													  React.createElement("div", {key: item.get('id'), "data-id": item.get('item_id'), "data-day": day, className: "card item-block"}, 
+													    React.createElement("a", {className: "image", "data-link": "action:show-detail"}, 
+													      React.createElement("img", {className: "ui medium rounded image", src: item.get("item.photo_url")})
+													    ), 
+													    React.createElement("div", {className: "content"}, 
+													      React.createElement("a", {className: "header"}, item.get("item.title")), 
+													      React.createElement("div", {className: "meta"}, 
+													        Spiciness
+													      ), 
+													      React.createElement("div", {className: "description"}, 
+														    React.createElement("b", null, "$", item.get("item.format.price")), "     ", item.get("item.description")
+														  )
+													    ), 
+													    React.createElement("form", {className: "ui fluid form"}, 
+														    makeOptions(item)
+													    ), 
+													    OrderButton
+													  )
+													);
+												})
+
+											), 
+
+											Context.items[day].map(function (item) {
+
+												var Spiciness = "";
+												var properties = JSON.parse(item.get("item.properties") || "{}");
+												if (properties && properties.Spiciness) {
+													Spiciness = (React.createElement("div", null, properties.Spiciness));
+												}
+
+												return (
+													React.createElement("div", {key: item.get('id'), "data-id": item.get('item_id'), "data-day": day, className: "ui modal item-block"}, 
+													  React.createElement("i", {className: "close icon"}), 
+													  React.createElement("div", {className: "header"}, 
+													  	item.get("item.title")
+													  ), 
+													  React.createElement("div", {className: "content"}, 
+													    React.createElement("div", {className: "ui medium image"}, 
+													      React.createElement("img", {className: "ui medium rounded image", src: item.get("item.photo_url")})
+													    ), 
+													    React.createElement("div", {className: "description"}, 
+													    	React.createElement("p", null, Spiciness), 
+													        React.createElement("p", null, React.createElement("b", null, "$", item.get("item.format.price")), "     ", item.get("item.description")), 
+													        React.createElement("form", {className: "ui fluid form"}, 
+															    makeOptions(item)
+													    	)
+													    )
+													  ), 
+													  React.createElement("div", {className: "actions"}, 
+													    React.createElement("div", {className: "ui black deny button"}, 
+													      "No thanks!"
+													    ), 
+													    React.createElement("div", {"data-link": "action:add", className: "ui positive right labeled icon button"}, 
+													      "Add Dish"
+													    )
+													  )
+													)
+												);
+											})
+
+										)
+						        	);
+						        })
+						    )
+						);
+					}
+
+					Panel = [(
+						React.createElement("div", {className: "two column row"}, 
+
+						    React.createElement("div", {className: "six wide left aligned column"}, 
+
+						    	React.createElement("h2", {className: "ui header"}, "Restaurant Title")
+
+						    ), 
+						    React.createElement("div", {className: "ten wide column"}
+
+						    )
+					    )
+					), Items];
+
+				}
 			}
 
 	        return (
@@ -36299,28 +36370,7 @@
 
 		        	Context.appContext.view.components.Menu.for(Context), 
 
-
-	// ##################################################
-	// # Page Header
-	// ##################################################
-
-					React.createElement("div", {className: "two column row"}, 
-
-					    React.createElement("div", {className: "six wide left aligned column"}, 
-
-					    	React.createElement("h2", {className: "ui header"}, "Tropical Smoothie Cafe")
-
-					    ), 
-					    React.createElement("div", {className: "ten wide column"}
-
-					    )
-				    ), 
-
-	// ##################################################
-	// # Page Content (from selected tab)
-	// ##################################################
-
-				    Items, 
+					Panel, 
 
 				    Context.appContext.view.components.Footer
 
@@ -36368,6 +36418,12 @@
 		    	}
 		    );
 
+			Context.ensureForNodes(
+	            $('.ui.dropdown', element),
+	            'dropdown()'
+	        );
+
+
 		    // Copy name from info to billing in form
 		    Context.ensureForNodes(
 		    	$('#form-order input[name="info[name]"]', element),
@@ -36403,23 +36459,29 @@
 
 
 		    // Fill form with existing values if available.
-		    $('#form-order input', element).each(function () {
-		    	var values = Context.order.get("form");
-		    	if (!values) return;
-		    	if (values[$(this).attr("name")]) {
-		    		$(this).val(values[$(this).attr("name")]);
-		    	}
-		    });
-			$('#form-order select', element).each(function () {
-		    	var values = Context.order.get("form");
-		    	if (!values) return;
-				var select = $(this);
-		    	if (values[select.attr("name")]) {
-		    		if ($(this).attr("name") === "card[expire-month]") {
-						$('option[value="' + values[select.attr("name")] + '"]', select).prop('selected', true);
+	    	var values = Context.order.get("form");
+	    	if (values) {
+			    $('#form-order input', element).each(function () {
+			    	var elm = $(this);
+			    	var name = elm.attr("name");
+			    	if (values[name]) {
+			    		elm.val(values[name]);
 			    	}
-		    	}
-		    });
+			    });
+				$('#form-order select', element).each(function () {
+					var select = $(this);
+			    	if (values[select.attr("name")]) {
+			    		if ($(this).attr("name") === "card[expire-month]") {
+							$('option[value="' + values[select.attr("name")] + '"]', select).prop('selected', true);
+				    	}
+			    	}
+			    });
+			}
+
+			if (Context.eventToday) {
+				$('[data-fieldname="tip"]', element).dropdown('set selected', Context.eventToday.get("tip"));
+			}
+
 		},
 
 		getHTML: function (Context) {
@@ -36607,17 +36669,16 @@
 						      React.createElement("td", null), 
 						      React.createElement("td", {className: "right aligned", colSpan: "2"}, 
 						      	"Tip", 
-						      	React.createElement("div", {className: "ui compact menu"}, 
-									React.createElement("div", {className: "ui simple dropdown item"}, 
-									  React.createElement("div", {className: "text"}, "5%"), 
-									  React.createElement("i", {className: "dropdown icon"}), 
-									  React.createElement("div", {className: "menu"}, 
-									    React.createElement("div", {className: "item"}, "10%"), 
-									    React.createElement("div", {className: "item"}, "15%"), 
-									    React.createElement("div", {className: "item"}, "20%")
-									  )
-									)
-								)
+						      	React.createElement("div", {className: "ui selection dropdown", "data-fieldname": "tip"}, 
+		                          React.createElement("div", {className: "default text"}, "Select"), 
+			                      React.createElement("i", {className: "dropdown icon"}), 
+			                      React.createElement("div", {className: "menu"}, 
+			                        React.createElement("div", {className: "item", "data-value": "5"}, "5%"), 
+			                        React.createElement("div", {className: "item", "data-value": "10"}, "10%"), 
+			                        React.createElement("div", {className: "item", "data-value": "15"}, "15%"), 
+			                        React.createElement("div", {className: "item", "data-value": "20"}, "20%")
+			                      )
+			                    )
 						      ), 
 						      React.createElement("td", null, 
 						        "$", 
@@ -37342,9 +37403,21 @@
 	        );
 
 	        Context.ensureForNodes(
+	          $('button[data-link="action:ready"]', element),
+	          'click',
+	          function () {
+	              self.props.appContext.stores.events.setReadyForEventId(self.props.selectedEvent).then(function () {
+	                self._trigger_forceUpdate();
+	              });
+	              return false;
+	          }
+	        );
+
+	        Context.ensureForNodes(
 	          $('#form-vendor-filter [data-fieldname="vendor_id"]', element),
 	          'dropdown()', {
 	            onChange: function(value, text) {
+	              if (self.props.selectedVendor === value) return;
 	              self.props.selectedVendor = value;
 	              self.props.appContext.stores.items.loadForVendor(self.props.selectedVendor).then(function () {
 	                self._trigger_forceUpdate();
@@ -37355,8 +37428,11 @@
 
 	        Context.ensureForNodes(
 	          $('#form-create [data-fieldname="day_id"]', element),
-	          'dropdown()', {
-	            onChange: function(value, text) {
+	          'pickadate()',
+	          {
+	            onSet: function(context) {
+	              var value = this.get('select', 'yyyy-mm-dd');
+	              if (self.props.selectedDay === value) return;
 	              self.props.selectedDay = value;
 	              self.props.appContext.stores.events.loadForDay(self.props.selectedDay).then(function () {
 	                self._trigger_forceUpdate();
@@ -37364,6 +37440,15 @@
 	            }
 	          }
 	        );
+
+	        var picker = $('#form-create [data-fieldname="day_id"]', element).pickadate('picker');
+	        if (picker) {
+	          if (self.props.selectedDay !== picker.get('select', 'yyyy-mm-dd')) {
+	            picker.set('select', self.props.selectedDay, {
+	              format: 'yyyy-mm-dd'
+	            });
+	          }
+	        }
 
 	        // Form submission
 	        Context.ensureForNodes(
@@ -37384,6 +37469,10 @@
 	                    var name = elm.attr("data-fieldname");
 
 	                    var value = null;
+
+	                    if (elm.attr('data-fieldname') === 'day_id') {
+	                      value = elm.pickadate('picker').get('select', 'yyyy-mm-dd');
+	                    } else
 	                    if (elm.hasClass("dropdown")) {
 	                      value = elm.dropdown('get value');
 	                    } else {
@@ -37406,12 +37495,13 @@
 	            }
 	        );
 
-
 	        Context.ensureForNodes(
 	            $('TABLE.events-table', element),
 	            'click',
 	            function (event) {
-	              self.props.selectedEvent = $(event.target).parentsUntil("TBODY", "TR").attr("data-id") || null;
+	              var value = $(event.target).parentsUntil("TBODY", "TR").attr("data-id") || null;
+	              if (self.props.selectedEvent === value) return;
+	              self.props.selectedEvent = value;
 	              self.props.appContext.stores.menus.loadForEvent(self.props.selectedEvent).then(function () {
 	                self._trigger_forceUpdate();
 	              });
@@ -37460,18 +37550,21 @@
 	        }
 
 
-
 	        function fillEventCreateForm (values) {
 	          $('#form-create [data-fieldname]').each(function() {
-
 	            var elm = $(this);
 	            var name = elm.attr("data-fieldname");
+	            if (typeof values[name] === "undefined") return;
 	            var value = values[name] || "";
 
 	            if (elm.hasClass("dropdown")) {
-	              elm.dropdown('set selected', value);
+	              if (elm.dropdown('get value') === "" || typeof elm.dropdown('get value') === "object") {
+	                elm.dropdown('set selected', value);
+	              }
 	            } else {
-	              elm.val(value);
+	              if (elm.val() === "") {
+	                elm.val(value);
+	              }
 	            }
 	          });
 	        }
@@ -37495,6 +37588,16 @@
 	        var Panel = null;
 	        if (Context.selectedEvent) {
 
+	          var menuUrl = window.location.origin + "/event-" + Context.selectedEvent.get("token");
+
+	          var ReadyButton = Context.selectedEvent.get("format.menuReady");
+	          if (!Context.selectedEvent.get("menuReady")) {
+	            ReadyButton = (
+	              React.createElement("button", {"data-link": "action:ready", className: "ui primary small button"}, 
+	                  "Ready"
+	              )
+	            );
+	          }
 
 	          Panel = (
 	            React.createElement("div", {className: "ui segment"}, 
@@ -37504,20 +37607,28 @@
 	                React.createElement("thead", null, 
 	                  React.createElement("tr", null, 
 	                      React.createElement("th", null, "Date"), 
+	                      React.createElement("th", null, "Order Deadline"), 
 	                      React.createElement("th", null, "Delivery Time"), 
 	                      React.createElement("th", null, "Company"), 
-	                      React.createElement("th", null, "Pickup")
+	                      React.createElement("th", null, "Pickup"), 
+	                      React.createElement("th", null, "Ready"), 
+	                      React.createElement("th", null, "Notified")
 	                  )
 	                ), 
 	                React.createElement("tbody", null, 
 	                  React.createElement("tr", null, 
 	                    React.createElement("td", null, Context.selectedEvent.get("format.deliveryDate")), 
+	                    React.createElement("td", null, (Context.selectedEvent.get("format.orderTimer") || "passed")), 
 	                    React.createElement("td", null, Context.selectedEvent.get("format.deliveryTime")), 
 	                    React.createElement("td", null, Context.selectedEvent.get("consumerGroup.title")), 
-	                    React.createElement("td", null, Context.selectedEvent.get("consumerGroup.pickupLocation"))
+	                    React.createElement("td", null, Context.selectedEvent.get("consumerGroup.pickupLocation")), 
+	                    React.createElement("td", null, ReadyButton), 
+	                    React.createElement("td", null, Context.selectedEvent.get("format.notificationsSent"))
 	                  )
 	                )
 	              ), 
+
+	              React.createElement("p", null, React.createElement("a", {href: menuUrl}, menuUrl)), 
 
 
 	              React.createElement("div", {className: "ui grid"}, 
@@ -37640,15 +37751,7 @@
 
 	                  React.createElement("div", {className: "field"}, 
 	                    React.createElement("label", null, "Day"), 
-	                    React.createElement("div", {"data-fieldname": "day_id", className: "ui selection dropdown"}, 
-	                      React.createElement("div", {className: "default text"}, "Select"), 
-	                      React.createElement("i", {className: "dropdown icon"}), 
-	                      React.createElement("div", {className: "menu"}, 
-	                        Context.days.map(function(item) {
-	                            return React.createElement("div", {className: "item", "data-value": item[0]}, item[1])
-	                        })
-	                      )
-	                    )
+	                    React.createElement("input", {type: "text", "data-fieldname": "day_id"})
 	                  ), 
 
 	                  React.createElement("div", {className: "field"}, 
@@ -37705,7 +37808,9 @@
 	                    React.createElement("th", null, "Date"), 
 	                    React.createElement("th", null, "Delivery Time"), 
 	                    React.createElement("th", null, "Company"), 
-	                    React.createElement("th", null, "Pickup")
+	                    React.createElement("th", null, "Pickup"), 
+	                    React.createElement("th", null, "Ready"), 
+	                    React.createElement("th", null, "Notified")
 	                )
 	              ), 
 	              React.createElement("tbody", null, 
@@ -37717,7 +37822,9 @@
 	                          React.createElement("td", null, item.get("format.deliveryDate")), 
 	                          React.createElement("td", null, item.get("format.deliveryTime")), 
 	                          React.createElement("td", null, item.get("consumerGroup.title")), 
-	                          React.createElement("td", null, item.get("consumerGroup.pickupLocation"))
+	                          React.createElement("td", null, item.get("consumerGroup.pickupLocation")), 
+	                          React.createElement("td", null, item.get("format.menuReady")), 
+	                          React.createElement("td", null, item.get("format.notificationsSent"))
 	                        )
 	                    );
 
@@ -64175,6 +64282,7 @@
 
 			if (appContext.context.id) {
 
+	/*
 				if (!(
 					appContext.selectedView === "Order_Placed" ||
 					appContext.selectedView === "Order_Arrived" ||
@@ -64193,6 +64301,7 @@
 					appContext.selectedView = "Receipt";
 					return true;
 				}
+	*/
 
 			} else {
 
@@ -64223,19 +64332,19 @@
 			PAGE('*', function load(ctx) {
 				var pathname = ctx.pathname;
 	//debugger;
-	console.log("ON PAGE CHANGE ctx", ctx);
+	//console.log("ON PAGE CHANGE ctx", ctx);
 
 				var view = pathname.replace(PATHNAME, "").replace(/^#/, "");
 
-	console.log("view", view);
-	console.log("pathname", pathname);
+	//console.log("view", view);
+	//console.log("pathname", pathname);
 				if (
 					/^\//.test(view) &&
 					appContext.lockedView &&
 					view !== appContext.lockedView &&
 					appContext.lockedView.split(",").indexOf(view) === -1
 				) {
-	console.log("REDIRECT TO", window.location.origin + view);
+	//console.log("REDIRECT TO", window.location.origin + view);
 					// We are selecting a new view and updating the URL using a REDIRECT which
 					// loads the new page from the server.
 
@@ -64243,7 +64352,7 @@
 					//       In those cases you need to redirect to a new URL.
 					window.location.href = window.location.origin + view;
 				} else {
-	console.log("SET VIEW", view);
+	//console.log("SET VIEW", view);
 
 					// We are selecting a new view and updating the URL using PUSH-STATE
 					// without reloading the page.
@@ -64255,17 +64364,15 @@
 
 			appContext.on("change:selectedView", function () {
 
-
-	console.log("ON VIEW CHANGE appContext.selectedView", appContext.selectedView);
-	console.log("ON VIEW CHANGE appContext.lockedView", appContext.lockedView);
-
+	//console.log("ON VIEW CHANGE appContext.selectedView", appContext.selectedView);
+	//console.log("ON VIEW CHANGE appContext.lockedView", appContext.lockedView);
 
 				if (
 					appContext.lockedView &&
 					appContext.selectedView !== appContext.lockedView &&
 					appContext.lockedView.split(",").indexOf(appContext.selectedView) === -1
 				) {
-	console.log("REDIRECT TO", window.location.origin + PATHNAME + "#" + appContext.selectedView);
+	//console.log("REDIRECT TO", window.location.origin + PATHNAME + "#" + appContext.selectedView);
 					// We are selecting a new view and updating the URL using a REDIRECT which
 					// loads the new page from the server.
 
@@ -64274,18 +64381,20 @@
 					window.location.href = window.location.origin + PATHNAME + "#" + appContext.selectedView;
 				} else {
 
-	console.log("SET PAGE1", PATHNAME + "#" + appContext.selectedView);
+	//console.log("SET PAGE1", PATHNAME + "#" + appContext.selectedView);
 
 					// We are selecting a new view and updating the URL using PUSH-STATE
 					// without reloading the page.
 
 					if (handleSelectedViewInit()) return;
-	console.log("SET PAGE2", PATHNAME + "#" + appContext.selectedView);
+	//console.log("SET PAGE2", PATHNAME + "#" + appContext.selectedView);
 
 					PAGE.redirect(PATHNAME + "#" + appContext.selectedView);
 
 	//				PAGE(PATHNAME + "#" + appContext.selectedView);
-	console.log("SET PAGE DONE", PATHNAME + "#" + appContext.selectedView);
+	//console.log("SET PAGE DONE", PATHNAME + "#" + appContext.selectedView);
+
+					window.scrollTo(0, 0);
 				}
 			});
 
@@ -64329,7 +64438,7 @@
 
 			var context = appContext.context;
 
-			var m = PATHNAME.match(/\/(order|vendor)-([^\/]+)\//);
+			var m = PATHNAME.match(/\/(order|vendor|event)-([^\/]+)\/?/);
 			if (m) {
 				context.type = m[1];
 				context.id = m[2];
@@ -64361,6 +64470,49 @@
 				}).fail(function (err) {
 					console.error("Error loading order!", err.stack);
 				});
+
+			} else
+			if (context.type === "event") {
+
+				if (context.dbfilter.event_id) {				
+					Q.all([
+						appContext.stores.events.loadForId(context.dbfilter.event_id),
+						appContext.stores.menus.loadForEvent(context.dbfilter.event_id)					
+					]).then(function() {
+
+						return appContext.stores.days.loadForEvent(context.dbfilter.event_id).then(function () {
+
+							var today = appContext.stores.events.modelRecords(appContext.stores.events.getToday())[0];
+
+							function monitorOrderDeadline (today) {
+								var ordersLocked = null;
+								var interval = setInterval(function () {
+									if (ordersLocked === null) {
+										ordersLocked = today.ordersLocked;
+									} else
+									if (today.ordersLocked !== ordersLocked) {
+										ordersLocked = today.ordersLocked;
+										// Status has changed so we reload to lock the UI.
+										console.log("Lock event due to ordersLocked");
+										appContext.stores.events.loadForId(context.dbfilter.event_id).fail(function (err) {
+											console.error("Error loading event", err.stack);
+										});
+									}
+									if (ordersLocked && interval) {
+										clearInterval(interval);
+										interval = null;
+									}
+								}, 5 * 1000);
+							}
+
+							monitorOrderDeadline(today);
+
+						});
+
+					}).fail(function (err) {
+						console.error("Error loading data", err.stack);
+					});
+				}
 
 			} else
 			if (context.type === "vendor") {
@@ -94074,11 +94226,13 @@
 
 	var store = new Store();
 
+	/*
 	for (var day=0 ; day<=4 ; day++) {
 		store.add({
 			"id": COMMON.API.MOMENT().add(day, 'days').format("YYYY-MM-DD")
 		});
 	}
+	*/
 
 	exports.for = function (context) {
 
@@ -94098,6 +94252,19 @@
 			    }
 			}
 		});
+
+		store.loadForEvent = function (event_id) {
+
+			var day_id = context.appContext.stores.events.get(event_id).get("day_id");
+
+			if (!store.get(day_id)) {
+				store.add({
+					"id": day_id
+				});
+			}
+
+			return COMMON.API.Q.resolve();
+		}
 
 		store.modelRecords = function (records) {
 			return records.map(function (record, i) {
@@ -94143,6 +94310,48 @@
 				return COMMON.API.UNDERSCORE.extend(record.attributes, {
 					id: record.id
 				});
+			});
+		},
+
+		setReadyForEventId: function (event_id) {
+			var self = this;
+
+			return COMMON.API.Q.denodeify(function (callback) {
+
+				var payload = {
+					data: {
+						type: "events",
+						id: event_id,
+						attributes: {
+							"menuReady": true
+						}
+					}
+				};
+
+				return $.ajax({
+					method: "PATCH",
+					url: ENDPOINT + "/" + event_id,
+					contentType: "application/vnd.api+json",
+					headers: {
+						"Accept": "application/vnd.api+json"
+					},
+	    			dataType: "json",
+					data: JSON.stringify(payload)
+				})
+				.done(function (response) {
+
+					return callback(null);
+				})
+				.fail(function(err) {
+
+	// TODO: Ask user to submit again.
+	console.log("error!", err.stack);
+
+					return callback(err);
+				});
+			})().then(function () {
+
+				return self.loadForId(event_id);
 			});
 		},
 
@@ -94228,7 +94437,10 @@
 		        "consumer_group_id": "string",
 		        "goodybagFee": "string",
 		        "tip": "string",
-		        "token": "token",
+		        "token": "string",
+		        "menuReady": "boolean",
+		        "notificationsSent": "boolean",
+
 		        // TODO: Add these dynamically using foreign model.
 		        "consumerGroup.title": "string",
 		        "consumerGroup.contact": "string",
@@ -94274,10 +94486,20 @@
 		            	}
 		            }
 			    },
+			    "ordersLocked": {
+					deps: [
+						"orderByTime"
+					],
+					cache: false,
+		            fn: function () {
+		            	return COMMON.API.MOMENT().isAfter(this.orderByTime);
+		            }
+			    },
 			    "canOrder": {
 					deps: [
 						"orderByTime"
 					],
+					cache: false,
 		            fn: function () {
 		            	var orderByTime = COMMON.API.MOMENT(this.orderByTime);
 		            	if (!orderByTime.isSame(COMMON.API.MOMENT(), 'day')) {
@@ -94298,6 +94520,7 @@
 					deps: [
 						"orderByTime"
 					],
+					cache: false,
 		            fn: function () {
 		            	var orderByTime = COMMON.API.MOMENT(this.orderByTime);
 		            	if (orderByTime.isBefore(COMMON.API.MOMENT())) {
@@ -94313,17 +94536,36 @@
 						"goodybagFee"
 					],
 		            fn: function () {
-		            	return COMMON.API.NUMERAL(this.goodybagFee).format('0.00');
+		            	return COMMON.API.NUMERAL(this.goodybagFee/100).format('0.00');
+		            }
+			    },
+			    "format.menuReady": {
+			    	deps: [
+						"menuReady"
+					],
+					cache: false,
+		            fn: function () {
+		            	return (this.menuReady ? "Yes" : "No");
+		            }
+			    },
+			    "format.notificationsSent": {
+			    	deps: [
+						"notificationsSent"
+					],
+					cache: false,
+		            fn: function () {
+		            	return (this.notificationsSent ? "Yes" : "No");
 		            }
 			    }
 		    }
 		});
 
 		store.getToday = function () {
-			var dayId = COMMON.API.MOMENT().format("YYYY-MM-DD");
-			return this.models.filter(function (model) {
-				return (model.get('day_id') === dayId);
-			});
+			var today = store.get(context.appContext.context.dbfilter.event_id);
+			if (!today) return [];
+			return [
+				today
+			];
 		}
 
 		store.loadForDay = function (day_id) {
@@ -94332,6 +94574,20 @@
 		        self.fetch({
 		            data: $.param({
 		                "filter[day_id]": day_id
+		            }),
+		            success: function () {
+		            	return callback(null);
+		            }
+		        });
+			})();
+		}
+
+		store.loadForId = function (id) {
+			var self = this;
+			return COMMON.API.Q.denodeify(function (callback) {
+		        self.fetch({
+		            data: $.param({
+		                "filter[id]": id
 		            }),
 		            success: function () {
 		            	return callback(null);
@@ -94350,7 +94606,13 @@
 			}).map(function (record, i) {
 				// Store model on backbone row so we can re-use it on subsequent calls.
 				if (store._byId[records[i].get("id")].__model) {
-					return store._byId[records[i].get("id")].__model;
+					var model = store._byId[records[i].get("id")].__model;
+					Object.keys(Model.prototype._definition).forEach(function (field) {
+						if (record.has(field) && model.get(field) !== record.get(field)) {
+							model.set(field, record.get(field));
+						}
+					});
+					return model;
 				}
 				var fields = {};
 				Object.keys(Model.prototype._definition).forEach(function (field) {
@@ -94377,7 +94639,13 @@
 				return records.map(function (record, i) {
 					// Store model on backbone row so we can re-use it on subsequent calls.
 					if (store._byId[records[i].get("id")].__model) {
-						return store._byId[records[i].get("id")].__model;
+						var model = store._byId[records[i].get("id")].__model;
+						Object.keys(Model.prototype._definition).forEach(function (field) {
+							if (record.has(field) && model.get(field) !== record.get(field)) {
+								model.set(field, record.get(field));
+							}
+						});
+						return model;
 					}
 					var fields = {};
 					Object.keys(Model.prototype._definition).forEach(function (field) {
@@ -94826,7 +95094,9 @@
 		        item_id: "string",
 		        vendor_id: "string",
 		        // TODO: Add these dynamically using foreign model.
-		        "item.title": "string"
+		        "item.title": "string",
+		        "item.photo_url": "string",
+		        "item.price": "string"
 		    }
 		});
 
