@@ -20,14 +20,16 @@ require("./component.jsx").for(module, {
 
 	    		var emailElement = $('#form-subscribe input[type="email"]', element);
 	    		if (!emailElement.val()) {
-	    			$("p", errorMessage).html("You must enter your email address!");
-	    			errorMessage.removeClass("hidden");
-	    			emailElement.one("keyup", function () {
-		    			errorMessage.addClass("hidden");
-	    			});
-	    			setTimeout(function () {
-		    			errorMessage.addClass("hidden");
-	    			}, 5000);
+	    			if (Context.config.doNothingOnEmptyEmailSubmit !== true) {
+		    			$("p", errorMessage).html("You must enter your email address!");
+		    			errorMessage.removeClass("hidden");
+		    			emailElement.one("keyup", function () {
+			    			errorMessage.addClass("hidden");
+		    			});
+		    			setTimeout(function () {
+			    			errorMessage.addClass("hidden");
+		    			}, 5000);
+		    		}
 	    			return false;
 	    		}
 	    		// TODO: Validate email.

@@ -1,4 +1,7 @@
 
+const DEV = false;
+
+
 require('org.pinf.genesis.lib').forModule(require, module, function (API, exports) {
 
     exports.monitorDatabase = function (db) {
@@ -113,7 +116,7 @@ console.log("found subscribers", subscribers);
 		    	console.error("Error monitoring database", err.stack);
 		    });
 
-	    }, 2 * 1000);
+	    }, (DEV ? 2 : 60) * 1000);
     }
 
 });

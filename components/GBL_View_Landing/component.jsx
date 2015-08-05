@@ -25,6 +25,11 @@ exports.for = function (module, Context) {
 			var consumerGroupSubscription = self.modelRecordsWithStore(consumerGroupSubscriptions, consumerGroupSubscriptions.where())[0];
 
 	        return {
+
+	        	config: {
+	        		doNothingOnEmptyEmailSubmit: true
+	        	},
+
 	        	consumerGroup: consumerGroup,
 	        	consumerGroupSubscription: consumerGroupSubscription,
 
