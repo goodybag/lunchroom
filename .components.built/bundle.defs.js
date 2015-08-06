@@ -54,7 +54,7 @@
 /******/ 	
 /******/ 	
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "9e2331b869f8c7fcddbb"; // eslint-disable-line no-unused-vars
+/******/ 	var hotCurrentHash = "22f347b33e813797ceb8"; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentParents = []; // eslint-disable-line no-unused-vars
 /******/ 	
@@ -34591,6 +34591,11 @@
 				var consumerGroupSubscription = self.modelRecordsWithStore(consumerGroupSubscriptions, consumerGroupSubscriptions.where())[0];
 
 		        return {
+
+		        	config: {
+		        		doNothingOnEmptyEmailSubmit: true
+		        	},
+
 		        	consumerGroup: consumerGroup,
 		        	consumerGroupSubscription: consumerGroupSubscription,
 
@@ -35339,8 +35344,6 @@
 			    if (!self.eventsCheckInterval) {
 			    	var lastOrderTimer = null;
 			    	self.eventsCheckInterval = setInterval(function () {
-
-	console.log("menu",  Context.eventToday.ordersLocked, Context.eventToday['format.orderTimer']);
 						if (lastOrderTimer === null) {
 							lastOrderTimer = Context.eventToday['format.orderTimer'];
 						} else
@@ -35783,14 +35786,16 @@
 
 		    		var emailElement = $('#form-subscribe input[type="email"]', element);
 		    		if (!emailElement.val()) {
-		    			$("p", errorMessage).html("You must enter your email address!");
-		    			errorMessage.removeClass("hidden");
-		    			emailElement.one("keyup", function () {
-			    			errorMessage.addClass("hidden");
-		    			});
-		    			setTimeout(function () {
-			    			errorMessage.addClass("hidden");
-		    			}, 5000);
+		    			if (Context.config.doNothingOnEmptyEmailSubmit !== true) {
+			    			$("p", errorMessage).html("You must enter your email address!");
+			    			errorMessage.removeClass("hidden");
+			    			emailElement.one("keyup", function () {
+				    			errorMessage.addClass("hidden");
+			    			});
+			    			setTimeout(function () {
+				    			errorMessage.addClass("hidden");
+			    			}, 5000);
+			    		}
 		    			return false;
 		    		}
 		    		// TODO: Validate email.
@@ -35873,22 +35878,19 @@
 		  			React.createElement("section", {className: "page-section hero-unit primary-section", id: "email-signup-cta"}, 
 					  React.createElement("div", {className: "container"}, 
 					    React.createElement("h1", {className: "section-header"}, "Delicious meals delivered every day."), 
-					    React.createElement("p", null, "Your choice of lunch brought to you at work. Launches August 1st, 2015."), 
+					    React.createElement("p", null, "Your choice of lunch brought to you at work. Launches August 15th, 2015."), 
 
-						  React.createElement("div", {"data-message": "form-sent", className: "ui success hidden message"}, 
-						    React.createElement("div", {className: "header"}, "Form Completed"), 
-						    React.createElement("p", null, "We have sent you an email to confirm your subscription!")
+						  React.createElement("div", {"data-message": "form-sent", className: "hidden message"}, 
+						    React.createElement("p", null, "Got it! Check your inbox to confirm your subscription.")
 						  ), 
 
 						  React.createElement("div", {"data-message": "subscription-confirmed", className: "ui success hidden message"}, 
-						    React.createElement("p", null, "Your subscription is confirmed for ", React.createElement("b", {className: "email"}), "! ", UnsubscribeLink)
+					    	React.createElement("p", null, "Your subscription is confirmed for ", React.createElement("b", {className: "email"}), "!")
 						  ), 
 
 					    React.createElement("form", {id: "form-subscribe", className: "cta-form form"}, 
 
-						  React.createElement("div", {"data-message": "subscription-pending", className: "ui negative hidden message"}, 
-						    React.createElement("p", null, "Your subscription for this email address is pending. You can re-send it.")
-						  ), 
+						  React.createElement("div", {"data-message": "subscription-pending", className: "hidden message"}), 
 
 							React.createElement("div", {"data-message": "form-error", className: "ui negative hidden message"}, 
 								React.createElement("i", {className: "close icon"}), 
@@ -37402,9 +37404,6 @@
 	          'click',
 	          function () {
 	              self.props.appContext.stores.events.setReadyForEventId(self.props.selectedEvent).then(function () {
-
-	console.log("TRIGGER UPDATE");
-
 	                self._trigger_forceUpdate();
 	              });
 	              return false;
@@ -37895,10 +37894,6 @@
 	        var menuItems = [];
 	        if (self.props.selectedEvent) {
 
-	console.log("RAW", events.where({
-	            id: self.props.selectedEvent
-	          }));
-
 	          selectedEvent = self.modelRecordsWithStore(events, events.where({
 	            id: self.props.selectedEvent
 	          }))[0] || null;
@@ -37920,9 +37915,6 @@
 	          }
 
 	        }
-
-	console.log("selectedEvent", selectedEvent);
-
 
 	        return {
 
@@ -64490,10 +64482,8 @@
 							var today = appContext.stores.events.modelRecords(appContext.stores.events.getToday())[0];
 
 							function monitorOrderDeadline (today) {
-	console.log("Check orders locked", today);								
 								var ordersLocked = null;
 								var interval = setInterval(function () {
-	console.log("Check orders locked", today.ordersLocked, today['format.orderTimer']);								
 									if (ordersLocked === null) {
 										ordersLocked = today.ordersLocked;
 									} else
