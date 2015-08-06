@@ -35,20 +35,22 @@ function init {
 			# We now use the '07-lunchroom-style' to clobber the Semantic UI skin
 			# We still keep the old skin running as an example of how to skin the site using
 			# something else other than semantic UI.
-			local SOURCE_PATH=`sm.resolve 07-lunchroom-less`
-			if [ -e "$__BO_DIR__/$SOURCE_PATH/dist/style.css" ]; then
-				echo "Copying style from '$__BO_DIR__/$SOURCE_PATH/dist/style.css' to '$__BO_DIR__/www/style.css'"
-				cp -f "$SOURCE_PATH/dist/style.css" "www/style.css"
-			fi
+#			local SOURCE_PATH=`sm.resolve 07-lunchroom-less`
+#			if [ -e "$__BO_DIR__/$SOURCE_PATH/dist/style.css" ]; then
+#				echo "Copying style from '$__BO_DIR__/$SOURCE_PATH/dist/style.css' to '$__BO_DIR__/www/style.css'"
+#				cp -f "$SOURCE_PATH/dist/style.css" "www/style.css"
+#			fi
 
 			# The landing page skin
 			local SOURCE_PATH=`sm.resolve 07-lunchroom-landing`
 			pushd "$__BO_DIR__/$SOURCE_PATH" > /dev/null
-				gulp build
+#				gulp build
+				npm run-script build
 			popd > /dev/null
 			echo "Copying from '$__BO_DIR__/$SOURCE_PATH/public/dist' to '$__BO_DIR__/www/dist'"
-			cp -Rf "$SOURCE_PATH/public/dist" "www/dist"
-			cp -Rf "$SOURCE_PATH/public/img" "www/img"
+#			cp -Rf "$SOURCE_PATH/public/dist" "www/dist"
+#			cp -Rf "$SOURCE_PATH/public/img" "www/img"
+			cp -Rf "$SOURCE_PATH/.sm.hoisted" "www"
 
 		popd > /dev/null
 		BO_format "$VERBOSE" "FOOTER"
