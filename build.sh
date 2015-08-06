@@ -47,10 +47,10 @@ function init {
 #				gulp build
 				npm run-script build
 			popd > /dev/null
-			echo "Copying from '$__BO_DIR__/$SOURCE_PATH/public/dist' to '$__BO_DIR__/www/dist'"
+			echo "Copying from '$__BO_DIR__/$SOURCE_PATH/.sm.hoisted/*' to '$__BO_DIR__/www'"
 #			cp -Rf "$SOURCE_PATH/public/dist" "www/dist"
 #			cp -Rf "$SOURCE_PATH/public/img" "www/img"
-			cp -Rf "$SOURCE_PATH/.sm.hoisted" "www"
+			cp -Rf "$SOURCE_PATH/.sm.hoisted/"* "www"
 
 		popd > /dev/null
 		BO_format "$VERBOSE" "FOOTER"
