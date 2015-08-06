@@ -43,7 +43,12 @@
                 },
                 "routes": {
                     "/": {
-                        "allow": true
+                        "allow": true,
+                        "config": {
+                            "clientContext": {
+                                "sessionCookieName": "gblsid"
+                            }
+                        }
                     },
                     "/$": {
                         "config": {
@@ -52,30 +57,25 @@
                             },
                             "internalUri": "/harness.htm",
                             "clientContext": {
-                                "sessionCookieName": "gblsid",
                                 "selectedView": "Home",
                                 "lockedView": "Home"
                             }
                         }
                     },
                     "/admin-A3C9D2B6-201C-422E-BF63-D536C480332F": {
-                    	"lastMatchingRoute": true,
+                        "lastMatchingRoute": true,
                         "config": {
                             "internalUri": "/harness.htm",
                             "clientContext": {
                                 "selectedView": "",
-                                "type": ""
+                                "type": "",
+                                "overrideSkinUri": ""
                             }
                         }
                     },
                     "/components/GBL_DEV_Views/mockups/": {},
                     "/api/v1/": {
-                        "lastMatchingRoute": true,
-                        "config": {
-                            "clientContext": {
-                                "sessionCookieName": "gblsid"
-                            }
-                        }
+                        "lastMatchingRoute": true
                     },
                     "^/a/cs/(.+)$": {
                         "lastMatchingRoute": true,
@@ -95,27 +95,31 @@
                             }
                         }
                     },
+                    "^/(?:vendor|order|event)-([^/]+)$": {
+                        "lastMatchingRoute": true,
+                        "config": {
+                            "router": {
+                                "impl": "07-lunchroom/event-router/0"
+                            },
+                            "internalUri": "/harness.htm",
+                            "clientContext": {
+                                "selectedView": "Menu_Web",
+                                "lockedView": "",
+                                "type": "",
+                                "overrideSkinUri": ""
+                            }
+                        }
+                    },
                     "^/(.+)$": {
                         "config": {
                             "sessionToken": "<REPLACED-BY-ROUTER>",
                             "router": {
                                 "impl": "07-lunchroom/consumer-group-router/0"
                             },
-                            "skinUrl": "/dist/landing-page.css",
                             "internalUri": "/landing.htm",
                             "clientContext": {
-                                "sessionCookieName": "gblsid",
                                 "selectedView": "Landing",
-                                "lockedView": "Landing,ContactUs,TermsOfService,PrivacyPolicy",
-                                "overrideSkinUri": "/landing.skin.style.css"
-                            }
-                        }
-                    },
-                    "^/(.+)/.*$": {
-                        "config": {
-                            "clientContext": {
-                                "selectedView": "Menu_Web",
-                                "lockedView": ""
+                                "lockedView": "Landing,ContactUs,TermsOfService,PrivacyPolicy"
                             }
                         }
                     }
