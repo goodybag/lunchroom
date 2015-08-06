@@ -106,6 +106,14 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
 
 		var fileCache = {};
 
+		app.get(/^\/\.landing\.html$/, function (req, res, next) {
+			res.writeHead(200, {
+				"Content-Type": "text/html",
+				"Cache-Control": "max-age=" + (15 * 1000)	// 15 seconds
+			});
+			res.end("Hello from landing page");
+		});
+
 		app.get(/^\/dev\.skin\.style\.css$/, function (req, res, next) {
 
 			try {
