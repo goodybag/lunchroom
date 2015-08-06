@@ -117,9 +117,11 @@
                                 "impl": "07-lunchroom/consumer-group-router/0"
                             },
                             "internalUri": "/landing.htm",
+                            "skinUrl": "/dist/landing-page.css",
                             "clientContext": {
                                 "selectedView": "Landing",
-                                "lockedView": "Landing,ContactUs,TermsOfService,PrivacyPolicy"
+                                "lockedView": "Landing,ContactUs,TermsOfService,PrivacyPolicy",
+                                "overrideSkinUri": "/landing.skin.style.css"
                             }
                         }
                     }
