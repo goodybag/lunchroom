@@ -118,7 +118,9 @@ require("./component.jsx").for(module, {
 					    <p>Got it! Check your inbox to confirm your subscription.</p>
 					  </div>
 
-					  <div data-message="subscription-confirmed" className="hidden message"></div>
+					  <div data-message="subscription-confirmed" className="ui success hidden message">
+				    	<p>Your subscription is confirmed for <b className="email"></b>!</p>
+					  </div>
 
 				    <form id="form-subscribe" className="cta-form form">
 
