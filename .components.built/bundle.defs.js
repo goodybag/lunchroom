@@ -54,7 +54,7 @@
 /******/ 	
 /******/ 	
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "22f347b33e813797ceb8"; // eslint-disable-line no-unused-vars
+/******/ 	var hotCurrentHash = "ce904960f2fc4bc5ac82"; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentParents = []; // eslint-disable-line no-unused-vars
 /******/ 	
@@ -35866,10 +35866,10 @@
 	        	React.createElement("div", null, 
 					React.createElement("header", {className: "navbar navbar-transparent navbar-transparent-dark"}, 
 					  React.createElement("div", {className: "container"}, 
-				        React.createElement("img", {src: "/img/logo_goodybag_white.png", alt: "Goodybag.com", className: "navbar-logo"}), 
+				        React.createElement("img", {src: "/lunchroom-landing~0/resources/assets/img~logo_goodybag_white-14f9e4c.png", alt: "Goodybag.com", className: "navbar-logo"}), 
 					    React.createElement("ul", {className: "nav navbar-nav navbar-right"}, 
 					      React.createElement("li", null, 
-					        React.createElement("a", {href: "#", "data-link": "#ContactUs"}, "Contact Us")
+					        React.createElement("a", {href: "#", "data-toggle": "modal", "data-target": "#contact-us-modal"}, "Contact Us")
 					      )
 					    )
 					  )
@@ -35877,8 +35877,8 @@
 
 		  			React.createElement("section", {className: "page-section hero-unit primary-section", id: "email-signup-cta"}, 
 					  React.createElement("div", {className: "container"}, 
-					    React.createElement("h1", {className: "section-header"}, "Delicious meals delivered every day."), 
-					    React.createElement("p", null, "Your choice of lunch brought to you at work. Launches August 15th, 2015."), 
+					    React.createElement("h1", {className: "section-header"}, "Get your lunch delivered every day."), 
+					    React.createElement("p", null, "Your choice of meal brought to you at work. Starts August 17th, 2015."), 
 
 						  React.createElement("div", {"data-message": "form-sent", className: "hidden message"}, 
 						    React.createElement("p", null, "Got it! Check your inbox to confirm your subscription.")
@@ -35919,15 +35919,15 @@
 					    React.createElement("h1", {className: "section-title"}, "How it'll work"), 
 					    React.createElement("div", {className: "marketing-points"}, 
 					      React.createElement("div", {className: "point"}, 
-					        React.createElement("img", {src: "/img/icons_step1.png", alt: "Restaurant rotation"}), 
+					        React.createElement("img", {src: "/lunchroom-landing~0/resources/assets/img~icons_step1-7706235.png", alt: "Restaurant rotation"}), 
 					        React.createElement("p", null, "One restaurant featured each day.")
 					      ), 
 					      React.createElement("div", {className: "point"}, 
-					        React.createElement("img", {src: "/img/icons_step2.png", alt: "Order deadline"}), 
+					        React.createElement("img", {src: "/lunchroom-landing~0/resources/assets/img~icons_step2-c733bfa.png", alt: "Order deadline"}), 
 					        React.createElement("p", null, "Order by 10 AM.")
 					      ), 
 					      React.createElement("div", {className: "point"}, 
-					        React.createElement("img", {src: "/img/icons_step3.png", alt: "Delivery notification"}), 
+					        React.createElement("img", {src: "/lunchroom-landing~0/resources/assets/img~icons_step3-e7ec2cb.png", alt: "Delivery notification"}), 
 					        React.createElement("p", null, "We'll deliver your food at 12 and text you when it arrives!")
 					      )
 					    )
@@ -35937,7 +35937,7 @@
 					React.createElement("section", {className: "page-section section-dark", id: "new-menu-everyday"}, 
 					  React.createElement("div", {className: "container"}, 
 					    React.createElement("h1", {className: "section-title"}, "A new menu every day"), 
-					    React.createElement("img", {src: "/img/browsers_3mockups.png", className: "section-screenshot", alt: "Menu screenshot"})
+					    React.createElement("img", {src: "/lunchroom-landing~0/resources/assets/img~browsers_3mockups-9efbc85.png", className: "section-screenshot", alt: "Menu screenshot"})
 					  )
 					), 
 
@@ -35945,20 +35945,50 @@
 					  React.createElement("div", {className: "container"}, 
 					    React.createElement("h1", {className: "section-title"}, "A few restaurants you can expect"), 
 					    React.createElement("ul", {className: "logo-list"}, 
-					      React.createElement("li", null, React.createElement("img", {src: "/img/logo_trudys.png", alt: "Trudy's"})), 
-					      React.createElement("li", null, React.createElement("img", {src: "/img/logo_micklethwait.png", alt: "Micklethwait"})), 
-					      React.createElement("li", null, React.createElement("img", {src: "/img/logo_torchys.png", alt: "Torchy's Tacos"})), 
-					      React.createElement("li", null, React.createElement("img", {src: "/img/logo_zoes.png", alt: "Zoe's Kitchen"})), 
-					      React.createElement("li", null, React.createElement("img", {src: "/img/logo_madammams.png", alt: "Madam Mam's"}))
+					      React.createElement("li", null, React.createElement("img", {src: "/lunchroom-landing~0/resources/assets/img~logo_trudys-d2b99e0.png", alt: "Trudy's"})), 
+					      React.createElement("li", null, React.createElement("img", {src: "/lunchroom-landing~0/resources/assets/img~logo_micklethwait-b31ccde.png", alt: "Micklethwait"})), 
+					      React.createElement("li", null, React.createElement("img", {src: "/lunchroom-landing~0/resources/assets/img~logo_torchys-9bde0e3.png", alt: "Torchy's Tacos"})), 
+					      React.createElement("li", null, React.createElement("img", {src: "/lunchroom-landing~0/resources/assets/img~logo_zoes-9a626ef.png", alt: "Zoe's Kitchen"})), 
+					      React.createElement("li", null, React.createElement("img", {src: "/lunchroom-landing~0/resources/assets/img~logo_madammams-addef91.png", alt: "Madam Mam's"}))
+					    )
+					  )
+					), 
+
+					React.createElement("div", {className: "modal fade", id: "contact-us-modal"}, 
+					  React.createElement("div", {className: "modal-dialog"}, 
+					    React.createElement("div", {className: "modal-content"}, 
+					      React.createElement("div", {className: "modal-header"}, 
+					        React.createElement("h3", {className: "modal-title"}, "Contact Us")
+					      ), 
+					      React.createElement("form", {action: "#", className: "form form-vertical contact-us-form"}, 
+					        React.createElement("div", {className: "modal-body"}, 
+					          React.createElement("div", {className: "form-group"}, 
+					            React.createElement("label", {for: "name-input"}, "Name"), 
+					            React.createElement("input", {type: "text", name: "name"})
+					          ), 
+					          React.createElement("div", {className: "form-group"}, 
+					            React.createElement("label", {for: "name-input"}, "Email"), 
+					            React.createElement("input", {type: "email", name: "email"})
+					          ), 
+					          React.createElement("div", {className: "form-group"}, 
+					            React.createElement("label", {for: "message-input"}, "Message"), 
+					            React.createElement("textarea", {rows: "6", type: "text", name: "message"})
+					          )
+					        ), 
+					        React.createElement("div", {className: "modal-footer"}, 
+					          React.createElement("button", {type: "button", className: "btn btn-default", "data-dismiss": "modal"}, "Close"), 
+					          React.createElement("button", {type: "submit", className: "btn btn-primary"}, "Submit")
+					        )
+					      )
 					    )
 					  )
 					), 
 
 					React.createElement("footer", {className: "footer"}, 
 					  React.createElement("ul", {className: "nav footer-nav"}, 
-					    React.createElement("li", null, React.createElement("a", {"data-link": "#ContactUs"}, "Contact Us")), 
-					    React.createElement("li", null, React.createElement("a", {"data-link": "#TermsOfService"}, "Terms of service")), 
-					    React.createElement("li", null, React.createElement("a", {"data-link": "#PrivacyPolicy"}, "Privacy policy"))
+				        React.createElement("li", null, React.createElement("a", {href: "#", "data-toggle": "modal", "data-target": "#contact-us-modal"}, "Contact Us")), 
+					    React.createElement("li", null, React.createElement("a", {href: "https://www.goodybag.com/legal"}, "Terms of service")), 
+					    React.createElement("li", null, React.createElement("a", {href: "https://www.goodybag.com/privacy"}, "Privacy policy"))
 					  )
 					)
 
