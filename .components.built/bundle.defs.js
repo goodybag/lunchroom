@@ -54,7 +54,7 @@
 /******/ 	
 /******/ 	
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "1a3ea12bb8c0aaf39955"; // eslint-disable-line no-unused-vars
+/******/ 	var hotCurrentHash = "104717e195295f1058c4"; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentParents = []; // eslint-disable-line no-unused-vars
 /******/ 	
@@ -1499,9 +1499,9 @@
 		    			);
 		    		}
 
-			    	console.info("Render component:", implementation.appContextView);
+			    	console.info("Render component");
 		    	} else {
-			    	console.info("Render component:", implementation);
+			    	console.info("Render component");
 		    	}
 
 		    	this._render_Context = implementation.render.call(this);
@@ -1519,6 +1519,8 @@
 		    	} else {
 	//		    	console.info("Render component:", implementation, "tags", tags);
 		    	}
+
+		    	console.info("Hand off to react");
 
 		        return tags;
 		    }

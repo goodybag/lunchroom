@@ -143,9 +143,9 @@ console.log("triggered forced updated");
 	    			);
 	    		}
 
-		    	console.info("Render component:", implementation.appContextView);
+		    	console.info("Render component");
 	    	} else {
-		    	console.info("Render component:", implementation);
+		    	console.info("Render component");
 	    	}
 
 	    	this._render_Context = implementation.render.call(this);
@@ -163,6 +163,8 @@ console.log("triggered forced updated");
 	    	} else {
 //		    	console.info("Render component:", implementation, "tags", tags);
 	    	}
+
+	    	console.info("Hand off to react");
 
 	        return tags;
 	    }
