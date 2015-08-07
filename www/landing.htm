@@ -9,14 +9,7 @@
         el.setAttribute("rel", "stylesheet");
         el.setAttribute("type", "text/css");
         el.setAttribute("media", "all");
-        el.setAttribute("href", '{{assetsUrl}}'.replace(/\.js$/, ".css"));
-        document.getElementsByTagName("head")[0].appendChild(el);
-
-		var el = document.createElement("link");
-        el.setAttribute("rel", "stylesheet");
-        el.setAttribute("type", "text/css");
-        el.setAttribute("media", "all");
-        el.setAttribute("href", '{{skinUrl}}');
+        el.setAttribute("href", '{{landingCssUrl}}');
         document.getElementsByTagName("head")[0].appendChild(el);
 
 		function loadScript(url, callback) {
@@ -45,7 +38,8 @@
 //			loadScript('//' + window.location.hostname + ':8084/lunchroom/assets/react/react-with-addons.js', function () {
 
 		        head.load([
-		        	'{{bundleUrl}}'
+		        	'{{bundleUrl}}',
+		        	'{{landingJsUrl}}'
 				]);
 //			});
 		});

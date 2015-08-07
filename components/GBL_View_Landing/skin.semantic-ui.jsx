@@ -100,10 +100,10 @@ require("./component.jsx").for(module, {
         	<div>
 				<header className="navbar navbar-transparent navbar-transparent-dark">
 				  <div className="container">
-			        <img src="/img/logo_goodybag_white.png" alt="Goodybag.com" className="navbar-logo"/>
+			        <img src="/lunchroom-landing~0/resources/assets/img~logo_goodybag_white-14f9e4c.png" alt="Goodybag.com" className="navbar-logo"/>
 				    <ul className="nav navbar-nav navbar-right">
 				      <li>
-				        <a href="#" data-link="#ContactUs">Contact Us</a>
+				        <a href="#" data-toggle="modal" data-target="#contact-us-modal">Contact Us</a>
 				      </li>
 				    </ul>
 				  </div>
@@ -111,8 +111,8 @@ require("./component.jsx").for(module, {
 
 	  			<section className="page-section hero-unit primary-section" id="email-signup-cta">
 				  <div className="container">
-				    <h1 className="section-header">Delicious meals delivered every day.</h1>
-				    <p>Your choice of lunch brought to you at work. Launches August 15th, 2015.</p>
+				    <h1 className="section-header">Get your lunch delivered every day.</h1>
+				    <p>Your choice of meal brought to you at work. Starts August 17th, 2015.</p>
 
 					  <div data-message="form-sent" className="hidden message">
 					    <p>Got it! Check your inbox to confirm your subscription.</p>
@@ -153,15 +153,15 @@ require("./component.jsx").for(module, {
 				    <h1 className="section-title">How it'll work</h1>
 				    <div className="marketing-points">
 				      <div className="point">
-				        <img src="/img/icons_step1.png" alt="Restaurant rotation"/>
+				        <img src="/lunchroom-landing~0/resources/assets/img~icons_step1-7706235.png" alt="Restaurant rotation"/>
 				        <p>One restaurant featured each day.</p>
 				      </div>
 				      <div className="point">
-				        <img src="/img/icons_step2.png" alt="Order deadline"/>
+				        <img src="/lunchroom-landing~0/resources/assets/img~icons_step2-c733bfa.png" alt="Order deadline"/>
 				        <p>Order by 10 AM.</p>
 				      </div>
 				      <div className="point">
-				        <img src="/img/icons_step3.png" alt="Delivery notification"/>
+				        <img src="/lunchroom-landing~0/resources/assets/img~icons_step3-e7ec2cb.png" alt="Delivery notification"/>
 				        <p>We'll deliver your food at 12 and text you when it arrives!</p>
 				      </div>
 				    </div>
@@ -171,7 +171,7 @@ require("./component.jsx").for(module, {
 				<section className="page-section section-dark" id="new-menu-everyday">
 				  <div className="container">
 				    <h1 className="section-title">A new menu every day</h1>
-				    <img src="/img/browsers_3mockups.png" className="section-screenshot" alt="Menu screenshot"/>
+				    <img src="/lunchroom-landing~0/resources/assets/img~browsers_3mockups-9efbc85.png" className="section-screenshot" alt="Menu screenshot"/>
 				  </div>
 				</section>
 
@@ -179,20 +179,50 @@ require("./component.jsx").for(module, {
 				  <div className="container">
 				    <h1 className="section-title">A few restaurants you can expect</h1>
 				    <ul className="logo-list">
-				      <li><img src="/img/logo_trudys.png" alt="Trudy's"/></li>
-				      <li><img src="/img/logo_micklethwait.png" alt="Micklethwait"/></li>
-				      <li><img src="/img/logo_torchys.png" alt="Torchy's Tacos"/></li>
-				      <li><img src="/img/logo_zoes.png" alt="Zoe's Kitchen"/></li>
-				      <li><img src="/img/logo_madammams.png" alt="Madam Mam's"/></li>
+				      <li><img src="/lunchroom-landing~0/resources/assets/img~logo_trudys-d2b99e0.png" alt="Trudy's"/></li>
+				      <li><img src="/lunchroom-landing~0/resources/assets/img~logo_micklethwait-b31ccde.png" alt="Micklethwait"/></li>
+				      <li><img src="/lunchroom-landing~0/resources/assets/img~logo_torchys-9bde0e3.png" alt="Torchy's Tacos"/></li>
+				      <li><img src="/lunchroom-landing~0/resources/assets/img~logo_zoes-9a626ef.png" alt="Zoe's Kitchen"/></li>
+				      <li><img src="/lunchroom-landing~0/resources/assets/img~logo_madammams-addef91.png" alt="Madam Mam's"/></li>
 				    </ul>
 				  </div>
 				</section>
 
+				<div className="modal fade" id="contact-us-modal">
+				  <div className="modal-dialog">
+				    <div className="modal-content">
+				      <div className="modal-header">
+				        <h3 className="modal-title">Contact Us</h3>
+				      </div>
+				      <form action="#" className="form form-vertical contact-us-form">
+				        <div className="modal-body">
+				          <div className="form-group">
+				            <label for="name-input">Name</label>
+				            <input type="text" name="name"/>
+				          </div>
+				          <div className="form-group">
+				            <label for="name-input">Email</label>
+				            <input type="email" name="email"/>
+				          </div>
+				          <div className="form-group">
+				            <label for="message-input">Message</label>
+				            <textarea rows="6" type="text" name="message"></textarea>
+				          </div>
+				        </div>
+				        <div className="modal-footer">
+				          <button type="button" className="btn btn-default" data-dismiss="modal">Close</button>
+				          <button type="submit" className="btn btn-primary">Submit</button>
+				        </div>
+				      </form>
+				    </div>
+				  </div>
+				</div>
+
 				<footer className="footer">
 				  <ul className="nav footer-nav">
-				    <li><a data-link="#ContactUs">Contact Us</a></li>
-				    <li><a data-link="#TermsOfService">Terms of service</a></li>
-				    <li><a data-link="#PrivacyPolicy">Privacy policy</a></li>
+			        <li><a href="#" data-toggle="modal" data-target="#contact-us-modal">Contact Us</a></li>
+				    <li><a href="https://www.goodybag.com/legal">Terms of service</a></li>
+				    <li><a href="https://www.goodybag.com/privacy">Privacy policy</a></li>
 				  </ul>
 				</footer>
 

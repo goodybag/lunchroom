@@ -27,9 +27,124 @@ const JOBS = require("./server/jobs");
 
 require('org.pinf.genesis.lib').forModule(require, module, function (API, exports) {
 
-	function initAPI (app) {
+	function initPublicApp (app) {
+
+		app.use(COMPRESSION());
+
+		var fileCache = {};
+
+		app.get(/^\/\.landing\.html$/, function (req, res, next) {
+			res.writeHead(200, {
+				"Content-Type": "text/html",
+				"Cache-Control": "max-age=" + (15 * 1000)	// 15 seconds
+			});
+			res.end("Hello from landing page");
+		});
+
+		app.get(/^\/dev\.skin\.style\.css$/, function (req, res, next) {
+
+			try {
+				var styleBasePath = require.resolve("07-lunchroom-style/package.json");
+				return SEND(req, "/style.css", {
+					root: PATH.dirname(styleBasePath)
+				}).on("error", next).pipe(res);
+			} catch (err) {}
+
+			res.writeHead(200, {
+				"Content-Type": "text/css"
+			});
+			if (fileCache["/style.css"]) {
+				return res.end(fileCache["/style.css"]);
+			}
+			return API.REQUEST("https://raw.githubusercontent.com/goodybag/lunchroom-style/clobber/style.css", function (err, response, body) {
+				fileCache["/style.css"] = body;
+				return res.end(body);
+			});
+		});
+/*
+		app.get(/^\/landing\.skin\.style\.css$/, function (req, res, next) {
+
+			try {
+				var styleBasePath = require.resolve("07-lunchroom-style/package.json");
+				return SEND(req, "/landing.style.css", {
+					root: PATH.dirname(styleBasePath)
+				}).on("error", next).pipe(res);
+			} catch (err) {}
+
+			res.writeHead(200, {
+				"Content-Type": "text/css"
+			});
+			if (fileCache["/landing.style.css"]) {
+				return res.end(fileCache["/landing.style.css"]);
+			}
+			return API.REQUEST("https://raw.githubusercontent.com/goodybag/lunchroom-style/clobber/landing.style.css", function (err, response, body) {
+				fileCache["/landing.style.css"] = body;
+				return res.end(body);
+			});			
+		});
+*/
+		app.get(/^\/skin\.style\.css$/, function (req, res, next) {
+			var styleBasePath = require.resolve("07-lunchroom-style/package.json");
+			return SEND(req, "/style.css", {
+				root: PATH.dirname(styleBasePath)
+			}).on("error", next).pipe(res);
+		});
+
+		app.get(/^\/bundle\.js$/, function (req, res, next) {
+			var path = req.params[0];
+			return SEND(req, "bundle.js", {
+				root: PATH.join(__dirname, ".components.built")
+			}).on("error", next).pipe(res);
+		});
+
+		app.get(/^\/components(\/.*(?:\.png|\.jpg))/, function (req, res, next) {
+			var path = req.params[0];
+			return SEND(req, path, {
+				root: PATH.join(__dirname, "components")
+			}).on("error", next).pipe(res);
+		});
+
+		app.get(/^(\/.*)$/, function (req, res, next) {
+
+			var path = req.params[0];
+			if (path === "/") path = "/index.html";
+
+			if (API.DEBUG) {
+				console.log("Template '" + path + "' for url '" + req.url + "'");
+			}
+
+			if (/\.html?$/.test(path)) {
+				// We let privateApp handle route.
+				return next();
+			}
+
+			return SEND(req, path, {
+				root: PATH.join(__dirname, "www")
+			}).on("error", function (err) {
+				if (err.code === "ENOENT") {
+					// We ignore not found errors and proceed to the private routes.
+					return next();
+				}
+				return next(err);
+			}).pipe(res);
+		});
+	}
+
+	function initPrivateApp (app) {
 
 		app.use(MORGAN("combined"));
+
+		var landingDescriptor = require("./www/lunchroom-landing~0/hoisted.json");
+		var landingResources = {
+			css: null,
+			js: null
+		};
+		landingDescriptor.pages.Landing.resources.forEach(function (resource) {
+			if (landingResources[resource.type]) {
+				throw new Error("Each resource type should only exist once! Make sure everything is inlined.");
+			}
+			landingResources[resource.type] = resource.uriPath;
+		});
 
 		app.get(/^(\/(?:vendor|order|event)-[^\/]+)?(\/.*)$/, function (req, res, next) {
 
@@ -46,6 +161,9 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
 				content = content.replace(/\{\{skinUrl\}\}/g, req._FireNodeContext.config.skinUrl || "");
 				content = content.replace(/\{\{assetsUrl\}\}/g, req._FireNodeContext.config.assetsUrl || "");
 				content = content.replace(/\{\{bundleUrl\}\}/g, req._FireNodeContext.config.bundleUrl || "");
+
+				content = content.replace(/\{\{landingCssUrl\}\}/g, landingResources.css);
+				content = content.replace(/\{\{landingJsUrl\}\}/g, landingResources.js);
 
 				content = content.replace(
 					/\{\{sessionToken\}\}/g,
@@ -100,108 +218,6 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
 		});
 	}
 
-	function initStatic (app) {
-
-		app.use(COMPRESSION());
-
-		var fileCache = {};
-
-		app.get(/^\/\.landing\.html$/, function (req, res, next) {
-			res.writeHead(200, {
-				"Content-Type": "text/html",
-				"Cache-Control": "max-age=" + (15 * 1000)	// 15 seconds
-			});
-			res.end("Hello from landing page");
-		});
-
-		app.get(/^\/dev\.skin\.style\.css$/, function (req, res, next) {
-
-			try {
-				var styleBasePath = require.resolve("07-lunchroom-style/package.json");
-				return SEND(req, "/style.css", {
-					root: PATH.dirname(styleBasePath)
-				}).on("error", next).pipe(res);
-			} catch (err) {}
-
-			res.writeHead(200, {
-				"Content-Type": "text/css"
-			});
-			if (fileCache["/style.css"]) {
-				return res.end(fileCache["/style.css"]);
-			}
-			return API.REQUEST("https://raw.githubusercontent.com/goodybag/lunchroom-style/clobber/style.css", function (err, response, body) {
-				fileCache["/style.css"] = body;
-				return res.end(body);
-			});
-		});
-
-		app.get(/^\/landing\.skin\.style\.css$/, function (req, res, next) {
-
-			try {
-				var styleBasePath = require.resolve("07-lunchroom-style/package.json");
-				return SEND(req, "/landing.style.css", {
-					root: PATH.dirname(styleBasePath)
-				}).on("error", next).pipe(res);
-			} catch (err) {}
-
-			res.writeHead(200, {
-				"Content-Type": "text/css"
-			});
-			if (fileCache["/landing.style.css"]) {
-				return res.end(fileCache["/landing.style.css"]);
-			}
-			return API.REQUEST("https://raw.githubusercontent.com/goodybag/lunchroom-style/clobber/landing.style.css", function (err, response, body) {
-				fileCache["/landing.style.css"] = body;
-				return res.end(body);
-			});			
-		});
-
-		app.get(/^\/skin\.style\.css$/, function (req, res, next) {
-			var styleBasePath = require.resolve("07-lunchroom-style/package.json");
-			return SEND(req, "/style.css", {
-				root: PATH.dirname(styleBasePath)
-			}).on("error", next).pipe(res);
-		});
-
-		app.get(/^\/bundle\.js$/, function (req, res, next) {
-			var path = req.params[0];
-			return SEND(req, "bundle.js", {
-				root: PATH.join(__dirname, ".components.built")
-			}).on("error", next).pipe(res);
-		});
-
-		app.get(/^\/components(\/.*(?:\.png|\.jpg))/, function (req, res, next) {
-			var path = req.params[0];
-			return SEND(req, path, {
-				root: PATH.join(__dirname, "components")
-			}).on("error", next).pipe(res);
-		});
-
-		app.get(/^(\/.*)$/, function (req, res, next) {
-
-			var path = req.params[0];
-			if (path === "/") path = "/index.html";
-
-			if (API.DEBUG) {
-				console.log("Template '" + path + "' for url '" + req.url + "'");
-			}
-
-			if (/\.html?$/.test(path)) {
-				// We let privateApp handle route.
-				return next();
-			}
-
-			return SEND(req, path, {
-				root: PATH.join(__dirname, "www")
-			}).on("error", function (err) {
-				if (err.code === "ENOENT") {
-					// We ignore not found errors and proceed to the private routes.
-					return next();
-				}
-				return next(err);
-			}).pipe(res);
-		});
-	}
 
 	var publicApp = EXPRESS();
 
@@ -265,10 +281,10 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
 	} catch (err) {
 		console.error("Error connecting to PostgreSQL", err.message);
 	}
-	initStatic(publicApp);
+	initPublicApp(publicApp);
 
 	var privateApp = EXPRESS();
-	initAPI(privateApp);
+	initPrivateApp(privateApp);
 
 	return FIRENODE.for(API).then(function (FIRENODE) {
 
