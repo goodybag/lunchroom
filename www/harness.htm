@@ -41,13 +41,15 @@
 		    document.getElementsByTagName("head")[0].appendChild(script);
 		}
 
-		loadScript('{{assetsUrl}}', function () {			
+		loadScript('/polyfills.build.js', function () {
+			loadScript('{{assetsUrl}}', function () {			
 //			loadScript('//' + window.location.hostname + ':8084/lunchroom/assets/react/react-with-addons.js', function () {
 
 		        head.load([
 		        	'{{bundleUrl}}'
 				]);
 //			});
+			});
 		});
     </script>
     <meta name="session.token" value="{{sessionToken}}"/>

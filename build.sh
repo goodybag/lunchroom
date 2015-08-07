@@ -57,6 +57,17 @@ function init {
 		BO_format "$VERBOSE" "FOOTER"
 	}
 
+	function bundlePloyfills {
+		BO_format "$VERBOSE" "HEADER" "Bundle Polyfills"
+		pushd "$__BO_DIR__" > /dev/null
+
+			"node_modules/.bin/browserify" \
+				"www/polyfills.js" -o "www/polyfills.build.js"
+
+		popd > /dev/null
+		BO_format "$VERBOSE" "FOOTER"
+	}
+
 	function bundleAssets {
 		BO_format "$VERBOSE" "HEADER" "Bundle Assets"
 
@@ -98,6 +109,7 @@ echo "TODO"
 
 	ensureDependencies
 	copyStyle
+	bundlePloyfills
 	bundleAssets
 	bundleApp
 	uglifyBundles
