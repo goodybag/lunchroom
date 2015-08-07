@@ -1,7 +1,10 @@
 
 const COMMON = require("./ui._common");
 const UNDERSCORE = require('underscore');
+
+require('html5-history-api/history.js');
 const PAGE = require('page');
+
 const AMPERSAND_STATE = require('ampersand-state');
 const MOMENT = require("moment");
 const Q = require("q");

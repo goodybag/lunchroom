@@ -23,6 +23,7 @@
     "express-routebuilder": "^2.1.0",
     "extend": "^3.0.0",
     "fs-extra": "^0.22.1",
+    "html5-history-api": "^4.2.2",
     "jsonwebtoken": "^5.0.4",
     "jssha": "^2.0.1",
     "knex": "^0.8.6",
