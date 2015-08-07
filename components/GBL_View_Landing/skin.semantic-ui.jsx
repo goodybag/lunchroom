@@ -4,6 +4,49 @@ require("./component.jsx").for(module, {
 	afterRender: function (Context, element) {
 		var self = this;
 
+
+	    // Form submission
+	    Context.ensureForNodes(
+	    	$('form.contact-us-form button[type="submit"]', element),
+	    	'click',
+	    	function () {
+
+	    		var payload = {
+	    			name: $('#form-contact-us input[name="name"]').val(),
+	    			email: $('#form-contact-us input[name="email"]').val(),
+	    			message: $('#form-contact-us textarea[name="message"]').val()
+	    		};
+
+console.log("payload", payload);
+
+				$.ajax({
+					method: "POST",
+					url: "https://www.goodybag.com/contact-us",
+					contentType: "application/json",
+					headers: {
+						"Accept": "application/json"
+					},
+	    			dataType: "json",
+					data: JSON.stringify(payload)
+				})
+				.done(function (response) {
+
+console.log("response", response);
+
+				})
+				.fail(function(err) {
+
+console.log("Error sending message to server!", err.stack);
+
+				});
+
+				$('#contact-us-modal').modal('hide');
+
+				return false;
+	    	}
+	    );
+
+
 	    // Form submission
 	    Context.ensureForNodes(
 	    	$('#form-subscribe .submit-button', element),
