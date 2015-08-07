@@ -50,6 +50,7 @@ function init {
 			echo "Copying from '$__BO_DIR__/$SOURCE_PATH/.sm.hoisted/*' to '$__BO_DIR__/www'"
 #			cp -Rf "$SOURCE_PATH/public/dist" "www/dist"
 #			cp -Rf "$SOURCE_PATH/public/img" "www/img"
+			rm -Rf "www/lunchroom-landing~0" > /dev/null || true
 			cp -Rf "$SOURCE_PATH/.sm.hoisted/"* "www"
 
 		popd > /dev/null

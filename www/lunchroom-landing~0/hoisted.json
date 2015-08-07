@@ -1,0 +1,29 @@
+{
+    "pages": {
+        "Landing": {
+            "resources": [
+                {
+                    "type": "css",
+                    "uriPath": "/lunchroom-landing~0/resources/24b055d163e99ad86ad373609a756136be131f09.css",
+                    "fsPath": "{{__DIRNAME__}}/resources/24b055d163e99ad86ad373609a756136be131f09.css"
+                },
+                {
+                    "type": "css",
+                    "uriPath": "/lunchroom-landing~0/resources/dist~app-8b5a0de.js",
+                    "fsPath": "{{__DIRNAME__}}/resources/dist~app-8b5a0de.js"
+                }
+            ],
+            "componentsDescriptorPath": "{{__DIRNAME__}}/components/Landing.json",
+            "components": {
+                "page": {
+                    "uriHtmlPath": "/lunchroom-landing~0/components/Landing/page.htm",
+                    "fsHtmlPath": "{{__DIRNAME__}}/components/Landing/page.htm"
+                },
+                "subscribe": {
+                    "uriHtmlPath": "/lunchroom-landing~0/components/Landing/subscribe.htm",
+                    "fsHtmlPath": "{{__DIRNAME__}}/components/Landing/subscribe.htm"
+                }
+            }
+        }
+    }
+}
