@@ -54,7 +54,7 @@
 /******/ 	
 /******/ 	
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "4a97474cf7edfb6b8948"; // eslint-disable-line no-unused-vars
+/******/ 	var hotCurrentHash = "a6c8dc429baffbc1354e"; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentParents = []; // eslint-disable-line no-unused-vars
 /******/ 	
@@ -35778,9 +35778,9 @@
 		    	function () {
 
 		    		var payload = {
-		    			name: $('#form-contact-us input[name="name"]').val(),
-		    			email: $('#form-contact-us input[name="email"]').val(),
-		    			message: $('#form-contact-us textarea[name="message"]').val()
+		    			name: $('form.contact-us-form input[name="name"]').val(),
+		    			email: $('form.contact-us-form input[name="email"]').val(),
+		    			message: $('form.contact-us-form textarea[name="message"]').val()
 		    		};
 
 	console.log("payload", payload);
