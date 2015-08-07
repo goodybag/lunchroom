@@ -10,7 +10,6 @@ const MOMENT = require("moment");
 const Q = require("q");
 const HEAD = head;
 
-
 exports.for = function (overrides) {
 
 	// TODO: Init from session.

@@ -54,7 +54,7 @@
 /******/ 	
 /******/ 	
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "09d6400f920f8498f955"; // eslint-disable-line no-unused-vars
+/******/ 	var hotCurrentHash = "c2f5f4e999297b3d7e8b"; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentParents = []; // eslint-disable-line no-unused-vars
 /******/ 	
@@ -64318,7 +64318,6 @@
 	var MOMENT = __webpack_require__(169);
 	var Q = __webpack_require__(416);
 	var HEAD = head;
-
 
 	exports.for = function (overrides) {
 
