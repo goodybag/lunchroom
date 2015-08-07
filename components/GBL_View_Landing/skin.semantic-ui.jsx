@@ -12,9 +12,9 @@ require("./component.jsx").for(module, {
 	    	function () {
 
 	    		var payload = {
-	    			name: $('#form-contact-us input[name="name"]').val(),
-	    			email: $('#form-contact-us input[name="email"]').val(),
-	    			message: $('#form-contact-us textarea[name="message"]').val()
+	    			name: $('form.contact-us-form input[name="name"]').val(),
+	    			email: $('form.contact-us-form input[name="email"]').val(),
+	    			message: $('form.contact-us-form textarea[name="message"]').val()
 	    		};
 
 console.log("payload", payload);
