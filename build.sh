@@ -43,10 +43,10 @@ function init {
 
 			# The landing page skin
 			local SOURCE_PATH=`sm.resolve 07-lunchroom-landing`
-			pushd "$__BO_DIR__/$SOURCE_PATH" > /dev/null
+#			pushd "$__BO_DIR__/$SOURCE_PATH" > /dev/null
 #				gulp build
-				npm run-script build
-			popd > /dev/null
+#				npm run-script build
+#			popd > /dev/null
 			echo "Copying from '$__BO_DIR__/$SOURCE_PATH/.sm.hoisted/*' to '$__BO_DIR__/www'"
 #			cp -Rf "$SOURCE_PATH/public/dist" "www/dist"
 #			cp -Rf "$SOURCE_PATH/public/img" "www/img"
