@@ -47621,7 +47621,7 @@
 	    }
 	*/
 
-	const EVENTS = __webpack_require__(177);
+	var EVENTS = __webpack_require__(177);
 
 
 	exports.extend = function (definition) {
@@ -48760,7 +48760,7 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
-	const COOKIES = __webpack_require__(183);
+	var COOKIES = __webpack_require__(183);
 
 
 	var Client = exports.Client = function (sessionToken, context) {
