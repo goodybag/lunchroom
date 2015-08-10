@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+
+		<title></title>
+
+		<script src="system.src.js" type="text/javascript"></script>
+
+		<script type="text/javascript">
+
+			System.config({
+    "transpiler": "babel",
+    "babelOptions": {},
+    "packages": {
+        "build": {
+            "main": "all.js",
+            "format": "cjs",
+            "fsPath": "../build"
+        },
+        "runtime": {
+            "main": "client.js",
+            "format": "cjs",
+            "fsPath": "../runtime"
+        },
+        "resources/layer": {
+            "format": "cjs",
+            "fsPath": "../client"
+        },
+        "components/HelloWorld": {
+            "main": "index.js",
+            "format": "cjs",
+            "fsPath": "../client/02-Components/HelloWorld"
+        },
+        "resources/console-polyfill": {
+            "main": "index.js",
+            "format": "global",
+            "fsPath": "../runtime/node_modules/console-polyfill"
+        },
+        "resources/es5-shim": {
+            "format": "global",
+            "fsPath": "../runtime/node_modules/es5-shim"
+        },
+        "resources/html5shiv": {
+            "main": "html5shiv.js",
+            "format": "global",
+            "fsPath": "../client/01-Libraries/node_modules/html5shiv/dist"
+        },
+        "resources/json": {
+            "main": "json3.js",
+            "format": "cjs",
+            "fsPath": "../runtime/node_modules/json3/lib"
+        },
+        "resources/lodash": {
+            "main": "index.js",
+            "format": "cjs",
+            "fsPath": "../client/01-Libraries/node_modules/lodash-compat"
+        },
+        "resources/jquery": {
+            "main": "jquery.js",
+            "format": "cjs",
+            "fsPath": "../client/01-Libraries/node_modules/jquery/dist"
+        },
+        "resources/bluebird": {
+            "main": "bluebird.js",
+            "format": "cjs",
+            "fsPath": "../server/node_modules/bluebird/js/browser"
+        },
+        "resources/path": {
+            "main": "index.js",
+            "format": "cjs",
+            "fsPath": "../client/01-Libraries/node_modules/path-browserify"
+        },
+        "resources/browser-builtins": {
+            "format": "cjs",
+            "fsPath": "../client/01-Libraries/node_modules/browser-builtins/builtin"
+        },
+        "resources/canonical-json": {
+            "main": "index.js",
+            "format": "cjs",
+            "fsPath": "../client/01-Libraries/node_modules/canonical-json"
+        },
+        "resources/forge": {
+            "main": "forge.min.js",
+            "format": "amd",
+            "fsPath": "../server/node_modules/node-forge/js"
+        },
+        "resources/moment": {
+            "main": "moment.js",
+            "format": "cjs",
+            "fsPath": "../client/01-Libraries/node_modules/moment"
+        },
+        "resources/numeral": {
+            "main": "numeral.js",
+            "format": "cjs",
+            "fsPath": "../client/01-Libraries/node_modules/numeral"
+        },
+        "resources/page": {
+            "main": "page.js",
+            "format": "global",
+            "fsPath": "../client/01-Libraries/node_modules/page"
+        },
+        "resources/uuid": {
+            "main": "uuid.js",
+            "format": "amd",
+            "fsPath": "../client/01-Libraries/node_modules/uuid"
+        },
+        "resources/react": {
+            "main": "react.js",
+            "format": "global",
+            "fsPath": "../client/01-Libraries/node_modules/react/dist"
+        }
+    }
+});
+
+			function logError (err) {
+				if (typeof window.console !== 'undefined') {
+					console.error("ERROR while loading layers:", (err.stack || err.message || err));
+				} else
+				if (typeof window.P === "function") {
+					window.P("ERROR while loading layers: " + (err.stack || err.message || err));
+				} else {
+					alert("ERROR while loading layers: " + (err.stack || err.message || err));
+				}
+			}
+
+			System['import']('runtime').then(function (runtimeFactory) {
+
+				return runtimeFactory({
+
+					VERBOSE: true,
+					DEBUG: true
+
+				}).then(function (runtimeContext) {
+
+					return runtimeContext.loadLayers([
+						'resources/layer/01-Libraries.js',
+						'resources/layer/02-Components.js'
+					]).then(function (appContext) {
+
+P("All loaded OK!", appContext);
+
+					});
+
+				});
+
+			})['catch'](logError);
+
+		</script>
+
+	</head>
+	<body>
+
+		<div id="HelloWorld">
+			Loading ...
+	    </div>
+
+	</body>
+</html>

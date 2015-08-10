@@ -57,6 +57,23 @@ function init {
 		BO_format "$VERBOSE" "FOOTER"
 	}
 
+	function copyAssets {
+		BO_format "$VERBOSE" "HEADER" "Copying assets"
+		pushd "$__BO_DIR__" > /dev/null
+
+			local SOURCE_PATH=`sm.resolve sm.hoist.Modules`
+
+			echo "Copying from '$__BO_DIR__/$SOURCE_PATH/build/dist/*' to '$__BO_DIR__/www/lunchroom-landing-assets~0'"
+#			cp -Rf "$SOURCE_PATH/public/dist" "www/dist"
+#			cp -Rf "$SOURCE_PATH/public/img" "www/img"
+			rm -Rf "www/lunchroom-landing-assets~0" > /dev/null || true
+			mkdir -p "www/lunchroom-landing-assets~0"
+			cp -Rf "$SOURCE_PATH/build/dist/"* "www/lunchroom-landing-assets~0"
+
+		popd > /dev/null
+		BO_format "$VERBOSE" "FOOTER"
+	}
+
 	function bundlePloyfills {
 		BO_format "$VERBOSE" "HEADER" "Bundle Polyfills"
 		pushd "$__BO_DIR__" > /dev/null
@@ -109,9 +126,10 @@ echo "TODO"
 
 	ensureDependencies
 	copyStyle
-	bundlePloyfills
-	bundleAssets
-	bundleApp
+	copyAssets
+#	bundlePloyfills
+#	bundleAssets
+#	bundleApp
 	uglifyBundles
 
 }
