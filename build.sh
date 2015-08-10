@@ -105,18 +105,36 @@ echo "TODO"
 		BO_format "$VERBOSE" "HEADER" "Uglify Bundles"
 		pushd "$__BO_DIR__" > /dev/null
 
+#			"node_modules/.bin/defs" \
+#				--config "defs-config.json" \
+#				"www/assets.js" > "www/assets.defs.js"
+
+#			"node_modules/.bin/defs" \
+#				--config "defs-config.json" \
+#				".components.built/bundle.js" > ".components.built/bundle.defs.js"
+
+#			"node_modules/.bin/uglifyjs" \
+#				"www/assets.defs.js" \
+#				".components.built/bundle.defs.js" \
+#				-o "www/app.build.min.js" \
+#				-c -m
+
 			"node_modules/.bin/defs" \
 				--config "defs-config.json" \
 				"www/assets.js" > "www/assets.defs.js"
 
-			"node_modules/.bin/defs" \
-				--config "defs-config.json" \
-				".components.built/bundle.js" > ".components.built/bundle.defs.js"
-
 			"node_modules/.bin/uglifyjs" \
 				"www/assets.defs.js" \
-				".components.built/bundle.defs.js" \
-				-o "www/app.build.min.js" \
+				-o "www/assets.min.js" \
+				-c -m
+
+			"node_modules/.bin/defs" \
+				--config "defs-config.json" \
+				".components.built/bundle.js" > "www/bundle.defs.js"
+
+			"node_modules/.bin/uglifyjs" \
+				"www/bundle.defs.js" \
+				-o "www/bundle.min.js" \
 				-c -m
 
 		popd > /dev/null

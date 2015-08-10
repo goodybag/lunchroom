@@ -1,37 +1,65 @@
-/** @jsx React.DOM */
-'use strict'
 
-var React = require('react')
+var COMPONENT = require("../GBL_ReactComponent");
 
-module.exports = React.createClass({
+module.exports = COMPONENT.create({
 
+    getHTML: function (Context) {
 
-    _on_sync: function () {
-		this.forceUpdate();
-    },
-	componentDidMount: function () {
-		this.props.appContext.get('stores').consumerGroupSubscriptions.on("sync", this._on_sync);
-    },
-    componentWillUnmount: function () {
-		this.props.appContext.get('stores').consumerGroupSubscriptions.off("sync", this._on_sync);
-    },
+        var React = Context.REACT;
 
-
-    render: function() {
-    	var self = this;
         return (
           <div>
-          	<h1>Items</h1>
-            <ul>
-	            {self.props.appContext.get('stores').consumerGroupSubscriptions.where().map(function(item) {
-					return (
-						<li key={item.get('id')}>
-							{item.get("token")}
-						</li>
-					);
-		        })}
-            </ul>
+            <h1>Items</h1>
+
+            <table className="ui celled table">
+              <thead>
+                <tr>
+                    <th>Time</th>
+                    <th>Subscribed</th>
+                    <th>Confirmed</th>
+                </tr>
+              </thead>
+              <tbody>
+
+                {Context.subscribers.map(function(item) {
+
+                    var Row = (
+                        <tr key={item.get('id')}>
+                          <td>{item.get("subscribe_time")}</td>
+                          <td>{item.get("subscribeEmail")}</td>
+                          <td>{item.get("confirmedEmail")}</td>
+                        </tr>
+                    );
+                    return Row;
+                })}
+
+              </tbody>
+            </table>
           </div>
         );
     }
+
+}, {
+
+    onMount: function () {
+        this.props.appContext.get('stores').consumerGroupSubscriptions.on("sync", this._on_sync);
+
+        this.props.appContext.get('stores').consumerGroupSubscriptions.reset();
+        this.props.appContext.get('stores').consumerGroupSubscriptions.fetch();
+    },
+
+    onUnmount: function () {
+        this.props.appContext.get('stores').consumerGroupSubscriptions.off("sync", this._on_sync);
+    },
+
+    render: function() {
+        var self = this;
+
+        var subscribers = self.props.appContext.get('stores').consumerGroupSubscriptions;
+
+        return {
+            subscribers: self.modelRecordsWithStore(subscribers, subscribers.where())
+        };
+    }
 });
+
