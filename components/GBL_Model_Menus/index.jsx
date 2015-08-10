@@ -89,10 +89,10 @@ module.exports = React.createClass({
                         daytype = (<b>{daytype}</b>);
                     }
 
-                    var itemsId = item.id + "-items";
+                    var itemsId = item.get('id') + "-items";
 
 					return [(
-                        <tr className="ui violet inverted segment" key={item.id}>
+                        <tr className="ui violet inverted segment" key={item.get('id')}>
                           <td>
                             {item.get("day.format.ddd")} - {item.get("day.format.MMM")} - {item.get("day.format.D")}<br/>
                             {daytype}

@@ -25,7 +25,7 @@ module.exports = React.createClass({
             <ul>
 	            {self.props.appContext.get('stores').consumers.where().map(function(item) {
 					return (
-						<li key={item.id}>
+						<li key={item.get('id')}>
                             {item.get("firstName")} {item.get("lastName")}
 						</li>
 					);

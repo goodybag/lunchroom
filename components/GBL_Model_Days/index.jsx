@@ -28,7 +28,7 @@ module.exports = React.createClass({
             <ul>
 	            {days.modelRecords(days.where()).map(function(item) {
 					return (
-						<li key={item.id}>
+						<li key={item.get('id')}>
 							<h3>{item.get("format.ddd")}</h3>
 						</li>
 					);

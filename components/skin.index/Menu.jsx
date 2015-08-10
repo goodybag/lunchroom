@@ -113,7 +113,7 @@ exports['for'] = function (Context) {
 			    <div className="seven wide column">
 					<div className="ui top attached tabular menu">
 						{Context.days.map(function (item) {
-				        	return <div key={item.id} className="item" data-tab={item.get("format.ddd")}>{item.get("format.ddd")}</div>;
+				        	return <div key={item.get('id')} className="item" data-tab={item.get("format.ddd")}>{item.get("format.ddd")}</div>;
 						})}		
 					</div>
 					{SneakPeak}

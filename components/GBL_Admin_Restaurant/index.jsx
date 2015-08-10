@@ -102,7 +102,7 @@ module.exports = COMPONENT.create({
                 {Context.orders.map(function(item) {
 
                     var Row = (
-                        <tr key={item.id}>
+                        <tr key={item.get('id')}>
                           <td>{item.get("number")}</td>
                           <td>{item.get("format.deliveryDate")}</td>
                           <td>{item.get("format.deliveryTime")}</td>
@@ -111,7 +111,7 @@ module.exports = COMPONENT.create({
                         </tr>
                     );
 
-                    var key = item.id + "-items";
+                    var key = item.get('id') + "-items";
                     var items = item.get("items") || [];
                     var Items = (
                         <tr key={key}>
@@ -121,9 +121,9 @@ module.exports = COMPONENT.create({
                                     {items.map(function (item) {
                                         return (
                                             <tr>
-                                              <td>{item.title}</td>
-                                              <td>{item.options}</td>
-                                              <td>{item.quantity}</td>
+                                              <td>{item.get('title')}</td>
+                                              <td>{item.get('options')}</td>
+                                              <td>{item.get('quantity')}</td>
                                             </tr>
                                         );
                                     })}
@@ -136,16 +136,16 @@ module.exports = COMPONENT.create({
                     var Actions = null;
 
                     if (item.get("status.id") !== "delivered") {
-                        var key = item.id + "-actions";
+                        var key = item.get('id') + "-actions";
                         Actions = (
                             <tr key={key}>
                                 <td colSpan="5">
 
-                                    <button data-link="action:set-status" data-value="confirmed" data-id={item.orderHashId} className="ui primary button">
+                                    <button data-link="action:set-status" data-value="confirmed" data-id={item.get('orderHashId')} className="ui primary button">
                                         Confirmed
                                     </button>
 
-                                    <button data-link="action:set-status" data-value="delivered" data-id={item.orderHashId} className="ui primary button">
+                                    <button data-link="action:set-status" data-value="delivered" data-id={item.get('orderHashId')} className="ui primary button">
                                         Delivered
                                     </button>
 

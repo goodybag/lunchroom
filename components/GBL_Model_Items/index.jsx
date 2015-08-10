@@ -23,7 +23,7 @@ module.exports = COMPONENT.create({
                 {Context.items.map(function(item) {
 
                     var Row = (
-                        <tr key={item.id}>
+                        <tr key={item.get('id')}>
                           <td>{item.get("title")}</td>
                           <td><img className="ui centered image" src={item.get("photo_url")} height="70"/></td>
                         </tr>

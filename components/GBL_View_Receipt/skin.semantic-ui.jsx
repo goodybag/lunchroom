@@ -99,7 +99,7 @@ require("./component.jsx")['for'](module, {
 
 			            {Context.items.map(function(item) {
 							return (
-								<tr key={item.id}>
+								<tr key={item.get('id')}>
 									<td>{item.get("title")} {item.get("options")}</td>
 									<td>{item.get("quantity")}</td>
 									<td>${item.get("format.price")}</td>

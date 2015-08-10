@@ -151,8 +151,12 @@ console.log("error!", err.stack);
 				return store._byId[records[i].get("id")].__model;
 			}
 			var fields = {};
-			store.Model.getFields().forEach(function (field) {
+			Model.getFields().forEach(function (field) {
+
+//console.log("COPY FIELD", records[i]);
+
 				if (!records[i].has(field)) return;
+
 				fields[field] = records[i].get(field);
 			});
 			return store._byId[records[i].get("id")].__model = new Model(fields);

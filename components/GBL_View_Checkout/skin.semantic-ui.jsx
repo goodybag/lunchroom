@@ -241,7 +241,7 @@ require("./component.jsx")['for'](module, {
 
 			            {Context.items.map(function(item) {
 							return (
-								<tr key={item.id}>
+								<tr key={item.get('id')}>
 									<td>
 
 										{item.get("title")}
@@ -250,7 +250,7 @@ require("./component.jsx")['for'](module, {
 
 										&nbsp;&nbsp;&nbsp;
 
-										<div data-link="action:remove-item" data-id={item.id} className="ui primary button">
+										<div data-link="action:remove-item" data-id={item.get('id')} className="ui primary button">
 											Remove
 										</div>
 

@@ -114,11 +114,11 @@ exports.resolveForeignKeys = function (store, records, keys, wait, options) {
 								});
 */
 								Object.keys(values).forEach(function (name) {
-									records[i].__model[keys[key].localFieldPrefix + "." + name] = values[name];
+									records[i].__model.set(keys[key].localFieldPrefix + "." + name, values[name]);
 								});
 							}
 						} else {
-							records[i].__model[keys[key].localField] = foreignStore.get(foreign_key).get(keys[key].foreignField);
+							records[i].__model.set(keys[key].localField, foreignStore.get(foreign_key).get(keys[key].foreignField));
 						}
 					} catch (err) {
 						console.error("key", key);

@@ -292,7 +292,7 @@ module.exports = COMPONENT.create({
                     <tbody>
                       {Context.selectedVendorItems.map(function(item) {
                           var Row = (
-                              <tr key={item.id} data-id={item.id}>
+                              <tr key={item.get('id')} data-id={item.get('id')}>
                                 <td>{item.get("title")}</td>
                                 <td><img className="ui centered image" src={item.get("photo_url")} height="70"/></td>
                               </tr>
@@ -317,7 +317,7 @@ module.exports = COMPONENT.create({
                     <tbody>
                       {Context.menuItems.map(function(item) {
                           var Row = (
-                              <tr key={item.id} data-id={item.id}>
+                              <tr key={item.get('id')} data-id={item.get('id')}>
                                 <td>{item.get("item.title")}</td>
                                 <td><img className="ui centered image" src={item.get("item.photo_url")} height="70"/></td>
                               </tr>
@@ -439,7 +439,7 @@ module.exports = COMPONENT.create({
                 {Context.events.map(function(item) {
 
                     var Row = (
-                        <tr key={item.id} data-id={item.id}>
+                        <tr key={item.get('id')} data-id={item.get('id')}>
                           <td>{item.get("format.deliveryDate")}</td>
                           <td>{item.get("format.deliveryTime")}</td>
                           <td>{item.get("consumerGroup.title")}</td>

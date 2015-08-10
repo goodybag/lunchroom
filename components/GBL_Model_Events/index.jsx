@@ -15,7 +15,7 @@ module.exports = COMPONENT.create({
             <ul>
                 {Context.events.map(function(item) {
                     return (
-                        <li key={item.id}>
+                        <li key={item.get('id')}>
                             <h3>{item.get("day_id")}</h3>
                             {item.get("format.deliveryTime")} - {item.get("consumerGroup.title")} - {item.get("consumerGroup.contact")}
                             {item.get("consumerGroup.address")}

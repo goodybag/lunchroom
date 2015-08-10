@@ -25,7 +25,7 @@ module.exports = React.createClass({
             <ul>
 	            {self.props.appContext.get('stores').orders.where().map(function(item) {
 					return (
-						<li key={item.id}>
+						<li key={item.get('id')}>
 							<h3>{item.get("day_id")}</h3>
                             <pre>
                                 {JSON.stringify(item.get("form"), null, 4)}
