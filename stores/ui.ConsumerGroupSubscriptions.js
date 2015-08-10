@@ -80,11 +80,6 @@ exports['for'] = function (context) {
 				}
 			};
 
-console.log("SUBSCRIBE", {
-	consumer_group_id: consumer_group_id,
-	subscribeEmail: email
-});
-
 			return $.ajax({
 				method: "POST",
 				url: ENDPOINT + "/",

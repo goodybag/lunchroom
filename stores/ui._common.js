@@ -18,19 +18,26 @@ var FIRENODE = require("firenode-for-jsonapi/client");
 
 
 exports.makeEndpointUrl = function (name) {
-	return window.location.origin + "/api/v1/" + name;
+
+//console.log("window.location.origin: ", window.location.origin);
+
+//for (var name in window.location) {
+//	console.log("window.location." + name + ": ", window.location[name]);
+//}
+
+	return (
+		window.location.origin ||
+		(window.location.protocol + "//" + window.location.host)
+	) + "/api/v1/" + name;
 }
 
 
 
 exports.init = function (sessionToken, context) {
 
-	var client = new FIRENODE.Client(sessionToken, context);
+//	var client = new FIRENODE.Client(sessionToken, context);
 
-
-
-console.log("FIRENODE.client", client);
-
+//console.log("FIRENODE.client", client);
 
 }
 

@@ -119,8 +119,14 @@ appContext.set('initialized', true);
 // # Initialize UI and attach to DOM & Context
 // ##################################################
 
-require('react').render(
-	<skin.RootView appContext={appContext}/>,
-	document.getElementById('GBL_DEV_Views')
-);
+try {
+
+	require('react').render(
+		<skin.RootView appContext={appContext}/>,
+		document.getElementById('GBL_DEV_Views')
+	);
+
+} catch (err) {
+	console.error("ERROR attaching react to DOM", err.stack || err.message || err);
+}
 

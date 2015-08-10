@@ -23,6 +23,7 @@ const LIVE_NOTIFY = require("./server/live-notify");
 const FIRENODE = require("firenode-for-jsonapi/server");
 const UGLIFY = require("uglify-js");
 const JOBS = require("./server/jobs");
+const REQUEST = require("request");
 
 
 require('org.pinf.genesis.lib').forModule(require, module, function (API, exports) {
@@ -32,6 +33,28 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
 		app.use(COMPRESSION());
 
 		var fileCache = {};
+
+		app.post(/^\/contact-us$/, BODY_PARSER.json({
+			type: [
+				'application/json'
+			]
+		}), function (req, res, next) {
+
+			var url = "https://www.goodybag.com/contact-us";
+
+			return REQUEST({
+				uri: url,
+				method: 'POST',
+				json: req.body
+			}, function (err, response, body) {
+				if (err) return next(err);
+				if (response.statusCode !== 200) {
+					return next(new Error("Got status '" + response.statusCode + "' while calling '" + url + "'"));
+				}
+				console.log("Forwarded contact form", req.body, "to", url);
+				return res.end(body);
+			});
+		});
 
 		app.get(/^\/\.landing\.html$/, function (req, res, next) {
 			res.writeHead(200, {

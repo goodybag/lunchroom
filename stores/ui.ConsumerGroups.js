@@ -73,9 +73,6 @@ exports['for'] = function (context) {
 	                "filter[id]": consumer_group_id
 	            }),
 	            success: function () {
-
-console.log("LOADED fro consumer_group_id!!!!", consumer_group_id);
-
 	            	return callback(null);
 	            }
 	        });

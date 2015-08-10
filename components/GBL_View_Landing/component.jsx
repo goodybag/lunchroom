@@ -20,7 +20,6 @@ exports['for'] = function (module, Context) {
 
 	        var consumerGroups = self.props.appContext.get('stores').consumerGroups;
 			var consumerGroup = self.modelRecordsWithStore(consumerGroups, consumerGroups.where())[0];
-console.log("consumerGroup 22:", consumerGroup);
 
 	        var consumerGroupSubscriptions = self.props.appContext.get('stores').consumerGroupSubscriptions;
 			var consumerGroupSubscription = self.modelRecordsWithStore(consumerGroupSubscriptions, consumerGroupSubscriptions.where())[0];

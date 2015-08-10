@@ -89,11 +89,11 @@ exports.create = function (Context, implementation) {
 	    	var self = this;
 	    	if (!self._debounced_trigger_forceUpdate) {
 	    		self._debounced_trigger_forceUpdate = API.UNDERSCORE.debounce(function () {
-console.log("actual forced updated");
+//console.log("actual forced updated");
 	    			self.forceUpdate();
 	    		}, 300);
 	    	}
-console.log("triggered forced updated");
+//console.log("triggered forced updated");
 	    	self._debounced_trigger_forceUpdate();
 	    },
 		componentDidMount: function () {

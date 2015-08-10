@@ -226,12 +226,6 @@ module.exports = COMPONENT.create({
             };
         }
 
-console.log("ordersWhere", ordersWhere);
-
-console.log("orders", orders);
-console.log("orders.where(ordersWhere)", orders.where(ordersWhere));
-
-
         return {
             vendors: self.modelRecordsWithStore(vendors, vendors.where()),
             orders: self.modelRecordsWithStore(orders, orders.where(ordersWhere)),

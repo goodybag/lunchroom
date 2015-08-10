@@ -74,13 +74,10 @@ exports.extend = function (definition) {
 			console.error("Property with name '" + name + "' not declared!");
 			throw new Error("Property with name '" + name + "' not declared!");
 		}
-console.log("STATE get name", name);
 	}
 
 	State.prototype.set = function (name, value) {
 		if (this.values[name] === value) return;
-
-console.log("STATE SET name", name, value);
 
 		this.values[name] = value;
 		this.emit("change:" + name);

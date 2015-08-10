@@ -17,11 +17,9 @@ require("./component.jsx")['for'](module, {
 	    			message: $('form.contact-us-form textarea[name="message"]').val()
 	    		};
 
-console.log("payload", payload);
-
 				$.ajax({
 					method: "POST",
-					url: "https://www.goodybag.com/contact-us",
+					url: "/contact-us",
 					contentType: "application/json",
 					headers: {
 						"Accept": "application/json"
@@ -34,10 +32,18 @@ console.log("payload", payload);
 console.log("response", response);
 
 				})
-				.fail(function(err) {
+				.fail(function (err) {
+					if (err.status === 200) {
+						// This happens on IE 8 & 9.
+						// We had success after all.
+						return;
+					}
 
-console.log("Error sending message to server!", err.stack);
-
+					for (var name in err) {
+						console.error("ERR " + name + ": " + err[name]);
+					}
+					console.error("Error status code: " + err.statusCode);
+					console.log("Error sending message to server!" + err.stack || err.message || err);
 				});
 
 				$('#contact-us-modal').modal('hide');
@@ -114,7 +120,7 @@ console.log("Error sending message to server!", err.stack);
 		var React = Context.REACT;
 
 		var consumerGroup = Context.consumerGroup;
-console.log("consumerGroup!!!", consumerGroup);		
+
 		if (!consumerGroup) {
 	        return (
 	        	<div className="ui one column centered grid">
