@@ -54,7 +54,7 @@
 /******/ 	
 /******/ 	
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "28ed73211834e9a42527"; // eslint-disable-line no-unused-vars
+/******/ 	var hotCurrentHash = "4a674336a8bd8bd069de"; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentParents = []; // eslint-disable-line no-unused-vars
 /******/ 	
@@ -35416,7 +35416,7 @@
 				    React.createElement("div", {className: "seven wide column"}, 
 						React.createElement("div", {className: "ui top attached tabular menu"}, 
 							Context.days.map(function (item) {
-					        	return React.createElement("div", {key: item.id, className: "item", "data-tab": item.get("format.ddd")}, item.get("format.ddd"));
+					        	return React.createElement("div", {key: item.get('id'), className: "item", "data-tab": item.get("format.ddd")}, item.get("format.ddd"));
 							})		
 						), 
 						SneakPeak
@@ -36712,7 +36712,7 @@
 
 				            Context.items.map(function(item) {
 								return (
-									React.createElement("tr", {key: item.id}, 
+									React.createElement("tr", {key: item.get('id')}, 
 										React.createElement("td", null, 
 
 											item.get("title"), 
@@ -36721,7 +36721,7 @@
 
 											"   ", 
 
-											React.createElement("div", {"data-link": "action:remove-item", "data-id": item.id, className: "ui primary button"}, 
+											React.createElement("div", {"data-link": "action:remove-item", "data-id": item.get('id'), className: "ui primary button"}, 
 												"Remove"
 											)
 
@@ -36990,7 +36990,7 @@
 
 				            Context.items.map(function(item) {
 								return (
-									React.createElement("tr", {key: item.id}, 
+									React.createElement("tr", {key: item.get('id')}, 
 										React.createElement("td", null, item.get("title"), " ", item.get("options")), 
 										React.createElement("td", null, item.get("quantity")), 
 										React.createElement("td", null, "$", item.get("format.price")), 
@@ -37754,7 +37754,7 @@
 	                    React.createElement("tbody", null, 
 	                      Context.selectedVendorItems.map(function(item) {
 	                          var Row = (
-	                              React.createElement("tr", {key: item.id, "data-id": item.id}, 
+	                              React.createElement("tr", {key: item.get('id'), "data-id": item.get('id')}, 
 	                                React.createElement("td", null, item.get("title")), 
 	                                React.createElement("td", null, React.createElement("img", {className: "ui centered image", src: item.get("photo_url"), height: "70"}))
 	                              )
@@ -37779,7 +37779,7 @@
 	                    React.createElement("tbody", null, 
 	                      Context.menuItems.map(function(item) {
 	                          var Row = (
-	                              React.createElement("tr", {key: item.id, "data-id": item.id}, 
+	                              React.createElement("tr", {key: item.get('id'), "data-id": item.get('id')}, 
 	                                React.createElement("td", null, item.get("item.title")), 
 	                                React.createElement("td", null, React.createElement("img", {className: "ui centered image", src: item.get("item.photo_url"), height: "70"}))
 	                              )
@@ -37901,7 +37901,7 @@
 	                Context.events.map(function(item) {
 
 	                    var Row = (
-	                        React.createElement("tr", {key: item.id, "data-id": item.id}, 
+	                        React.createElement("tr", {key: item.get('id'), "data-id": item.get('id')}, 
 	                          React.createElement("td", null, item.get("format.deliveryDate")), 
 	                          React.createElement("td", null, item.get("format.deliveryTime")), 
 	                          React.createElement("td", null, item.get("consumerGroup.title")), 
@@ -38073,7 +38073,7 @@
 	                Context.orders.map(function(item) {
 
 	                    var Row = (
-	                        React.createElement("tr", {key: item.id}, 
+	                        React.createElement("tr", {key: item.get('id')}, 
 	                          React.createElement("td", null, item.get("number")), 
 	                          React.createElement("td", null, item.get("format.deliveryDate")), 
 	                          React.createElement("td", null, item.get("format.deliveryTime")), 
@@ -38085,16 +38085,16 @@
 	                    var Actions = null;
 
 	                    if (item.get("status.id") !== "delivered") {
-	                        var key = item.id + "-actions";
+	                        var key = item.get('id') + "-actions";
 	                        Actions = (
 	                            React.createElement("tr", {key: key}, 
 	                                React.createElement("td", {colSpan: "5"}, 
 
-	                                    React.createElement("button", {"data-link": "action:set-status", "data-value": "confirmed", "data-id": item.orderHashId, className: "ui primary button"}, 
+	                                    React.createElement("button", {"data-link": "action:set-status", "data-value": "confirmed", "data-id": item.get('orderHashId'), className: "ui primary button"}, 
 	                                        "Confirmed"
 	                                    ), 
 
-	                                    React.createElement("button", {"data-link": "action:set-status", "data-value": "delivered", "data-id": item.orderHashId, className: "ui primary button"}, 
+	                                    React.createElement("button", {"data-link": "action:set-status", "data-value": "delivered", "data-id": item.get('orderHashId'), className: "ui primary button"}, 
 	                                        "Delivered"
 	                                    )
 
@@ -38252,7 +38252,7 @@
 	                Context.orders.map(function(item) {
 
 	                    var Row = (
-	                        React.createElement("tr", {key: item.id}, 
+	                        React.createElement("tr", {key: item.get('id')}, 
 	                          React.createElement("td", null, item.get("number")), 
 	                          React.createElement("td", null, item.get("format.deliveryDate")), 
 	                          React.createElement("td", null, item.get("format.deliveryTime")), 
@@ -38261,7 +38261,7 @@
 	                        )
 	                    );
 
-	                    var key = item.id + "-items";
+	                    var key = item.get('id') + "-items";
 	                    var items = item.get("items") || [];
 	                    var Items = (
 	                        React.createElement("tr", {key: key}, 
@@ -38271,9 +38271,9 @@
 	                                    items.map(function (item) {
 	                                        return (
 	                                            React.createElement("tr", null, 
-	                                              React.createElement("td", null, item.title), 
-	                                              React.createElement("td", null, item.options), 
-	                                              React.createElement("td", null, item.quantity)
+	                                              React.createElement("td", null, item.get('title')), 
+	                                              React.createElement("td", null, item.get('options')), 
+	                                              React.createElement("td", null, item.get('quantity'))
 	                                            )
 	                                        );
 	                                    })
@@ -38286,16 +38286,16 @@
 	                    var Actions = null;
 
 	                    if (item.get("status.id") !== "delivered") {
-	                        var key = item.id + "-actions";
+	                        var key = item.get('id') + "-actions";
 	                        Actions = (
 	                            React.createElement("tr", {key: key}, 
 	                                React.createElement("td", {colSpan: "5"}, 
 
-	                                    React.createElement("button", {"data-link": "action:set-status", "data-value": "confirmed", "data-id": item.orderHashId, className: "ui primary button"}, 
+	                                    React.createElement("button", {"data-link": "action:set-status", "data-value": "confirmed", "data-id": item.get('orderHashId'), className: "ui primary button"}, 
 	                                        "Confirmed"
 	                                    ), 
 
-	                                    React.createElement("button", {"data-link": "action:set-status", "data-value": "delivered", "data-id": item.orderHashId, className: "ui primary button"}, 
+	                                    React.createElement("button", {"data-link": "action:set-status", "data-value": "delivered", "data-id": item.get('orderHashId'), className: "ui primary button"}, 
 	                                        "Delivered"
 	                                    )
 
@@ -38425,7 +38425,7 @@
 	            React.createElement("ul", null, 
 		            days.modelRecords(days.where()).map(function(item) {
 						return (
-							React.createElement("li", {key: item.id}, 
+							React.createElement("li", {key: item.get('id')}, 
 								React.createElement("h3", null, item.get("format.ddd"))
 							)
 						);
@@ -38458,7 +38458,7 @@
 	            React.createElement("ul", null, 
 	                Context.events.map(function(item) {
 	                    return (
-	                        React.createElement("li", {key: item.id}, 
+	                        React.createElement("li", {key: item.get('id')}, 
 	                            React.createElement("h3", null, item.get("day_id")), 
 	                            item.get("format.deliveryTime"), " - ", item.get("consumerGroup.title"), " - ", item.get("consumerGroup.contact"), 
 	                            item.get("consumerGroup.address")
@@ -38523,7 +38523,7 @@
 	            React.createElement("ul", null, 
 		            self.props.appContext.get('stores').vendors.where().map(function(item) {
 						return (
-							React.createElement("li", {key: item.id}, 
+							React.createElement("li", {key: item.get('id')}, 
 								item.get("title")
 							)
 						);
@@ -38564,7 +38564,7 @@
 	                Context.items.map(function(item) {
 
 	                    var Row = (
-	                        React.createElement("tr", {key: item.id}, 
+	                        React.createElement("tr", {key: item.get('id')}, 
 	                          React.createElement("td", null, item.get("title")), 
 	                          React.createElement("td", null, React.createElement("img", {className: "ui centered image", src: item.get("photo_url"), height: "70"}))
 	                        )
@@ -38699,10 +38699,10 @@
 	                        daytype = (React.createElement("b", null, daytype));
 	                    }
 
-	                    var itemsId = item.id + "-items";
+	                    var itemsId = item.get('id') + "-items";
 
 						return [(
-	                        React.createElement("tr", {className: "ui violet inverted segment", key: item.id}, 
+	                        React.createElement("tr", {className: "ui violet inverted segment", key: item.get('id')}, 
 	                          React.createElement("td", null, 
 	                            item.get("day.format.ddd"), " - ", item.get("day.format.MMM"), " - ", item.get("day.format.D"), React.createElement("br", null), 
 	                            daytype
@@ -38802,7 +38802,7 @@
 	            React.createElement("ul", null, 
 		            self.props.appContext.get('stores').consumerGroups.where().map(function(item) {
 						return (
-							React.createElement("li", {key: item.id}, 
+							React.createElement("li", {key: item.get('id')}, 
 								item.get("title")
 							)
 						);
@@ -38845,7 +38845,7 @@
 	            React.createElement("ul", null, 
 		            self.props.appContext.get('stores').consumers.where().map(function(item) {
 						return (
-							React.createElement("li", {key: item.id}, 
+							React.createElement("li", {key: item.get('id')}, 
 	                            item.get("firstName"), " ", item.get("lastName")
 							)
 						);
@@ -38888,7 +38888,7 @@
 	            React.createElement("ul", null, 
 		            self.props.appContext.get('stores').consumerGroupSubscriptions.where().map(function(item) {
 						return (
-							React.createElement("li", {key: item.id}, 
+							React.createElement("li", {key: item.get('id')}, 
 								item.get("token")
 							)
 						);
@@ -38989,7 +38989,7 @@
 	            React.createElement("ul", null, 
 		            self.props.appContext.get('stores').orders.where().map(function(item) {
 						return (
-							React.createElement("li", {key: item.id}, 
+							React.createElement("li", {key: item.get('id')}, 
 								React.createElement("h3", null, item.get("day_id")), 
 	                            React.createElement("pre", null, 
 	                                JSON.stringify(item.get("form"), null, 4)
@@ -39038,7 +39038,7 @@
 	            React.createElement("ul", null, 
 		            self.props.appContext.get('stores').orderStatus.where().map(function(item) {
 						return (
-							React.createElement("li", {key: item.id}, 
+							React.createElement("li", {key: item.get('id')}, 
 								item.get("title")
 							)
 						);
@@ -64850,11 +64850,11 @@
 									});
 	*/
 									Object.keys(values).forEach(function (name) {
-										records[i].__model[keys[key].localFieldPrefix + "." + name] = values[name];
+										records[i].__model.set(keys[key].localFieldPrefix + "." + name, values[name]);
 									});
 								}
 							} else {
-								records[i].__model[keys[key].localField] = foreignStore.get(foreign_key).get(keys[key].foreignField);
+								records[i].__model.set(keys[key].localField, foreignStore.get(foreign_key).get(keys[key].foreignField));
 							}
 						} catch (err) {
 							console.error("key", key);
@@ -67901,25 +67901,19 @@
 				definition.derived &&
 				typeof definition.derived[name] !== "undefined"
 			) {
-
-	console.log("GET DERIVED!", name, this.values);
-
 				return definition.derived[name].fn.call(this.values);
-
 			} else {
 				console.error("definition", JSON.stringify(definition, null, 4));
 				console.error("Property with name '" + name + "' not declared!");
 				throw new Error("Property with name '" + name + "' not declared!");
 			}
-
-
 	console.log("STATE get name", name);
 		}
 
 		State.prototype.set = function (name, value) {
 			if (this.values[name] === value) return;
 
-	console.log("STATE set name", name, value);
+	console.log("STATE SET name", name, value);
 
 			this.values[name] = value;
 			this.emit("change:" + name);
@@ -78201,8 +78195,12 @@
 					return store._byId[records[i].get("id")].__model;
 				}
 				var fields = {};
-				store.Model.getFields().forEach(function (field) {
+				Model.getFields().forEach(function (field) {
+
+	//console.log("COPY FIELD", records[i]);
+
 					if (!records[i].has(field)) return;
+
 					fields[field] = records[i].get(field);
 				});
 				return store._byId[records[i].get("id")].__model = new Model(fields);
