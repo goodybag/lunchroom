@@ -1,16 +1,12 @@
 
-const COMMON = require("./ui._common");
-const UNDERSCORE = require('underscore');
+var COMMON = require("./ui._common");
+var UNDERSCORE = require('underscore');
+var PAGE = require('page');
+var MOMENT = require("moment");
+var Q = require("q");
+var HEAD = head;
 
-require('html5-history-api/history.js');
-const PAGE = require('page');
-
-const AMPERSAND_STATE = require('ampersand-state');
-const MOMENT = require("moment");
-const Q = require("q");
-const HEAD = head;
-
-exports.for = function (overrides) {
+exports['for'] = function (overrides) {
 
 	// TODO: Init from session.
 	var config = {
@@ -37,14 +33,14 @@ exports.for = function (overrides) {
 	var appContext = new AppContext(config);
 
 
-	COMMON.init(appContext.sessionToken, appContext.context);
+	COMMON.init(appContext.get('sessionToken'), appContext.get('context'));
 
 
-	const PATHNAME = window.location.pathname;
+	var PATHNAME = window.location.pathname;
 
 	function handleSelectedViewInit () {
 
-		if (appContext.context.id) {
+		if (appContext.get('context').id) {
 
 /*
 			if (!(
@@ -70,18 +66,18 @@ exports.for = function (overrides) {
 		} else {
 
 			if (
-				appContext.selectedView === "Order_Placed" ||
-				appContext.selectedView === "Order_Arrived" ||
-				appContext.selectedView === "Receipt"
+				appContext.get('selectedView') === "Order_Placed" ||
+				appContext.get('selectedView') === "Order_Arrived" ||
+				appContext.get('selectedView') === "Receipt"
 			) {				
-				if (!appContext.stores.orders.getOrder(appContext.todayId).get("items")) {
+				if (!appContext.get('stores').orders.getOrder(appContext.get('todayId')).get("items")) {
 					// Redirect to menu because there is no placed order.
-					appContext.selectedView = "Menu_Web";
+					appContext.set('selectedView', "Menu_Web");
 					return true;
 				}
 			} else
-			if (!appContext.selectedView) {
-				appContext.selectedView = "Menu_Web";
+			if (!appContext.get('selectedView')) {
+				appContext.set('selectedView', "Menu_Web");
 				return true;
 			}
 		}
@@ -104,9 +100,9 @@ exports.for = function (overrides) {
 //console.log("pathname", pathname);
 			if (
 				/^\//.test(view) &&
-				appContext.lockedView &&
-				view !== appContext.lockedView &&
-				appContext.lockedView.split(",").indexOf(view) === -1
+				appContext.get('lockedView') &&
+				view !== appContext.get('lockedView') &&
+				appContext.get('lockedView').split(",").indexOf(view) === -1
 			) {
 //console.log("REDIRECT TO", window.location.origin + view);
 				// We are selecting a new view and updating the URL using a REDIRECT which
@@ -121,10 +117,13 @@ exports.for = function (overrides) {
 				// We are selecting a new view and updating the URL using PUSH-STATE
 				// without reloading the page.
 
-				appContext.selectedView = view;
+				appContext.set('selectedView', view);
 			}
 		});
-		PAGE();
+		PAGE({
+			popstate: false,
+			click: false
+		});
 
 		appContext.on("change:selectedView", function () {
 
@@ -132,9 +131,9 @@ exports.for = function (overrides) {
 //console.log("ON VIEW CHANGE appContext.lockedView", appContext.lockedView);
 
 			if (
-				appContext.lockedView &&
-				appContext.selectedView !== appContext.lockedView &&
-				appContext.lockedView.split(",").indexOf(appContext.selectedView) === -1
+				appContext.get('lockedView') &&
+				appContext.get('selectedView') !== appContext.get('lockedView') &&
+				appContext.get('lockedView').split(",").indexOf(appContext.get('selectedView')) === -1
 			) {
 //console.log("REDIRECT TO", window.location.origin + PATHNAME + "#" + appContext.selectedView);
 				// We are selecting a new view and updating the URL using a REDIRECT which
@@ -142,7 +141,7 @@ exports.for = function (overrides) {
 
 				// NOTE: This will not work if only the Hash changes.
 				//       In those cases you need to redirect to a new URL.
-				window.location.href = window.location.origin + PATHNAME + "#" + appContext.selectedView;
+				window.location.href = window.location.origin + PATHNAME + "#" + appContext.get('selectedView');
 			} else {
 
 //console.log("SET PAGE1", PATHNAME + "#" + appContext.selectedView);
@@ -153,7 +152,7 @@ exports.for = function (overrides) {
 				if (handleSelectedViewInit()) return;
 //console.log("SET PAGE2", PATHNAME + "#" + appContext.selectedView);
 
-				PAGE.redirect(PATHNAME + "#" + appContext.selectedView);
+				PAGE.redirect(PATHNAME + "#" + appContext.get('selectedView'));
 
 //				PAGE(PATHNAME + "#" + appContext.selectedView);
 //console.log("SET PAGE DONE", PATHNAME + "#" + appContext.selectedView);
@@ -163,8 +162,8 @@ exports.for = function (overrides) {
 		});
 
 		appContext.on("change:selectedDay", function () {
-			if (appContext.selectedView != "Landing") {
-				appContext.selectedView = "Landing";
+			if (appContext.get('selectedView') != "Landing") {
+				appContext.set('selectedView', "Landing");
 			}
 		});
 	}
@@ -177,13 +176,13 @@ exports.for = function (overrides) {
 		// TODO: Handle re-connects by re-sending init.
 
 		// Init connection
-		socket.emit('context', appContext.context || {});
+		socket.emit('context', appContext.get('context') || {});
 
 		socket.on('notify', function (data) {
 
 			if (data.collection === "order-status") {
 
-				appContext.stores.orderStatus.fetchStatusInfoForOrderHashId(data.orderHashId);
+				appContext.get('stores').orderStatus.fetchStatusInfoForOrderHashId(data.orderHashId);
 
 			}
 		});
@@ -197,10 +196,10 @@ exports.for = function (overrides) {
 
 			initLiveNotify();
 
-			appContext.ready = true;
+			appContext.set('ready', true);
 		}
 
-		var context = appContext.context;
+		var context = appContext.get('context');
 
 		var m = PATHNAME.match(/\/(order|vendor|event)-([^\/]+)\/?/);
 		if (m) {
@@ -209,24 +208,24 @@ exports.for = function (overrides) {
 		}
 
 		if (context.selectedView) {
-			appContext.selectedView = context.selectedView;
+			appContext.set('selectedView', context.selectedView);
 		}
 		if (context.lockedView) {
-			appContext.lockedView = context.lockedView;
+			appContext.set('lockedView', context.lockedView);
 		}
 
 		// We have a context ID that we should use to load
 		// data to init the UI.
 		if (context.type === "order") {
 
-			appContext.stores.orders.loadOrderByHashId(context.id).then(function () {
+			appContext.get('stores').orders.loadOrderByHashId(context.id).then(function () {
 
 				if (!(
-					appContext.selectedView === "Order_Placed" ||
-					appContext.selectedView === "Order_Arrived" ||
-					appContext.selectedView === "Receipt"
+					appContext.get('selectedView') === "Order_Placed" ||
+					appContext.get('selectedView') === "Order_Arrived" ||
+					appContext.get('selectedView') === "Receipt"
 				)) {
-					appContext.selectedView = "Receipt";
+					appContext.set('selectedView', "Receipt");
 				}
 
 				finalizeInit();
@@ -240,13 +239,13 @@ exports.for = function (overrides) {
 
 			if (context.dbfilter.event_id) {				
 				Q.all([
-					appContext.stores.events.loadForId(context.dbfilter.event_id),
-					appContext.stores.menus.loadForEvent(context.dbfilter.event_id)					
+					appContext.get('stores').events.loadForId(context.dbfilter.event_id),
+					appContext.get('stores').menus.loadForEvent(context.dbfilter.event_id)					
 				]).then(function() {
 
-					return appContext.stores.days.loadForEvent(context.dbfilter.event_id).then(function () {
+					return appContext.get('stores').days.loadForEvent(context.dbfilter.event_id).then(function () {
 
-						var today = appContext.stores.events.modelRecords(appContext.stores.events.getToday())[0];
+						var today = appContext.get('stores').events.modelRecords(appContext.get('stores').events.getToday())[0];
 
 						function monitorOrderDeadline (today) {
 							var ordersLocked = null;
@@ -258,7 +257,7 @@ exports.for = function (overrides) {
 									ordersLocked = today.ordersLocked;
 									// Status has changed so we reload to lock the UI.
 									console.log("Lock event due to ordersLocked");
-									appContext.stores.events.loadForId(context.dbfilter.event_id).fail(function (err) {
+									appContext.get('stores').events.loadForId(context.dbfilter.event_id).fail(function (err) {
 										console.error("Error loading event", err.stack);
 									});
 								}
@@ -281,16 +280,16 @@ exports.for = function (overrides) {
 		} else
 		if (context.type === "vendor") {
 
-			appContext.stores.vendors.idForAdminAccessToken(context.id).then(function (vendor_id) {
+			appContext.get('stores').vendors.idForAdminAccessToken(context.id).then(function (vendor_id) {
 
 				context.vendor_id = vendor_id;
 
-				return appContext.stores.orders.loadForVendorId(context.vendor_id).then(function () {
+				return appContext.get('stores').orders.loadForVendorId(context.vendor_id).then(function () {
 
 					if (!(
-						appContext.selectedView === "Admin_Restaurant"
+						appContext.get('selectedView') === "Admin_Restaurant"
 					)) {
-						appContext.selectedView = "Admin_Restaurant";
+						appContext.set('selectedView', "Admin_Restaurant");
 					}
 
 					finalizeInit();
@@ -301,8 +300,6 @@ exports.for = function (overrides) {
 
 		} else {
 
-console.log("context", context);
-
 			function initializeDefaultsForContext () {
 				var all = [];
 				if (
@@ -310,14 +307,14 @@ console.log("context", context);
 				) {
 					if (context.dbfilter.consumer_group_id) {
 						all.push(Q.fcall(function () {
-							return appContext.stores.consumerGroups.loadForId(
+							return appContext.get('stores').consumerGroups.loadForId(
 								context.dbfilter.consumer_group_id
 							);
 						}));
 					}
 					if (context.dbfilter.email) {
 						all.push(Q.fcall(function () {
-							return appContext.stores.consumerGroupSubscriptions.loadForEmail(
+							return appContext.get('stores').consumerGroupSubscriptions.loadForEmail(
 								context.dbfilter.email
 							);
 						}));
@@ -343,7 +340,7 @@ console.log("context", context);
 
 
 // @see http://ampersandjs.com/docs#ampersand-state
-var AppContext = AMPERSAND_STATE.extend({
+var AppContext = COMMON.API.AMPERSAND_STATE.extend({
 	props: {
 		sessionToken: "string",
 		context: "object",
@@ -352,7 +349,8 @@ var AppContext = AMPERSAND_STATE.extend({
         skin: "object",
         stores: "object",
         today: "string",
-        todayId: "string"
+        todayId: "string",
+        lockedView: "string"
 	},
     session: {
         selectedView: "string",

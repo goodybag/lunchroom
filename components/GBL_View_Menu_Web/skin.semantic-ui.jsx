@@ -1,9 +1,9 @@
 
-require("./component.jsx").for(module, {
+require("./component.jsx")['for'](module, {
 	afterRender: function (Context, element) {
 
 		$('.tab', element).removeClass('active');
-	    $('.tab[data-tab="' + Context.appContext.selectedDay + '"]', element).addClass('active');
+	    $('.tab[data-tab="' + Context.appContext.get('selectedDay') + '"]', element).addClass('active');
 
 	    Context.ensureForNodes(
 	    	$('[data-link="action:add"]', element),
@@ -29,7 +29,7 @@ require("./component.jsx").for(module, {
 
 		        $('.ui.modal[data-id="' + itemBlock.attr("data-id") + '"][data-day="' + itemBlock.attr("data-day") + '"]').modal('hide');
 
-				Context.appContext.stores.cart.addItem(itemBlock.attr("data-id"), options);
+				Context.appContext.get('stores').cart.addItem(itemBlock.attr("data-id"), options);
 	    	}
 	    );
 
@@ -61,13 +61,13 @@ require("./component.jsx").for(module, {
 
 
 		// TODO: Remove this once we can inject 'React' automatically at build time.
-		const React = Context.REACT;
+		var React = Context.REACT;
 
 		var Panel = "";
 
 		if (Context.eventToday) {
 
-			if (Context.eventToday.ordersLocked) {
+			if (Context.eventToday.get("ordersLocked")) {
 
 				Panel = (
 					<div className="sixteen wide column">
@@ -219,13 +219,13 @@ require("./component.jsx").for(module, {
         return (
         	<div className="ui grid">
 
-	        	{Context.appContext.view.components.Header}
+	        	{Context.appContext.get('view').components.Header}
 
-	        	{Context.appContext.view.components.Menu.for(Context)}
+	        	{Context.appContext.get('view').components.Menu['for'](Context)}
 
 				{Panel}
 
-			    {Context.appContext.view.components.Footer}
+			    {Context.appContext.get('view').components.Footer}
 
 			</div>
         );

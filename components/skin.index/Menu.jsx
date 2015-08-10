@@ -1,15 +1,15 @@
 
-const COMPONENT = require("../GBL_ReactComponent");
+var COMPONENT = require("../GBL_ReactComponent");
 
-exports.for = function (Context) {
+exports['for'] = function (Context) {
 
 	var Tag = COMPONENT.create(Context, {
 
 	    displayName: 'Menu',
 
 	    onMount: function () {
-			this.props.appContext.stores.cart.on("update", this._trigger_forceUpdate);
-			this.props.appContext.stores.events.on("update", this._trigger_forceUpdate);
+			this.props.appContext.get('stores').cart.on("update", this._trigger_forceUpdate);
+			this.props.appContext.get('stores').events.on("update", this._trigger_forceUpdate);
 	    },
 
 	    onUnmount: function () {
@@ -17,8 +17,8 @@ exports.for = function (Context) {
 	    		clearInterval(this.eventsCheckInterval);
 	    		this.eventsCheckInterval = null;
 	    	}
-			this.props.appContext.stores.cart.off("update", this._trigger_forceUpdate);
-			this.props.appContext.stores.events.off("update", this._trigger_forceUpdate);
+			this.props.appContext.get('stores').cart.off("update", this._trigger_forceUpdate);
+			this.props.appContext.get('stores').events.off("update", this._trigger_forceUpdate);
 	    },
 
 		afterRender: function (Context, element) {
@@ -27,18 +27,18 @@ exports.for = function (Context) {
 			$('.menu .item', element).tab();
 			$('.menu .item', element).on('click', function () {
 				var selectedDay = $(this).attr("data-tab");
-				Context.appContext.selectedDay = selectedDay;
-				Context.appContext.selectedView = "Menu_Web";
+				Context.appContext.set('selectedDay', selectedDay);
+				Context.appContext.set('selectedView', "Menu_Web");
 			});
 			$('.menu .item', element).removeClass('active');
-		    $('.menu .item[data-tab="' + Context.appContext.selectedDay + '"]', element).addClass('active');
+		    $('.menu .item[data-tab="' + Context.appContext.get('selectedDay') + '"]', element).addClass('active');
 
 		    Context.ensureForNodes(
 		    	$('.button[data-link]', element),
 		    	'click',
 		    	function () {
 		    		var selectedView = $(this).attr("data-link").replace(/^#/, "");
-					Context.appContext.selectedView = selectedView;
+					Context.appContext.set('selectedView', selectedView);
 		    	}
 		    );
 
@@ -48,17 +48,20 @@ exports.for = function (Context) {
 		    	$('.button[data-link="#Checkout"]', element).addClass("disabled");
 		    }
 
-		    if (!self.eventsCheckInterval) {
+		    if (
+		    	Context.eventToday &&
+		    	!self.eventsCheckInterval
+		    ) {
 		    	var lastOrderTimer = null;
 		    	self.eventsCheckInterval = setInterval(function () {
 					if (lastOrderTimer === null) {
-						lastOrderTimer = Context.eventToday['format.orderTimer'];
+						lastOrderTimer = Context.eventToday.get('format.orderTimer');
 					} else
-					if (Context.eventToday['format.orderTimer'] !== lastOrderTimer) {
-						lastOrderTimer = Context.eventToday['format.orderTimer'];
+					if (Context.eventToday.get('format.orderTimer') !== lastOrderTimer) {
+						lastOrderTimer = Context.eventToday.get('format.orderTimer');
 						self._trigger_forceUpdate();
 					}
-					if (Context.eventToday.ordersLocked && self.eventsCheckInterval) {
+					if (Context.eventToday.get("ordersLocked") && self.eventsCheckInterval) {
 						// Once orders are locked we can stop querying.
 						clearInterval(self.eventsCheckInterval);
 	    				self.eventsCheckInterval = null;
@@ -70,9 +73,9 @@ exports.for = function (Context) {
 	    render: function () {
 	    	var self = this;
 
-	        var days = self.props.appContext.stores.days;
-	        var cart = self.props.appContext.stores.cart;
-	        var events = self.props.appContext.stores.events;
+	        var days = self.props.appContext.get('stores').days;
+	        var cart = self.props.appContext.get('stores').cart;
+	        var events = self.props.appContext.get('stores').events;
 
 	        var cartItemCount = 0;
 
@@ -98,7 +101,7 @@ exports.for = function (Context) {
 			var DaysTabs = "";
 
 			var SneakPeak = "";
-			if (Context.appContext.selectedDay !== Context.appContext.today) {
+			if (Context.appContext.get('selectedDay') !== Context.appContext.get('today')) {
 				SneakPeak = (
 					<div>
 						Sneak Peak! (You can look but not order)
@@ -142,7 +145,7 @@ exports.for = function (Context) {
 						</div>
 					</div>
 				);
-				if (Context.appContext.selectedView === "Menu_Web") {
+				if (Context.appContext.get('selectedView') === "Menu_Web") {
 					CompanyHeading = [
 						{CompanyHeading},
 						(
@@ -174,7 +177,7 @@ exports.for = function (Context) {
 	    }
 	});
 
-	const React = COMPONENT.API.REACT;
+	var React = COMPONENT.API.REACT;
 	return (
 		<Tag appContext={Context.appContext}/>
 	);

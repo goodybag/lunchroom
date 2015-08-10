@@ -1,8 +1,8 @@
 
-const COMMON = require("./ui._common");
+var COMMON = require("./ui._common");
 
 
-const ENDPOINT = COMMON.makeEndpointUrl("menus");
+var ENDPOINT = COMMON.makeEndpointUrl("menus");
 
 
 var Record = COMMON.API.BACKBONE.Model.extend({
@@ -22,7 +22,7 @@ var Store = COMMON.API.BACKBONE.Collection.extend({
 });
 
 
-exports.for = function (context) {
+exports['for'] = function (context) {
 
 	var store = new Store();
 
@@ -137,12 +137,12 @@ console.log("error!", err.stack);
 		return COMMON.resolveForeignKeys(store, records, {
 			"vendor_id": {
 				store: require("./ui.Vendors"),
-				model: context.appContext.stores.vendors.Model,
+				model: context.appContext.get('stores').vendors.Model,
 				localFieldPrefix: "vendor"
 			},
 			"item_id": {
 				store: require("./ui.Items"),
-				model: context.appContext.stores.items.Model,
+				model: context.appContext.get('stores').items.Model,
 				localFieldPrefix: "item"
 			}
 		}).map(function (record, i) {
@@ -151,7 +151,7 @@ console.log("error!", err.stack);
 				return store._byId[records[i].get("id")].__model;
 			}
 			var fields = {};
-			Object.keys(Model.prototype._definition).forEach(function (field) {
+			store.Model.getFields().forEach(function (field) {
 				if (!records[i].has(field)) return;
 				fields[field] = records[i].get(field);
 			});

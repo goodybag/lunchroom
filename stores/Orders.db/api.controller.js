@@ -1,17 +1,17 @@
 
-const PATH = require("path");
-const API = require("../../server/db/api.endpoints");
-const ENDPOINTS = require('endpoints');
-const EXTEND = require("extend");
-const UUID = require("uuid");
+var PATH = require("path");
+var API = require("../../server/db/api.endpoints");
+var ENDPOINTS = require('endpoints');
+var EXTEND = require("extend");
+var UUID = require("uuid");
 
-const SERVICES = require("../../server/services");
+var SERVICES = require("../../server/services");
 
 
 var store = EXTEND(false, {}, ENDPOINTS.Store.bookshelf);
 store.create = function (model, data) {
 
-	return SERVICES.for({}).then(function (SERVICES) {
+	return SERVICES['for']({}).then(function (SERVICES) {
 
 		// Generate new hash ID for order on creation.
 		data.attributes.orderHashId = UUID.v4();

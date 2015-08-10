@@ -1,5 +1,5 @@
 
-require("./component.jsx").for(module, {
+require("./component.jsx")['for'](module, {
 
 	afterRender: function (Context, element) {
 	},
@@ -7,13 +7,13 @@ require("./component.jsx").for(module, {
 	getHTML: function (Context) {
 
 		// TODO: Remove this once we can inject 'React' automatically at build time.
-		const React = Context.REACT;
+		var React = Context.REACT;
 
 		if (!Context.order) {
 			return (
 	        	<div className="ui grid">
 
-		        	{Context.appContext.view.components.Header}
+		        	{Context.appContext.get('view').components.Header}
 
 				    <div className="sixteen wide column">
 
@@ -21,7 +21,7 @@ require("./component.jsx").for(module, {
 
 				    </div>
 
-		        	{Context.appContext.view.components.Footer}
+		        	{Context.appContext.get('view').components.Footer}
 
 				</div>
 			);
@@ -30,7 +30,7 @@ require("./component.jsx").for(module, {
 		return (
         	<div className="ui grid">
 
-	        	{Context.appContext.view.components.Header}
+	        	{Context.appContext.get('view').components.Header}
 
 			    <div className="sixteen wide center aligned column">
 
@@ -65,7 +65,7 @@ require("./component.jsx").for(module, {
 				    </div>
 			    </div>
 
-	        	{Context.appContext.view.components.Footer}
+	        	{Context.appContext.get('view').components.Footer}
 
 	        </div>
 		);

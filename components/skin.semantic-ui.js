@@ -1,11 +1,11 @@
 
-const WEB_COMPONENTS = {
+var WEB_COMPONENTS = {
 	"Header": require("./skin.index/Header"),
 	"Menu": require("./skin.index/Menu"),
 	"Footer": require("./skin.index/Footer")
 };
 
-const EMAIL_COMPONENTS = {
+var EMAIL_COMPONENTS = {
 	CORRESPONDENCE: {
 		"Header": require("./skin.email.correspondence/Header"),
 		"Footer": require("./skin.email.correspondence/Footer")

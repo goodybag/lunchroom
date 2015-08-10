@@ -1,10 +1,10 @@
 /** @jsx React.DOM */
 'use strict'
 
-const React = require('react');
+var React = require('react');
 
 
-require("./component.jsx").for(module, {
+require("./component.jsx")['for'](module, {
 	getViewTabHTML: function (Context) {
 		return (
 		  <div className="item" onClick={Context.onClick}>
@@ -18,7 +18,7 @@ require("./component.jsx").for(module, {
 
 		if (
 			!Context.isTopFrame ||
-			Context.appContext.context.type
+			Context.appContext.get('context').type
 		) {
 			return (
 				<Context.ViewComponent

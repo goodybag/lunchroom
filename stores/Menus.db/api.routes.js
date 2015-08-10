@@ -1,6 +1,6 @@
 
-const CONTROLLER = require('./api.controller');
-const SCHEMA = require('./api.schema');
+var CONTROLLER = require('./api.controller');
+var SCHEMA = require('./api.schema');
 
 
 // @docs http://endpointsjs.com

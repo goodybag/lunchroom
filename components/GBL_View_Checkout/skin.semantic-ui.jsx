@@ -1,5 +1,5 @@
 
-require("./component.jsx").for(module, {
+require("./component.jsx")['for'](module, {
 
 	afterRender: function (Context, element) {
 
@@ -9,7 +9,7 @@ require("./component.jsx").for(module, {
 	    	$('.button[data-link="action:remove-item"]', element),
 	    	'click',
 	    	function () {
-	    		Context.appContext.stores.cart.remove($(this).attr("data-id"));
+	    		Context.appContext.get('stores').cart.remove($(this).attr("data-id"));
 	    	}
 	    );
 
@@ -99,7 +99,7 @@ require("./component.jsx").for(module, {
 	getHTML: function (Context) {
 
 		// TODO: Remove this once we can inject 'React' automatically at build time.
-		const React = Context.REACT;
+		var React = Context.REACT;
 
 		var panel = null;
 
@@ -315,9 +315,9 @@ require("./component.jsx").for(module, {
 		return (
         	<div className="ui grid">
 
-	        	{Context.appContext.view.components.Header}
+	        	{Context.appContext.get('view').components.Header}
 
-	        	{Context.appContext.view.components.Menu.for(Context)}
+	        	{Context.appContext.get('view').components.Menu['for'](Context)}
 
 				<div className="two column row">
 
@@ -325,7 +325,7 @@ require("./component.jsx").for(module, {
 
 			    </div>
 
-	        	{Context.appContext.view.components.Footer}
+	        	{Context.appContext.get('view').components.Footer}
 
 	        </div>
 		);

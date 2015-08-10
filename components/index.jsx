@@ -19,6 +19,7 @@ function getSkin () {
 	}
 }
 
+
 require("semantic-ui-css/semantic.js");
 
 
@@ -26,17 +27,19 @@ require("semantic-ui-css/semantic.js");
 // # Load and configure libraries
 // ##################################################
 
-const React = require('react');
-const Backbone = require('backbone');
-Backbone.$ = $;
+
+var React = require('react');
+var Backbone = require('backbone');
+Backbone.$ = window.$;
 require('react-backbone/react-backbone.js');
+
 
 
 // ##################################################
 // # Initialize Globals
 // ##################################################
 
-//const _ = require('underscore');
+//var _ = require('underscore');
 //var EventBus = _.clone(Backbone.Events);
 
 
@@ -45,42 +48,43 @@ require('react-backbone/react-backbone.js');
 // # Initialize Contexts
 // ##################################################
 
-const skin = getSkin();
+var skin = getSkin();
 
 var storeContext = {};
 
-var appContext = require("../stores/ui.AppContext").for({
+var appContext = require("../stores/ui.AppContext")['for']({
 	stores: {
-		days: require("../stores/ui.Days").for(storeContext),
-		events: require("../stores/ui.Events").for(storeContext),
-		items: require("../stores/ui.Items").for(storeContext),
-		vendors: require("../stores/ui.Vendors").for(storeContext),
-		menus: require("../stores/ui.Menus").for(storeContext),
-		consumers: require("../stores/ui.Consumers").for(storeContext),
-		consumerGroups: require("../stores/ui.ConsumerGroups").for(storeContext),
-		consumerGroupSubscriptions: require("../stores/ui.ConsumerGroupSubscriptions").for(storeContext),
-		cart: require("../stores/ui.Cart").for(storeContext),
-		orders: require("../stores/ui.Orders").for(storeContext),
-		orderStatus: require("../stores/ui.OrderStatus").for(storeContext)
+		days: require("../stores/ui.Days")['for'](storeContext),
+		events: require("../stores/ui.Events")['for'](storeContext),
+		items: require("../stores/ui.Items")['for'](storeContext),
+		vendors: require("../stores/ui.Vendors")['for'](storeContext),
+		menus: require("../stores/ui.Menus")['for'](storeContext),
+		consumers: require("../stores/ui.Consumers")['for'](storeContext),
+		consumerGroups: require("../stores/ui.ConsumerGroups")['for'](storeContext),
+		consumerGroupSubscriptions: require("../stores/ui.ConsumerGroupSubscriptions")['for'](storeContext),
+		cart: require("../stores/ui.Cart")['for'](storeContext),
+		orders: require("../stores/ui.Orders")['for'](storeContext),
+		orderStatus: require("../stores/ui.OrderStatus")['for'](storeContext)
 	},
 	skin: skin
 	// TODO: Inject config
 });
+
 
 storeContext.appContext = appContext;
 
 
 appContext.on("change:ready", function () {
 
-	if (!appContext.context.dev) return;
+	if (!appContext.get('context').dev) return;
 
 	setTimeout(function () {
 
 		// DEV: Init cart
-		appContext.stores.cart.addItem("1");
+		appContext.get('stores').cart.addItem("1");
 
 		// DEV: Init order form
-		var order = appContext.stores.orders.getOrder(appContext.todayId);
+		var order = appContext.get('stores').orders.getOrder(appContext.todayId);
 		order.set("form", {
 		 	"info[name]": "Bill Smith",
 		 	"info[email]": "cadorn.test@gmail.com",
@@ -108,7 +112,7 @@ appContext.redirectTo = function (contextId, viewId) {
 }
 
 
-appContext.initialized = true;
+appContext.set('initialized', true);
 
 
 // ##################################################

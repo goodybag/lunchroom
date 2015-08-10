@@ -2,20 +2,19 @@
 
 // The API for the data stores running in the UI.
 // Running all API access through here allows for easy porting later.
-const API = exports.API = {
+var API = exports.API = {
 	Q: require("q"),
 	BACKBONE: require('backbone'),
 	UNDERSCORE: require('underscore'),
-	AMPERSAND_STATE: require('ampersand-state'),
+	AMPERSAND_STATE: require('./ampersand-state'),
 	MOMENT: require("moment"),
 	NUMERAL: require("numeral"),
 	UUID: require("uuid"),
-	JWT: require('jsonwebtoken'),
 	JSSHA: require("jssha"),
 	CJSON: require("canonical-json")
 };
 
-const FIRENODE = require("firenode-for-jsonapi/client");
+var FIRENODE = require("firenode-for-jsonapi/client");
 
 
 exports.makeEndpointUrl = function (name) {
@@ -83,7 +82,7 @@ exports.resolveForeignKeys = function (store, records, keys, wait, options) {
 
 	var promises = Object.keys(keys).map(function (key) {
 		// Resolve IDs and RE-render UI once resolved
-		return keys[key].store.for({
+		return keys[key].store['for']({
 			ids: Object.keys(key_ids[key])
 		}).then(function (foreignStore) {
 			Object.keys(key_ids[key]).forEach(function (foreign_key) {
@@ -106,11 +105,14 @@ exports.resolveForeignKeys = function (store, records, keys, wait, options) {
 							// TODO: Wait long enough for records to always be available.
 							if (record) {
 								var model = new keys[key].model(record.toJSON());
+								var values = model.getValues();
+/*
 								var values = model.getAttributes({
 								  props: true,
 								  session: true,
 								  derived: true
 								});
+*/
 								Object.keys(values).forEach(function (name) {
 									records[i].__model[keys[key].localFieldPrefix + "." + name] = values[name];
 								});

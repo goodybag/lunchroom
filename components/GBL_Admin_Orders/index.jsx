@@ -1,7 +1,7 @@
 /** @jsx React.DOM */
 'use strict'
 
-const COMPONENT = require("../GBL_ReactComponent");
+var COMPONENT = require("../GBL_ReactComponent");
 
 module.exports = COMPONENT.create({
 
@@ -15,7 +15,7 @@ module.exports = COMPONENT.create({
 
                 if ($(this).attr("data-link") === "action:set-status") {
 
-                    Context.appContext.stores.orderStatus.setStatusForOrderHashId(
+                    Context.appContext.get('stores').orderStatus.setStatusForOrderHashId(
                         $(this).attr("data-id"),
                         $(this).attr("data-value")
                     );
@@ -26,7 +26,7 @@ module.exports = COMPONENT.create({
 
     getHTML: function (Context) {
 
-        const React = Context.REACT;
+        var React = Context.REACT;
 
         return (
           <div>
@@ -96,20 +96,20 @@ module.exports = COMPONENT.create({
 }, {
 
     onMount: function () {
-        this.props.appContext.stores.orders.on("sync", this._trigger_forceUpdate);
+        this.props.appContext.get('stores').orders.on("sync", this._trigger_forceUpdate);
 
-        this.props.appContext.stores.orders.reset();
-        this.props.appContext.stores.orders.fetch();
+        this.props.appContext.get('stores').orders.reset();
+        this.props.appContext.get('stores').orders.fetch();
     },
 
     onUnmount: function () {
-        this.props.appContext.stores.orders.off("sync", this._trigger_forceUpdate);
+        this.props.appContext.get('stores').orders.off("sync", this._trigger_forceUpdate);
     },
 
     render: function() {
         var self = this;
 
-        var orders = self.props.appContext.stores.orders;
+        var orders = self.props.appContext.get('stores').orders;
 
         return {
             orders: self.modelRecordsWithStore(orders, orders.where())

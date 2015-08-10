@@ -1,8 +1,8 @@
 
-const PATH = require("path");
-const UUID = require("uuid");
+var PATH = require("path");
+var UUID = require("uuid");
 
-const TABLE_NAME = PATH.basename(__dirname)
+var TABLE_NAME = PATH.basename(__dirname)
 	.replace(/\.db$/, "").replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase();
 
 

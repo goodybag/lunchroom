@@ -1,7 +1,7 @@
 
-const PATH = require("path");
+var PATH = require("path");
 
-const TABLE_NAME = PATH.basename(__dirname)
+var TABLE_NAME = PATH.basename(__dirname)
 	.replace(/\.db$/, "").replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase();
 
 

@@ -1,7 +1,7 @@
 /** @jsx React.DOM */
 'use strict'
 
-const UNDERSCORE = require("underscore");
+var UNDERSCORE = require("underscore");
 var React = require('react')
 
 module.exports = React.createClass({
@@ -11,18 +11,18 @@ module.exports = React.createClass({
 		this.forceUpdate();
     },
 	componentDidMount: function () {
-		this.props.appContext.stores.menus.on("sync", this._on_sync);
+		this.props.appContext.get('stores').menus.on("sync", this._on_sync);
         $(".ui.dropdown", this.getDOMNode()).dropdown();
     },
     componentWillUnmount: function () {
-		this.props.appContext.stores.menus.off("sync", this._on_sync);
+		this.props.appContext.get('stores').menus.off("sync", this._on_sync);
     },
 
 
     render: function() {
     	var self = this;
 
-        var menus = self.props.appContext.stores.menus;
+        var menus = self.props.appContext.get('stores').menus;
 
         var _notify_onChange = UNDERSCORE.debounce(self._on_sync, 100);
 

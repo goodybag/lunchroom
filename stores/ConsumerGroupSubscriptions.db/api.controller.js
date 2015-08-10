@@ -1,19 +1,19 @@
 
-const PATH = require("path");
-const API = require("../../server/db/api.endpoints");
-const ENDPOINTS = require('endpoints');
-const EXTEND = require("extend");
-const UUID = require("uuid");
+var PATH = require("path");
+var API = require("../../server/db/api.endpoints");
+var ENDPOINTS = require('endpoints');
+var EXTEND = require("extend");
+var UUID = require("uuid");
 
-const DB = require("../../server/db/bookshelf.knex.postgresql");
-const SERVICES = require("../../server/services");
+var DB = require("../../server/db/bookshelf.knex.postgresql");
+var SERVICES = require("../../server/services");
 
 
 var store = EXTEND(false, {}, ENDPOINTS.Store.bookshelf);
 store.create = function (model, data, request) {
 
 
-	return SERVICES.for({}).then(function (SERVICES) {
+	return SERVICES['for']({}).then(function (SERVICES) {
 
 
 		function sendSubscriptionConfirmation (consumerGroupSubscription) {

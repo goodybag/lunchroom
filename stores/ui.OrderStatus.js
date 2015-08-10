@@ -1,8 +1,8 @@
 
-const COMMON = require("./ui._common");
+var COMMON = require("./ui._common");
 
 
-const ENDPOINT = COMMON.makeEndpointUrl("order-status");
+var ENDPOINT = COMMON.makeEndpointUrl("order-status");
 
 
 var Record = COMMON.API.BACKBONE.Model.extend({
@@ -22,7 +22,7 @@ var Store = COMMON.API.BACKBONE.Collection.extend({
 });
 
 
-exports.for = function (context) {
+exports['for'] = function (context) {
 
 	var store = new Store();
 
@@ -75,7 +75,7 @@ exports.for = function (context) {
 					status.active = status.history[0][1];
 				}
 
-				var order = context.appContext.stores.orders.findWhere({
+				var order = context.appContext.get('stores').orders.findWhere({
 					orderHashId: orderHashId
 				});
 

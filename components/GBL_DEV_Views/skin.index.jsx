@@ -1,10 +1,10 @@
 /** @jsx React.DOM */
 'use strict'
 
-const React = require('react');
+var React = require('react');
 
 
-require("./component.jsx").for(module, {
+require("./component.jsx")['for'](module, {
 	getViewTabHTML: function (Context) {
 		return (
 			<li className="menu" onClick={Context.onClick}>{Context.label}</li>

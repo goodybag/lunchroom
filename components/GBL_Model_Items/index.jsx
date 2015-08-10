@@ -1,11 +1,11 @@
 
-const COMPONENT = require("../GBL_ReactComponent");
+var COMPONENT = require("../GBL_ReactComponent");
 
 module.exports = COMPONENT.create({
 
     getHTML: function (Context) {
 
-        const React = Context.REACT;
+        var React = Context.REACT;
 
         return (
           <div>
@@ -40,20 +40,20 @@ module.exports = COMPONENT.create({
 }, {
 
     onMount: function () {
-        this.props.appContext.stores.items.on("sync", this._trigger_forceUpdate);
+        this.props.appContext.get('stores').items.on("sync", this._trigger_forceUpdate);
 
-        this.props.appContext.stores.items.reset();
-        this.props.appContext.stores.items.fetch();
+        this.props.appContext.get('stores').items.reset();
+        this.props.appContext.get('stores').items.fetch();
     },
 
     onUnmount: function () {
-        this.props.appContext.stores.items.off("sync", this._trigger_forceUpdate);
+        this.props.appContext.get('stores').items.off("sync", this._trigger_forceUpdate);
     },
 
     render: function() {
         var self = this;
 
-        var items = self.props.appContext.stores.items;
+        var items = self.props.appContext.get('stores').items;
 
         return {
             items: self.modelRecordsWithStore(items, items.where())

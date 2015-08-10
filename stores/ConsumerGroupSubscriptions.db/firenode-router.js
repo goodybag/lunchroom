@@ -1,7 +1,7 @@
 
-exports.for = function (API) {
+exports['for'] = function (API) {
 
-	const DB = require("../../server/db/bookshelf.knex.postgresql");
+	var DB = require("../../server/db/bookshelf.knex.postgresql");
 
 
 	var exports = {};

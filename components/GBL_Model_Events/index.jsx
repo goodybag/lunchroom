@@ -1,13 +1,13 @@
 /** @jsx React.DOM */
 'use strict'
 
-const COMPONENT = require("../GBL_ReactComponent");
+var COMPONENT = require("../GBL_ReactComponent");
 
 module.exports = COMPONENT.create({
 
     getHTML: function (Context) {
 
-        const React = Context.REACT;
+        var React = Context.REACT;
 
         return (
           <div>
@@ -30,17 +30,17 @@ module.exports = COMPONENT.create({
 }, {
 
     onMount: function () {
-        this.props.appContext.stores.events.on("sync", this._trigger_forceUpdate);
+        this.props.appContext.get('stores').events.on("sync", this._trigger_forceUpdate);
     },
 
     onUnmount: function () {
-        this.props.appContext.stores.events.off("sync", this._trigger_forceUpdate);
+        this.props.appContext.get('stores').events.off("sync", this._trigger_forceUpdate);
     },
 
     render: function() {
     	var self = this;
 
-        var events = self.props.appContext.stores.events;
+        var events = self.props.appContext.get('stores').events;
 
         return {
             events: self.modelRecordsWithStore(events, events.where())

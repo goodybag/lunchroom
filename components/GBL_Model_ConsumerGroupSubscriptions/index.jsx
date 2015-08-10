@@ -10,10 +10,10 @@ module.exports = React.createClass({
 		this.forceUpdate();
     },
 	componentDidMount: function () {
-		this.props.appContext.stores.consumerGroupSubscriptions.on("sync", this._on_sync);
+		this.props.appContext.get('stores').consumerGroupSubscriptions.on("sync", this._on_sync);
     },
     componentWillUnmount: function () {
-		this.props.appContext.stores.consumerGroupSubscriptions.off("sync", this._on_sync);
+		this.props.appContext.get('stores').consumerGroupSubscriptions.off("sync", this._on_sync);
     },
 
 
@@ -23,7 +23,7 @@ module.exports = React.createClass({
           <div>
           	<h1>Items</h1>
             <ul>
-	            {self.props.appContext.stores.consumerGroupSubscriptions.where().map(function(item) {
+	            {self.props.appContext.get('stores').consumerGroupSubscriptions.where().map(function(item) {
 					return (
 						<li key={item.id}>
 							{item.get("token")}

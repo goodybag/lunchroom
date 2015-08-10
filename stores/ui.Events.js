@@ -1,8 +1,8 @@
 
-const COMMON = require("./ui._common");
+var COMMON = require("./ui._common");
 
 
-const ENDPOINT = COMMON.makeEndpointUrl("events");
+var ENDPOINT = COMMON.makeEndpointUrl("events");
 
 
 var Record = COMMON.API.BACKBONE.Model.extend({
@@ -69,11 +69,11 @@ console.log("error!", err.stack);
 
 			function getDataForFields (fields) {
 				var data = {};
-				for (var name in self.Model.prototype._definition) {
+				self.Model.getFields().forEach(function (name) {
 					if (typeof fields[name] !== "undefined") {
 						data[name] = "" + fields[name];
 					}
-				}
+				});
 				data["goodybagFee"] = data["goodybagFee"] * 100;
 
 				data["orderByTime"] = COMMON.API.MOMENT(
@@ -125,7 +125,7 @@ console.log("error!", err.stack);
 });
 
 
-exports.for = function (context) {
+exports['for'] = function (context) {
 
 	var store = new Store();
 
@@ -268,7 +268,7 @@ exports.for = function (context) {
 	});
 
 	store.getToday = function () {
-		var today = store.get(context.appContext.context.dbfilter.event_id);
+		var today = store.get(context.appContext.get('context').dbfilter.event_id);
 		if (!today) return [];
 		return [
 			today
@@ -307,14 +307,14 @@ exports.for = function (context) {
 		return COMMON.resolveForeignKeys(store, records, {
 			"consumer_group_id": {
 				store: require("./ui.ConsumerGroups"),
-				model: context.appContext.stores.consumerGroups.Model,
+				model: context.appContext.get('stores').consumerGroups.Model,
 				localFieldPrefix: "consumerGroup"
 			}
 		}).map(function (record, i) {
 			// Store model on backbone row so we can re-use it on subsequent calls.
 			if (store._byId[records[i].get("id")].__model) {
 				var model = store._byId[records[i].get("id")].__model;
-				Object.keys(Model.prototype._definition).forEach(function (field) {
+				store.Model.getFields().forEach(function (field) {
 					if (record.has(field) && model.get(field) !== record.get(field)) {
 						model.set(field, record.get(field));
 					}
@@ -322,7 +322,7 @@ exports.for = function (context) {
 				return model;
 			}
 			var fields = {};
-			Object.keys(Model.prototype._definition).forEach(function (field) {
+			store.Model.getFields().forEach(function (field) {
 				if (!records[i].has(field)) return;
 				fields[field] = records[i].get(field);
 			});
@@ -339,7 +339,7 @@ exports.for = function (context) {
 		return COMMON.resolveForeignKeys(store, record, {
 			"consumer_group_id": {
 				store: require("./ui.ConsumerGroups"),
-				model: context.appContext.stores.consumerGroups.Model,
+				model: context.appContext.get('stores').consumerGroups.Model,
 				localFieldPrefix: "consumerGroup"
 			}
 		}, true).then(function (records) {
@@ -347,7 +347,7 @@ exports.for = function (context) {
 				// Store model on backbone row so we can re-use it on subsequent calls.
 				if (store._byId[records[i].get("id")].__model) {
 					var model = store._byId[records[i].get("id")].__model;
-					Object.keys(Model.prototype._definition).forEach(function (field) {
+					store.Model.getFields().forEach(function (field) {
 						if (record.has(field) && model.get(field) !== record.get(field)) {
 							model.set(field, record.get(field));
 						}
@@ -355,7 +355,7 @@ exports.for = function (context) {
 					return model;
 				}
 				var fields = {};
-				Object.keys(Model.prototype._definition).forEach(function (field) {
+				store.Model.getFields().forEach(function (field) {
 					if (!records[i].has(field)) return;
 					fields[field] = records[i].get(field);
 				});

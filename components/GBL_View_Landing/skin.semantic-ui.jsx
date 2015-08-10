@@ -1,5 +1,5 @@
 
-require("./component.jsx").for(module, {
+require("./component.jsx")['for'](module, {
 
 	afterRender: function (Context, element) {
 		var self = this;
@@ -111,10 +111,10 @@ console.log("Error sending message to server!", err.stack);
 	getHTML: function (Context) {
 
 		// TODO: Remove this once we can inject 'React' automatically at build time.
-		const React = Context.REACT;
+		var React = Context.REACT;
 
 		var consumerGroup = Context.consumerGroup;
-		
+console.log("consumerGroup!!!", consumerGroup);		
 		if (!consumerGroup) {
 	        return (
 	        	<div className="ui one column centered grid">
@@ -240,15 +240,15 @@ console.log("Error sending message to server!", err.stack);
 				      <form action="#" className="form form-vertical contact-us-form">
 				        <div className="modal-body">
 				          <div className="form-group">
-				            <label for="name-input">Name</label>
+				            <label data-for="name-input">Name</label>
 				            <input type="text" name="name"/>
 				          </div>
 				          <div className="form-group">
-				            <label for="name-input">Email</label>
+				            <label data-for="name-input">Email</label>
 				            <input type="email" name="email"/>
 				          </div>
 				          <div className="form-group">
-				            <label for="message-input">Message</label>
+				            <label data-for="message-input">Message</label>
 				            <textarea rows="6" type="text" name="message"></textarea>
 				          </div>
 				        </div>

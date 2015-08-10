@@ -63,12 +63,12 @@ function init {
 
 			local SOURCE_PATH=`sm.resolve sm.hoist.Modules`
 
-			echo "Copying from '$__BO_DIR__/$SOURCE_PATH/build/dist/*' to '$__BO_DIR__/www/lunchroom-landing-assets~0'"
+			echo "Copying from '$__BO_DIR__/$SOURCE_PATH/build/dist/lunchroom-landing-assets~0/*' to '$__BO_DIR__/www/lunchroom-landing-assets~0'"
 #			cp -Rf "$SOURCE_PATH/public/dist" "www/dist"
 #			cp -Rf "$SOURCE_PATH/public/img" "www/img"
 			rm -Rf "www/lunchroom-landing-assets~0" > /dev/null || true
 			mkdir -p "www/lunchroom-landing-assets~0"
-			cp -Rf "$SOURCE_PATH/build/dist/"* "www/lunchroom-landing-assets~0"
+			cp -Rf "$SOURCE_PATH/build/dist/lunchroom-landing-assets~0/"* "www/lunchroom-landing-assets~0"
 
 		popd > /dev/null
 		BO_format "$VERBOSE" "FOOTER"
@@ -127,7 +127,7 @@ echo "TODO"
 	ensureDependencies
 	copyStyle
 	copyAssets
-#	bundlePloyfills
+	bundlePloyfills
 #	bundleAssets
 #	bundleApp
 	uglifyBundles

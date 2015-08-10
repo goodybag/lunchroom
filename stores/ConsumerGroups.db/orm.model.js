@@ -1,19 +1,19 @@
 
-const PATH = require("path");
-const BASE_MODEL = require("../../server/db/base_model.bookshelf");
+var PATH = require("path");
+var BASE_MODEL = require("../../server/db/base_model.bookshelf");
 
-const TABLE_NAME = PATH.basename(__dirname)
+var TABLE_NAME = PATH.basename(__dirname)
   .replace(/\.db$/, "").replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase();
 
 
 // @docs http://bookshelfjs.org/#Model
 
-const instanceProps = {
+var instanceProps = {
     tableName: TABLE_NAME
 };
 
 
-const classProps = {
+var classProps = {
     typeName: TABLE_NAME,
     filters: {
         id: function (qb, value) {

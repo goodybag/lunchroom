@@ -1,5 +1,5 @@
 
-const React = require('react');
+var React = require('react');
 
 module.exports = (
 	<div id="page-footer" className="sixteen wide column">

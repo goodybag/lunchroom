@@ -10,17 +10,17 @@ module.exports = React.createClass({
 		this.forceUpdate();
     },
 	componentDidMount: function () {
-		this.props.appContext.stores.days.on("updated", this._on_sync);
+		this.props.appContext.get('stores').days.on("updated", this._on_sync);
     },
     componentWillUnmount: function () {
-		this.props.appContext.stores.days.off("updated", this._on_sync);
+		this.props.appContext.get('stores').days.off("updated", this._on_sync);
     },
 
 
     render: function() {
     	var self = this;
 
-        var days = self.props.appContext.stores.days;
+        var days = self.props.appContext.get('stores').days;
 
         return (
           <div>

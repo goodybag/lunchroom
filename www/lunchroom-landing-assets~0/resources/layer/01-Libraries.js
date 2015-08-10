@@ -16,8 +16,12 @@ module.exports = function (CONTEXT) {
 		    "moment": require("resources/moment"),
 		    "numeral": require("resources/numeral"),
 		    "page": require("resources/page"),
-		    "uuid": require("resources/uuid"),
-		    "react": require("resources/react")
+		    "underscore": require("resources/underscore"),
+		    "backbone": require("resources/backbone"),
+		    "react": require("resources/react"),
+		    "react-mixin-manager": require("resources/react-mixin-manager"),
+		    "react-events": require("resources/react-events"),
+		    "react-backbone": require("resources/react-backbone")
 		}
 	}, Factory);
 }

@@ -1,24 +1,24 @@
 
-const COMPONENT = require("../GBL_ReactComponent");
+var COMPONENT = require("../GBL_ReactComponent");
 
-exports.for = function (module, Context) {
+exports['for'] = function (module, Context) {
 
 	module.exports = COMPONENT.create(Context, {
 
 		appContextView: "Order_Arrived",
 
 	    onMount: function () {
-			this.props.appContext.stores.orders.on("sync", this._trigger_forceUpdate);
+			this.props.appContext.get('stores').orders.on("sync", this._trigger_forceUpdate);
 	    },
 
 	    onUnmount: function () {
-			this.props.appContext.stores.orders.off("sync", this._trigger_forceUpdate);
+			this.props.appContext.get('stores').orders.off("sync", this._trigger_forceUpdate);
 	    },
 
 	    render: function() {
 	    	var self = this;
 
-			var order = self.props.appContext.stores.orders.getActiveOrder();
+			var order = self.props.appContext.get('stores').orders.getActiveOrder();
 
 			if (!order) {
 				return {
@@ -26,7 +26,7 @@ exports.for = function (module, Context) {
 				};
 			}
 
-			order = self.modelRecordsWithStore(self.props.appContext.stores.orders, [order])[0];
+			order = self.modelRecordsWithStore(self.props.appContext.get('stores').orders, [order])[0];
 
 	        return {
 

@@ -1,8 +1,8 @@
 
-const COMMON = require("./ui._common");
+var COMMON = require("./ui._common");
 
 
-//const ENDPOINT = COMMON.makeEndpointUrl("items");
+//var ENDPOINT = COMMON.makeEndpointUrl("items");
 
 
 
@@ -23,13 +23,13 @@ var Store = COMMON.API.BACKBONE.Collection.extend({
 });
 
 
-exports.for = function (context) {
+exports['for'] = function (context) {
 
 	var store = new Store();
 
 	store.modelRecords = function (records) {
 
-		var Model = context.appContext.stores.items.Model;
+		var Model = context.appContext.get('stores').items.Model;
 
 		return records.map(function (record, i) {
 			// Store model on backbone row so we can re-use it on subsequent calls.
@@ -39,7 +39,7 @@ exports.for = function (context) {
 				return store._byId[records[i].get("id")].__model;
 			}
 			var fields = {};
-			Object.keys(Model.prototype._definition).forEach(function (field) {
+			store.Model.getFields().forEach(function (field) {
 				if (!records[i].has(field)) return;
 				fields[field] = records[i].get(field);
 			});
@@ -67,7 +67,7 @@ exports.for = function (context) {
 			if (self.get(cartItemId)) {
 				return COMMON.API.Q.resolve(self.get(cartItemId));
 			}
-			return require("./ui.Items").for({
+			return require("./ui.Items")['for']({
 				appContext: context.appContext,
 				ids: [
 					itemId
@@ -94,7 +94,7 @@ exports.for = function (context) {
 		var self = this;
 
 		var records = store.where();
-		return context.appContext.stores.items.resolveRecordsAndWait(
+		return context.appContext.get('stores').items.resolveRecordsAndWait(
 			records,
 			{
 				useIdField: "item_id"
@@ -118,7 +118,7 @@ exports.for = function (context) {
 
 			models.forEach(function (model) {
 				var record = {};
-				Object.keys(context.appContext.stores.items.Model.prototype._definition).forEach(function (name) {
+				context.appContext.get('stores').items.Model.getFields().forEach(function (name) {
 					if (typeof model[name] !== "undefined") {
 						record[name] = model[name];
 					}

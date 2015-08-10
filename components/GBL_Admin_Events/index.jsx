@@ -1,7 +1,7 @@
 /** @jsx React.DOM */
 'use strict'
 
-const COMPONENT = require("../GBL_ReactComponent");
+var COMPONENT = require("../GBL_ReactComponent");
 
 module.exports = COMPONENT.create({
 
@@ -27,7 +27,7 @@ module.exports = COMPONENT.create({
           $('button[data-link="action:ready"]', element),
           'click',
           function () {
-              self.props.appContext.stores.events.setReadyForEventId(self.props.selectedEvent).then(function () {
+              self.props.appContext.get('stores').events.setReadyForEventId(self.props.selectedEvent).then(function () {
                 self._trigger_forceUpdate();
               });
               return false;
@@ -40,7 +40,7 @@ module.exports = COMPONENT.create({
             onChange: function(value, text) {
               if (self.props.selectedVendor === value) return;
               self.props.selectedVendor = value;
-              self.props.appContext.stores.items.loadForVendor(self.props.selectedVendor).then(function () {
+              self.props.appContext.get('stores').items.loadForVendor(self.props.selectedVendor).then(function () {
                 self._trigger_forceUpdate();
               });
             }
@@ -55,7 +55,7 @@ module.exports = COMPONENT.create({
               var value = this.get('select', 'yyyy-mm-dd');
               if (self.props.selectedDay === value) return;
               self.props.selectedDay = value;
-              self.props.appContext.stores.events.loadForDay(self.props.selectedDay).then(function () {
+              self.props.appContext.get('stores').events.loadForDay(self.props.selectedDay).then(function () {
                 self._trigger_forceUpdate();
               });
             }
@@ -110,7 +110,7 @@ module.exports = COMPONENT.create({
                 if (error) {
                   $('#form-create').addClass("error");
                 } else {
-                  Context.appContext.stores.events.createEvent(values);
+                  Context.appContext.get('stores').events.createEvent(values);
                 }
                 return false;
             }
@@ -123,7 +123,7 @@ module.exports = COMPONENT.create({
               var value = $(event.target).parentsUntil("TBODY", "TR").attr("data-id") || null;
               if (self.props.selectedEvent === value) return;
               self.props.selectedEvent = value;
-              self.props.appContext.stores.menus.loadForEvent(self.props.selectedEvent).then(function () {
+              self.props.appContext.get('stores').menus.loadForEvent(self.props.selectedEvent).then(function () {
                 self._trigger_forceUpdate();
               });
               return false;
@@ -135,12 +135,12 @@ module.exports = COMPONENT.create({
             'click',
             function (event) {
               var item_id = $(event.target).parentsUntil("TBODY", "TR").attr("data-id") || null;
-              self.props.appContext.stores.menus.addItem(
+              self.props.appContext.get('stores').menus.addItem(
                 self.props.selectedEvent,
                 self.props.selectedVendor,
                 item_id
               ).then(function () {
-                return self.props.appContext.stores.menus.loadForEvent(self.props.selectedEvent).then(function () {
+                return self.props.appContext.get('stores').menus.loadForEvent(self.props.selectedEvent).then(function () {
                   self._trigger_forceUpdate();
                 });
               });
@@ -152,8 +152,8 @@ module.exports = COMPONENT.create({
             'click',
             function (event) {
               var item_id = $(event.target).parentsUntil("TBODY", "TR").attr("data-id") || null;
-              self.props.appContext.stores.menus.removeAtId(item_id).then(function () {
-                return self.props.appContext.stores.menus.loadForEvent(self.props.selectedEvent).then(function () {
+              self.props.appContext.get('stores').menus.removeAtId(item_id).then(function () {
+                return self.props.appContext.get('stores').menus.loadForEvent(self.props.selectedEvent).then(function () {
                   self._trigger_forceUpdate();
                 });
               });
@@ -203,7 +203,7 @@ module.exports = COMPONENT.create({
 
     getHTML: function (Context) {
 
-        const React = Context.REACT;
+        var React = Context.REACT;
 
 
         var Panel = null;
@@ -468,19 +468,19 @@ module.exports = COMPONENT.create({
 }, {
 
     onMount: function () {
-        this.props.appContext.stores.vendors.on("sync", this._trigger_forceUpdate);
-        this.props.appContext.stores.consumerGroups.on("sync", this._trigger_forceUpdate);
+        this.props.appContext.get('stores').vendors.on("sync", this._trigger_forceUpdate);
+        this.props.appContext.get('stores').consumerGroups.on("sync", this._trigger_forceUpdate);
 
-        this.props.appContext.stores.vendors.reset();
-        this.props.appContext.stores.vendors.fetch();
+        this.props.appContext.get('stores').vendors.reset();
+        this.props.appContext.get('stores').vendors.fetch();
 
-        this.props.appContext.stores.consumerGroups.reset();
-        this.props.appContext.stores.consumerGroups.fetch();
+        this.props.appContext.get('stores').consumerGroups.reset();
+        this.props.appContext.get('stores').consumerGroups.fetch();
     },
 
     onUnmount: function () {
-        this.props.appContext.stores.vendors.off("sync", this._trigger_forceUpdate);
-        this.props.appContext.stores.consumerGroups.off("sync", this._trigger_forceUpdate);
+        this.props.appContext.get('stores').vendors.off("sync", this._trigger_forceUpdate);
+        this.props.appContext.get('stores').consumerGroups.off("sync", this._trigger_forceUpdate);
     },
 
     render: function() {
@@ -495,15 +495,15 @@ module.exports = COMPONENT.create({
             ]);
         }
 
-        var events = self.props.appContext.stores.events;
+        var events = self.props.appContext.get('stores').events;
 
-        var vendors = self.props.appContext.stores.vendors;
+        var vendors = self.props.appContext.get('stores').vendors;
 
-        var consumerGroups = self.props.appContext.stores.consumerGroups;
+        var consumerGroups = self.props.appContext.get('stores').consumerGroups;
 
-        var items = self.props.appContext.stores.items;
+        var items = self.props.appContext.get('stores').items;
 
-        var menus = self.props.appContext.stores.menus;
+        var menus = self.props.appContext.get('stores').menus;
 
 
         var eventRecords = [];

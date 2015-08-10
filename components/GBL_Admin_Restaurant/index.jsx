@@ -1,7 +1,7 @@
 /** @jsx React.DOM */
 'use strict'
 
-const COMPONENT = require("../GBL_ReactComponent");
+var COMPONENT = require("../GBL_ReactComponent");
 
 module.exports = COMPONENT.create({
 
@@ -25,7 +25,7 @@ module.exports = COMPONENT.create({
 
                 if ($(this).attr("data-link") === "action:set-status") {
 
-                    Context.appContext.stores.orderStatus.setStatusForOrderHashId(
+                    Context.appContext.get('stores').orderStatus.setStatusForOrderHashId(
                         $(this).attr("data-id"),
                         $(this).attr("data-value")
                     );
@@ -36,7 +36,7 @@ module.exports = COMPONENT.create({
 
     getHTML: function (Context) {
 
-        const React = Context.REACT;
+        var React = Context.REACT;
 
         var externalVendorAdminLink = "";
         if (Context.activeVendor) {
@@ -44,7 +44,7 @@ module.exports = COMPONENT.create({
         }
 
         var MasterAdmin = "";
-        if (!this.props.appContext.context.type) {
+        if (!this.props.appContext.get('context').type) {
             MasterAdmin = (
                 <div className="ui segment">
 
@@ -183,38 +183,38 @@ module.exports = COMPONENT.create({
 
         fetchForActiveRestaurant: function () {
             if (this.props.selectedRestaurant) {
-                this.props.appContext.stores.orders.loadForVendorId(this.props.selectedRestaurant);
+                this.props.appContext.get('stores').orders.loadForVendorId(this.props.selectedRestaurant);
             } else {
-                this.props.appContext.stores.orders.fetch();
+                this.props.appContext.get('stores').orders.fetch();
             }
         }
     },
 
     onMount: function () {
-        this.props.appContext.stores.orders.on("sync", this._trigger_forceUpdate);
-        this.props.appContext.stores.vendors.on("sync", this._trigger_forceUpdate);
+        this.props.appContext.get('stores').orders.on("sync", this._trigger_forceUpdate);
+        this.props.appContext.get('stores').vendors.on("sync", this._trigger_forceUpdate);
 
-        if (this.props.appContext.context.type === "vendor") {
-            this.selectRestaurant(this.props.appContext.context.vendor_id);
+        if (this.props.appContext.get('context').type === "vendor") {
+            this.selectRestaurant(this.props.appContext.get('context').vendor_id);
         } else {
             this.fetchForActiveRestaurant();
         }
 
-        this.props.appContext.stores.vendors.reset();
-        this.props.appContext.stores.vendors.fetch();
+        this.props.appContext.get('stores').vendors.reset();
+        this.props.appContext.get('stores').vendors.fetch();
     },
 
     onUnmount: function () {
-        this.props.appContext.stores.orders.off("sync", this._trigger_forceUpdate);
-        this.props.appContext.stores.vendors.off("sync", this._trigger_forceUpdate);
+        this.props.appContext.get('stores').orders.off("sync", this._trigger_forceUpdate);
+        this.props.appContext.get('stores').vendors.off("sync", this._trigger_forceUpdate);
     },
 
     render: function() {
         var self = this;
 
-        var orders = self.props.appContext.stores.orders;
+        var orders = self.props.appContext.get('stores').orders;
 
-        var vendors = self.props.appContext.stores.vendors;
+        var vendors = self.props.appContext.get('stores').vendors;
 
         var activeVendor = null;
         var ordersWhere = {};

@@ -1,26 +1,26 @@
 
-const COMPONENT = require("../GBL_ReactComponent");
+var COMPONENT = require("../GBL_ReactComponent");
 
-exports.for = function (module, Context) {
+exports['for'] = function (module, Context) {
 
 	module.exports = COMPONENT.create(Context, {
 
 		appContextView: "Receipt",
 
 	    onMount: function () {
-			this.props.appContext.stores.orders.on("update", this._trigger_forceUpdate);
-			this.props.appContext.stores.cart.on("update", this._trigger_forceUpdate);
+			this.props.appContext.get('stores').orders.on("update", this._trigger_forceUpdate);
+			this.props.appContext.get('stores').cart.on("update", this._trigger_forceUpdate);
 	    },
 
 	    onUnmount: function () {
-			this.props.appContext.stores.orders.off("update", this._trigger_forceUpdate);
-			this.props.appContext.stores.cart.off("update", this._trigger_forceUpdate);
+			this.props.appContext.get('stores').orders.off("update", this._trigger_forceUpdate);
+			this.props.appContext.get('stores').cart.off("update", this._trigger_forceUpdate);
 	    },
 
 	    render: function() {
 	    	var self = this;
 
-			var order = self.props.appContext.stores.orders.getActiveOrder();
+			var order = self.props.appContext.get('stores').orders.getActiveOrder();
 
 			if (!order) {
 				return {
@@ -29,12 +29,12 @@ exports.for = function (module, Context) {
 				};
 			}
 
-			order = self.modelRecordsWithStore(self.props.appContext.stores.orders, [order])[0];
+			order = self.modelRecordsWithStore(self.props.appContext.get('stores').orders, [order])[0];
 
-	        var cart = self.props.appContext.stores.cart;
+	        var cart = self.props.appContext.get('stores').cart;
 	        var items = self.modelRecordsWithStore(cart, cart.where());
 
-			var events = self.props.appContext.stores.events;
+			var events = self.props.appContext.get('stores').events;
 
 	        return {
 

@@ -1,9 +1,9 @@
 
-const PATH = require("path");
-const MOMENT = require("moment");
+var PATH = require("path");
+var MOMENT = require("moment");
 
 
-const TABLE_NAME = PATH.basename(__dirname)
+var TABLE_NAME = PATH.basename(__dirname)
 	.replace(/\.db$/, "").replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase();
 
 

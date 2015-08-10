@@ -1,7 +1,7 @@
 /** @jsx React.DOM */
 'use strict'
 
-const UNDERSCORE = require("underscore");
+var UNDERSCORE = require("underscore");
 var React = require('react')
 
 module.exports = React.createClass({
@@ -11,17 +11,17 @@ module.exports = React.createClass({
 		this.forceUpdate();
     },
 	componentDidMount: function () {
-		this.props.appContext.stores.cart.on("sync", this._on_sync);
+		this.props.appContext.get('stores').cart.on("sync", this._on_sync);
     },
     componentWillUnmount: function () {
-		this.props.appContext.stores.cart.off("sync", this._on_sync);
+		this.props.appContext.get('stores').cart.off("sync", this._on_sync);
     },
 
 
     render: function() {
     	var self = this;
 
-        var cart = self.props.appContext.stores.cart;
+        var cart = self.props.appContext.get('stores').cart;
 
         var _notify_onChange = UNDERSCORE.debounce(self._trigger_forceUpdate, 100);
 

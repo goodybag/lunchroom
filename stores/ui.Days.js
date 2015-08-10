@@ -1,5 +1,5 @@
 
-const COMMON = require("./ui._common");
+var COMMON = require("./ui._common");
 
 
 
@@ -22,7 +22,7 @@ for (var day=0 ; day<=4 ; day++) {
 }
 */
 
-exports.for = function (context) {
+exports['for'] = function (context) {
 
 	// @see http://ampersandjs.com/docs#ampersand-state
 	var Model = COMMON.API.AMPERSAND_STATE.extend({
@@ -43,7 +43,7 @@ exports.for = function (context) {
 
 	store.loadForEvent = function (event_id) {
 
-		var day_id = context.appContext.stores.events.get(event_id).get("day_id");
+		var day_id = context.appContext.get('stores').events.get(event_id).get("day_id");
 
 		if (!store.get(day_id)) {
 			store.add({
@@ -63,7 +63,7 @@ exports.for = function (context) {
 				return store._byId[records[i].get("id")].__model;
 			}
 			var fields = {};
-			Object.keys(Model.prototype._definition).forEach(function (field) {
+			store.Model.getFields().forEach(function (field) {
 				if (!records[i].has(field)) return;
 				fields[field] = records[i].get(field);
 			});

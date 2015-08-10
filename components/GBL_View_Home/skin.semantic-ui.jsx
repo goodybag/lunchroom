@@ -1,11 +1,11 @@
 
-require("./component.jsx").for(module, {
+require("./component.jsx")['for'](module, {
 
 	getHTML: function (Context) {
 
 
 		// TODO: Remove this once we can inject 'React' automatically at build time.
-		const React = Context.REACT;
+		var React = Context.REACT;
 
 
         return (

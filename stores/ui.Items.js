@@ -1,7 +1,7 @@
 
-const COMMON = require("./ui._common");
+var COMMON = require("./ui._common");
 
-const ENDPOINT = COMMON.makeEndpointUrl("items");
+var ENDPOINT = COMMON.makeEndpointUrl("items");
 
 
 
@@ -24,7 +24,7 @@ var Store = COMMON.API.BACKBONE.Collection.extend({
 
 var store = new Store();
 
-exports.for = function (context) {
+exports['for'] = function (context) {
 
 	if (context.ids) {
 		var deferred = COMMON.API.Q.defer();
@@ -100,7 +100,7 @@ exports.for = function (context) {
 		return COMMON.resolveForeignKeys(store, records, {
 			"vendor_id": {
 				store: require("./ui.Vendors"),
-				model: context.appContext.stores.vendors.Model,
+				model: context.appContext.get('stores').vendors.Model,
 				localFieldPrefix: "vendor"
 			}
 		}).map(function (record, i) {
@@ -111,7 +111,7 @@ exports.for = function (context) {
 				return store._byId[records[i].get("id")].__model;
 			}
 			var fields = {};
-			Object.keys(Model.prototype._definition).forEach(function (field) {
+			store.Model.getFields().forEach(function (field) {
 				if (!records[i].has(field)) return;
 				fields[field] = records[i].get(field);
 			});
@@ -138,7 +138,7 @@ exports.for = function (context) {
 		return COMMON.resolveForeignKeys(store, records, {
 			"vendor_id": {
 				store: require("./ui.Vendors"),
-				model: context.appContext.stores.vendors.Model,
+				model: context.appContext.get('stores').vendors.Model,
 				localFieldPrefix: "vendor"
 			}
 		}, true, options).then(function (records) {
@@ -153,7 +153,7 @@ exports.for = function (context) {
 					return records[i].__model;
 				}
 				var fields = {};
-				Object.keys(Model.prototype._definition).forEach(function (field) {
+				store.Model.getFields().forEach(function (field) {
 					if (!records[i].has(field)) return;
 					fields[field] = records[i].get(field);
 				});

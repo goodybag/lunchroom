@@ -1,19 +1,19 @@
 /** @jsx React.DOM */
 'use strict'
 
-const COMPONENT = require("../GBL_ReactComponent");
+var COMPONENT = require("../GBL_ReactComponent");
 
-exports.for = function (module, context) {
+exports['for'] = function (module, context) {
 
 	// ##################################################
 	// # Load and configure libraries
 	// ##################################################
 
-	const React = require('react');
+	var React = require('react');
 
 
 	// TODO: Get base path via config.
-	const MOCKUPS_SUBPATH = "/components/GBL_DEV_Views/mockups";
+	var MOCKUPS_SUBPATH = "/components/GBL_DEV_Views/mockups";
 
 
 	// ##################################################
@@ -27,7 +27,7 @@ exports.for = function (module, context) {
 			return context.getViewTabHTML.call(self, {
 				label: self.props.data.label,
 				onClick: function() {
-					self.props.appContext.selectedView = self.props.data.alias;
+					self.props.appContext.set('selectedView', self.props.data.alias);
 			    }
 			});
 		}
@@ -83,9 +83,9 @@ exports.for = function (module, context) {
 	    render: function() {
 	    	var self = this;
 
-	    	var views = self.props.appContext.views;
+	    	var views = self.props.appContext.get('views');
 
-	    	var selectedViewAlias = self.props.appContext.selectedView;
+	    	var selectedViewAlias = self.props.appContext.get('selectedView');
 
 			console.info("Start Render View: " + selectedViewAlias);
 
@@ -109,11 +109,11 @@ exports.for = function (module, context) {
 	    		viewInfo &&
 	    		viewInfo.container === "iframe" &&
 	    		isTopFrame &&
-	    		!self.props.appContext.context.type
+	    		!self.props.appContext.get('context').type
 	    	) {
 	    		ViewComponent = React.createClass({
 				    render: function () {
-						var url = window.location.origin + window.location.pathname + "#" + this.props.appContext.selectedView;
+						var url = window.location.origin + window.location.pathname + "#" + this.props.appContext.get('selectedView');
 				    	return <iframe src={url}></iframe>
 				    }
 	    		});

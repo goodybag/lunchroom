@@ -1,11 +1,11 @@
 
-const COMMON = require("./ui._common");
+var COMMON = require("./ui._common");
 
-const BACKBONE = require('backbone');
-const UNDERSCORE = require('underscore');
+var BACKBONE = require('backbone');
+var UNDERSCORE = require('underscore');
 
 
-const ENDPOINT = COMMON.makeEndpointUrl("consumers");
+var ENDPOINT = COMMON.makeEndpointUrl("consumers");
 
 
 var Entity = BACKBONE.Model.extend({
@@ -25,7 +25,7 @@ var Entities = BACKBONE.Collection.extend({
 });
 
 
-exports.for = function () {
+exports['for'] = function () {
 
 	var entities = new Entities();
 

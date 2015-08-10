@@ -1,6 +1,6 @@
 
 
-const API = exports.API = {
+var API = exports.API = {
 	UNDERSCORE: require("underscore"),
 	REACT: require("react"),
 	EXTEND: require("extend"),
@@ -69,7 +69,7 @@ exports.create = function (Context, implementation) {
 		    	function () {
 		    		var link = $(this).attr("data-link");
 		    		if (!/^#/.test(link)) return;
-					component._render_Context.appContext.selectedView = link.replace(/^#/, "");
+					component._render_Context.appContext.set('selectedView', link.replace(/^#/, ""));
 		    	}
 		    );
 		}
@@ -133,11 +133,11 @@ console.log("triggered forced updated");
 	    render: function () {
 
 			// TODO: Remove this once we can inject 'React' automatically at build time.
-			const React = API.REACT;
+			var React = API.REACT;
 
 	    	if (implementation.appContextView) {
-	    		if (this.props.appContext.selectedView !== implementation.appContextView) {
-	    			console.log("Cancel render of view '" + implementation.appContextView + "' because it is not the selecetd view '" + this.props.appContext.selectedView + "'");
+	    		if (this.props.appContext.get('selectedView') !== implementation.appContextView) {
+	    			console.log("Cancel render of view '" + implementation.appContextView + "' because it is not the selecetd view '" + this.props.appContext.get('selectedView') + "'");
 	    			return (
 	    				<div/>
 	    			);

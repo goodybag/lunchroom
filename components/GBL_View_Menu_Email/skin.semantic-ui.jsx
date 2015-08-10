@@ -1,10 +1,10 @@
 
-require("./component.jsx").for(module, {
+require("./component.jsx")['for'](module, {
 	getHTML: function (Context) {
 
 
 		// TODO: Remove this once we can inject 'React' automatically at build time.
-		const React = Context.REACT;
+		var React = Context.REACT;
 
 
 		var Items = "";
@@ -47,7 +47,7 @@ require("./component.jsx").for(module, {
         return (
         	<div className="ui grid">
 
-	        	{Context.appContext.view.components.Header}
+	        	{Context.appContext.get('view').components.Header}
 
 			    <div className="sixteen wide center aligned column">
 
@@ -105,7 +105,7 @@ require("./component.jsx").for(module, {
 
 				</div>
 
-	        	{Context.appContext.view.components.Footer}
+	        	{Context.appContext.get('view').components.Footer}
 
 			</div>
         );

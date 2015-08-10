@@ -1,5 +1,5 @@
 
-require("./component.jsx").for(module, {
+require("./component.jsx")['for'](module, {
 
 	afterRender: function (Context, element) {
 		var self = this;
@@ -47,13 +47,13 @@ console.log("Error sending message to server!", err.stack);
 
 
 		// TODO: Remove this once we can inject 'React' automatically at build time.
-		const React = Context.REACT;
+		var React = Context.REACT;
 
 
         return (
         	<div className="ui grid page-content">
 
-	        	{Context.appContext.view.components.Header}
+	        	{Context.appContext.get('view').components.Header}
 
 			    <div className="sixteen wide column">
 
@@ -99,7 +99,7 @@ console.log("Error sending message to server!", err.stack);
 					    <div className="six wide column">
 
 							<form id="form-contact-us" className="ui form">
-							  <div class="field">
+							  <div className="field">
 							    <label>First Name</label>
 							    <input type="text" name="contactName" placeholder="Enter Name"/>
 							  </div>
@@ -121,7 +121,7 @@ console.log("Error sending message to server!", err.stack);
 
 				</div>
 
-	        	{Context.appContext.view.components.Footer}
+	        	{Context.appContext.get('view').components.Footer}
 
 			</div>
         );

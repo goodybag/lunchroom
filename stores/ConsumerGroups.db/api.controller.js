@@ -1,6 +1,6 @@
 
-const PATH = require("path");
-const API = require("../../server/db/api.endpoints");
+var PATH = require("path");
+var API = require("../../server/db/api.endpoints");
 
 
 // @docs http://endpointsjs.com

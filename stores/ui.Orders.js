@@ -1,8 +1,8 @@
 
-const COMMON = require("./ui._common");
+var COMMON = require("./ui._common");
 
 
-const ENDPOINT = COMMON.makeEndpointUrl("orders");
+var ENDPOINT = COMMON.makeEndpointUrl("orders");
 
 
 
@@ -56,11 +56,11 @@ var Store = COMMON.API.BACKBONE.Collection.extend({
 			})
 			.done(function (response) {
 
-				for (var name in self.Model.prototype._definition) {
+				self.Model.getFields().forEach(function (name) {
 					if (typeof response.data.attributes[name] !== "undefined") {
 						order.set(name, response.data.attributes[name]);
 					}
-				}
+				});
 				order.set("id", response.data.id);
 
 				return callback(null, order.get("orderHashId"));
@@ -82,11 +82,11 @@ var store = new Store();
 
 var orderIndex = 0;
 
-exports.for = function (context) {
+exports['for'] = function (context) {
 
 
 	function loadStatusInfoForOrder (orderHashId) {
-		return context.appContext.stores.orderStatus.fetchStatusInfoForOrderHashId(orderHashId);
+		return context.appContext.get('stores').orderStatus.fetchStatusInfoForOrderHashId(orderHashId);
 	}
 
 
@@ -174,7 +174,7 @@ exports.for = function (context) {
 				return store._byId[records[i].get("id")].__model;
 			}
 			var fields = {};
-			Object.keys(Model.prototype._definition).forEach(function (field) {
+			store.Model.getFields().forEach(function (field) {
 				if (!records[i].has(field)) return;
 				fields[field] = records[i].get(field);
 			});
@@ -222,7 +222,7 @@ exports.for = function (context) {
 					if (!order) {
 						return deferred.resolve(store);
 					}
-					return context.appContext.stores.cart.resetToSerializedModels(order.get("items")).then(function () {
+					return context.appContext.get('stores').cart.resetToSerializedModels(order.get("items")).then(function () {
 						return deferred.resolve(store);
 					}).fail(deferred.reject);
 				}
@@ -236,7 +236,7 @@ exports.for = function (context) {
 			throw new Error("No active order because there is no active context!");
 		}
 		var record = store.findWhere({
-			orderHashId: context.appContext.context.id
+			orderHashId: context.appContext.get('context').id
 		});
 		return record;
 	}
@@ -276,7 +276,7 @@ console.log("TODO: trigger save of order info in local storage so nothing is los
 					// Serialize cart item models into order so we can display order later
 					// without having original item data in DB. This makes the order timeless.
 
-					return context.appContext.stores.cart.getSerializedModels().then(function (serializedItems) {
+					return context.appContext.get('stores').cart.getSerializedModels().then(function (serializedItems) {
 
 						order.set("items", serializedItems);
 						var orderFrom = {};
@@ -288,8 +288,8 @@ console.log("TODO: trigger save of order info in local storage so nothing is los
 						order.set("orderFrom", Object.keys(orderFrom).join("<br/>"));
 						order.set("vendor_ids", Object.keys(vendor_ids).join(","));
 
-						var today = context.appContext.stores.events.getToday();
-						return context.appContext.stores.events.modelRecord(today).then(function (today) {
+						var today = context.appContext.get('stores').events.getToday();
+						return context.appContext.get('stores').events.modelRecord(today).then(function (today) {
 
 							order.set("deliveryStartTime", today.get("deliveryStartTime"));
 							order.set("pickupEndTime", today.get("pickupEndTime"));
