@@ -67,6 +67,7 @@
                         "config": {
                             "internalUri": "/harness.htm",
                             "clientContext": {
+                                "sessionCookieName": "gblasid",
                                 "selectedView": "",
                                 "type": "",
                                 "overrideSkinUri": ""
