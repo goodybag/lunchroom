@@ -57,12 +57,14 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
 					// TODO: Check `result == 1`
 				})).then(function () {
 					// TODO: Use transactions instead of waiting to ensure out update goes
-					//       through before the enxt job cycle.
-					return API.Q.delay(5 * 1000);
+					//       through before the enxt job cycle?
+					return API.Q.delay(15 * 1000);
 				});
 			}
 
 			return sendEmails().then(function () {
+
+				console.log("All emails sent!");
 
 				return setNotificationsSent();
 			});
@@ -155,38 +157,52 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
 				}));
 	    	}
 
-	    	return fetchPendingEvents().then(function (events) {
 
-				var eventIds = Object.keys(events);
+	    	function sendMenuEmails () {
 
-				if (eventIds.length === 0) {
-					// No new pending events.
-					return;
-				}
+	    		// We send emails out after 9 am CT (America/Chicago).
+	    		if (API.MOMENT_TZ().tz("America/Chicago").isBefore(
+		    		API.MOMENT_TZ().tz("America/Chicago").second(0).minute(0).hour(9)
+	    		)) {
+	    			console.log("It is not yet 9am CT so we don't yet check to see if we need to send menu emails for today!");
+					return API.Q.resolve();
+	    		};
 
-	    		return fetchMenus(eventIds).then(function (menus) {
+				return fetchPendingEvents().then(function (events) {
 
-					return augmentMenusWithItems(menus).then(function () {
+					var eventIds = Object.keys(events);
 
-						return fetchSubscribers(events).then(function (subscribers) {
+					if (eventIds.length === 0) {
+						// No new pending events.
+						return;
+					}
 
-							var done = API.Q.resolve();
+		    		return fetchMenus(eventIds).then(function (menus) {
 
-							for (var eventId in events) {
-								done = API.Q.when(done, function () {
-									return sendMenuForEventTo({
-										event: events[eventId],
-										items: menus[eventId].items
-									}, subscribers[eventId]);
-								});
-							}
+						return augmentMenusWithItems(menus).then(function () {
 
-							return done;
+							return fetchSubscribers(events).then(function (subscribers) {
+
+								var done = API.Q.resolve();
+
+								for (var eventId in events) {
+									done = API.Q.when(done, function () {
+										return sendMenuForEventTo({
+											event: events[eventId],
+											items: menus[eventId].items
+										}, subscribers[eventId]);
+									});
+								}
+
+								return done;
+							});
 						});
-					});
-	    		});
-	    	});
+		    		});
+		    	});
+	    	}
 
+
+	    	return sendMenuEmails();
 	    }
 
 	    setInterval(function () {
