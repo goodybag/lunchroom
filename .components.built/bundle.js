@@ -452,17 +452,17 @@
 
 	var appContext = __webpack_require__(170)['for']({
 		stores: {
-			days: __webpack_require__(239)['for'](storeContext),
-			events: __webpack_require__(240)['for'](storeContext),
-			items: __webpack_require__(242)['for'](storeContext),
-			vendors: __webpack_require__(243)['for'](storeContext),
-			menus: __webpack_require__(244)['for'](storeContext),
-			consumers: __webpack_require__(245)['for'](storeContext),
-			consumerGroups: __webpack_require__(241)['for'](storeContext),
-			consumerGroupSubscriptions: __webpack_require__(246)['for'](storeContext),
-			cart: __webpack_require__(247)['for'](storeContext),
-			orders: __webpack_require__(248)['for'](storeContext),
-			orderStatus: __webpack_require__(249)['for'](storeContext)
+			days: __webpack_require__(241)['for'](storeContext),
+			events: __webpack_require__(242)['for'](storeContext),
+			items: __webpack_require__(245)['for'](storeContext),
+			vendors: __webpack_require__(246)['for'](storeContext),
+			menus: __webpack_require__(247)['for'](storeContext),
+			consumers: __webpack_require__(248)['for'](storeContext),
+			consumerGroups: __webpack_require__(244)['for'](storeContext),
+			consumerGroupSubscriptions: __webpack_require__(249)['for'](storeContext),
+			cart: __webpack_require__(250)['for'](storeContext),
+			orders: __webpack_require__(251)['for'](storeContext),
+			orderStatus: __webpack_require__(252)['for'](storeContext)
 		},
 		skin: skin
 		// TODO: Inject config
@@ -478,20 +478,23 @@
 
 		setTimeout(function () {
 
-			// DEV: Init cart
-			appContext.get('stores').cart.addItem("1");
+			if (appContext.get('selectedView') === 'Checkout') {
 
-			// DEV: Init order form
-			var order = appContext.get('stores').orders.getOrder(appContext.todayId);
-			order.set("form", {
-			 	"info[name]": "Bill Smith",
-			 	"info[email]": "cadorn.test@gmail.com",
-			 	"card[name]": "Bill Smith",
-			 	"card[cvc]": "123",
-			 	"card[number]": "1234 1234 1234 1234",
-			 	"card[expire-month]": "4",
-			 	"card[expire-year]": "2018"
-			});
+				// DEV: Init cart
+				appContext.get('stores').cart.addItem("1");
+
+				// DEV: Init order form
+				var order = appContext.get('stores').orders.getOrder(appContext.todayId);
+				order.set("form", {
+				 	"info[name]": "Bill Smith",
+				 	"info[email]": "cadorn.test@gmail.com",
+				 	"card[name]": "Bill Smith",
+				 	"card[cvc]": "123",
+				 	"card[number]": "1234 1234 1234 1234",
+				 	"card[expire-month]": "4",
+				 	"card[expire-year]": "2018"
+				});
+			}
 
 			$('#form-subscribe input[type="email"]').val("cadorn.test@gmail.com");
 
@@ -502,7 +505,7 @@
 
 	appContext.redirectTo = function (contextId, viewId) {
 
-		var url = window.location.origin + '/' + contextId + '/harness.htm#' + viewId;
+		var url = window.location.origin + '/' + contextId + '#' + viewId;
 
 		console.log("Redirect to", url);
 
@@ -724,6 +727,8 @@
 		        	items: self.modelRecordsWithStore(cart, cart.where()),
 
 		        	order: order,
+
+		        	summary: cart.getSummary(),
 
 		        	saveForm: function (formSelector) {
 
@@ -14767,6 +14772,8 @@
 
 					eventToday: self.modelRecordsWithStore(events, events.getToday()).pop(),
 
+		        	summary: cart.getSummary(),
+
 		        	order: order,
 
 		        	items: items
@@ -15223,9 +15230,9 @@
 
 /***/ },
 /* 122 */
-[250, 123],
+[253, 123],
 /* 123 */
-[251, 124],
+[254, 124],
 /* 124 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -15255,9 +15262,9 @@
 
 /***/ },
 /* 126 */
-[250, 127],
+[253, 127],
 /* 127 */
-[251, 128],
+[254, 128],
 /* 128 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -16458,17 +16465,17 @@
 						    React.createElement("tr", {className: "GBL_Skin_lessPadding"}, 
 						      React.createElement("td", null), 
 						      React.createElement("td", {className: "right aligned", colSpan: "2"}, "Subtotal"), 
-						      React.createElement("td", null, "$8.80")
+						      React.createElement("td", null, Context.summary["format.amount"])
 						    ), 
 						    React.createElement("tr", {className: "GBL_Skin_invisibleRowBorder GBL_Skin_lessPadding"}, 
 						      React.createElement("td", null), 
-						      React.createElement("td", {className: "right aligned", colSpan: "2"}, "Tax (", Context.eventToday.get("consumerGroup.orderTax"), "%)"), 
-						      React.createElement("td", null, "$0.73")
+						      React.createElement("td", {className: "right aligned", colSpan: "2"}, "Tax (", Context.summary["format.tax"], ")"), 
+						      React.createElement("td", null, Context.summary["format.taxAmount"])
 						    ), 
 						    React.createElement("tr", {className: "GBL_Skin_invisibleRowBorder GBL_Skin_lessPadding"}, 
 						      React.createElement("td", null), 
 						      React.createElement("td", {className: "right aligned", colSpan: "2"}, "Goodybag Fee"), 
-						      React.createElement("td", null, "$", Context.eventToday.get("format.goodybagFee"))
+						      React.createElement("td", null, Context.summary["format.goodybagFee"])
 						    ), 
 						    React.createElement("tr", {className: "GBL_Skin_invisibleRowBorder GBL_Skin_lessPadding"}, 
 						      React.createElement("td", null), 
@@ -16495,7 +16502,7 @@
 						    React.createElement("tr", {className: "GBL_Skin_invisibleRowBorder"}, 
 						      React.createElement("td", null), 
 						      React.createElement("td", {className: "right aligned", colSpan: "2"}, "Total"), 
-						      React.createElement("td", null, "$10.33")
+						      React.createElement("td", null, Context.summary["format.total"])
 						    )
 						  )
 						)
@@ -16640,6 +16647,8 @@
 				);
 			}
 
+	console.log("Context.order", Context.order);
+
 			return (
 	        	React.createElement("div", {className: "ui grid"}, 
 
@@ -16724,27 +16733,27 @@
 						    React.createElement("tr", {className: "GBL_Skin_lessPadding"}, 
 						      React.createElement("td", null), 
 						      React.createElement("td", {className: "right aligned", colSpan: "2"}, "Subtotal"), 
-						      React.createElement("td", null, "$8.80")
+						      React.createElement("td", null, Context.summary["format.amount"])
 						    ), 
 						    React.createElement("tr", {className: "GBL_Skin_invisibleRowBorder GBL_Skin_lessPadding"}, 
 						      React.createElement("td", null), 
-						      React.createElement("td", {className: "right aligned", colSpan: "2"}, "Tax (", Context.eventToday.get("consumerGroup.orderTax"), "%)"), 
-						      React.createElement("td", null, "$0.73")
+						      React.createElement("td", {className: "right aligned", colSpan: "2"}, "Tax (", Context.summary["format.tax"], ")"), 
+						      React.createElement("td", null, Context.summary["format.taxAmount"])
 						    ), 
 						    React.createElement("tr", {className: "GBL_Skin_invisibleRowBorder GBL_Skin_lessPadding"}, 
 						      React.createElement("td", null), 
 						      React.createElement("td", {className: "right aligned", colSpan: "2"}, "Goodybag Fee"), 
-						      React.createElement("td", null, "$", Context.eventToday.get("format.goodybagFee"))
+						      React.createElement("td", null, Context.summary["format.goodybagFee"])
 						    ), 
 						    React.createElement("tr", {className: "GBL_Skin_invisibleRowBorder GBL_Skin_lessPadding"}, 
 						      React.createElement("td", null), 
 						      React.createElement("td", {className: "right aligned", colSpan: "2"}, "Tip"), 
-						      React.createElement("td", null, "$0.80")
+						      React.createElement("td", null, Context.summary["format.tip"])
 						    ), 
 						    React.createElement("tr", {className: "GBL_Skin_invisibleRowBorder"}, 
 						      React.createElement("td", null), 
 						      React.createElement("td", {className: "right aligned", colSpan: "2"}, "Total"), 
-						      React.createElement("td", null, "$10.33")
+						      React.createElement("td", null, Context.summary["format.total"])
 						    )
 						  )
 						)
@@ -16757,7 +16766,6 @@
 			);
 		}
 	});
-
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(11)(module)))
 
 /***/ },
@@ -17232,6 +17240,17 @@
 	        );
 
 	        Context.ensureForNodes(
+	          $('#form-create [data-fieldname="consumer_group_id"]', element),
+	          'dropdown()', {
+	            onChange: function(value, text) {
+	              if (self.props.selectedConsumerGroup === value) return;
+	              self.props.selectedConsumerGroup = value;
+	              self._trigger_forceUpdate();
+	            }
+	          }
+	        );
+
+	        Context.ensureForNodes(
 	          $('#form-create [data-fieldname="day_id"]', element),
 	          'pickadate()',
 	          {
@@ -17353,6 +17372,12 @@
 	            elm.dropdown('set selected', self.props.selectedVendor);
 	          }
 	        }
+	        if (self.props.selectedConsumerGroup) {
+	          var elm = $('#form-create [data-fieldname="consumer_group_id"]');
+	          if (elm.dropdown('get value') !== self.props.selectedConsumerGroup) {
+	            elm.dropdown('set selected', self.props.selectedConsumerGroup);
+	          }
+	        }
 
 
 	        function fillEventCreateForm (values) {
@@ -17375,7 +17400,7 @@
 	        }
 
 	        fillEventCreateForm({
-	          consumer_group_id: 1,
+	//          consumer_group_id: 1,
 	          orderByTime: COMPONENT.API.MOMENT().add(1, 'h').format("H:mm"),
 	          deliveryStartTime: COMPONENT.API.MOMENT().add(2, 'h').format("H:mm"),
 	          pickupEndTime: COMPONENT.API.MOMENT().add(2, 'h').add(15, 'm').format("H:mm"),
@@ -17392,8 +17417,6 @@
 
 	        var Panel = null;
 	        if (Context.selectedEvent) {
-
-	          var menuUrl = window.location.origin + "/event-" + Context.selectedEvent.get("token");
 
 	          var ReadyButton = Context.selectedEvent.get("format.menuReady");
 	          if (!Context.selectedEvent.get("menuReady")) {
@@ -17433,7 +17456,7 @@
 	                )
 	              ), 
 
-	              React.createElement("p", null, React.createElement("a", {href: menuUrl}, menuUrl)), 
+	              React.createElement("p", null, React.createElement("a", {href: Context.selectedEvent.get("menuUrl")}, Context.selectedEvent.get("menuUrl"))), 
 
 
 	              React.createElement("div", {className: "ui grid"}, 
@@ -17691,10 +17714,20 @@
 
 
 	        var eventRecords = [];
-	        if (self.props.selectedDay) {
+	        if (
+	          self.props.selectedDay &&
+	          self.props.selectedConsumerGroup
+	        ) {
+	console.log("FILTER", {
+	            day_id: self.props.selectedDay,
+	            consumer_group_id: self.props.selectedConsumerGroup
+	          });
+
 	          eventRecords = self.modelRecordsWithStore(events, events.where({
-	            day_id: self.props.selectedDay
+	            day_id: self.props.selectedDay,
+	            consumer_group_id: (""+self.props.selectedConsumerGroup)
 	          }));
+	console.log("eventRecords", eventRecords);
 	        }
 
 	        var selectedEvent = null;
@@ -17755,6 +17788,7 @@
 
 
 	    afterRender: function (Context, element) {
+	        var self = this;
 
 	        Context.ensureForNodes(
 	            $('.button[data-link]', element),
@@ -17763,10 +17797,18 @@
 
 	                if ($(this).attr("data-link") === "action:set-status") {
 
-	                    Context.appContext.get('stores').orderStatus.setStatusForOrderHashId(
-	                        $(this).attr("data-id"),
-	                        $(this).attr("data-value")
-	                    );
+	                    var status = $(this).attr("data-value");
+
+	                    if (status === "delete") {
+	                        Context.appContext.get('stores').orders.deleteForId(
+	                            $(this).attr("data-id")
+	                        );
+	                    } else {
+	                        Context.appContext.get('stores').orderStatus.setStatusForOrderHashId(
+	                            $(this).attr("data-id"),
+	                            status
+	                        );
+	                    }
 	                }
 	            }
 	        );
@@ -17807,6 +17849,9 @@
 	                    var Actions = null;
 
 	                    if (item.get("status.id") !== "delivered") {
+
+	console.log("item", item);
+
 	                        var key = item.get('id') + "-actions";
 	                        Actions = (
 	                            React.createElement("tr", {key: key}, 
@@ -17818,6 +17863,10 @@
 
 	                                    React.createElement("button", {"data-link": "action:set-status", "data-value": "delivered", "data-id": item.get('orderHashId'), className: "ui primary button"}, 
 	                                        "Delivered"
+	                                    ), 
+
+	                                    React.createElement("button", {"data-link": "action:set-status", "data-value": "delete", "data-id": item.get('id'), className: "ui primary button"}, 
+	                                        "Delete"
 	                                    )
 
 	                                )
@@ -17912,7 +17961,7 @@
 
 	        var externalVendorAdminLink = "";
 	        if (Context.activeVendor) {
-	            externalVendorAdminLink = window.location.origin + "/vendor-" + Context.activeVendor.get("adminAccessToken") + "/harness.htm#Admin_Restaurant";
+	            externalVendorAdminLink = window.location.origin + "/vendor-" + Context.activeVendor.get("adminAccessToken") + "#Admin_Restaurant";
 	        }
 
 	        var MasterAdmin = "";
@@ -17973,6 +18022,8 @@
 
 	                Context.orders.map(function(item) {
 
+	console.log("ORDER ROW", item, item.get('orderHashId'));
+
 	                    var Row = (
 	                        React.createElement("tr", {key: item.get('id')}, 
 	                          React.createElement("td", null, item.get("number")), 
@@ -17984,7 +18035,14 @@
 	                    );
 
 	                    var key = item.get('id') + "-items";
-	                    var items = item.get("items") || [];
+	                    var items = item.get("items");
+
+	                    if (items) {
+	                        items = JSON.parse(items);
+	                    } else {
+	                        items = [];
+	                    }
+
 	                    var Items = (
 	                        React.createElement("tr", {key: key}, 
 	                            React.createElement("td", {colSpan: "5"}, 
@@ -17993,9 +18051,9 @@
 	                                    items.map(function (item) {
 	                                        return (
 	                                            React.createElement("tr", null, 
-	                                              React.createElement("td", null, item.get('title')), 
-	                                              React.createElement("td", null, item.get('options')), 
-	                                              React.createElement("td", null, item.get('quantity'))
+	                                              React.createElement("td", null, item['title']), 
+	                                              React.createElement("td", null, item['options']), 
+	                                              React.createElement("td", null, item['quantity'])
 	                                            )
 	                                        );
 	                                    })
@@ -18594,6 +18652,7 @@
 	              React.createElement("thead", null, 
 	                React.createElement("tr", null, 
 	                    React.createElement("th", null, "Time"), 
+	                    React.createElement("th", null, "Company"), 
 	                    React.createElement("th", null, "Subscribed"), 
 	                    React.createElement("th", null, "Confirmed")
 	                )
@@ -18605,6 +18664,7 @@
 	                    var Row = (
 	                        React.createElement("tr", {key: item.get('id')}, 
 	                          React.createElement("td", null, item.get("subscribe_time")), 
+	                          React.createElement("td", null, item.get("consumerGroup.title")), 
 	                          React.createElement("td", null, item.get("subscribeEmail")), 
 	                          React.createElement("td", null, item.get("confirmedEmail"))
 	                        )
@@ -44067,28 +44127,24 @@
 	/** @jsx React.DOM */
 	var COMMON = __webpack_require__(171);
 	var UNDERSCORE = __webpack_require__(14);
-	var PAGE = __webpack_require__(184);
+	var PAGE = __webpack_require__(185);
 	var MOMENT = __webpack_require__(17);
-	var Q = __webpack_require__(173);
+	var Q = __webpack_require__(174);
 	var HEAD = head;
+
+	var Model = __webpack_require__(188);
+
 
 	exports['for'] = function (overrides) {
 
-		// TODO: Init from session.
 		var config = {
 			sessionToken: JSON.parse(decodeURIComponent($('head > meta[name="session.token"]').attr("value"))),
 			context: JSON.parse(decodeURIComponent($('head > meta[name="app.context"]').attr("value"))),
-			initialized: false,
-			ready: false,
-		    selectedView: "",
-		    // When navigating away from from the 'lockedView' we will do a REDIRECT instead of a PUSH-STATE
-		    lockedView: "",
 		    selectedDay: MOMENT().add(0, 'days').format("ddd"),
-		    todayId: MOMENT().format("YYYY-MM-DD"),
-		    today: MOMENT().format("ddd")
+		    windowOrigin: window.location.origin || (window.location.protocol + "//" + window.location.host)
 		};
 
-		UNDERSCORE.extend(config, overrides || {});
+		COMMON.API.UNDERSCORE.extend(config, overrides || {});
 
 		if (config.context.overrideSkinUri) {
 			HEAD.load([
@@ -44096,7 +44152,7 @@
 			]);
 		}
 
-		var appContext = new AppContext(config);
+		var appContext = Model.makeContextForClient(config);
 
 
 		COMMON.init(appContext.get('sessionToken'), appContext.get('context'));
@@ -44176,7 +44232,7 @@
 
 					// NOTE: This will not work if only the Hash changes.
 					//       In those cases you need to redirect to a new URL.
-					window.location.href = window.location.origin + view;
+					window.location.href = appContext.get("windowOrigin") + view;
 				} else {
 	//console.log("SET VIEW", view);
 
@@ -44207,7 +44263,7 @@
 
 					// NOTE: This will not work if only the Hash changes.
 					//       In those cases you need to redirect to a new URL.
-					window.location.href = window.location.origin + PATHNAME + "#" + appContext.get('selectedView');
+					window.location.href = appContext.get("windowOrigin") + PATHNAME + "#" + appContext.get('selectedView');
 				} else {
 
 	//console.log("SET PAGE1", PATHNAME + "#" + appContext.selectedView);
@@ -44236,8 +44292,8 @@
 
 		function initLiveNotify () {
 
-			var client = __webpack_require__(187);
-			var socket = client.connect(window.location.origin);
+			var client = __webpack_require__(189);
+			var socket = client.connect(appContext.get("windowOrigin"));
 
 			// TODO: Handle re-connects by re-sending init.
 
@@ -44260,7 +44316,11 @@
 
 			function finalizeInit () {
 
-				initLiveNotify();
+				var context = appContext.get('context');
+
+				if (context.initLiveNotify) {
+					initLiveNotify();
+				}
 
 				appContext.set('ready', true);
 			}
@@ -44284,17 +44344,22 @@
 			// data to init the UI.
 			if (context.type === "order") {
 
-				appContext.get('stores').orders.loadOrderByHashId(context.id).then(function () {
+				appContext.get('stores').orders.loadOrderByHashId(context.id).then(function (order) {
 
-					if (!(
-						appContext.get('selectedView') === "Order_Placed" ||
-						appContext.get('selectedView') === "Order_Arrived" ||
-						appContext.get('selectedView') === "Receipt"
-					)) {
-						appContext.set('selectedView', "Receipt");
-					}
+					context.dbfilter.event_id = JSON.parse(order.get("event")).id
 
-					finalizeInit();
+					return appContext.get('stores').events.loadForId(context.dbfilter.event_id).then(function () {
+
+						if (!(
+							appContext.get('selectedView') === "Order_Placed" ||
+							appContext.get('selectedView') === "Order_Arrived" ||
+							appContext.get('selectedView') === "Receipt"
+						)) {
+							appContext.set('selectedView', "Receipt");
+						}
+
+						finalizeInit();
+					});
 
 				}).fail(function (err) {
 					console.error("Error loading order!", err.stack);
@@ -44351,12 +44416,13 @@
 					context.vendor_id = vendor_id;
 
 					return appContext.get('stores').orders.loadForVendorId(context.vendor_id).then(function () {
-
+	/*
 						if (!(
 							appContext.get('selectedView') === "Admin_Restaurant"
 						)) {
 							appContext.set('selectedView', "Admin_Restaurant");
 						}
+	*/
 
 						finalizeInit();
 					});
@@ -44405,74 +44471,6 @@
 	}
 
 
-	// @see http://ampersandjs.com/docs#ampersand-state
-	var AppContext = COMMON.API.AMPERSAND_STATE.extend({
-		props: {
-			sessionToken: "string",
-			context: "object",
-			initialized: "boolean",
-			ready: "boolean",
-	        skin: "object",
-	        stores: "object",
-	        today: "string",
-	        todayId: "string",
-	        lockedView: "string"
-		},
-	    session: {
-	        selectedView: "string",
-	        selectedDay: "string"
-	    },
-	    derived: {
-	        // The skin (config & components) for the active view.
-	    	view: {
-				deps: [
-					"skin",
-					"selectedView"
-				],
-	            fn: function () {
-
-					var view = this.skin.views[this.selectedView] || {};
-
-					// Init minimal view if skin does not set anything specific.
-					if (!view.components) {
-						view.components = {};
-					}
-					if (!view.components["Header"]) {
-						view.components["Header"] = "";
-					}
-					if (!view.components["Menu"]) {
-						view.components["Menu"] = "";
-					}
-					if (!view.components["Footer"]) {
-						view.components["Footer"] = "";
-					}
-
-					return view;
-	            }
-	    	},
-		    views: {
-				deps: [
-					"skin"
-				],
-	            fn: function () {
-	            	var views = {};
-	            	for (var viewAlias in this.skin.views) {
-	            		views[viewAlias] = {
-	            			alias: viewAlias,
-	            			label: viewAlias.replace(/_/g, " > "),
-	            			group: this.skin.views[viewAlias].group || null,
-	            			container: this.skin.views[viewAlias].container || null,
-	            			component: this.skin.views[viewAlias].component,
-	            			config: this.skin.views[viewAlias].config
-	            		};
-	            	}
-	                return views;
-	            }
-		    }
-	    }
-	});
-
-
 
 /***/ },
 /* 171 */
@@ -44482,19 +44480,9 @@
 
 	// The API for the data stores running in the UI.
 	// Running all API access through here allows for easy porting later.
-	var API = exports.API = {
-		Q: __webpack_require__(173),
-		BACKBONE: __webpack_require__(161),
-		UNDERSCORE: __webpack_require__(14),
-		AMPERSAND_STATE: __webpack_require__(176),
-		MOMENT: __webpack_require__(17),
-		NUMERAL: __webpack_require__(172),
-		UUID: __webpack_require__(178),
-		JSSHA: __webpack_require__(180),
-		CJSON: __webpack_require__(181)
-	};
-
-	var FIRENODE = __webpack_require__(182);
+	var API = exports.API = Object.create(__webpack_require__(172).API);
+	API.BACKBONE = __webpack_require__(161);
+	API.FIRENODE = __webpack_require__(183);
 
 
 	exports.makeEndpointUrl = function (name) {
@@ -44515,9 +44503,9 @@
 
 	exports.init = function (sessionToken, context) {
 
-	//	var client = new FIRENODE.Client(sessionToken, context);
+	//	var client = new API.FIRENODE.Client(sessionToken, context);
 
-	//console.log("FIRENODE.client", client);
+	//console.log("API.FIRENODE.client", client);
 
 	}
 
@@ -44585,6 +44573,8 @@
 							return;
 						}
 						try {
+							// Assign all properties from the model.
+							// TODO: Only assign subscribed properties.
 							if (keys[key].model) {
 								var record = foreignStore.get(foreign_key);
 								// NOTE: Sometimes this is not yet available due to 'for' call on
@@ -44604,7 +44594,10 @@
 										records[i].__model.set(keys[key].localFieldPrefix + "." + name, values[name]);
 									});
 								}
-							} else {
+							} else
+							// Assign only one property from the foreign table.
+							// TODO: Deprecate
+							{
 								records[i].__model.set(keys[key].localField, foreignStore.get(foreign_key).get(keys[key].foreignField));
 							}
 						} catch (err) {
@@ -44660,8 +44653,101 @@
 
 
 
+	function initLocalStorage () {
+
+		// Ensure local storage is there and hook it up to a backend if not.
+
+	    try {
+	        return "localStorage" in window && window.localStorage != null;
+	    } catch (e) {
+
+			// TODO: Hook up to backend (via session id) if no local storage supported.
+
+	        var data = {},
+	            undef;
+	        window.localStorage = {
+	            setItem     : function(id, val) { return data[id] = String(val); },
+	            getItem     : function(id) { return data.hasOwnProperty(id) ? data[id] : undef; },
+	            removeItem  : function(id) { return delete data[id]; },
+	            clear       : function() { return data = {}; }
+	        };
+	    }
+	}
+
+	initLocalStorage();
+
+
+	exports.storeLocalValueFor = function (group, name, value) {
+		window.localStorage.setItem(group + "." + name, value);
+	}
+
+	exports.getLocalValueFor = function (group, name) {
+		return window.localStorage.getItem(group + "." + name) || null;
+	}
+
+
+
+
 /***/ },
 /* 172 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/** @jsx React.DOM */
+
+	// The API for models that works in client and on server.
+	// Running all API access through here allows for easy porting later.
+	var API = exports.API = {
+		Q: __webpack_require__(174),
+		UNDERSCORE: __webpack_require__(14),
+		AMPERSAND_STATE: __webpack_require__(177),
+		MOMENT: __webpack_require__(17),
+		NUMERAL: __webpack_require__(173),
+		UUID: __webpack_require__(179),
+		JSSHA: __webpack_require__(181),
+		CJSON: __webpack_require__(182)
+	};
+
+
+	exports.forAppContext = function (appContext) {
+
+		var exports = {};
+
+		exports.makeFormatter = function (type) {
+
+			if (type === "deliveryTime") {
+				return {
+					deps: [
+						"deliveryStartTime",
+						"pickupEndTime"
+					],
+		            fn: function () {
+		            	var deliveryStartTime = API.MOMENT(this.deliveryStartTime);
+		            	var pickupEndTime = API.MOMENT(this.pickupEndTime);
+		            	return deliveryStartTime.format("hh:mm") + "-" + pickupEndTime.format("hh:mm A");
+		            }
+			    };
+			} else
+			if (type === "deliveryDate") {
+				return {
+					deps: [
+						"deliveryStartTime"
+					],
+		            fn: function () {
+		            	var deliveryStartTime = API.MOMENT(this.deliveryStartTime);
+		            	return deliveryStartTime.format("dddd, MMM Do YYYY");
+		            }
+			    };
+			}
+
+			throw new Error("Formatter of type '" + type + "' not supported!");
+		}
+
+		return exports;
+	}
+
+
+/***/ },
+/* 173 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/** @jsx React.DOM *//*!
@@ -45346,7 +45432,7 @@
 
 
 /***/ },
-/* 173 */
+/* 174 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process, setImmediate) {/** @jsx React.DOM */// vim:ts=4:sts=4:sw=4:
@@ -47398,10 +47484,10 @@
 
 	});
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(174), __webpack_require__(175).setImmediate))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(175), __webpack_require__(176).setImmediate))
 
 /***/ },
-/* 174 */
+/* 175 */
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM */// shim for using process in browser
@@ -47497,10 +47583,10 @@
 
 
 /***/ },
-/* 175 */
+/* 176 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(setImmediate, clearImmediate) {/** @jsx React.DOM */var nextTick = __webpack_require__(174).nextTick;
+	/* WEBPACK VAR INJECTION */(function(setImmediate, clearImmediate) {/** @jsx React.DOM */var nextTick = __webpack_require__(175).nextTick;
 	var apply = Function.prototype.apply;
 	var slice = Array.prototype.slice;
 	var immediateIds = {};
@@ -47576,10 +47662,10 @@
 	exports.clearImmediate = typeof clearImmediate === "function" ? clearImmediate : function(id) {
 	  delete immediateIds[id];
 	};
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(175).setImmediate, __webpack_require__(175).clearImmediate))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(176).setImmediate, __webpack_require__(176).clearImmediate))
 
 /***/ },
-/* 176 */
+/* 177 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
@@ -47621,19 +47707,30 @@
 	    }
 	*/
 
-	const EVENTS = __webpack_require__(177);
+	var EVENTS = __webpack_require__(178);
+	// Below only works on server while above only works in browser.
+	if (EVENTS.EventEmitter2) EVENTS = EVENTS.EventEmitter2;
 
 
 	exports.extend = function (definition) {
 
 
 		var State = function (values) {
+			this._definition = definition;
 			this.values = values;
+
+	console.log("SET VALUES FOR", definition.name, values);
+
 		}
 		State.prototype = Object.create(EVENTS.prototype);
 		
 		State.prototype.getValues = function () {
-			return this.values;
+			var self = this;
+			var values = {};
+			State.getFields().forEach(function (name) {
+				values[name] = self.get(name);
+			});
+			return values;
 		}
 
 		State.prototype.get = function (name) {
@@ -47682,7 +47779,7 @@
 
 
 /***/ },
-/* 177 */
+/* 178 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_RESULT__;/** @jsx React.DOM *//*!
@@ -48261,7 +48358,7 @@
 
 
 /***/ },
-/* 178 */
+/* 179 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM *///     uuid.js
@@ -48272,7 +48369,7 @@
 	// Unique ID creation requires a high quality random # generator.  We feature
 	// detect to determine the best RNG source, normalizing to a function that
 	// returns 128-bits of randomness, since that's what's usually required
-	var _rng = __webpack_require__(179);
+	var _rng = __webpack_require__(180);
 
 	// Maps for number <-> hex string conversion
 	var _byteToHex = [];
@@ -48450,7 +48547,7 @@
 
 
 /***/ },
-/* 179 */
+/* 180 */
 /***/ function(module, exports) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {/** @jsx React.DOM */
@@ -48488,7 +48585,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 180 */
+/* 181 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_RESULT__;/** @jsx React.DOM *//*
@@ -48531,7 +48628,7 @@
 
 
 /***/ },
-/* 181 */
+/* 182 */
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM */
@@ -48756,11 +48853,11 @@
 
 
 /***/ },
-/* 182 */
+/* 183 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
-	const COOKIES = __webpack_require__(183);
+	const COOKIES = __webpack_require__(184);
 
 
 	var Client = exports.Client = function (sessionToken, context) {
@@ -48775,7 +48872,7 @@
 
 
 /***/ },
-/* 183 */
+/* 184 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;/** @jsx React.DOM *//*!
@@ -48920,7 +49017,7 @@
 
 
 /***/ },
-/* 184 */
+/* 185 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/** @jsx React.DOM */  /* globals require, module */
@@ -48931,7 +49028,7 @@
 	   * Module dependencies.
 	   */
 
-	  var pathtoRegexp = __webpack_require__(185);
+	  var pathtoRegexp = __webpack_require__(186);
 
 	  /**
 	   * Module exports.
@@ -49083,14 +49180,8 @@
 	    running = true;
 	    if (false === options.dispatch) dispatch = false;
 	    if (false === options.decodeURLComponents) decodeURLComponents = false;
-	    if (false !== options.popstate) {
-	console.log("ADD EVENT 1");
-	      window.addEventListener('popstate', onpopstate, false);
-	    }
+	    if (false !== options.popstate) window.addEventListener('popstate', onpopstate, false);
 	    if (false !== options.click) {
-
-	console.log("ADD EVENT 2");
-
 	      document.addEventListener(clickEvent, onclick, false);
 	    }
 	    if (true === options.hashbang) hashbang = true;
@@ -49355,10 +49446,6 @@
 	   */
 
 	  Context.prototype.save = function() {
-
-	console.log("111", history);
-	console.log("111", history.location);
-
 	    history.replaceState(this.state, this.title, hashbang && this.path !== '/' ? '#!' + this.path : this.canonicalPath);
 	  };
 
@@ -49451,9 +49538,6 @@
 	    if (document.readyState === 'complete') {
 	      loaded = true;
 	    } else {
-
-	console.log("ADD EVENT 3");
-
 	      window.addEventListener('load', function() {
 	        setTimeout(function() {
 	          loaded = true;
@@ -49559,13 +49643,13 @@
 
 	  page.sameOrigin = sameOrigin;
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(174)))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(175)))
 
 /***/ },
-/* 185 */
+/* 186 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/** @jsx React.DOM */var isArray = __webpack_require__(186);
+	/** @jsx React.DOM */var isArray = __webpack_require__(187);
 
 	/**
 	 * Expose `pathToRegexp`.
@@ -49770,7 +49854,7 @@
 
 
 /***/ },
-/* 186 */
+/* 187 */
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM */module.exports = Array.isArray || function (arr) {
@@ -49779,7 +49863,144 @@
 
 
 /***/ },
-/* 187 */
+/* 188 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/** @jsx React.DOM */
+	var COMMON = __webpack_require__(172);
+
+
+	exports.makeContextForClient = function (overrides) {
+
+		overrides = overrides || {};
+
+		var config = {
+			sessionToken: null,
+			context: {},
+			initialized: false,
+			ready: false,
+		    selectedView: "",
+		    // When navigating away from from the 'lockedView' we will do a REDIRECT instead of a PUSH-STATE
+		    lockedView: "",
+		    selectedDay: null,
+		    todayId: COMMON.API.MOMENT().format("YYYY-MM-DD"),
+		    today: COMMON.API.MOMENT().format("ddd"),
+		    windowOrigin: null,
+		    stores: null,
+		    skin: null
+		};
+
+		Object.keys(overrides).forEach(function (name) {
+			if (typeof config[name] === "undefined") {
+				throw new Error("Cannot override property '" + name + "' as it is not declared in the model!");
+			}
+		});
+
+		COMMON.API.UNDERSCORE.extend(config, overrides || {});
+
+		var AppContext = makeContextModel({
+			props: {
+				sessionToken: "string",
+				context: "object",
+				initialized: "boolean",
+				ready: "boolean",
+		        skin: "object",
+		        stores: "object",
+		        today: "string",
+		        todayId: "string",
+		        lockedView: "string",
+		        windowOrigin: "string"
+			},
+		    session: {
+		        selectedView: "string",
+		        selectedDay: "string"
+		    },
+		    derived: {
+		        // The skin (config & components) for the active view.
+		    	view: {
+					deps: [
+						"skin",
+						"selectedView"
+					],
+		            fn: function () {
+
+						var view = this.skin.views[this.selectedView] || {};
+
+						// Init minimal view if skin does not set anything specific.
+						if (!view.components) {
+							view.components = {};
+						}
+						if (!view.components["Header"]) {
+							view.components["Header"] = "";
+						}
+						if (!view.components["Menu"]) {
+							view.components["Menu"] = "";
+						}
+						if (!view.components["Footer"]) {
+							view.components["Footer"] = "";
+						}
+
+						return view;
+		            }
+		    	},
+			    views: {
+					deps: [
+						"skin"
+					],
+		            fn: function () {
+		            	var views = {};
+		            	for (var viewAlias in this.skin.views) {
+		            		views[viewAlias] = {
+		            			alias: viewAlias,
+		            			label: viewAlias.replace(/_/g, " > "),
+		            			group: this.skin.views[viewAlias].group || null,
+		            			container: this.skin.views[viewAlias].container || null,
+		            			component: this.skin.views[viewAlias].component,
+		            			config: this.skin.views[viewAlias].config
+		            		};
+		            	}
+		                return views;
+		            }
+			    }
+		    }
+
+		});
+
+		return new AppContext(config);
+	}
+
+	exports.makeContextForServer = function (overrides) {
+
+		var config = {
+		    windowOrigin: null
+		};
+
+		COMMON.API.UNDERSCORE.extend(config, overrides || {});
+
+		var AppContext = makeContextModel({});
+
+		return new AppContext(config);	
+	}
+
+
+	function makeContextModel (extraDefinition) {
+
+		// @see http://ampersandjs.com/docs#ampersand-state
+		var definition = {
+			props: {
+		        windowOrigin: "string"
+		    }
+		};
+
+		COMMON.API.UNDERSCORE.extend(definition, extraDefinition || {});
+
+		return COMMON.API.AMPERSAND_STATE.extend(definition);
+	}
+
+
+
+/***/ },
+/* 189 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
@@ -49787,10 +50008,10 @@
 	 * Module dependencies.
 	 */
 
-	var url = __webpack_require__(189);
-	var parser = __webpack_require__(191);
-	var Manager = __webpack_require__(199);
-	var debug = __webpack_require__(188)('socket.io-client');
+	var url = __webpack_require__(191);
+	var parser = __webpack_require__(193);
+	var Manager = __webpack_require__(201);
+	var debug = __webpack_require__(190)('socket.io-client');
 
 	/**
 	 * Module exports.
@@ -49867,12 +50088,12 @@
 	 * @api public
 	 */
 
-	exports.Manager = __webpack_require__(199);
-	exports.Socket = __webpack_require__(231);
+	exports.Manager = __webpack_require__(201);
+	exports.Socket = __webpack_require__(233);
 
 
 /***/ },
-/* 188 */
+/* 190 */
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM */
@@ -50015,7 +50236,7 @@
 
 
 /***/ },
-/* 189 */
+/* 191 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {/** @jsx React.DOM */
@@ -50023,8 +50244,8 @@
 	 * Module dependencies.
 	 */
 
-	var parseuri = __webpack_require__(190);
-	var debug = __webpack_require__(188)('socket.io-client:url');
+	var parseuri = __webpack_require__(192);
+	var debug = __webpack_require__(190)('socket.io-client:url');
 
 	/**
 	 * Module exports.
@@ -50095,7 +50316,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 190 */
+/* 192 */
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM *//**
@@ -50126,7 +50347,7 @@
 
 
 /***/ },
-/* 191 */
+/* 193 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
@@ -50134,12 +50355,12 @@
 	 * Module dependencies.
 	 */
 
-	var debug = __webpack_require__(193)('socket.io-parser');
-	var json = __webpack_require__(194);
-	var isArray = __webpack_require__(196);
-	var Emitter = __webpack_require__(192);
-	var binary = __webpack_require__(197);
-	var isBuf = __webpack_require__(198);
+	var debug = __webpack_require__(195)('socket.io-parser');
+	var json = __webpack_require__(196);
+	var isArray = __webpack_require__(198);
+	var Emitter = __webpack_require__(194);
+	var binary = __webpack_require__(199);
+	var isBuf = __webpack_require__(200);
 
 	/**
 	 * Protocol version.
@@ -50532,7 +50753,7 @@
 
 
 /***/ },
-/* 192 */
+/* 194 */
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM */
@@ -50702,9 +50923,9 @@
 
 
 /***/ },
-/* 193 */
-188,
-/* 194 */
+/* 195 */
+190,
+/* 196 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_RESULT__;/** @jsx React.DOM *//*! JSON v3.2.6 | http://bestiejs.github.io/json3 | Copyright 2012-2013, Kit Cambridge | http://kit.mit-license.org */
@@ -50714,7 +50935,7 @@
 
 	  // Detect the `define` function exposed by asynchronous module loaders. The
 	  // strict `define` check is necessary for compatibility with `r.js`.
-	  var isLoader = "function" === "function" && __webpack_require__(195);
+	  var isLoader = "function" === "function" && __webpack_require__(197);
 
 	  // Detect native implementations.
 	  var nativeJSON = typeof JSON == "object" && JSON;
@@ -51571,7 +51792,7 @@
 
 
 /***/ },
-/* 195 */
+/* 197 */
 /***/ function(module, exports) {
 
 	/* WEBPACK VAR INJECTION */(function(__webpack_amd_options__) {module.exports = __webpack_amd_options__;
@@ -51579,9 +51800,9 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, {}))
 
 /***/ },
-/* 196 */
-186,
-/* 197 */
+/* 198 */
+187,
+/* 199 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {/** @jsx React.DOM *//*global Blob,File*/
@@ -51590,8 +51811,8 @@
 	 * Module requirements
 	 */
 
-	var isArray = __webpack_require__(196);
-	var isBuf = __webpack_require__(198);
+	var isArray = __webpack_require__(198);
+	var isBuf = __webpack_require__(200);
 
 	/**
 	 * Replaces every Buffer | ArrayBuffer in packet with a numbered placeholder.
@@ -51729,7 +51950,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 198 */
+/* 200 */
 /***/ function(module, exports) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {/** @jsx React.DOM */
@@ -51749,7 +51970,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 199 */
+/* 201 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
@@ -51757,17 +51978,17 @@
 	 * Module dependencies.
 	 */
 
-	var url = __webpack_require__(189);
-	var eio = __webpack_require__(200);
-	var Socket = __webpack_require__(231);
-	var Emitter = __webpack_require__(220);
-	var parser = __webpack_require__(191);
-	var on = __webpack_require__(233);
-	var bind = __webpack_require__(234);
-	var object = __webpack_require__(237);
-	var debug = __webpack_require__(188)('socket.io-client:manager');
-	var indexOf = __webpack_require__(228);
-	var Backoff = __webpack_require__(238);
+	var url = __webpack_require__(191);
+	var eio = __webpack_require__(202);
+	var Socket = __webpack_require__(233);
+	var Emitter = __webpack_require__(222);
+	var parser = __webpack_require__(193);
+	var on = __webpack_require__(235);
+	var bind = __webpack_require__(236);
+	var object = __webpack_require__(239);
+	var debug = __webpack_require__(190)('socket.io-client:manager');
+	var indexOf = __webpack_require__(230);
+	var Backoff = __webpack_require__(240);
 
 	/**
 	 * Module exports
@@ -52258,19 +52479,19 @@
 
 
 /***/ },
-/* 200 */
+/* 202 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
-	module.exports =  __webpack_require__(201);
+	module.exports =  __webpack_require__(203);
 
 
 /***/ },
-/* 201 */
+/* 203 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
-	module.exports = __webpack_require__(202);
+	module.exports = __webpack_require__(204);
 
 	/**
 	 * Exports parser
@@ -52278,25 +52499,25 @@
 	 * @api public
 	 *
 	 */
-	module.exports.parser = __webpack_require__(211);
+	module.exports.parser = __webpack_require__(213);
 
 
 /***/ },
-/* 202 */
+/* 204 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {/** @jsx React.DOM *//**
 	 * Module dependencies.
 	 */
 
-	var transports = __webpack_require__(203);
-	var Emitter = __webpack_require__(220);
-	var debug = __webpack_require__(222)('engine.io-client:socket');
-	var index = __webpack_require__(228);
-	var parser = __webpack_require__(211);
-	var parseuri = __webpack_require__(229);
-	var parsejson = __webpack_require__(230);
-	var parseqs = __webpack_require__(221);
+	var transports = __webpack_require__(205);
+	var Emitter = __webpack_require__(222);
+	var debug = __webpack_require__(224)('engine.io-client:socket');
+	var index = __webpack_require__(230);
+	var parser = __webpack_require__(213);
+	var parseuri = __webpack_require__(231);
+	var parsejson = __webpack_require__(232);
+	var parseqs = __webpack_require__(223);
 
 	/**
 	 * Module exports.
@@ -52411,9 +52632,9 @@
 	 */
 
 	Socket.Socket = Socket;
-	Socket.Transport = __webpack_require__(210);
-	Socket.transports = __webpack_require__(203);
-	Socket.parser = __webpack_require__(211);
+	Socket.Transport = __webpack_require__(212);
+	Socket.transports = __webpack_require__(205);
+	Socket.parser = __webpack_require__(213);
 
 	/**
 	 * Creates transport of the given type.
@@ -52994,17 +53215,17 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 203 */
+/* 205 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {/** @jsx React.DOM *//**
 	 * Module dependencies
 	 */
 
-	var XMLHttpRequest = __webpack_require__(204);
-	var XHR = __webpack_require__(207);
-	var JSONP = __webpack_require__(225);
-	var websocket = __webpack_require__(226);
+	var XMLHttpRequest = __webpack_require__(206);
+	var XHR = __webpack_require__(209);
+	var JSONP = __webpack_require__(227);
+	var websocket = __webpack_require__(228);
 
 	/**
 	 * Export transports.
@@ -53054,11 +53275,11 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 204 */
+/* 206 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */// browser shim for xmlhttprequest module
-	var hasCORS = __webpack_require__(205);
+	var hasCORS = __webpack_require__(207);
 
 	module.exports = function(opts) {
 	  var xdomain = opts.xdomain;
@@ -53096,7 +53317,7 @@
 
 
 /***/ },
-/* 205 */
+/* 207 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
@@ -53104,7 +53325,7 @@
 	 * Module dependencies.
 	 */
 
-	var global = __webpack_require__(206);
+	var global = __webpack_require__(208);
 
 	/**
 	 * Module exports.
@@ -53125,7 +53346,7 @@
 
 
 /***/ },
-/* 206 */
+/* 208 */
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM */
@@ -53139,18 +53360,18 @@
 
 
 /***/ },
-/* 207 */
+/* 209 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {/** @jsx React.DOM *//**
 	 * Module requirements.
 	 */
 
-	var XMLHttpRequest = __webpack_require__(204);
-	var Polling = __webpack_require__(208);
-	var Emitter = __webpack_require__(220);
-	var inherit = __webpack_require__(209);
-	var debug = __webpack_require__(222)('engine.io-client:polling-xhr');
+	var XMLHttpRequest = __webpack_require__(206);
+	var Polling = __webpack_require__(210);
+	var Emitter = __webpack_require__(222);
+	var inherit = __webpack_require__(211);
+	var debug = __webpack_require__(224)('engine.io-client:polling-xhr');
 
 	/**
 	 * Module exports.
@@ -53530,18 +53751,18 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 208 */
+/* 210 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM *//**
 	 * Module dependencies.
 	 */
 
-	var Transport = __webpack_require__(210);
-	var parseqs = __webpack_require__(221);
-	var parser = __webpack_require__(211);
-	var inherit = __webpack_require__(209);
-	var debug = __webpack_require__(222)('engine.io-client:polling');
+	var Transport = __webpack_require__(212);
+	var parseqs = __webpack_require__(223);
+	var parser = __webpack_require__(213);
+	var inherit = __webpack_require__(211);
+	var debug = __webpack_require__(224)('engine.io-client:polling');
 
 	/**
 	 * Module exports.
@@ -53554,7 +53775,7 @@
 	 */
 
 	var hasXHR2 = (function() {
-	  var XMLHttpRequest = __webpack_require__(204);
+	  var XMLHttpRequest = __webpack_require__(206);
 	  var xhr = new XMLHttpRequest({ xdomain: false });
 	  return null != xhr.responseType;
 	})();
@@ -53781,7 +54002,7 @@
 
 
 /***/ },
-/* 209 */
+/* 211 */
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM */
@@ -53793,15 +54014,15 @@
 	};
 
 /***/ },
-/* 210 */
+/* 212 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM *//**
 	 * Module dependencies.
 	 */
 
-	var parser = __webpack_require__(211);
-	var Emitter = __webpack_require__(220);
+	var parser = __webpack_require__(213);
+	var Emitter = __webpack_require__(222);
 
 	/**
 	 * Module exports.
@@ -53958,19 +54179,19 @@
 
 
 /***/ },
-/* 211 */
+/* 213 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {/** @jsx React.DOM *//**
 	 * Module dependencies.
 	 */
 
-	var keys = __webpack_require__(212);
-	var hasBinary = __webpack_require__(213);
-	var sliceBuffer = __webpack_require__(215);
-	var base64encoder = __webpack_require__(216);
-	var after = __webpack_require__(217);
-	var utf8 = __webpack_require__(218);
+	var keys = __webpack_require__(214);
+	var hasBinary = __webpack_require__(215);
+	var sliceBuffer = __webpack_require__(217);
+	var base64encoder = __webpack_require__(218);
+	var after = __webpack_require__(219);
+	var utf8 = __webpack_require__(220);
 
 	/**
 	 * Check if we are running an android browser. That requires us to use
@@ -54027,7 +54248,7 @@
 	 * Create a blob api even for blob builder when vendor prefixes exist
 	 */
 
-	var Blob = __webpack_require__(219);
+	var Blob = __webpack_require__(221);
 
 	/**
 	 * Encodes a packet.
@@ -54559,7 +54780,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 212 */
+/* 214 */
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM */
@@ -54584,7 +54805,7 @@
 
 
 /***/ },
-/* 213 */
+/* 215 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {/** @jsx React.DOM */
@@ -54592,7 +54813,7 @@
 	 * Module requirements.
 	 */
 
-	var isArray = __webpack_require__(214);
+	var isArray = __webpack_require__(216);
 
 	/**
 	 * Module exports.
@@ -54649,9 +54870,9 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 214 */
-186,
-/* 215 */
+/* 216 */
+187,
+/* 217 */
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM *//**
@@ -54686,7 +54907,7 @@
 
 
 /***/ },
-/* 216 */
+/* 218 */
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM *//*
@@ -54751,7 +54972,7 @@
 
 
 /***/ },
-/* 217 */
+/* 219 */
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM */module.exports = after
@@ -54785,7 +55006,7 @@
 
 
 /***/ },
-/* 218 */
+/* 220 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_RESULT__;/* WEBPACK VAR INJECTION */(function(module, global) {/** @jsx React.DOM *//*! http://mths.be/utf8js v2.0.0 by @mathias */
@@ -55029,7 +55250,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(11)(module), (function() { return this; }())))
 
 /***/ },
-/* 219 */
+/* 221 */
 /***/ function(module, exports) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {/** @jsx React.DOM *//**
@@ -55085,9 +55306,9 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 220 */
-192,
-/* 221 */
+/* 222 */
+194,
+/* 223 */
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM *//**
@@ -55130,7 +55351,7 @@
 
 
 /***/ },
-/* 222 */
+/* 224 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
@@ -55140,7 +55361,7 @@
 	 * Expose `debug()` as the module.
 	 */
 
-	exports = module.exports = __webpack_require__(223);
+	exports = module.exports = __webpack_require__(225);
 	exports.log = log;
 	exports.formatArgs = formatArgs;
 	exports.save = save;
@@ -55283,7 +55504,7 @@
 
 
 /***/ },
-/* 223 */
+/* 225 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
@@ -55299,7 +55520,7 @@
 	exports.disable = disable;
 	exports.enable = enable;
 	exports.enabled = enabled;
-	exports.humanize = __webpack_require__(224);
+	exports.humanize = __webpack_require__(226);
 
 	/**
 	 * The currently active debug mode names, and names to skip.
@@ -55486,7 +55707,7 @@
 
 
 /***/ },
-/* 224 */
+/* 226 */
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM *//**
@@ -55603,7 +55824,7 @@
 
 
 /***/ },
-/* 225 */
+/* 227 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {/** @jsx React.DOM */
@@ -55611,8 +55832,8 @@
 	 * Module requirements.
 	 */
 
-	var Polling = __webpack_require__(208);
-	var inherit = __webpack_require__(209);
+	var Polling = __webpack_require__(210);
+	var inherit = __webpack_require__(211);
 
 	/**
 	 * Module exports.
@@ -55843,18 +56064,18 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 226 */
+/* 228 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM *//**
 	 * Module dependencies.
 	 */
 
-	var Transport = __webpack_require__(210);
-	var parser = __webpack_require__(211);
-	var parseqs = __webpack_require__(221);
-	var inherit = __webpack_require__(209);
-	var debug = __webpack_require__(222)('engine.io-client:websocket');
+	var Transport = __webpack_require__(212);
+	var parser = __webpack_require__(213);
+	var parseqs = __webpack_require__(223);
+	var inherit = __webpack_require__(211);
+	var debug = __webpack_require__(224)('engine.io-client:websocket');
 
 	/**
 	 * `ws` exposes a WebSocket-compatible interface in
@@ -55862,7 +56083,7 @@
 	 * in the browser.
 	 */
 
-	var WebSocket = __webpack_require__(227);
+	var WebSocket = __webpack_require__(229);
 
 	/**
 	 * Module exports.
@@ -56087,7 +56308,7 @@
 
 
 /***/ },
-/* 227 */
+/* 229 */
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM */
@@ -56136,7 +56357,7 @@
 
 
 /***/ },
-/* 228 */
+/* 230 */
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM */
@@ -56151,7 +56372,7 @@
 	};
 
 /***/ },
-/* 229 */
+/* 231 */
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM *//**
@@ -56196,7 +56417,7 @@
 
 
 /***/ },
-/* 230 */
+/* 232 */
 /***/ function(module, exports) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {/** @jsx React.DOM *//**
@@ -56234,7 +56455,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 231 */
+/* 233 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
@@ -56242,13 +56463,13 @@
 	 * Module dependencies.
 	 */
 
-	var parser = __webpack_require__(191);
-	var Emitter = __webpack_require__(220);
-	var toArray = __webpack_require__(232);
-	var on = __webpack_require__(233);
-	var bind = __webpack_require__(234);
-	var debug = __webpack_require__(188)('socket.io-client:socket');
-	var hasBin = __webpack_require__(235);
+	var parser = __webpack_require__(193);
+	var Emitter = __webpack_require__(222);
+	var toArray = __webpack_require__(234);
+	var on = __webpack_require__(235);
+	var bind = __webpack_require__(236);
+	var debug = __webpack_require__(190)('socket.io-client:socket');
+	var hasBin = __webpack_require__(237);
 
 	/**
 	 * Module exports.
@@ -56625,7 +56846,7 @@
 
 
 /***/ },
-/* 232 */
+/* 234 */
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM */module.exports = toArray
@@ -56644,7 +56865,7 @@
 
 
 /***/ },
-/* 233 */
+/* 235 */
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM */
@@ -56674,7 +56895,7 @@
 
 
 /***/ },
-/* 234 */
+/* 236 */
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM *//**
@@ -56703,7 +56924,7 @@
 
 
 /***/ },
-/* 235 */
+/* 237 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {/** @jsx React.DOM */
@@ -56711,7 +56932,7 @@
 	 * Module requirements.
 	 */
 
-	var isArray = __webpack_require__(236);
+	var isArray = __webpack_require__(238);
 
 	/**
 	 * Module exports.
@@ -56768,9 +56989,9 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 236 */
-186,
-/* 237 */
+/* 238 */
+187,
+/* 239 */
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM */
@@ -56859,7 +57080,7 @@
 	};
 
 /***/ },
-/* 238 */
+/* 240 */
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM */
@@ -56950,7 +57171,7 @@
 
 
 /***/ },
-/* 239 */
+/* 241 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
@@ -56980,7 +57201,8 @@
 	exports['for'] = function (context) {
 
 		// @see http://ampersandjs.com/docs#ampersand-state
-		var Model = COMMON.API.AMPERSAND_STATE.extend({
+		var Model = store.Model = COMMON.API.AMPERSAND_STATE.extend({
+			name: "days",
 			props: {
 				id: "string"
 		    },
@@ -57022,7 +57244,7 @@
 					if (!records[i].has(field)) return;
 					fields[field] = records[i].get(field);
 				});
-				return store._byId[records[i].get("id")].__model = new Model(fields);
+				return store._byId[records[i].get("id")].__model = new store.Model(fields);
 			});
 		}
 
@@ -57031,7 +57253,7 @@
 
 
 /***/ },
-/* 240 */
+/* 242 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
@@ -57166,11 +57388,126 @@
 		var store = new Store();
 
 
-	//	store.fetch();
+		store.Model = __webpack_require__(243).forContext(context);
 
+
+		store.getToday = function () {
+			var today = store.get(context.appContext.get('context').dbfilter.event_id);
+			if (!today) return [];
+			return [
+				today
+			];
+		}
+
+		store.loadForDay = function (day_id) {
+			var self = this;
+			return COMMON.API.Q.denodeify(function (callback) {
+		        self.fetch({
+		            data: $.param({
+		                "filter[day_id]": day_id
+		            }),
+		            success: function () {
+		            	return callback(null);
+		            }
+		        });
+			})();
+		}
+
+		store.loadForId = function (id) {
+			var self = this;
+			return COMMON.API.Q.denodeify(function (callback) {
+		        self.fetch({
+		            data: $.param({
+		                "filter[id]": id
+		            }),
+		            success: function () {
+		            	return callback(null);
+		            }
+		        });
+			})();
+		}
+
+		store.modelRecords = function (records) {
+			return COMMON.resolveForeignKeys(store, records, {
+				"consumer_group_id": {
+					store: __webpack_require__(244),
+					model: context.appContext.get('stores').consumerGroups.Model,
+					localFieldPrefix: "consumerGroup"
+				}
+			}).map(function (record, i) {
+				// Store model on backbone row so we can re-use it on subsequent calls.
+				if (store._byId[records[i].get("id")].__model) {
+					var model = store._byId[records[i].get("id")].__model;
+					store.Model.getFields().forEach(function (field) {
+						if (record.has(field) && model.get(field) !== record.get(field)) {
+							model.set(field, record.get(field));
+						}
+					});
+					return model;
+				}
+				var fields = {};
+				store.Model.getFields().forEach(function (field) {
+					if (!records[i].has(field)) return;
+					fields[field] = records[i].get(field);
+				});
+				return store._byId[records[i].get("id")].__model = new store.Model(fields);
+			});
+		}
+
+		store.modelRecord = function (record) {
+			if (!Array.isArray(record)) {
+				record = [
+					record
+				];
+			}
+			return COMMON.resolveForeignKeys(store, record, {
+				"consumer_group_id": {
+					store: __webpack_require__(244),
+					model: context.appContext.get('stores').consumerGroups.Model,
+					localFieldPrefix: "consumerGroup"
+				}
+			}, true).then(function (records) {
+				return records.map(function (record, i) {
+					// Store model on backbone row so we can re-use it on subsequent calls.
+					if (store._byId[records[i].get("id")].__model) {
+						var model = store._byId[records[i].get("id")].__model;
+						store.Model.getFields().forEach(function (field) {
+							if (record.has(field) && model.get(field) !== record.get(field)) {
+								model.set(field, record.get(field));
+							}
+						});
+						return model;
+					}
+					var fields = {};
+					store.Model.getFields().forEach(function (field) {
+						if (!records[i].has(field)) return;
+						fields[field] = records[i].get(field);
+					});
+					return store._byId[records[i].get("id")].__model = new store.Model(fields);
+				})[0];
+			});
+		}
+		return store;
+	}
+
+
+
+/***/ },
+/* 243 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/** @jsx React.DOM */
+
+	var COMMON = __webpack_require__(172);
+
+
+	exports.forContext = function (context) {
+
+		var common = COMMON.forAppContext(context.appContext);
 
 		// @see http://ampersandjs.com/docs#ampersand-state
-		var Model = store.Model = COMMON.API.AMPERSAND_STATE.extend({
+		var Model = COMMON.API.AMPERSAND_STATE.extend({
+			name: "events",
 			props: {
 				id: "string",
 		        day_id: "string",
@@ -57183,6 +57520,7 @@
 		        "token": "string",
 		        "menuReady": "boolean",
 		        "notificationsSent": "boolean",
+		        "delivered": "boolean",
 
 		        // TODO: Add these dynamically using foreign model.
 		        "consumerGroup.title": "string",
@@ -57257,8 +57595,8 @@
 		            	return true;
 		            }
 			    },
-			    "format.deliveryDate": COMMON.makeFormatter("deliveryDate"),
-			    "format.deliveryTime": COMMON.makeFormatter("deliveryTime"),
+			    "format.deliveryDate": common.makeFormatter("deliveryDate"),
+			    "format.deliveryTime": common.makeFormatter("deliveryTime"),
 			    "format.orderTimer": {
 					deps: [
 						"orderByTime"
@@ -57279,7 +57617,7 @@
 						"goodybagFee"
 					],
 		            fn: function () {
-		            	return COMMON.API.NUMERAL(this.goodybagFee/100).format('0.00');
+		            	return COMMON.API.NUMERAL(this.goodybagFee/100).format('$0.00');
 		            }
 			    },
 			    "format.menuReady": {
@@ -57299,113 +57637,34 @@
 		            fn: function () {
 		            	return (this.notificationsSent ? "Yes" : "No");
 		            }
+			    },
+			    "format.delivered": {
+			    	deps: [
+						"delivered"
+					],
+					cache: false,
+		            fn: function () {
+		            	return (this.delivered ? "Yes" : "No");
+		            }
+			    },
+			    "menuUrl": {
+			    	deps: [
+						"token"
+					],
+					cache: false,
+		            fn: function () {
+		            	return context.appContext.get("windowOrigin") + "/event-" + this.token;
+		            }
 			    }
 		    }
 		});
 
-		store.getToday = function () {
-			var today = store.get(context.appContext.get('context').dbfilter.event_id);
-			if (!today) return [];
-			return [
-				today
-			];
-		}
-
-		store.loadForDay = function (day_id) {
-			var self = this;
-			return COMMON.API.Q.denodeify(function (callback) {
-		        self.fetch({
-		            data: $.param({
-		                "filter[day_id]": day_id
-		            }),
-		            success: function () {
-		            	return callback(null);
-		            }
-		        });
-			})();
-		}
-
-		store.loadForId = function (id) {
-			var self = this;
-			return COMMON.API.Q.denodeify(function (callback) {
-		        self.fetch({
-		            data: $.param({
-		                "filter[id]": id
-		            }),
-		            success: function () {
-		            	return callback(null);
-		            }
-		        });
-			})();
-		}
-
-		store.modelRecords = function (records) {
-			return COMMON.resolveForeignKeys(store, records, {
-				"consumer_group_id": {
-					store: __webpack_require__(241),
-					model: context.appContext.get('stores').consumerGroups.Model,
-					localFieldPrefix: "consumerGroup"
-				}
-			}).map(function (record, i) {
-				// Store model on backbone row so we can re-use it on subsequent calls.
-				if (store._byId[records[i].get("id")].__model) {
-					var model = store._byId[records[i].get("id")].__model;
-					store.Model.getFields().forEach(function (field) {
-						if (record.has(field) && model.get(field) !== record.get(field)) {
-							model.set(field, record.get(field));
-						}
-					});
-					return model;
-				}
-				var fields = {};
-				store.Model.getFields().forEach(function (field) {
-					if (!records[i].has(field)) return;
-					fields[field] = records[i].get(field);
-				});
-				return store._byId[records[i].get("id")].__model = new Model(fields);
-			});
-		}
-
-		store.modelRecord = function (record) {
-			if (!Array.isArray(record)) {
-				record = [
-					record
-				];
-			}
-			return COMMON.resolveForeignKeys(store, record, {
-				"consumer_group_id": {
-					store: __webpack_require__(241),
-					model: context.appContext.get('stores').consumerGroups.Model,
-					localFieldPrefix: "consumerGroup"
-				}
-			}, true).then(function (records) {
-				return records.map(function (record, i) {
-					// Store model on backbone row so we can re-use it on subsequent calls.
-					if (store._byId[records[i].get("id")].__model) {
-						var model = store._byId[records[i].get("id")].__model;
-						store.Model.getFields().forEach(function (field) {
-							if (record.has(field) && model.get(field) !== record.get(field)) {
-								model.set(field, record.get(field));
-							}
-						});
-						return model;
-					}
-					var fields = {};
-					store.Model.getFields().forEach(function (field) {
-						if (!records[i].has(field)) return;
-						fields[field] = records[i].get(field);
-					});
-					return store._byId[records[i].get("id")].__model = new Model(fields);
-				})[0];
-			});
-		}
-		return store;
+		return Model;
 	}
 
 
-
 /***/ },
-/* 241 */
+/* 244 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
@@ -57463,6 +57722,7 @@
 
 		// @see http://ampersandjs.com/docs#ampersand-state
 		var Model = store.Model = COMMON.API.AMPERSAND_STATE.extend({
+			name: "consumer-groups",
 			props: {
 				id: "string",
 		        title: "string",
@@ -57512,7 +57772,7 @@
 
 
 /***/ },
-/* 242 */
+/* 245 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
@@ -57570,6 +57830,7 @@
 
 		// @see http://ampersandjs.com/docs#ampersand-state
 		var Model = store.Model = COMMON.API.AMPERSAND_STATE.extend({
+			name: "items",
 			props: {
 				id: "string",
 				item_id: "string",
@@ -57616,7 +57877,7 @@
 		store.modelRecords = function (records) {
 			return COMMON.resolveForeignKeys(store, records, {
 				"vendor_id": {
-					store: __webpack_require__(243),
+					store: __webpack_require__(246),
 					model: context.appContext.get('stores').vendors.Model,
 					localFieldPrefix: "vendor"
 				}
@@ -57654,7 +57915,7 @@
 
 			return COMMON.resolveForeignKeys(store, records, {
 				"vendor_id": {
-					store: __webpack_require__(243),
+					store: __webpack_require__(246),
 					model: context.appContext.get('stores').vendors.Model,
 					localFieldPrefix: "vendor"
 				}
@@ -57684,12 +57945,12 @@
 
 
 /***/ },
-/* 243 */
+/* 246 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
 	var COMMON = __webpack_require__(171);
-	var NUMERAL = __webpack_require__(172);
+	var NUMERAL = __webpack_require__(173);
 
 	var ENDPOINT = COMMON.makeEndpointUrl("vendors");
 
@@ -57743,6 +58004,7 @@
 
 		// @see http://ampersandjs.com/docs#ampersand-state
 		var Model = store.Model = COMMON.API.AMPERSAND_STATE.extend({
+			name: "vendors",
 			props: {
 				id: "string",
 		        title: "string",
@@ -57794,7 +58056,7 @@
 
 
 /***/ },
-/* 244 */
+/* 247 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
@@ -57831,6 +58093,7 @@
 
 		// @see http://ampersandjs.com/docs#ampersand-state
 		var Model = COMMON.API.AMPERSAND_STATE.extend({
+			name: "menus",
 			props: {
 				id: "string",
 				event_id: "string",
@@ -57839,7 +58102,11 @@
 		        // TODO: Add these dynamically using foreign model.
 		        "item.title": "string",
 		        "item.photo_url": "string",
-		        "item.price": "string"
+		        "item.price": "string",
+		        "item.properties": "string",
+		        "item.format.price": "string",
+		        "item.description": "string",
+		        "item.options": "string"
 		    }
 		});
 
@@ -57906,15 +58173,6 @@
 			var self = this;
 			return COMMON.API.Q.denodeify(function (callback) {
 
-				var payload = {
-					data: {
-						type: "menus",
-						attributes: {
-							id: id
-						}
-					}
-				};
-
 				return $.ajax({
 					method: "DELETE",
 					url: ENDPOINT + "/" + id
@@ -57935,12 +58193,12 @@
 		store.modelRecords = function (records) {
 			return COMMON.resolveForeignKeys(store, records, {
 				"vendor_id": {
-					store: __webpack_require__(243),
+					store: __webpack_require__(246),
 					model: context.appContext.get('stores').vendors.Model,
 					localFieldPrefix: "vendor"
 				},
 				"item_id": {
-					store: __webpack_require__(242),
+					store: __webpack_require__(245),
 					model: context.appContext.get('stores').items.Model,
 					localFieldPrefix: "item"
 				}
@@ -57968,7 +58226,7 @@
 
 
 /***/ },
-/* 245 */
+/* 248 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
@@ -58024,7 +58282,7 @@
 
 
 /***/ },
-/* 246 */
+/* 249 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
@@ -58083,6 +58341,7 @@
 
 		// @see http://ampersandjs.com/docs#ampersand-state
 		var Model = store.Model = COMMON.API.AMPERSAND_STATE.extend({
+			name: "consumer-group-subscriptions",
 			props: {
 				id: "string",
 		        token: "string",
@@ -58091,7 +58350,9 @@
 		        subscribe_time: "string",
 		        confirmed_time: "string",
 		        subscribeEmail: "string",
-		        confirmedEmail: "string"
+		        confirmedEmail: "string",
+
+		        "consumerGroup.title": "string"
 			}
 		});
 
@@ -58150,7 +58411,13 @@
 		}
 
 		store.modelRecords = function (records) {
-			return records.map(function (record, i) {
+			return COMMON.resolveForeignKeys(store, records, {
+				"consumer_group_id": {
+					store: __webpack_require__(244),
+					model: context.appContext.get('stores').consumerGroups.Model,
+					localFieldPrefix: "consumerGroup"
+				}
+			}).map(function (record, i) {
 				// Store model on backbone row so we can re-use it on subsequent calls.
 				// NOTE: We purposfully store the model using `records[i]` instead of `record`
 				//       as `record` 
@@ -58172,7 +58439,7 @@
 
 
 /***/ },
-/* 247 */
+/* 250 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
@@ -58204,6 +58471,79 @@
 
 		var store = new Store();
 
+
+
+		function syncToLocalStorage () {
+			COMMON.storeLocalValueFor("cart", "models", JSON.stringify(store.where().map(function (record) {
+				return record.toJSON();
+			})));
+		}
+		store.on("reset", syncToLocalStorage);
+		store.on("change", syncToLocalStorage);
+		store.on("update", syncToLocalStorage);
+		function recoverFromLocalStorage () {
+			var records = COMMON.getLocalValueFor("cart", "models");
+			if (records) {
+				try {
+					JSON.parse(records).forEach(function (record) {
+						store.add(record);
+					});
+				} catch (err) {
+					console.error("Error recovering cart from local storage");
+				}
+			}
+		}
+		recoverFromLocalStorage();
+
+
+		store.getSummary = function (options) {
+
+			options = options || {};
+			options.tip = options.tip || 0;
+
+			var amount = 0;
+			store.where().forEach(function (record) {
+				amount += parseInt(record.get("price")) * parseInt(record.get("quantity"));
+			});
+
+			var events = context.appContext.get('stores').events;
+			var eventToday = events.modelRecords(events.getToday()).pop();
+
+			var summary = {
+				"amount": amount,
+				"format.amount": COMMON.API.NUMERAL(amount/100).format('$0.00'),
+				"tax": parseInt(eventToday.get("consumerGroup.orderTax")) || 0,
+				"taxAmount": 0,
+				"format.tax": "0%",
+				"format.taxAmount": "$0.00",
+				"goodybagFee": parseInt(eventToday.get("goodybagFee")),
+				"format.goodybagFee": eventToday.get("format.goodybagFee"),
+				"total": 0,
+				"format.total": "$0.00"
+			};
+
+			if (
+				summary.amount &&
+				summary.tax
+			) {
+				summary["taxAmount"] = summary.amount * summary.tax / 100;
+				summary["format.tax"] = summary.tax + "%";
+				summary["format.taxAmount"] = COMMON.API.NUMERAL(summary["taxAmount"] / 100).format('$0.00');
+			}
+
+			if (summary.amount) {
+				summary.total =
+					summary.amount
+					+ summary.taxAmount
+					+ summary.goodybagFee
+					+ parseInt(options.tip);
+				summary["format.total"] = COMMON.API.NUMERAL(summary.total / 100).format('$0.00');
+			}
+
+			return summary;
+		}
+
+
 		store.modelRecords = function (records) {
 
 			var Model = context.appContext.get('stores').items.Model;
@@ -58216,7 +58556,7 @@
 					return store._byId[records[i].get("id")].__model;
 				}
 				var fields = {};
-				store.Model.getFields().forEach(function (field) {
+				Model.getFields().forEach(function (field) {
 					if (!records[i].has(field)) return;
 					fields[field] = records[i].get(field);
 				});
@@ -58244,7 +58584,7 @@
 				if (self.get(cartItemId)) {
 					return COMMON.API.Q.resolve(self.get(cartItemId));
 				}
-				return __webpack_require__(242)['for']({
+				return __webpack_require__(245)['for']({
 					appContext: context.appContext,
 					ids: [
 						itemId
@@ -58264,6 +58604,7 @@
 
 			return ensureItem().then(function (item) {
 				item.set("quantity", item.get("quantity") + 1);
+				store.emit("change", item);
 			});
 		}
 
@@ -58280,11 +58621,7 @@
 
 				return models.map(function (model) {
 
-					return model.getAttributes({
-						props: true,
-						session: true,
-						derived: true
-					});
+					return model.getValues();
 				});
 			});
 		}
@@ -58292,6 +58629,9 @@
 		store.resetToSerializedModels = function (models) {
 
 			return COMMON.API.Q.fcall(function () {
+
+	console.log("MODELS", models);
+
 
 				models.forEach(function (model) {
 					var record = {};
@@ -58310,7 +58650,7 @@
 
 
 /***/ },
-/* 248 */
+/* 251 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
@@ -58334,6 +58674,26 @@
 					id: record.id
 				});
 			});
+		},
+
+		deleteForId: function (id) {
+			var self = this;
+			return COMMON.API.Q.denodeify(function (callback) {
+				return $.ajax({
+					method: "DELETE",
+					url: ENDPOINT + "/" + id
+				})
+				.done(function (response) {
+					return callback(null);
+				})
+				.fail(function(err) {
+
+	// TODO: Ask user to submit again.
+	console.log("error!", err.stack);
+
+					return callback(err);
+				});
+			})();
 		},
 
 		submitOrder: function (id) {
@@ -58407,6 +58767,7 @@
 
 		// @see http://ampersandjs.com/docs#ampersand-state
 		var Model = store.Model = COMMON.API.AMPERSAND_STATE.extend({
+			name: "orders",
 			props: {
 				id: "string",
 				orderHashId: "string",
@@ -58429,7 +58790,7 @@
 					],
 		            fn: function () {
 		            	if (!this.event) return "";
-		            	return this.event["consumerGroup.contact"];
+		            	return JSON.parse(this.event)["consumerGroup.contact"];
 		            }
 		    	},
 		    	"event.consumerGroup.pickupLocation": {
@@ -58438,7 +58799,7 @@
 					],
 		            fn: function () {
 		            	if (!this.event) return "";
-		            	return this.event["consumerGroup.pickupLocation"];
+		            	return JSON.parse(this.event)["consumerGroup.pickupLocation"];
 		            }
 		    	},
 		    	"number": {
@@ -58537,8 +58898,13 @@
 						if (!order) {
 							return deferred.resolve(store);
 						}
-						return context.appContext.get('stores').cart.resetToSerializedModels(order.get("items")).then(function () {
-							return deferred.resolve(store);
+	//					return context.appContext.get('stores').events.loadForId(
+	//						JSON.parse(order.get("event")).id
+	//					).then(function () {
+						return context.appContext.get('stores').cart.resetToSerializedModels(
+							JSON.parse(order.get("items"))
+						).then(function () {
+							return deferred.resolve(order);
 						}).fail(deferred.reject);
 					}
 				});
@@ -58547,9 +58913,6 @@
 		}
 
 		store.getActiveOrder = function () {
-			if (!context.appContext.context) {
-				throw new Error("No active order because there is no active context!");
-			}
 			var record = store.findWhere({
 				orderHashId: context.appContext.get('context').id
 			});
@@ -58608,18 +58971,16 @@
 
 								order.set("deliveryStartTime", today.get("deliveryStartTime"));
 								order.set("pickupEndTime", today.get("pickupEndTime"));
-								order.set("event", today.getAttributes({
-									props: true,
-									session: true,
-									derived: true
-								}));
+								order.set("event", today.getValues());
 
 								// TODO: Send order to server and redirect to receipt using order ID hash.
 
 								return store.submitOrder(order.get("id")).then(function (orderHashId) {
 
+									context.appContext.get('stores').cart.reset();
+
 									return context.appContext.redirectTo(
-										"order-" + orderHashId,
+										"order-" + orderHashId + "/placed",
 										"Order_Placed"
 									);
 								});
@@ -58646,7 +59007,7 @@
 
 
 /***/ },
-/* 249 */
+/* 252 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
@@ -58680,6 +59041,7 @@
 
 		// @see http://ampersandjs.com/docs#ampersand-state
 		var Model = COMMON.API.AMPERSAND_STATE.extend({
+			name: "order-status",
 			props: {
 				id: "string",
 				orderHashId: "string",
@@ -58731,6 +59093,7 @@
 					});
 
 					if (order) {
+	console.log("set status info of order", order);					
 				    	order.set("statusInfo", status);
 					}
 
@@ -58742,6 +59105,8 @@
 		}
 
 		store.setStatusForOrderHashId = function (orderHashId, statusId) {
+
+	console.log("orderHashId, statusId", orderHashId, statusId);
 
 			var self = this;
 			return COMMON.API.Q.denodeify(function (callback) {
@@ -58787,7 +59152,7 @@
 
 
 /***/ },
-/* 250 */
+/* 253 */
 /***/ function(module, exports, __webpack_require__, __webpack_module_template_argument_0__) {
 
 	/** @jsx React.DOM */
@@ -58805,7 +59170,7 @@
 
 
 /***/ },
-/* 251 */
+/* 254 */
 /***/ function(module, exports, __webpack_require__, __webpack_module_template_argument_0__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
