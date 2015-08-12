@@ -16647,8 +16647,6 @@
 				);
 			}
 
-	console.log("Context.order", Context.order);
-
 			return (
 	        	React.createElement("div", {className: "ui grid"}, 
 
@@ -17718,16 +17716,10 @@
 	          self.props.selectedDay &&
 	          self.props.selectedConsumerGroup
 	        ) {
-	console.log("FILTER", {
-	            day_id: self.props.selectedDay,
-	            consumer_group_id: self.props.selectedConsumerGroup
-	          });
-
 	          eventRecords = self.modelRecordsWithStore(events, events.where({
 	            day_id: self.props.selectedDay,
 	            consumer_group_id: (""+self.props.selectedConsumerGroup)
 	          }));
-	console.log("eventRecords", eventRecords);
 	        }
 
 	        var selectedEvent = null;
@@ -17788,7 +17780,6 @@
 
 
 	    afterRender: function (Context, element) {
-	        var self = this;
 
 	        Context.ensureForNodes(
 	            $('.button[data-link]', element),
@@ -17797,18 +17788,10 @@
 
 	                if ($(this).attr("data-link") === "action:set-status") {
 
-	                    var status = $(this).attr("data-value");
-
-	                    if (status === "delete") {
-	                        Context.appContext.get('stores').orders.deleteForId(
-	                            $(this).attr("data-id")
-	                        );
-	                    } else {
-	                        Context.appContext.get('stores').orderStatus.setStatusForOrderHashId(
-	                            $(this).attr("data-id"),
-	                            status
-	                        );
-	                    }
+	                    Context.appContext.get('stores').orderStatus.setStatusForOrderHashId(
+	                        $(this).attr("data-id"),
+	                        $(this).attr("data-value")
+	                    );
 	                }
 	            }
 	        );
@@ -17849,9 +17832,6 @@
 	                    var Actions = null;
 
 	                    if (item.get("status.id") !== "delivered") {
-
-	console.log("item", item);
-
 	                        var key = item.get('id') + "-actions";
 	                        Actions = (
 	                            React.createElement("tr", {key: key}, 
@@ -17863,10 +17843,6 @@
 
 	                                    React.createElement("button", {"data-link": "action:set-status", "data-value": "delivered", "data-id": item.get('orderHashId'), className: "ui primary button"}, 
 	                                        "Delivered"
-	                                    ), 
-
-	                                    React.createElement("button", {"data-link": "action:set-status", "data-value": "delete", "data-id": item.get('id'), className: "ui primary button"}, 
-	                                        "Delete"
 	                                    )
 
 	                                )
@@ -18021,8 +17997,6 @@
 	              React.createElement("tbody", null, 
 
 	                Context.orders.map(function(item) {
-
-	console.log("ORDER ROW", item, item.get('orderHashId'));
 
 	                    var Row = (
 	                        React.createElement("tr", {key: item.get('id')}, 
@@ -44437,6 +44411,7 @@
 					if (
 						context.dbfilter
 					) {
+	/*
 						if (context.dbfilter.consumer_group_id) {
 							all.push(Q.fcall(function () {
 								return appContext.get('stores').consumerGroups.loadForId(
@@ -44444,6 +44419,7 @@
 								);
 							}));
 						}
+	*/					
 						if (context.dbfilter.email) {
 							all.push(Q.fcall(function () {
 								return appContext.get('stores').consumerGroupSubscriptions.loadForEmail(
@@ -47718,9 +47694,6 @@
 		var State = function (values) {
 			this._definition = definition;
 			this.values = values;
-
-	console.log("SET VALUES FOR", definition.name, values);
-
 		}
 		State.prototype = Object.create(EVENTS.prototype);
 		
@@ -58676,26 +58649,6 @@
 			});
 		},
 
-		deleteForId: function (id) {
-			var self = this;
-			return COMMON.API.Q.denodeify(function (callback) {
-				return $.ajax({
-					method: "DELETE",
-					url: ENDPOINT + "/" + id
-				})
-				.done(function (response) {
-					return callback(null);
-				})
-				.fail(function(err) {
-
-	// TODO: Ask user to submit again.
-	console.log("error!", err.stack);
-
-					return callback(err);
-				});
-			})();
-		},
-
 		submitOrder: function (id) {
 			var self = this;
 			return COMMON.API.Q.denodeify(function (callback) {
@@ -59093,7 +59046,6 @@
 					});
 
 					if (order) {
-	console.log("set status info of order", order);					
 				    	order.set("statusInfo", status);
 					}
 
@@ -59105,8 +59057,6 @@
 		}
 
 		store.setStatusForOrderHashId = function (orderHashId, statusId) {
-
-	console.log("orderHashId, statusId", orderHashId, statusId);
 
 			var self = this;
 			return COMMON.API.Q.denodeify(function (callback) {
