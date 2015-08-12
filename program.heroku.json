@@ -30,10 +30,10 @@
                 }
             },
             "jobAppContext[APP_DOMAIN='lunchroom.goodybag.com']": {
-                "windowOrigin": "http://lunchroom.goodybag.com/"
+                "windowOrigin": "http://lunchroom.goodybag.com"
             },
             "jobAppContext[APP_DOMAIN='staging.lunchroom.goodybag.com']": {
-                "windowOrigin": "http://staging.lunchroom.goodybag.com/"
+                "windowOrigin": "http://staging.lunchroom.goodybag.com"
             },
             "firenode": {
 				"config": {
