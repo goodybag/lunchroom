@@ -9,8 +9,8 @@
                 },
                 {
                     "type": "js",
-                    "uriPath": "/lunchroom-landing~0/resources/dist~app-3fd0761.js",
-                    "fsPath": "{{__DIRNAME__}}/resources/dist~app-3fd0761.js"
+                    "uriPath": "/lunchroom-landing~0/resources/dist~app-03c3276.js",
+                    "fsPath": "{{__DIRNAME__}}/resources/dist~app-03c3276.js"
                 }
             ],
             "componentsDescriptorPath": "{{__DIRNAME__}}/components/Landing.json",
