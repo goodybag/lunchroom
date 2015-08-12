@@ -44411,15 +44411,17 @@
 					if (
 						context.dbfilter
 					) {
-	/*
-						if (context.dbfilter.consumer_group_id) {
-							all.push(Q.fcall(function () {
-								return appContext.get('stores').consumerGroups.loadForId(
-									context.dbfilter.consumer_group_id
-								);
-							}));
+
+						if (context.type === "lunchroom") {
+							if (context.dbfilter.consumer_group_id) {
+								all.push(Q.fcall(function () {
+									return appContext.get('stores').consumerGroups.loadForId(
+										context.dbfilter.consumer_group_id
+									);
+								}));
+							}
 						}
-	*/					
+
 						if (context.dbfilter.email) {
 							all.push(Q.fcall(function () {
 								return appContext.get('stores').consumerGroupSubscriptions.loadForEmail(
