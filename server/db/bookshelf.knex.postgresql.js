@@ -13,7 +13,7 @@ var bookshelf = null;
 
 exports.init = function (config, options) {
 
-	config.debug = true;
+	config.debug = (!!config.connection.debug);
 	config.client = "pg";
 
 
@@ -278,15 +278,29 @@ exports.init = function (config, options) {
 		});
 	}
 
+	function runDevQueries () {
+
+		return Q.resolve();
+
+		return knex.raw("SELECT * FROM orders").then(function(resp) {
+
+console.log("RESP", resp);
+
+		});
+
+	}
+
 	return ensureSchemaAndData().then(function () {
 
 		LIVE_NOTIFY.attachToDatabase(config.connection);
 
+		return runDevQueries().then(function () {
 
-		return {
-			knex: knex
-//			database: config.connection.database
-		};
+			return {
+				knex: knex
+	//			database: config.connection.database
+			};
+		});
 	});
 }
 

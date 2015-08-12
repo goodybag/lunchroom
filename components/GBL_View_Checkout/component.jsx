@@ -36,6 +36,8 @@ exports['for'] = function (module, Context) {
 
 	        	order: order,
 
+	        	summary: cart.getSummary(),
+
 	        	saveForm: function (formSelector) {
 
 	        		var values = {};

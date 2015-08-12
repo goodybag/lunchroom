@@ -40,7 +40,7 @@ module.exports = COMPONENT.create({
 
         var externalVendorAdminLink = "";
         if (Context.activeVendor) {
-            externalVendorAdminLink = window.location.origin + "/vendor-" + Context.activeVendor.get("adminAccessToken") + "/harness.htm#Admin_Restaurant";
+            externalVendorAdminLink = window.location.origin + "/vendor-" + Context.activeVendor.get("adminAccessToken") + "#Admin_Restaurant";
         }
 
         var MasterAdmin = "";
@@ -112,7 +112,14 @@ module.exports = COMPONENT.create({
                     );
 
                     var key = item.get('id') + "-items";
-                    var items = item.get("items") || [];
+                    var items = item.get("items");
+
+                    if (items) {
+                        items = JSON.parse(items);
+                    } else {
+                        items = [];
+                    }
+
                     var Items = (
                         <tr key={key}>
                             <td colSpan="5">
@@ -121,9 +128,9 @@ module.exports = COMPONENT.create({
                                     {items.map(function (item) {
                                         return (
                                             <tr>
-                                              <td>{item.get('title')}</td>
-                                              <td>{item.get('options')}</td>
-                                              <td>{item.get('quantity')}</td>
+                                              <td>{item['title']}</td>
+                                              <td>{item['options']}</td>
+                                              <td>{item['quantity']}</td>
                                             </tr>
                                         );
                                     })}

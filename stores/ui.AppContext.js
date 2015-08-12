@@ -6,23 +6,19 @@ var MOMENT = require("moment");
 var Q = require("q");
 var HEAD = head;
 
+var Model = require("./ui.AppContext.model");
+
+
 exports['for'] = function (overrides) {
 
-	// TODO: Init from session.
 	var config = {
 		sessionToken: JSON.parse(decodeURIComponent($('head > meta[name="session.token"]').attr("value"))),
 		context: JSON.parse(decodeURIComponent($('head > meta[name="app.context"]').attr("value"))),
-		initialized: false,
-		ready: false,
-	    selectedView: "",
-	    // When navigating away from from the 'lockedView' we will do a REDIRECT instead of a PUSH-STATE
-	    lockedView: "",
 	    selectedDay: MOMENT().add(0, 'days').format("ddd"),
-	    todayId: MOMENT().format("YYYY-MM-DD"),
-	    today: MOMENT().format("ddd")
+	    windowOrigin: window.location.origin || (window.location.protocol + "//" + window.location.host)
 	};
 
-	UNDERSCORE.extend(config, overrides || {});
+	COMMON.API.UNDERSCORE.extend(config, overrides || {});
 
 	if (config.context.overrideSkinUri) {
 		HEAD.load([
@@ -30,7 +26,7 @@ exports['for'] = function (overrides) {
 		]);
 	}
 
-	var appContext = new AppContext(config);
+	var appContext = Model.makeContextForClient(config);
 
 
 	COMMON.init(appContext.get('sessionToken'), appContext.get('context'));
@@ -110,7 +106,7 @@ exports['for'] = function (overrides) {
 
 				// NOTE: This will not work if only the Hash changes.
 				//       In those cases you need to redirect to a new URL.
-				window.location.href = window.location.origin + view;
+				window.location.href = appContext.get("windowOrigin") + view;
 			} else {
 //console.log("SET VIEW", view);
 
@@ -141,7 +137,7 @@ exports['for'] = function (overrides) {
 
 				// NOTE: This will not work if only the Hash changes.
 				//       In those cases you need to redirect to a new URL.
-				window.location.href = window.location.origin + PATHNAME + "#" + appContext.get('selectedView');
+				window.location.href = appContext.get("windowOrigin") + PATHNAME + "#" + appContext.get('selectedView');
 			} else {
 
 //console.log("SET PAGE1", PATHNAME + "#" + appContext.selectedView);
@@ -171,7 +167,7 @@ exports['for'] = function (overrides) {
 	function initLiveNotify () {
 
 		var client = require("socket.io/node_modules/socket.io-client/lib/index.js");
-		var socket = client.connect(window.location.origin);
+		var socket = client.connect(appContext.get("windowOrigin"));
 
 		// TODO: Handle re-connects by re-sending init.
 
@@ -194,7 +190,11 @@ exports['for'] = function (overrides) {
 
 		function finalizeInit () {
 
-			initLiveNotify();
+			var context = appContext.get('context');
+
+			if (context.initLiveNotify) {
+				initLiveNotify();
+			}
 
 			appContext.set('ready', true);
 		}
@@ -218,17 +218,22 @@ exports['for'] = function (overrides) {
 		// data to init the UI.
 		if (context.type === "order") {
 
-			appContext.get('stores').orders.loadOrderByHashId(context.id).then(function () {
+			appContext.get('stores').orders.loadOrderByHashId(context.id).then(function (order) {
 
-				if (!(
-					appContext.get('selectedView') === "Order_Placed" ||
-					appContext.get('selectedView') === "Order_Arrived" ||
-					appContext.get('selectedView') === "Receipt"
-				)) {
-					appContext.set('selectedView', "Receipt");
-				}
+				context.dbfilter.event_id = JSON.parse(order.get("event")).id
 
-				finalizeInit();
+				return appContext.get('stores').events.loadForId(context.dbfilter.event_id).then(function () {
+
+					if (!(
+						appContext.get('selectedView') === "Order_Placed" ||
+						appContext.get('selectedView') === "Order_Arrived" ||
+						appContext.get('selectedView') === "Receipt"
+					)) {
+						appContext.set('selectedView', "Receipt");
+					}
+
+					finalizeInit();
+				});
 
 			}).fail(function (err) {
 				console.error("Error loading order!", err.stack);
@@ -285,12 +290,13 @@ exports['for'] = function (overrides) {
 				context.vendor_id = vendor_id;
 
 				return appContext.get('stores').orders.loadForVendorId(context.vendor_id).then(function () {
-
+/*
 					if (!(
 						appContext.get('selectedView') === "Admin_Restaurant"
 					)) {
 						appContext.set('selectedView', "Admin_Restaurant");
 					}
+*/
 
 					finalizeInit();
 				});
@@ -337,72 +343,4 @@ exports['for'] = function (overrides) {
 
 	return appContext;
 }
-
-
-// @see http://ampersandjs.com/docs#ampersand-state
-var AppContext = COMMON.API.AMPERSAND_STATE.extend({
-	props: {
-		sessionToken: "string",
-		context: "object",
-		initialized: "boolean",
-		ready: "boolean",
-        skin: "object",
-        stores: "object",
-        today: "string",
-        todayId: "string",
-        lockedView: "string"
-	},
-    session: {
-        selectedView: "string",
-        selectedDay: "string"
-    },
-    derived: {
-        // The skin (config & components) for the active view.
-    	view: {
-			deps: [
-				"skin",
-				"selectedView"
-			],
-            fn: function () {
-
-				var view = this.skin.views[this.selectedView] || {};
-
-				// Init minimal view if skin does not set anything specific.
-				if (!view.components) {
-					view.components = {};
-				}
-				if (!view.components["Header"]) {
-					view.components["Header"] = "";
-				}
-				if (!view.components["Menu"]) {
-					view.components["Menu"] = "";
-				}
-				if (!view.components["Footer"]) {
-					view.components["Footer"] = "";
-				}
-
-				return view;
-            }
-    	},
-	    views: {
-			deps: [
-				"skin"
-			],
-            fn: function () {
-            	var views = {};
-            	for (var viewAlias in this.skin.views) {
-            		views[viewAlias] = {
-            			alias: viewAlias,
-            			label: viewAlias.replace(/_/g, " > "),
-            			group: this.skin.views[viewAlias].group || null,
-            			container: this.skin.views[viewAlias].container || null,
-            			component: this.skin.views[viewAlias].component,
-            			config: this.skin.views[viewAlias].config
-            		};
-            	}
-                return views;
-            }
-	    }
-    }
-});
 

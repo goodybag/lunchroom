@@ -9,6 +9,15 @@ exports.seeds = {
       address: "7901 Cameron Rd<br/>Bldg 2, Ste. 300<br/>Austin, TX 78754",
       pickupLocation: "3rd floor Game Room!",
       orderTax: "5"
+    },
+    "2": {
+      "id": 2,
+      "title": "Test: Hungry Planet",
+      "alias": "test-hp",
+      contact: "Big belly",
+      address: "Somewhere<br/>accross the<br/>Rainbow",
+      pickupLocation: "In the clouds",
+      orderTax: "15"
     }
   }
 };

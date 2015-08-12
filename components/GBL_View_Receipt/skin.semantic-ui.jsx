@@ -111,27 +111,27 @@ require("./component.jsx")['for'](module, {
 					    <tr className="GBL_Skin_lessPadding">
 					      <td></td>
 					      <td className="right aligned" colSpan="2">Subtotal</td>
-					      <td>$8.80</td>
+					      <td>{Context.summary["format.amount"]}</td>
 					    </tr>
 					    <tr className="GBL_Skin_invisibleRowBorder GBL_Skin_lessPadding">
 					      <td></td>
-					      <td className="right aligned" colSpan="2">Tax ({Context.eventToday.get("consumerGroup.orderTax")}%)</td>
-					      <td>$0.73</td>
+					      <td className="right aligned" colSpan="2">Tax ({Context.summary["format.tax"]})</td>
+					      <td>{Context.summary["format.taxAmount"]}</td>
 					    </tr>
 					    <tr className="GBL_Skin_invisibleRowBorder GBL_Skin_lessPadding">
 					      <td></td>
 					      <td className="right aligned" colSpan="2">Goodybag Fee</td>
-					      <td>${Context.eventToday.get("format.goodybagFee")}</td>
+					      <td>{Context.summary["format.goodybagFee"]}</td>
 					    </tr>
 					    <tr className="GBL_Skin_invisibleRowBorder GBL_Skin_lessPadding">
 					      <td></td>
 					      <td className="right aligned" colSpan="2">Tip</td>
-					      <td>$0.80</td>
+					      <td>{Context.summary["format.tip"]}</td>
 					    </tr>
 					    <tr className="GBL_Skin_invisibleRowBorder">
 					      <td></td>
 					      <td className="right aligned" colSpan="2">Total</td>
-					      <td>$10.33</td>
+					      <td>{Context.summary["format.total"]}</td>
 					    </tr>
 					  </tbody>
 					</table>

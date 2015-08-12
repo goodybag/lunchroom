@@ -40,6 +40,8 @@ exports['for'] = function (module, Context) {
 
 				eventToday: self.modelRecordsWithStore(events, events.getToday()).pop(),
 
+	        	summary: cart.getSummary(),
+
 	        	order: order,
 
 	        	items: items

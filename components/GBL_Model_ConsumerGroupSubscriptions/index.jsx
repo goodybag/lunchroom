@@ -15,6 +15,7 @@ module.exports = COMPONENT.create({
               <thead>
                 <tr>
                     <th>Time</th>
+                    <th>Company</th>
                     <th>Subscribed</th>
                     <th>Confirmed</th>
                 </tr>
@@ -26,6 +27,7 @@ module.exports = COMPONENT.create({
                     var Row = (
                         <tr key={item.get('id')}>
                           <td>{item.get("subscribe_time")}</td>
+                          <td>{item.get("consumerGroup.title")}</td>
                           <td>{item.get("subscribeEmail")}</td>
                           <td>{item.get("confirmedEmail")}</td>
                         </tr>

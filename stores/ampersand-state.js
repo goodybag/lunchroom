@@ -37,19 +37,27 @@
     }
 */
 
-const EVENTS = require("eventemitter2");
+var EVENTS = require("eventemitter2");
+// Below only works on server while above only works in browser.
+if (EVENTS.EventEmitter2) EVENTS = EVENTS.EventEmitter2;
 
 
 exports.extend = function (definition) {
 
 
 	var State = function (values) {
+		this._definition = definition;
 		this.values = values;
 	}
 	State.prototype = Object.create(EVENTS.prototype);
 	
 	State.prototype.getValues = function () {
-		return this.values;
+		var self = this;
+		var values = {};
+		State.getFields().forEach(function (name) {
+			values[name] = self.get(name);
+		});
+		return values;
 	}
 
 	State.prototype.get = function (name) {

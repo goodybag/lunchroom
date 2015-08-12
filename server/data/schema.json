@@ -206,6 +206,14 @@
 					"constraints": {
 						"required": true
 					}
+				},
+				{
+					"name": "delivered",
+					"type": "boolean",
+					"default": false,
+					"constraints": {
+						"required": true
+					}
 				}
 			]
 		},

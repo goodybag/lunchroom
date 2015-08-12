@@ -54,6 +54,7 @@ exports['for'] = function (context) {
 
 	// @see http://ampersandjs.com/docs#ampersand-state
 	var Model = store.Model = COMMON.API.AMPERSAND_STATE.extend({
+		name: "consumer-group-subscriptions",
 		props: {
 			id: "string",
 	        token: "string",
@@ -62,7 +63,9 @@ exports['for'] = function (context) {
 	        subscribe_time: "string",
 	        confirmed_time: "string",
 	        subscribeEmail: "string",
-	        confirmedEmail: "string"
+	        confirmedEmail: "string",
+
+	        "consumerGroup.title": "string"
 		}
 	});
 
@@ -121,7 +124,13 @@ console.log("error!", err.stack);
 	}
 
 	store.modelRecords = function (records) {
-		return records.map(function (record, i) {
+		return COMMON.resolveForeignKeys(store, records, {
+			"consumer_group_id": {
+				store: require("./ui.ConsumerGroups"),
+				model: context.appContext.get('stores').consumerGroups.Model,
+				localFieldPrefix: "consumerGroup"
+			}
+		}).map(function (record, i) {
 			// Store model on backbone row so we can re-use it on subsequent calls.
 			// NOTE: We purposfully store the model using `records[i]` instead of `record`
 			//       as `record` 

@@ -32,6 +32,32 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
 
                 return API["mandrill-send"]["$io.pinf.service.mandrill/send/0"].sendMessage(message);
 
+            } else
+            if (templateId === "Menu") {
+
+                API.ASSERT.equal(Array.isArray(message.to), true);
+
+                message = API.DEEPMERGE({
+                    "subject": "Menu for today",
+                    "text": [
+                        "Hi there",
+                        "",
+                        "We have some goodies for you today!",
+                        "",
+                        "See the menu: " + message.data.menu.url,
+                        "",
+                        "Here is a taste:",
+                        "",
+                        message.data.items.map(function (item) {
+                            return "  * " + item.title;
+                        }).join("\n"),
+                        "",
+                        "See you soon!"
+                    ].join("\n")
+                }, message || {});
+
+                return API["mandrill-send"]["$io.pinf.service.mandrill/send/0"].sendMessage(message);
+
             } else {
                 return API.Q.reject(new Error("Template with id '" + templateId + "' not declared!"));
             }

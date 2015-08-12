@@ -130,142 +130,8 @@ exports['for'] = function (context) {
 	var store = new Store();
 
 
-//	store.fetch();
+	store.Model = require("./ui.Events.model").forContext(context);
 
-
-	// @see http://ampersandjs.com/docs#ampersand-state
-	var Model = store.Model = COMMON.API.AMPERSAND_STATE.extend({
-		props: {
-			id: "string",
-	        day_id: "string",
-	        "orderByTime": "string",
-	        "deliveryStartTime": "string",
-	        "pickupEndTime": "string",
-	        "consumer_group_id": "string",
-	        "goodybagFee": "string",
-	        "tip": "string",
-	        "token": "string",
-	        "menuReady": "boolean",
-	        "notificationsSent": "boolean",
-
-	        // TODO: Add these dynamically using foreign model.
-	        "consumerGroup.title": "string",
-	        "consumerGroup.contact": "string",
-	        "consumerGroup.address": "string",
-	        "consumerGroup.pickupLocation": "string",
-	        "consumerGroup.orderTax": "string"
-	    },
-	    derived: {
-		    "day.format.ddd": {
-				deps: [
-					"day_id"
-				],
-	            fn: function () {
-	            	return COMMON.API.MOMENT(this.day_id, "YYYY-MM-DD").format("ddd");
-	            }
-		    },
-		    "day.format.MMM": {
-				deps: [
-					"day_id"
-				],
-	            fn: function () {
-	            	return COMMON.API.MOMENT(this.day_id, "YYYY-MM-DD").format("MMM");
-	            }
-		    },
-		    "day.format.D": {
-				deps: [
-					"day_id"
-				],
-	            fn: function () {
-	            	return COMMON.API.MOMENT(this.day_id, "YYYY-MM-DD").format("D");
-	            }
-		    },
-		    "day.format.dddd-type": {
-				deps: [
-					"day_id"
-				],
-	            fn: function () {
-	            	var str = COMMON.API.MOMENT(this.day_id, "YYYY-MM-DD").format("dd");
-	            	if (str === "Sa" || str === "Su") {
-	            		return "Weekend"
-	            	} else {
-	            		return "Weekday"
-	            	}
-	            }
-		    },
-		    "ordersLocked": {
-				deps: [
-					"orderByTime"
-				],
-				cache: false,
-	            fn: function () {
-	            	return COMMON.API.MOMENT().isAfter(this.orderByTime);
-	            }
-		    },
-		    "canOrder": {
-				deps: [
-					"orderByTime"
-				],
-				cache: false,
-	            fn: function () {
-	            	var orderByTime = COMMON.API.MOMENT(this.orderByTime);
-	            	if (!orderByTime.isSame(COMMON.API.MOMENT(), 'day')) {
-	            		// Not today
-	            		return false;
-	            	}
-	            	if (orderByTime.isBefore(COMMON.API.MOMENT())) {
-	            		// After deadline
-	            		return false;
-	            	}
-	            	// TODO: Monitor quantities.
-	            	return true;
-	            }
-		    },
-		    "format.deliveryDate": COMMON.makeFormatter("deliveryDate"),
-		    "format.deliveryTime": COMMON.makeFormatter("deliveryTime"),
-		    "format.orderTimer": {
-				deps: [
-					"orderByTime"
-				],
-				cache: false,
-	            fn: function () {
-	            	var orderByTime = COMMON.API.MOMENT(this.orderByTime);
-	            	if (orderByTime.isBefore(COMMON.API.MOMENT())) {
-	            		// After deadline
-	            		return false;
-	            	}
-	            	return COMMON.API.MOMENT().to(orderByTime, true)
-	            		.replace(/minutes/, "min");
-	            }
-		    },
-		    "format.goodybagFee": {
-		    	deps: [
-					"goodybagFee"
-				],
-	            fn: function () {
-	            	return COMMON.API.NUMERAL(this.goodybagFee/100).format('0.00');
-	            }
-		    },
-		    "format.menuReady": {
-		    	deps: [
-					"menuReady"
-				],
-				cache: false,
-	            fn: function () {
-	            	return (this.menuReady ? "Yes" : "No");
-	            }
-		    },
-		    "format.notificationsSent": {
-		    	deps: [
-					"notificationsSent"
-				],
-				cache: false,
-	            fn: function () {
-	            	return (this.notificationsSent ? "Yes" : "No");
-	            }
-		    }
-	    }
-	});
 
 	store.getToday = function () {
 		var today = store.get(context.appContext.get('context').dbfilter.event_id);
@@ -326,7 +192,7 @@ exports['for'] = function (context) {
 				if (!records[i].has(field)) return;
 				fields[field] = records[i].get(field);
 			});
-			return store._byId[records[i].get("id")].__model = new Model(fields);
+			return store._byId[records[i].get("id")].__model = new store.Model(fields);
 		});
 	}
 
@@ -359,7 +225,7 @@ exports['for'] = function (context) {
 					if (!records[i].has(field)) return;
 					fields[field] = records[i].get(field);
 				});
-				return store._byId[records[i].get("id")].__model = new Model(fields);
+				return store._byId[records[i].get("id")].__model = new store.Model(fields);
 			})[0];
 		});
 	}

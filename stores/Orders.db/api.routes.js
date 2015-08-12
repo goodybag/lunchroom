@@ -19,5 +19,9 @@ exports.map = {
         '/:id': CONTROLLER.read(),
         '/:id/:related': CONTROLLER.readRelated(),
         '/:id/links/:relation': CONTROLLER.readRelation()
+    },
+    delete: {
+        '/:id': CONTROLLER.destroy(),
+        '/:id/links/:relation': CONTROLLER.destroyRelation()
     }
 };

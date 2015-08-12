@@ -75,7 +75,9 @@
           "ASSERT": "assert",
           "Q": "q",
           "REQUEST": "request",
+          "vendor-router": "./stores/Vendors.db/firenode-router.js",
           "event-router": "./stores/Events.db/firenode-router.js",
+          "order-router": "./stores/Orders.db/firenode-router.js",
           "consumer-group-router": "./stores/ConsumerGroups.db/firenode-router.js",
           "consumer-group-subscription-router": "./stores/ConsumerGroupSubscriptions.db/firenode-router.js"
         }

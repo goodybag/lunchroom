@@ -2,19 +2,9 @@
 
 // The API for the data stores running in the UI.
 // Running all API access through here allows for easy porting later.
-var API = exports.API = {
-	Q: require("q"),
-	BACKBONE: require('backbone'),
-	UNDERSCORE: require('underscore'),
-	AMPERSAND_STATE: require('./ampersand-state'),
-	MOMENT: require("moment"),
-	NUMERAL: require("numeral"),
-	UUID: require("uuid"),
-	JSSHA: require("jssha"),
-	CJSON: require("canonical-json")
-};
-
-var FIRENODE = require("firenode-for-jsonapi/client");
+var API = exports.API = Object.create(require("./ui._common.model").API);
+API.BACKBONE = require('backbone');
+API.FIRENODE = require("firenode-for-jsonapi/client");
 
 
 exports.makeEndpointUrl = function (name) {
@@ -35,9 +25,9 @@ exports.makeEndpointUrl = function (name) {
 
 exports.init = function (sessionToken, context) {
 
-//	var client = new FIRENODE.Client(sessionToken, context);
+//	var client = new API.FIRENODE.Client(sessionToken, context);
 
-//console.log("FIRENODE.client", client);
+//console.log("API.FIRENODE.client", client);
 
 }
 
@@ -105,6 +95,8 @@ exports.resolveForeignKeys = function (store, records, keys, wait, options) {
 						return;
 					}
 					try {
+						// Assign all properties from the model.
+						// TODO: Only assign subscribed properties.
 						if (keys[key].model) {
 							var record = foreignStore.get(foreign_key);
 							// NOTE: Sometimes this is not yet available due to 'for' call on
@@ -124,7 +116,10 @@ exports.resolveForeignKeys = function (store, records, keys, wait, options) {
 									records[i].__model.set(keys[key].localFieldPrefix + "." + name, values[name]);
 								});
 							}
-						} else {
+						} else
+						// Assign only one property from the foreign table.
+						// TODO: Deprecate
+						{
 							records[i].__model.set(keys[key].localField, foreignStore.get(foreign_key).get(keys[key].foreignField));
 						}
 					} catch (err) {
@@ -177,4 +172,39 @@ exports.makeFormatter = function (type) {
 
 	throw new Error("Formatter of type '" + type + "' not supported!");
 }
+
+
+
+function initLocalStorage () {
+
+	// Ensure local storage is there and hook it up to a backend if not.
+
+    try {
+        return "localStorage" in window && window.localStorage != null;
+    } catch (e) {
+
+		// TODO: Hook up to backend (via session id) if no local storage supported.
+
+        var data = {},
+            undef;
+        window.localStorage = {
+            setItem     : function(id, val) { return data[id] = String(val); },
+            getItem     : function(id) { return data.hasOwnProperty(id) ? data[id] : undef; },
+            removeItem  : function(id) { return delete data[id]; },
+            clear       : function() { return data = {}; }
+        };
+    }
+}
+
+initLocalStorage();
+
+
+exports.storeLocalValueFor = function (group, name, value) {
+	window.localStorage.setItem(group + "." + name, value);
+}
+
+exports.getLocalValueFor = function (group, name) {
+	return window.localStorage.getItem(group + "." + name) || null;
+}
+
 

@@ -25,6 +25,8 @@ const UGLIFY = require("uglify-js");
 const JOBS = require("./server/jobs");
 const REQUEST = require("request");
 
+const APP_CONTEXT_MODEL = require("./stores/ui.AppContext.model");
+
 
 require('org.pinf.genesis.lib').forModule(require, module, function (API, exports) {
 
@@ -291,10 +293,16 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
 			connection: postgresqlConfig
 		}).then(function (db) {
 
-			return JOBS.for({}).then(function (JOBS) {
+			var contextConfig = API.config["jobAppContext"] || {};
+			contextConfig = API.DEEPMERGE(contextConfig, API.config["jobAppContext[APP_DOMAIN='" + process.env.APP_DOMAIN + "']"] || {});
+
+			return JOBS.for({
+				args: {
+					appContext: APP_CONTEXT_MODEL.makeContextForClient(contextConfig)
+				}
+			}).then(function (JOBS) {
 
 				return JOBS.monitorDatabase(db);
-
 			});
 
 		}).fail(function (err) {
@@ -316,6 +324,8 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
 		var firenode = new FIRENODE.Server(API.config.firenode, {
 			// TODO: Load these dynamically when loading config.
 			instances: {
+				"07-lunchroom/vendor-router/0": API["vendor-router"],
+				"07-lunchroom/order-router/0": API["order-router"],
 				"07-lunchroom/event-router/0": API["event-router"],
 				"07-lunchroom/consumer-group-router/0": API["consumer-group-router"],
 				"07-lunchroom/consumer-group-subscription-router/0": API["consumer-group-subscription-router"]

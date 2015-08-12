@@ -32,6 +32,7 @@ exports['for'] = function (context) {
 
 	// @see http://ampersandjs.com/docs#ampersand-state
 	var Model = COMMON.API.AMPERSAND_STATE.extend({
+		name: "menus",
 		props: {
 			id: "string",
 			event_id: "string",
@@ -40,7 +41,11 @@ exports['for'] = function (context) {
 	        // TODO: Add these dynamically using foreign model.
 	        "item.title": "string",
 	        "item.photo_url": "string",
-	        "item.price": "string"
+	        "item.price": "string",
+	        "item.properties": "string",
+	        "item.format.price": "string",
+	        "item.description": "string",
+	        "item.options": "string"
 	    }
 	});
 
@@ -106,15 +111,6 @@ console.log("error!", err.stack);
 	store.removeAtId = function (id) {
 		var self = this;
 		return COMMON.API.Q.denodeify(function (callback) {
-
-			var payload = {
-				data: {
-					type: "menus",
-					attributes: {
-						id: id
-					}
-				}
-			};
 
 			return $.ajax({
 				method: "DELETE",

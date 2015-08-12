@@ -16,6 +16,10 @@ store.create = function (model, data) {
 		// Generate new hash ID for order on creation.
 		data.attributes.orderHashId = UUID.v4();
 
+		// Let DB create order id
+		delete data.attributes.id;
+
+
 		return ENDPOINTS.Store.bookshelf.create.call(store, model, data).then(function (resp) {
 
 			try {

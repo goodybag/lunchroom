@@ -29,6 +29,7 @@ exports['for'] = function (context) {
 
 	// @see http://ampersandjs.com/docs#ampersand-state
 	var Model = COMMON.API.AMPERSAND_STATE.extend({
+		name: "order-status",
 		props: {
 			id: "string",
 			orderHashId: "string",

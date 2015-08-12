@@ -27,6 +27,79 @@ exports['for'] = function (context) {
 
 	var store = new Store();
 
+
+
+	function syncToLocalStorage () {
+		COMMON.storeLocalValueFor("cart", "models", JSON.stringify(store.where().map(function (record) {
+			return record.toJSON();
+		})));
+	}
+	store.on("reset", syncToLocalStorage);
+	store.on("change", syncToLocalStorage);
+	store.on("update", syncToLocalStorage);
+	function recoverFromLocalStorage () {
+		var records = COMMON.getLocalValueFor("cart", "models");
+		if (records) {
+			try {
+				JSON.parse(records).forEach(function (record) {
+					store.add(record);
+				});
+			} catch (err) {
+				console.error("Error recovering cart from local storage");
+			}
+		}
+	}
+	recoverFromLocalStorage();
+
+
+	store.getSummary = function (options) {
+
+		options = options || {};
+		options.tip = options.tip || 0;
+
+		var amount = 0;
+		store.where().forEach(function (record) {
+			amount += parseInt(record.get("price")) * parseInt(record.get("quantity"));
+		});
+
+		var events = context.appContext.get('stores').events;
+		var eventToday = events.modelRecords(events.getToday()).pop();
+
+		var summary = {
+			"amount": amount,
+			"format.amount": COMMON.API.NUMERAL(amount/100).format('$0.00'),
+			"tax": parseInt(eventToday.get("consumerGroup.orderTax")) || 0,
+			"taxAmount": 0,
+			"format.tax": "0%",
+			"format.taxAmount": "$0.00",
+			"goodybagFee": parseInt(eventToday.get("goodybagFee")),
+			"format.goodybagFee": eventToday.get("format.goodybagFee"),
+			"total": 0,
+			"format.total": "$0.00"
+		};
+
+		if (
+			summary.amount &&
+			summary.tax
+		) {
+			summary["taxAmount"] = summary.amount * summary.tax / 100;
+			summary["format.tax"] = summary.tax + "%";
+			summary["format.taxAmount"] = COMMON.API.NUMERAL(summary["taxAmount"] / 100).format('$0.00');
+		}
+
+		if (summary.amount) {
+			summary.total =
+				summary.amount
+				+ summary.taxAmount
+				+ summary.goodybagFee
+				+ parseInt(options.tip);
+			summary["format.total"] = COMMON.API.NUMERAL(summary.total / 100).format('$0.00');
+		}
+
+		return summary;
+	}
+
+
 	store.modelRecords = function (records) {
 
 		var Model = context.appContext.get('stores').items.Model;
@@ -39,7 +112,7 @@ exports['for'] = function (context) {
 				return store._byId[records[i].get("id")].__model;
 			}
 			var fields = {};
-			store.Model.getFields().forEach(function (field) {
+			Model.getFields().forEach(function (field) {
 				if (!records[i].has(field)) return;
 				fields[field] = records[i].get(field);
 			});
@@ -87,6 +160,7 @@ exports['for'] = function (context) {
 
 		return ensureItem().then(function (item) {
 			item.set("quantity", item.get("quantity") + 1);
+			store.emit("change", item);
 		});
 	}
 
@@ -103,11 +177,7 @@ exports['for'] = function (context) {
 
 			return models.map(function (model) {
 
-				return model.getAttributes({
-					props: true,
-					session: true,
-					derived: true
-				});
+				return model.getValues();
 			});
 		});
 	}
@@ -115,6 +185,9 @@ exports['for'] = function (context) {
 	store.resetToSerializedModels = function (models) {
 
 		return COMMON.API.Q.fcall(function () {
+
+console.log("MODELS", models);
+
 
 			models.forEach(function (model) {
 				var record = {};

@@ -80,20 +80,23 @@ appContext.on("change:ready", function () {
 
 	setTimeout(function () {
 
-		// DEV: Init cart
-		appContext.get('stores').cart.addItem("1");
+		if (appContext.get('selectedView') === 'Checkout') {
 
-		// DEV: Init order form
-		var order = appContext.get('stores').orders.getOrder(appContext.todayId);
-		order.set("form", {
-		 	"info[name]": "Bill Smith",
-		 	"info[email]": "cadorn.test@gmail.com",
-		 	"card[name]": "Bill Smith",
-		 	"card[cvc]": "123",
-		 	"card[number]": "1234 1234 1234 1234",
-		 	"card[expire-month]": "4",
-		 	"card[expire-year]": "2018"
-		});
+			// DEV: Init cart
+			appContext.get('stores').cart.addItem("1");
+
+			// DEV: Init order form
+			var order = appContext.get('stores').orders.getOrder(appContext.todayId);
+			order.set("form", {
+			 	"info[name]": "Bill Smith",
+			 	"info[email]": "cadorn.test@gmail.com",
+			 	"card[name]": "Bill Smith",
+			 	"card[cvc]": "123",
+			 	"card[number]": "1234 1234 1234 1234",
+			 	"card[expire-month]": "4",
+			 	"card[expire-year]": "2018"
+			});
+		}
 
 		$('#form-subscribe input[type="email"]').val("cadorn.test@gmail.com");
 
@@ -104,7 +107,7 @@ appContext.on("change:ready", function () {
 
 appContext.redirectTo = function (contextId, viewId) {
 
-	var url = window.location.origin + '/' + contextId + '/harness.htm#' + viewId;
+	var url = window.location.origin + '/' + contextId + '#' + viewId;
 
 	console.log("Redirect to", url);
 

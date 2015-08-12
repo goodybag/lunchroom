@@ -25,7 +25,8 @@ for (var day=0 ; day<=4 ; day++) {
 exports['for'] = function (context) {
 
 	// @see http://ampersandjs.com/docs#ampersand-state
-	var Model = COMMON.API.AMPERSAND_STATE.extend({
+	var Model = store.Model = COMMON.API.AMPERSAND_STATE.extend({
+		name: "days",
 		props: {
 			id: "string"
 	    },
@@ -67,7 +68,7 @@ exports['for'] = function (context) {
 				if (!records[i].has(field)) return;
 				fields[field] = records[i].get(field);
 			});
-			return store._byId[records[i].get("id")].__model = new Model(fields);
+			return store._byId[records[i].get("id")].__model = new store.Model(fields);
 		});
 	}
 

@@ -48,6 +48,17 @@ module.exports = COMPONENT.create({
         );
 
         Context.ensureForNodes(
+          $('#form-create [data-fieldname="consumer_group_id"]', element),
+          'dropdown()', {
+            onChange: function(value, text) {
+              if (self.props.selectedConsumerGroup === value) return;
+              self.props.selectedConsumerGroup = value;
+              self._trigger_forceUpdate();
+            }
+          }
+        );
+
+        Context.ensureForNodes(
           $('#form-create [data-fieldname="day_id"]', element),
           'pickadate()',
           {
@@ -169,6 +180,12 @@ module.exports = COMPONENT.create({
             elm.dropdown('set selected', self.props.selectedVendor);
           }
         }
+        if (self.props.selectedConsumerGroup) {
+          var elm = $('#form-create [data-fieldname="consumer_group_id"]');
+          if (elm.dropdown('get value') !== self.props.selectedConsumerGroup) {
+            elm.dropdown('set selected', self.props.selectedConsumerGroup);
+          }
+        }
 
 
         function fillEventCreateForm (values) {
@@ -191,7 +208,7 @@ module.exports = COMPONENT.create({
         }
 
         fillEventCreateForm({
-          consumer_group_id: 1,
+//          consumer_group_id: 1,
           orderByTime: COMPONENT.API.MOMENT().add(1, 'h').format("H:mm"),
           deliveryStartTime: COMPONENT.API.MOMENT().add(2, 'h').format("H:mm"),
           pickupEndTime: COMPONENT.API.MOMENT().add(2, 'h').add(15, 'm').format("H:mm"),
@@ -208,8 +225,6 @@ module.exports = COMPONENT.create({
 
         var Panel = null;
         if (Context.selectedEvent) {
-
-          var menuUrl = window.location.origin + "/event-" + Context.selectedEvent.get("token");
 
           var ReadyButton = Context.selectedEvent.get("format.menuReady");
           if (!Context.selectedEvent.get("menuReady")) {
@@ -249,7 +264,7 @@ module.exports = COMPONENT.create({
                 </tbody>
               </table>
 
-              <p><a href={menuUrl}>{menuUrl}</a></p>
+              <p><a href={Context.selectedEvent.get("menuUrl")}>{Context.selectedEvent.get("menuUrl")}</a></p>
 
 
               <div className="ui grid">
@@ -507,9 +522,13 @@ module.exports = COMPONENT.create({
 
 
         var eventRecords = [];
-        if (self.props.selectedDay) {
+        if (
+          self.props.selectedDay &&
+          self.props.selectedConsumerGroup
+        ) {
           eventRecords = self.modelRecordsWithStore(events, events.where({
-            day_id: self.props.selectedDay
+            day_id: self.props.selectedDay,
+            consumer_group_id: (""+self.props.selectedConsumerGroup)
           }));
         }
 

@@ -53,6 +53,7 @@ exports['for'] = function (context) {
 
 	// @see http://ampersandjs.com/docs#ampersand-state
 	var Model = store.Model = COMMON.API.AMPERSAND_STATE.extend({
+		name: "consumer-groups",
 		props: {
 			id: "string",
 	        title: "string",

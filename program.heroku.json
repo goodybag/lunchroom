@@ -11,7 +11,8 @@
             "port": "{{env.PORT}}",
             "db": {
                 "postgresql": {
-                    "ssl": true
+                    "ssl": true,
+                    "debug": false
                 },
                 "postgresql[APP_DOMAIN='lunchroom.goodybag.com']": {
                     "host": "ec2-107-21-253-234.compute-1.amazonaws.com",
@@ -27,6 +28,12 @@
                     "password": "p3m0t493t12oufb6shuj8q9saav",
                     "database": "d6da1bd7tqk7k"
                 }
+            },
+            "jobAppContext[APP_DOMAIN='lunchroom.goodybag.com']": {
+                "windowOrigin": "http://lunchroom.goodybag.com/"
+            },
+            "jobAppContext[APP_DOMAIN='staging.lunchroom.goodybag.com']": {
+                "windowOrigin": "http://staging.lunchroom.goodybag.com/"
             },
             "firenode": {
 				"config": {
@@ -67,6 +74,7 @@
                         "config": {
                             "internalUri": "/harness.htm",
                             "clientContext": {
+                                "initLiveNotify": true,
                                 "sessionCookieName": "gblasid",
                                 "selectedView": "",
                                 "type": "",
@@ -96,7 +104,56 @@
                             }
                         }
                     },
-                    "^/(?:vendor|order|event)-([^/]+)$": {
+                    "^/order-([^/]+)/placed$": {
+                        "lastMatchingRoute": true,
+                        "config": {
+                            "router": {
+                                "impl": "07-lunchroom/order-router/0"
+                            },
+                            "internalUri": "/harness.htm",
+                            "clientContext": {
+                                "sessionCookieName": "gblosid",
+                                "selectedView": "Order_Placed",
+                                "lockedView": "Order_Placed,Order_Arrived,Receipt",
+                                "type": "order",
+                                "overrideSkinUri": ""
+                            }
+                        }
+                    },
+                    "^/order-([^/]+)$": {
+                        "lastMatchingRoute": true,
+                        "config": {
+                            "router": {
+                                "impl": "07-lunchroom/order-router/0"
+                            },
+                            "internalUri": "/harness.htm",
+                            "clientContext": {
+                                "sessionCookieName": "gblosid",
+                                "selectedView": "Receipt",
+                                "lockedView": "Order_Placed,Order_Arrived,Receipt",
+                                "type": "order",
+                                "overrideSkinUri": ""
+                            }
+                        }
+                    },
+                    "^/vendor-([^/]+)$": {
+                        "lastMatchingRoute": true,
+                        "config": {
+                            "router": {
+                                "impl": "07-lunchroom/vendor-router/0"
+                            },
+                            "internalUri": "/harness.htm",
+                            "clientContext": {
+                                "initLiveNotify": true,
+                                "sessionCookieName": "gblvsid",
+                                "selectedView": "Admin_Restaurant",
+                                "lockedView": "Admin_Restaurant",
+                                "type": "vendor",
+                                "overrideSkinUri": ""
+                            }
+                        }
+                    },
+                    "^/event-([^/]+)$": {
                         "lastMatchingRoute": true,
                         "config": {
                             "router": {

@@ -92,6 +92,7 @@ exports['for'] = function (context) {
 
 	// @see http://ampersandjs.com/docs#ampersand-state
 	var Model = store.Model = COMMON.API.AMPERSAND_STATE.extend({
+		name: "orders",
 		props: {
 			id: "string",
 			orderHashId: "string",
@@ -114,7 +115,7 @@ exports['for'] = function (context) {
 				],
 	            fn: function () {
 	            	if (!this.event) return "";
-	            	return this.event["consumerGroup.contact"];
+	            	return JSON.parse(this.event)["consumerGroup.contact"];
 	            }
 	    	},
 	    	"event.consumerGroup.pickupLocation": {
@@ -123,7 +124,7 @@ exports['for'] = function (context) {
 				],
 	            fn: function () {
 	            	if (!this.event) return "";
-	            	return this.event["consumerGroup.pickupLocation"];
+	            	return JSON.parse(this.event)["consumerGroup.pickupLocation"];
 	            }
 	    	},
 	    	"number": {
@@ -222,8 +223,13 @@ exports['for'] = function (context) {
 					if (!order) {
 						return deferred.resolve(store);
 					}
-					return context.appContext.get('stores').cart.resetToSerializedModels(order.get("items")).then(function () {
-						return deferred.resolve(store);
+//					return context.appContext.get('stores').events.loadForId(
+//						JSON.parse(order.get("event")).id
+//					).then(function () {
+					return context.appContext.get('stores').cart.resetToSerializedModels(
+						JSON.parse(order.get("items"))
+					).then(function () {
+						return deferred.resolve(order);
 					}).fail(deferred.reject);
 				}
 			});
@@ -232,9 +238,6 @@ exports['for'] = function (context) {
 	}
 
 	store.getActiveOrder = function () {
-		if (!context.appContext.context) {
-			throw new Error("No active order because there is no active context!");
-		}
 		var record = store.findWhere({
 			orderHashId: context.appContext.get('context').id
 		});
@@ -293,18 +296,16 @@ console.log("TODO: trigger save of order info in local storage so nothing is los
 
 							order.set("deliveryStartTime", today.get("deliveryStartTime"));
 							order.set("pickupEndTime", today.get("pickupEndTime"));
-							order.set("event", today.getAttributes({
-								props: true,
-								session: true,
-								derived: true
-							}));
+							order.set("event", today.getValues());
 
 							// TODO: Send order to server and redirect to receipt using order ID hash.
 
 							return store.submitOrder(order.get("id")).then(function (orderHashId) {
 
+								context.appContext.get('stores').cart.reset();
+
 								return context.appContext.redirectTo(
-									"order-" + orderHashId,
+									"order-" + orderHashId + "/placed",
 									"Order_Placed"
 								);
 							});
