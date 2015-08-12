@@ -2177,8 +2177,8 @@ a.list-group-item:focus {
 .list-group-item.active:focus {
   z-index: 2;
   color: #ffffff;
-  background-color: #ed4242;
-  border-color: #ed4242;
+  background-color: #ef4147;
+  border-color: #ef4147;
 }
 
 .list-group-item.active .list-group-item-heading,
@@ -2505,7 +2505,7 @@ a.list-group-item:focus {
   height: 2px;
   position: absolute;
   bottom: 0;
-  background: #ed4242;
+  background: #ef4147;
 }
 
 .dropdown-menu > li > a {
@@ -2573,12 +2573,12 @@ body {
 
   .navbar-caption .full-number {
     display: inline;
-    color: #ed4242;
+    color: #ef4147;
   }
 }
 
 .navbar-caption .short {
-  color: #ed4242;
+  color: #ef4147;
 }
 
 .navbar-impersonate {
@@ -2595,7 +2595,7 @@ body {
   line-height: 0;
   padding-top: 29px;
   padding-bottom: 29px;
-  color: #ed4242;
+  color: #ef4147;
   font-size: 15px;
   text-decoration: none;
   margin-right: 12px;
@@ -2925,11 +2925,11 @@ body {
 .page-section.section-darker h3,
 .page-section.section-darker h4,
 .page-section.section-darker h5 {
-  color: #ed4242;
+  color: #ef4147;
 }
 
 .page-section.section-primary {
-  background-color: #ed4242;
+  background-color: #ef4147;
 }
 
 .page-section.section-secondary {
@@ -3571,6 +3571,10 @@ body {
   text-align: center;
 }
 
+.navbar {
+  position: static;
+}
+
 .navbar .nav > li > a {
   font-size: 16px;
 }
@@ -4177,7 +4181,7 @@ small.really-small {
 
 em.em-primary {
   font-style: normal;
-  color: #ed4242;
+  color: #ef4147;
 }
 
 @media (min-width: 786px) {
@@ -4342,7 +4346,7 @@ input.input-borderless {
 .has-error .input-addon,
 .error .input-addon,
 [name].error {
-  color: #ed4242;
+  color: #ef4147;
 }
 
 .has-error .form-control,
@@ -4351,7 +4355,7 @@ input.input-borderless {
 .error .input-addon,
 [name].error,
 [name].has-error {
-  border-color: #ed4242;
+  border-color: #ef4147;
   -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
   box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
 }
@@ -4496,19 +4500,19 @@ fieldset .fieldset-title {
 }
 
 .btn-primary {
-  background-color: #ed4242;
+  background-color: #ef4147;
   color: #ffffff;
-  border-color: #dd1515;
-  border-top-color: #ed4242;
+  border-color: #e0131a;
+  border-top-color: #ef4147;
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
 }
 
 .btn-primary:hover {
-  background-color: #ee4b4b;
+  background-color: #f04a50;
 }
 
 .btn-primary:active {
-  background-color: #ed4747;
+  background-color: #ef464c;
 }
 
 .btn-secondary {
