@@ -111,7 +111,7 @@ module.exports = COMPONENT.create({
                       value = elm.val();
                     }
 
-                    if (typeof value === "object" || !value) {
+                    if (typeof value === "object" || value === "") {
                         elm.addClass("error");
                         error = true;
                         return;

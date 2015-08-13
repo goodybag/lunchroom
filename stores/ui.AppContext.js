@@ -14,7 +14,7 @@ exports['for'] = function (overrides) {
 	var config = {
 		sessionToken: JSON.parse(decodeURIComponent($('head > meta[name="session.token"]').attr("value"))),
 		context: JSON.parse(decodeURIComponent($('head > meta[name="app.context"]').attr("value"))),
-	    selectedDay: MOMENT().add(0, 'days').format("ddd"),
+	    selectedDay: MOMENT().format("ddd"),
 	    windowOrigin: window.location.origin || (window.location.protocol + "//" + window.location.host)
 	};
 
@@ -156,12 +156,13 @@ exports['for'] = function (overrides) {
 				window.scrollTo(0, 0);
 			}
 		});
-
+/*
 		appContext.on("change:selectedDay", function () {
 			if (appContext.get('selectedView') != "Landing") {
 				appContext.set('selectedView', "Landing");
 			}
 		});
+*/
 	}
 
 	function initLiveNotify () {
@@ -242,9 +243,18 @@ exports['for'] = function (overrides) {
 		} else
 		if (context.type === "event") {
 
-			if (context.dbfilter.event_id) {				
+			if (context.dbfilter.consumer_group_id) {				
+
+				return appContext.get('stores').events.loadForConsumerGroupId(context.dbfilter.consumer_group_id).then(function (events) {
+					return appContext.get('stores').menus.loadForEvents(events.map(function (event) {
+						return event.get('id');
+					}));
+				});
+
+/*
+
 				Q.all([
-					appContext.get('stores').events.loadForId(context.dbfilter.event_id),
+					appContext.get('stores').events.loadForConsumerGroupId(context.dbfilter.consumer_group_id),
 					appContext.get('stores').menus.loadForEvent(context.dbfilter.event_id)					
 				]).then(function() {
 
@@ -281,6 +291,7 @@ exports['for'] = function (overrides) {
 				}).fail(function (err) {
 					console.error("Error loading data", err.stack);
 				});
+*/
 			}
 
 		} else

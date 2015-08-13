@@ -14,6 +14,7 @@ exports['for'] = function (API) {
 			session &&
 			session.dbfilter &&
 			session.dbfilter.event_id && 
+			session.dbfilter.consumer_group_id && 
 			!opts.arg
 		) {
 
@@ -47,7 +48,10 @@ exports['for'] = function (API) {
 
 		return DB.getKnex()('events').where({
 			"token": opts.arg
-		}).select('id').then(function (result) {
+		}).select(
+			'id',
+			'consumer_group_id'
+		).then(function (result) {
 
 			if (result.length === 0) {
 				req._FireNodeContext.addLayer({
@@ -61,7 +65,8 @@ exports['for'] = function (API) {
 			req._FireNodeContext.addLayer({
 				session: {
 					dbfilter: {
-						event_id: result[0].id
+						event_id: result[0].id,
+						consumer_group_id: result[0].consumer_group_id
 					}
 				}
 			});

@@ -41,9 +41,9 @@ exports.makeContextForClient = function (overrides) {
 	        today: "string",
 	        todayId: "string",
 	        lockedView: "string",
-	        windowOrigin: "string"
-		},
-	    session: {
+	        windowOrigin: "string",
+//		},
+//	    session: {
 	        selectedView: "string",
 	        selectedDay: "string"
 	    },

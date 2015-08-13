@@ -70,6 +70,20 @@ exports['for'] = function (context) {
 		})();
 	}
 
+	store.loadForEvents = function (event_ids) {
+		var self = this;
+		return COMMON.API.Q.denodeify(function (callback) {
+	        self.fetch({
+	            data: $.param({
+	                "filter[event_id]": event_ids
+	            }),
+	            success: function () {
+	            	return callback(null);
+	            }
+	        });
+		})();
+	}
+
 	store.addItem = function (event_id, vendor_id, item_id) {
 		var self = this;
 		return COMMON.API.Q.denodeify(function (callback) {

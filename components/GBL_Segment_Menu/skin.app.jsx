@@ -16,7 +16,7 @@ require("./component.jsx")['for'](module, {
 			return {
 				"id": item.get('id'),
 				"tabDay": item.get("format.ddd"),
-				"tabDate": item.get("format.MMM-M")
+				"tabDate": item.get("format.MMM-D")
 			};
 		});
 
@@ -35,6 +35,7 @@ require("./component.jsx")['for'](module, {
 					Context.appContext.set('selectedView', "Checkout");
 					return false;
 				});
+
 			},
 			fill: function (element, data, Context) {
 
@@ -49,17 +50,15 @@ require("./component.jsx")['for'](module, {
 
 			    this.renderSection("tabs", data.tabs, function getView (data) {
 					if (
-						Context.eventToday &&
-						Context.eventToday.get('day_id') === data.id
+						Context.appContext.get('selectedDay') === data.tabDay
 					) {
 						return 'active';
 					} else {
 						return 'default';
 					}
-			    }, function hookEvents(elm) {
+			    }, function hookEvents(elm, data) {
 					elm.on("click", function () {
-// TODO: fix
-//						Context.appContext.set('selectedDay', tab.id);
+						Context.appContext.set('selectedDay', data.tabDay);
 						Context.appContext.set('selectedView', "Menu_Web");
 						return false;
 					});

@@ -14,13 +14,11 @@ var Store = COMMON.API.BACKBONE.Collection.extend({
 
 var store = new Store();
 
-/*
-for (var day=0 ; day<=4 ; day++) {
+for (var day=1 ; day<=5 ; day++) {
 	store.add({
-		"id": COMMON.API.MOMENT().add(day, 'days').format("YYYY-MM-DD")
+		"id": COMMON.API.MOMENT().startOf('week').add(day, 'days').format("YYYY-MM-DD")
 	});
 }
-*/
 
 exports['for'] = function (context) {
 
@@ -39,19 +37,20 @@ exports['for'] = function (context) {
 	            	return COMMON.API.MOMENT(this.id, "YYYY-MM-DD").format("ddd");
 	            }
 		    },
-		    "format.MMM-M": {
+		    "format.MMM-D": {
 				deps: [
 					"id"
 				],
 	            fn: function () {
-	            	return COMMON.API.MOMENT(this.id, "YYYY-MM-DD").format("MMM M");
+	            	return COMMON.API.MOMENT(this.id, "YYYY-MM-DD").format("MMM D");
 	            }
 		    }
 		}
 	});
 
 	store.loadForEvent = function (event_id) {
-
+// TODO: DEPRECATE
+/*
 		var day_id = context.appContext.get('stores').events.get(event_id).get("day_id");
 
 		if (!store.get(day_id)) {
@@ -59,7 +58,7 @@ exports['for'] = function (context) {
 				"id": day_id
 			});
 		}
-
+*/
 		return COMMON.API.Q.resolve();
 	}
 
