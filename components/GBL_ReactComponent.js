@@ -88,21 +88,27 @@ exports.create = function (Context, implementation) {
 		if (!component._render_Context._template) return;
 		if (!component._render_Context._template[method]) return;
 
-		if (method === "markup") {
-			// Called once per mount.
-			component._render_Context._template[method](
-				$(component.getDOMNode())
-			);
-		} else
-		if (method === "fill") {
-			// Called multiple times per mount.
-			if (implementation.getTemplateData || Context.getTemplateData) {
+		try {
+
+			if (method === "markup") {
+				// Called once per mount.
 				component._render_Context._template[method](
-					$(component.getDOMNode()),
-					(implementation.getTemplateData || Context.getTemplateData).call(component, component._render_Context),
-					component._render_Context
+					$(component.getDOMNode())
 				);
+			} else
+			if (method === "fill") {
+				// Called multiple times per mount.
+				if (implementation.getTemplateData || Context.getTemplateData) {
+					component._render_Context._template[method](
+						$(component.getDOMNode()),
+						(implementation.getTemplateData || Context.getTemplateData).call(component, component._render_Context),
+						component._render_Context
+					);
+				}
 			}
+		} catch (err) {
+			console.error("ERROR calling template", err.stack);
+			throw err;
 		}
 	}
 
@@ -166,6 +172,9 @@ exports.create = function (Context, implementation) {
             });
 	    },
 
+		getRenderContext: function () {
+			return this._render_Context;
+		},
 
 	    render: function () {
 	    	var self = this;
@@ -192,7 +201,7 @@ exports.create = function (Context, implementation) {
 
 	    	self._render_Context._implName = implName;
 
-	    	self._render_Context.Template = API.GBL_TEMPLATE.for(self._render_Context);
+	    	self._render_Context.Template = API.GBL_TEMPLATE.for(self);
 
 	    	self._render_Context.REACT = API.REACT;
 	    	self._render_Context.appContext = self.props.appContext;

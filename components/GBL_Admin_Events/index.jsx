@@ -212,7 +212,7 @@ module.exports = COMPONENT.create({
           orderByTime: COMPONENT.API.MOMENT().add(1, 'h').format("H:mm"),
           deliveryStartTime: COMPONENT.API.MOMENT().add(2, 'h').format("H:mm"),
           pickupEndTime: COMPONENT.API.MOMENT().add(2, 'h').add(15, 'm').format("H:mm"),
-          tip: "10",
+          tip: "0",
           goodybagFee: "5.00"
         });
 
@@ -415,6 +415,7 @@ module.exports = COMPONENT.create({
                       <div className="default text">Select</div>
                       <i className="dropdown icon"></i>
                       <div className="menu">
+                        <div className="item" data-value="0">0%</div>
                         <div className="item" data-value="5">5%</div>
                         <div className="item" data-value="10">10%</div>
                         <div className="item" data-value="15">15%</div>

@@ -86,16 +86,20 @@ console.log("appContext.get('context').dev", appContext.get('context').dev);
 
 			// DEV: Init order form
 			var order = appContext.get('stores').orders.getOrder(appContext.get('todayId'));
-			order.set("form", JSON.stringify({
-			 	"info[name]": "Bill Smith",
-			 	"info[email]": "cadorn.test@gmail.com",
-			 	"info[phone]": "+17788219208",
-			 	"card[name]": "Bill Smith",
-			 	"card[cvc]": "123",
-			 	"card[number]": "1234 1234 1234 1234",
-			 	"card[expire-month]": "4",
-			 	"card[expire-year]": "2018"
-			}));
+			var form = order.get("form");
+			if (form) form = JSON.parse(form);
+			if (!form || !form['info[name]']) {
+				order.set("form", JSON.stringify({
+				 	"info[name]": "Bill Smith",
+				 	"info[email]": "cadorn.test@gmail.com",
+				 	"info[phone]": "+17788219208",
+				 	"card[name]": "Bill Smith",
+				 	"card[cvc]": "123",
+				 	"card[number]": "1234 1234 1234 1234",
+				 	"card[expire-month]": "4",
+				 	"card[expire-year]": "2018"
+				}));
+			}
 //		}
 
 		$('#form-subscribe input[type="email"]').val("cadorn.test@gmail.com");

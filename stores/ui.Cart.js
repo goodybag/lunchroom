@@ -95,8 +95,8 @@ exports['for'] = function (context) {
 			summary.total =
 				summary.amount
 				+ summary.taxAmount
-				+ summary.goodybagFee
-				+ parseInt(options.tip);
+				+ summary.goodybagFee;
+//				+ parseInt(options.tip);
 			summary["format.total"] = COMMON.API.NUMERAL(summary.total / 100).format('$0.00');
 		}
 

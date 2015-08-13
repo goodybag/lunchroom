@@ -1,14 +1,41 @@
 
 require("./component.jsx")['for'](module, {
 
-
-
-
 	getTemplates: function (Context) {
+
+		var copyName = {};
+
 		return {
 			"form": new Context.Template({
 				impl: require("../../www/lunchroom-landing~0/components/AppComponents/checkout-form.cjs.jsx"),
 				markup: function (element) {
+
+				    // Save form on change to any order field.
+			    	$('input', element).on('keyup', function () {
+						var values = {};
+						$(':input', element).each(function() {
+							values[this.name] = $(this).val();
+						});
+						Context.order.set("form", JSON.stringify(values));
+					});
+
+			    	// Copy name to name on card
+			    	$('[data-component-elm="info[name]"]', element).on('keyup', function () {
+			    		var newValue = $(this).val();
+			    		var existingValue = $('[data-component-elm="card[name]"]', element).val();
+			    		if (
+			    			newValue === existingValue ||
+			    			// 'card[name]' was changed so we should no longer sync it.
+			    			(
+			    				copyName.lastValue &&
+				    			existingValue !== copyName.lastValue
+				    		)
+			    		) {
+			    			return;
+			    		}
+			    		copyName.lastValue = newValue;
+						$('[data-component-elm="card[name]"]', element).val(copyName.lastValue);
+				    });
 				},
 				fill: function (element, data, Context) {
 			    	var values = Context.order.get("form");
@@ -24,10 +51,12 @@ require("./component.jsx")['for'](module, {
 				impl: require("../../www/lunchroom-landing~0/components/AppComponents/checkout-items.cjs.jsx"),
 				markup: function (element) {
 
-console.log("MARKUP ITEMS", element.html());
-
 					this.liftSections(element);
 
+					$('[data-component-elm="addItemsLink"]', element).click(function () {
+						Context.appContext.set('selectedView', "Menu_Web");
+						return false;
+					});
 				},
 				fill: function (element, data, Context) {
 
@@ -48,8 +77,7 @@ console.log("MARKUP ITEMS", element.html());
 
 						$('[data-component-elm="removeLink"]', elm).click(function () {
 
-console.log("REMOVE ITEM!!", data);
-
+				    		Context.appContext.get('stores').cart.remove(data.id);
 							return false;
 						});
 
@@ -61,9 +89,7 @@ console.log("REMOVE ITEM!!", data);
 				markup: function (element) {
 
 					$('[data-component-elm="placeOrderButton"]', element).click(function () {
-
-console.log("PLACE ORDER");
-
+			    		Context.order.submit();
 						return false;
 					});
 
@@ -85,83 +111,16 @@ console.log("PLACE ORDER");
 	},
 
 
-
-	afterRender: function (Context, element) {
-
-
-		// Remove item from cart
-	    Context.ensureForNodes(
-	    	$('.button[data-link="action:remove-item"]', element),
-	    	'click',
-	    	function () {
-	    		Context.appContext.get('stores').cart.remove($(this).attr("data-id"));
-	    	}
-	    );
-
-
-	    // Save form on change to any order field.
-	    Context.ensureForNodes(
-	    	$('#form-order select', element),
-	    	'change',
-	    	function () {
-	    		Context.saveForm('#form-order');
-	    	}
-	    );
-	    Context.ensureForNodes(
-	    	$('#form-order input', element),
-	    	'keyup',
-	    	function () {
-	    		Context.saveForm('#form-order');
-	    	}
-	    );
-
-
-	    // Copy name from info to billing in form
-	    Context.ensureForNodes(
-	    	$('#form-order input[name="info[name]"]', element),
-	    	'keyup',
-	    	function () {
-	    		var copyName = Context.singleton('copyName');
-	    		var newValue = $(this).val();
-	    		var existingValue = $('#form-order input[name="card[name]"]', element).val();
-	    		if (
-	    			newValue === existingValue ||
-	    			// 'card[name]' was changed so we should no longer sync it.
-	    			(
-	    				copyName.lastValue &&
-		    			existingValue !== copyName.lastValue
-		    		)
-	    		) {
-	    			return;
-	    		}
-	    		copyName.lastValue = newValue;
-				$('#form-order input[name="card[name]"]', element).val(copyName.lastValue);
-	    	}
-	    );
-
-	    // Form submission
-	    Context.ensureForNodes(
-	    	$('#form-order DIV.button.form-submit', element),
-	    	'click',
-	    	function () {
-	    		Context.saveForm('#form-order');
-	    		Context.order.submit();
-	    	}
-	    );
-
-	},
-
 	getHTML: function (Context) {
-console.log("GETC HECKOUT HTML");
 
 		// TODO: Remove this once we can inject 'React' automatically at build time.
 		var React = Context.REACT;
 
-		var panel = null;
+		var Panel = null;
 
 		if (!Context.eventToday) {
 
-			panel = (
+			Panel = (
 				<div className="sixteen wide column">
 					<div className="ui message">
 					  <div className="header">
@@ -174,7 +133,7 @@ console.log("GETC HECKOUT HTML");
 		} else
 		if (Context.items.length === 0) {
 
-			panel = (
+			Panel = (
 				<div className="sixteen wide column">
 					<div className="ui message">
 					  <div className="header">
@@ -187,79 +146,21 @@ console.log("GETC HECKOUT HTML");
 
 		} else {
 
-			panel = [
-
+			Panel = [
 				<Context.templates.form.comp />,
 				<Context.templates.items.comp />,
 				<Context.templates.summary.comp />,
-
-			(
-				<div className="sixteen wide column">
-
-					<br/>
-					<br/>
-					<div className="ui message">
-					  <div className="header">
-					    Grab something else <a href="#Menu_Web">here</a>
-					  </div>
-					</div>
-					<br/>
-					<br/>
-
-					<table className="ui table">
-					  <thead>
-					    <tr>
-					      <th className="ten wide">Item</th>
-					      <th className="two wide">Quantity</th>
-					      <th className="two wide">Price</th>
-					      <th className="two wide">Amount</th>
-					    </tr>
-					  </thead>
-					  <tbody>
-
-			            {Context.items.map(function(item) {
-							return (
-								<tr key={item.get('id')}>
-									<td>
-
-										{item.get("title")}
-
-										{item.get("options")}
-
-										&nbsp;&nbsp;&nbsp;
-
-										<div data-link="action:remove-item" data-id={item.get('id')} className="ui primary button">
-											Remove
-										</div>
-
-									</td>
-									<td>{item.get("quantity")}</td>
-									<td>${item.get("format.price")}</td>
-									<td>${item.get("format.amount")}</td>
-								</tr>
-							);
-				        })}
-					    
-					  </tbody>
-					</table>
-		            
-		        </div>
-
-	        )];
+			];
 	    }
 
 		return (
-        	<div className="ui grid">
+        	<div>
 
 	        	{Context.components.Header}
 
 	        	{Context.components.Menu}
 
-				<div className="two column row">
-
-		        	{panel}
-
-			    </div>
+	        	{Panel}
 
 	        	{Context.components.Footer}
 
