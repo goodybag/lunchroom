@@ -159,7 +159,7 @@
                             "router": {
                                 "impl": "07-lunchroom/event-router/0"
                             },
-                            "internalUri": "/harness.htm",
+                            "internalUri": "/app.htm",
                             "clientContext": {
                                 "selectedView": "Menu_Web",
                                 "lockedView": "",

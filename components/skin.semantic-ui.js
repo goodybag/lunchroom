@@ -1,8 +1,8 @@
 
 var WEB_COMPONENTS = {
-	"Header": require("./skin.index/Header"),
-	"Menu": require("./skin.index/Menu"),
-	"Footer": require("./skin.index/Footer")
+	"Header": require("./skin.app/Header"),
+	"Menu": require("./skin.app/Menu"),
+	"Footer": require("./skin.app/Footer")
 };
 
 var EMAIL_COMPONENTS = {
@@ -20,10 +20,6 @@ var EMAIL_COMPONENTS = {
 exports.RootView = require("./GBL_DEV_Views/skin.semantic-ui.jsx");
 
 exports.views = {
-	"Home": {
-		"component": require("./GBL_View_Home/skin.semantic-ui.jsx"),
-		"config": {}
-	},
 	"Landing": {
 		"component": require("./GBL_View_Landing/skin.semantic-ui.jsx"),
 		"config": {}

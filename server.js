@@ -36,6 +36,12 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
 
 		var fileCache = {};
 
+		app.get(/^\/lunchroom-landing~0\/(.+)$/, function (req, res, next) {
+			return SEND(req, req.params[0], {
+				root: PATH.join(__dirname, "www/lunchroom-landing~0")
+			}).on("error", next).pipe(res);
+		});
+
 		app.post(/^\/contact-us$/, BODY_PARSER.json({
 			type: [
 				'application/json'
@@ -159,17 +165,23 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
 
 		app.use(MORGAN("combined"));
 
-		var landingDescriptor = require("./www/lunchroom-landing~0/hoisted.json");
-		var landingResources = {
-			css: null,
-			js: null
-		};
-		landingDescriptor.pages.Landing.resources.forEach(function (resource) {
-			if (landingResources[resource.type]) {
-				throw new Error("Each resource type should only exist once! Make sure everything is inlined.");
-			}
-			landingResources[resource.type] = resource.uriPath;
-		});
+		function getResourceMappingsForSkinPage (pageId) {
+			var descriptor = require("./www/lunchroom-landing~0/hoisted.json");
+			var resources = {
+				css: null,
+				js: null
+			};
+			descriptor.pages[pageId].resources.forEach(function (resource) {
+				if (resources[resource.type]) {
+					throw new Error("Each resource type should only exist once! Make sure everything is inlined.");
+				}
+				resources[resource.type] = resource.uriPath;
+			});
+			return resources;
+		}
+
+		var landingResources = getResourceMappingsForSkinPage("Landing");
+		var appResources = getResourceMappingsForSkinPage("AppComponents");
 
 		app.get(/^(\/(?:vendor|order|event)-[^\/]+)?(\/.*)$/, function (req, res, next) {
 
@@ -189,6 +201,9 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
 
 				content = content.replace(/\{\{landingCssUrl\}\}/g, landingResources.css);
 				content = content.replace(/\{\{landingJsUrl\}\}/g, landingResources.js);
+
+				content = content.replace(/\{\{appCssUrl\}\}/g, appResources.css);
+				content = content.replace(/\{\{appJsUrl\}\}/g, appResources.js);
 
 				content = content.replace(
 					/\{\{sessionToken\}\}/g,

@@ -6,9 +6,7 @@ require("./component.jsx")['for'](module, {
 		var React = Context.REACT;
 
 		return (
-			<main>
-				TODO: Receipt
-		    </main>
+			<div>Menu Web</div>
         );
 	}
 });

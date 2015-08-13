@@ -12,8 +12,8 @@ require("./index.css");
 function getSkin () {
 	var skin = $("body").attr("skin");
 	// TODO: Do this dynamically so we don't need to pre-load views into same bundle.
-	if (skin === "index") {
-		return require("./skin.index.js");
+	if (skin === "app") {
+		return require("./skin.app.js");
 	} else {
 		return require("./skin.semantic-ui.js");
 	}

@@ -1,8 +1,6 @@
 /** @jsx React.DOM */
 'use strict'
 
-var React = require('react');
-
 
 require("./component.jsx")['for'](module, {
 	getViewTabHTML: function (Context) {
@@ -15,6 +13,9 @@ require("./component.jsx")['for'](module, {
 		);
 	},
 	getHTML: function (Context) {
+
+		// TODO: Remove this once we can inject 'React' automatically at build time.
+		var React = Context.REACT;
 
 		if (
 			!Context.isTopFrame ||

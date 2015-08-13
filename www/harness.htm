@@ -42,13 +42,16 @@
 		}
 
 		loadScript('/polyfills.build.js', function () {
-			loadScript('{{assetsUrl}}', function () {			
+			loadScript('{{appJsUrl}}', function () {
+
+				loadScript('{{assetsUrl}}', function () {			
 //			loadScript('//' + window.location.hostname + ':8084/lunchroom/assets/react/react-with-addons.js', function () {
 
-		        head.load([
-		        	'{{bundleUrl}}'
-				]);
+			        head.load([
+			        	'{{bundleUrl}}'
+					]);
 //			});
+				});
 			});
 		});
     </script>

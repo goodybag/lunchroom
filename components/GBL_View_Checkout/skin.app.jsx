@@ -6,9 +6,7 @@ require("./component.jsx")['for'](module, {
 		var React = Context.REACT;
 
 		return (
-			<main>
-				TODO: Menu Web
-		    </main>
+			<div>Checkout</div>
         );
 	}
 });

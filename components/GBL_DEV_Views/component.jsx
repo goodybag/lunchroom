@@ -120,6 +120,7 @@ exports['for'] = function (module, context) {
 	    	}
 
 	        return context.getHTML.call(self, {
+	        	REACT: COMPONENT.API.REACT,
 	        	ViewLink: ViewLink,
 	        	ViewComponent: ViewComponent,
 	        	ViewMockup: ViewMockup,

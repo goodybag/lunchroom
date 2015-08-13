@@ -6,9 +6,7 @@ require("./component.jsx")['for'](module, {
 		var React = Context.REACT;
 
 		return (
-			<main>
-				TODO: Order Placed
-		    </main>
+			<div>Order Placed</div>
         );
 	}
 });
