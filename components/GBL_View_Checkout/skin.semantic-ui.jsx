@@ -317,7 +317,7 @@ require("./component.jsx")['for'](module, {
 
 	        	{Context.appContext.get('view').components.Header}
 
-	        	{Context.appContext.get('view').components.Menu['for'](Context)}
+	        	{Context.appContext.get('view').components.Menu}
 
 				<div className="two column row">
 

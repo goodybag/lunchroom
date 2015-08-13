@@ -65,6 +65,10 @@ exports['for'] = function (context) {
 		var events = context.appContext.get('stores').events;
 		var eventToday = events.modelRecords(events.getToday()).pop();
 
+		if (!eventToday) {
+			return {};
+		}
+
 		var summary = {
 			"amount": amount,
 			"format.amount": COMMON.API.NUMERAL(amount/100).format('$0.00'),

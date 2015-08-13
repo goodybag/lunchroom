@@ -1,11 +1,11 @@
 
 var COMPONENT = require("../GBL_ReactComponent");
 
-exports['for'] = function (Context) {
+exports['for'] = function (module, Context) {
 
-	var Tag = COMPONENT.create(Context, {
+	module.exports = COMPONENT.create(Context, {
 
-	    displayName: 'Menu',
+		segmentName: "Menu",
 
 	    onMount: function () {
 			this.props.appContext.get('stores').cart.on("update", this._trigger_forceUpdate);
@@ -24,6 +24,7 @@ exports['for'] = function (Context) {
 		afterRender: function (Context, element) {
 			var self = this;
 
+// TODO: Port
 			$('.menu .item', element).tab();
 			$('.menu .item', element).on('click', function () {
 				var selectedDay = $(this).attr("data-tab");
@@ -32,6 +33,7 @@ exports['for'] = function (Context) {
 			});
 			$('.menu .item', element).removeClass('active');
 		    $('.menu .item[data-tab="' + Context.appContext.get('selectedDay') + '"]', element).addClass('active');
+
 
 		    Context.ensureForNodes(
 		    	$('.button[data-link]', element),
@@ -42,12 +44,15 @@ exports['for'] = function (Context) {
 		    	}
 		    );
 
+
 		    if (Context.cartItemCount > 0) {
 		    	$('.button[data-link="#Checkout"]', element).removeClass("disabled");
 		    } else {
 		    	$('.button[data-link="#Checkout"]', element).addClass("disabled");
 		    }
 
+
+// TODO: Port
 		    if (
 		    	Context.eventToday &&
 		    	!self.eventsCheckInterval
@@ -94,91 +99,8 @@ exports['for'] = function (Context) {
 
 	        	eventToday: self.modelRecordsWithStore(events, events.getToday()).pop()
 	        };
-	    },
-
-	    getHTML: function (Context) {
-
-			var DaysTabs = "";
-
-			var SneakPeak = "";
-			if (Context.appContext.get('selectedDay') !== Context.appContext.get('today')) {
-				SneakPeak = (
-					<div>
-						Sneak Peak! (You can look but not order)
-					</div>
-				);
-			}
-
-			DaysTabs = (
-			    <div className="seven wide column">
-					<div className="ui top attached tabular menu">
-						{Context.days.map(function (item) {
-				        	return <div key={item.get('id')} className="item" data-tab={item.get("format.ddd")}>{item.get("format.ddd")}</div>;
-						})}		
-					</div>
-					{SneakPeak}
-			    </div>
-			);
-
-			var DeliveryTime = "";
-			var TimeLeft = "";
-			var CompanyHeading = "";
-			if (Context.eventToday) {
-				DeliveryTime = (
-				    <div className="three wide column">
-				    	Delivery Time:<br/>
-				    	<b>{Context.eventToday.get("format.deliveryTime")}</b>
-				    </div>
-				);
-				if (Context.eventToday.get("format.orderTimer")) {
-					TimeLeft = (
-						<div className="three wide column">
-					    	Time left to order:<br/>
-					    	<b>{Context.eventToday.get("format.orderTimer")}</b>
-					    </div>
-					);
-				}
-				CompanyHeading = (
-					<div className="six wide column">
-						<div className="ui basic segment">
-						  For company: <b>{Context.eventToday.get("consumerGroup.title")}</b>
-						</div>
-					</div>
-				);
-				if (Context.appContext.get('selectedView') === "Menu_Web") {
-					CompanyHeading = [
-						{CompanyHeading},
-						(
-							<div className="ten wide column">
-
-							</div>
-						)
-					];
-				}
-			}
-
-			return (
-				<div id="page-menu" className="five column row">
-
-					{DaysTabs}
-				    
-				    {DeliveryTime}
-				    {TimeLeft}
-				    <div className="three wide right aligned column">
-						<div data-link="#Checkout" className="ui primary button">
-						  Checkout ({Context.cartItemCount})
-						</div>
-				    </div>
-
-				    {CompanyHeading}
-
-			    </div>
-			);
 	    }
+
 	});
 
-	var React = COMPONENT.API.REACT;
-	return (
-		<Tag appContext={Context.appContext}/>
-	);
 }

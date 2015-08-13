@@ -76,27 +76,27 @@ storeContext.appContext = appContext;
 
 appContext.on("change:ready", function () {
 
+console.log("appContext.get('context').dev", appContext.get('context').dev);
+
 	if (!appContext.get('context').dev) return;
 
 	setTimeout(function () {
 
-		if (appContext.get('selectedView') === 'Checkout') {
-
-			// DEV: Init cart
-			appContext.get('stores').cart.addItem("1");
+//		if (appContext.get('selectedView') === 'Checkout') {
 
 			// DEV: Init order form
-			var order = appContext.get('stores').orders.getOrder(appContext.todayId);
-			order.set("form", {
+			var order = appContext.get('stores').orders.getOrder(appContext.get('todayId'));
+			order.set("form", JSON.stringify({
 			 	"info[name]": "Bill Smith",
 			 	"info[email]": "cadorn.test@gmail.com",
+			 	"info[phone]": "+17788219208",
 			 	"card[name]": "Bill Smith",
 			 	"card[cvc]": "123",
 			 	"card[number]": "1234 1234 1234 1234",
 			 	"card[expire-month]": "4",
 			 	"card[expire-year]": "2018"
-			});
-		}
+			}));
+//		}
 
 		$('#form-subscribe input[type="email"]').val("cadorn.test@gmail.com");
 
@@ -122,14 +122,14 @@ appContext.set('initialized', true);
 // # Initialize UI and attach to DOM & Context
 // ##################################################
 
-try {
-
-	require('react').render(
-		<skin.RootView appContext={appContext}/>,
-		document.getElementById('GBL_DEV_Views')
-	);
-
-} catch (err) {
-	console.error("ERROR attaching react to DOM", err.stack || err.message || err);
-}
+$(function () {
+	try {
+		require('react').render(
+			<skin.RootView appContext={appContext}/>,
+			document.getElementById('GBL_DEV_Views')
+		);
+	} catch (err) {
+		console.error("ERROR attaching react to DOM", err.stack || err.message || err);
+	}
+});
 

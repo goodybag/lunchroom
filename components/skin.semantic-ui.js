@@ -1,8 +1,8 @@
 
 var WEB_COMPONENTS = {
-	"Header": require("./skin.app/Header"),
-	"Menu": require("./skin.app/Menu"),
-	"Footer": require("./skin.app/Footer")
+	"Header": require("./GBL_Segment_Header/skin.semantic-ui.jsx"),
+	"Menu": require("./GBL_Segment_Menu/skin.semantic-ui.jsx"),
+	"Footer": require("./GBL_Segment_Footer/skin.semantic-ui.jsx")
 };
 
 var EMAIL_COMPONENTS = {

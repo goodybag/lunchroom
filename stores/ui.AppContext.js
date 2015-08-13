@@ -275,6 +275,7 @@ exports['for'] = function (overrides) {
 
 						monitorOrderDeadline(today);
 
+						finalizeInit();
 					});
 
 				}).fail(function (err) {

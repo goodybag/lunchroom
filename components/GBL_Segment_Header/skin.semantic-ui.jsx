@@ -6,15 +6,9 @@ require("./component.jsx")['for'](module, {
 		var React = Context.REACT;
 
 		return (
-        	<div className="ui grid">
+    	    <div id="page-header" className="sixteen wide column">
 
-	        	{Context.components.Header}
-
-	        	{Context.components.Menu}
-
-				<div>Panel</div>
-
-	        	{Context.components.Footer}
+				<h1 className="ui header"><a href="#" data-link="#Landing">Goodybag</a></h1>
 
 			</div>
         );

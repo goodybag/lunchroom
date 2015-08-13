@@ -4,7 +4,8 @@ var API = exports.API = {
 	UNDERSCORE: require("underscore"),
 	REACT: require("react"),
 	EXTEND: require("extend"),
-	MOMENT: require("moment")
+	MOMENT: require("moment"),
+	GBL_TEMPLATE: require('./GBL_ReactTemplate')
 };
 
 
@@ -76,13 +77,43 @@ exports.create = function (Context, implementation) {
 
 		universalMarkup(element);
 
+
 		if (!afterRender) return;
 		afterRender.call(component, ctx, element);
 	}
 
+
+	function callTemplate (component, method) {
+		// New template-based logic.
+		if (!component._render_Context._template) return;
+		if (!component._render_Context._template[method]) return;
+
+		if (method === "markup") {
+			// Called once per mount.
+			component._render_Context._template[method](
+				$(component.getDOMNode())
+			);
+		} else
+		if (method === "fill") {
+			// Called multiple times per mount.
+			if (implementation.getTemplateData || Context.getTemplateData) {
+				component._render_Context._template[method](
+					$(component.getDOMNode()),
+					(implementation.getTemplateData || Context.getTemplateData).call(component, component._render_Context),
+					component._render_Context
+				);
+			}
+		}
+	}
+
+
 	var def = {
 
-	    displayName: implementation.displayName || 'GBL_ReactComponent',
+	    displayName:
+	    	implementation.appContextView ||
+	    	implementation.segmentName ||
+	    	implementation.displayName ||
+	    	'GBL_ReactComponent',
 
 	    _trigger_forceUpdate: function () {
 	    	var self = this;
@@ -101,9 +132,15 @@ exports.create = function (Context, implementation) {
 			if (implementation.onMount) {
 				implementation.onMount.call(this);
 			}
+
+			// New template-based logic.
+			callTemplate(this, "markup");
+			callTemplate(this, "fill");
+
 			afterRender(this);
 	    },
 	    componentDidUpdate: function () {
+			callTemplate(this, "fill");
 			afterRender(this);
 	    },
 	    componentWillUnmount: function () {
@@ -131,42 +168,97 @@ exports.create = function (Context, implementation) {
 
 
 	    render: function () {
+	    	var self = this;
 
 			// TODO: Remove this once we can inject 'React' automatically at build time.
 			var React = API.REACT;
 
+			var implName = def.displayName;
+
 	    	if (implementation.appContextView) {
-	    		if (this.props.appContext.get('selectedView') !== implementation.appContextView) {
-	    			console.log("Cancel render of view '" + implementation.appContextView + "' because it is not the selecetd view '" + this.props.appContext.get('selectedView') + "'");
+	    		if (self.props.appContext.get('selectedView') !== implementation.appContextView) {
+	    			console.log("Cancel render of view '" + implementation.appContextView + "' because it is not the selecetd view '" + self.props.appContext.get('selectedView') + "'");
 	    			return (
 	    				<div/>
 	    			);
 	    		}
 
-		    	console.info("Render component");
+		    	console.info("Render component: " + implName);
 	    	} else {
-		    	console.info("Render component");
+		    	console.info("Render component: " + implName);
 	    	}
 
-	    	this._render_Context = implementation.render.call(this);
+	    	self._render_Context = implementation.render.call(self);
 
-	    	this._render_Context.REACT = API.REACT;
-	    	this._render_Context.appContext = this.props.appContext;
+	    	self._render_Context._implName = implName;
 
-	        var tags = (
-	        	implementation.getHTML ||
-	        	Context.getHTML
-	        ).call(this, this._render_Context);
+	    	self._render_Context.Template = API.GBL_TEMPLATE.for(self._render_Context);
 
-	    	if (implementation.appContextView) {	    		
-//		    	console.info("Render component:", implementation.appContextView, "tags", tags);
-	    	} else {
-//		    	console.info("Render component:", implementation, "tags", tags);
+	    	self._render_Context.REACT = API.REACT;
+	    	self._render_Context.appContext = self.props.appContext;
+
+
+	    	// Setup sub-components for the page.
+    		self._render_Context.components = {};
+	    	var components = self.props.appContext.get('view').components;
+	    	if (components) {
+	    		Object.keys(components).forEach(function (name) {
+					try {
+						self._render_Context.components[name] = React.createElement(
+			        		components[name],
+			        		{
+			        			appContext: self.props.appContext
+			        		}
+			        	);
+			        } catch (err) {
+			        	console.error("Error creating react element for component '" + name + "' from class:", components[name]);
+			        }
+	    		});
 	    	}
 
-	    	console.info("Hand off to react");
 
-	        return tags;
+	    	// New sub-template logic.
+	    	if (implementation.getTemplates || Context.getTemplates) {
+
+	    		if (!self._templateInstances) {
+					self._templateInstances = (
+			        	implementation.getTemplates ||
+			        	Context.getTemplates
+			        ).call(this, this._render_Context);
+			    }
+
+		        self._render_Context.templates = self._templateInstances;
+	    	}
+
+
+	    	if (implementation.getHTML || Context.getHTML) {
+		        var tags = (
+		        	implementation.getHTML ||
+		        	Context.getHTML
+		        ).call(this, this._render_Context);
+
+		    	console.info("Hand off to react: " + implName);
+
+		        return tags;
+		    } else
+	    	if (implementation.getTemplate || Context.getTemplate) {
+
+	    		if (!self._templateInstance) {
+
+					self._templateInstance = (
+			        	implementation.getTemplate ||
+			        	Context.getTemplate
+			        ).call(this, this._render_Context);
+			    }
+
+		        self._render_Context._template = self._templateInstance;
+
+		    	console.info("Hand off to react template: " + implName);
+
+		        return this._render_Context._template.impl;
+	    	} else {
+	    		throw new Error("No template source declared!");
+	    	}
 	    }
 	};
 

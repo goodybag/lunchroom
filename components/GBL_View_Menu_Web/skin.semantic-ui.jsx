@@ -219,13 +219,13 @@ require("./component.jsx")['for'](module, {
         return (
         	<div className="ui grid">
 
-	        	{Context.appContext.get('view').components.Header}
+	        	{Context.components.Header}
 
-	        	{Context.appContext.get('view').components.Menu['for'](Context)}
+	        	{Context.components.Menu}
 
 				{Panel}
 
-			    {Context.appContext.get('view').components.Footer}
+	        	{Context.components.Footer}
 
 			</div>
         );

@@ -38,6 +38,14 @@ exports['for'] = function (context) {
 	            fn: function () {
 	            	return COMMON.API.MOMENT(this.id, "YYYY-MM-DD").format("ddd");
 	            }
+		    },
+		    "format.MMM-M": {
+				deps: [
+					"id"
+				],
+	            fn: function () {
+	            	return COMMON.API.MOMENT(this.id, "YYYY-MM-DD").format("MMM M");
+	            }
 		    }
 		}
 	});
