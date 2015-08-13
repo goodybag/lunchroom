@@ -13,7 +13,7 @@ module.exports = function (Context) {
       <div className="order-reviewer-items" data-component-section="items">
           <div className="order-reviewer-item" data-component-section="items" data-component-view="default">
             <div className="order-reviewer-item-col photo-col">
-              <img src="https://www.filepicker.io/api/file/SZoK9zUvTPWXzmK81aGg/convert?w=352&amp;h=210&amp;fit=crop" alt="Pirata Dos Tacos" data-component-prop="photo"/>
+              <img src="https://www.filepicker.io/api/file/SZoK9zUvTPWXzmK81aGg/convert?w=352&amp;h=210&amp;fit=crop" alt="Pirata Dos Tacos" data-component-prop="photo" data-component-prop-target="src"/>
             </div>
             <div className="order-reviewer-item-col item-desc">
               <div className="order-reviewer-item-description-wrapper">
@@ -37,7 +37,7 @@ module.exports = function (Context) {
           </div>
           <div className="order-reviewer-item" data-component-section="items" data-component-view="default">
             <div className="order-reviewer-item-col photo-col">
-              <img src="https://www.filepicker.io/api/file/SZoK9zUvTPWXzmK81aGg/convert?w=352&amp;h=210&amp;fit=crop" alt="Poop Taco Box" data-component-prop="photo"/>
+              <img src="https://www.filepicker.io/api/file/SZoK9zUvTPWXzmK81aGg/convert?w=352&amp;h=210&amp;fit=crop" alt="Poop Taco Box" data-component-prop="photo" data-component-prop-target="src"/>
             </div>
             <div className="order-reviewer-item-col item-desc">
               <div className="order-reviewer-item-description-wrapper">

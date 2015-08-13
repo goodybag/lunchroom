@@ -5,7 +5,7 @@ module.exports = function (Context) {
     <section className="page-section" id="section-item-tiles">
 
   <div className="container">
-    <div className="panel-wrapper" style="max-width: 620px">
+    <div className="panel-wrapper" style={{"maxWidth":"620px"}}>
       <div className="panel panel-dark panel-share-link">
         <p className="panel-text">
           <strong>Share this link</strong> with coworkers to let them view the menu and place their own order!

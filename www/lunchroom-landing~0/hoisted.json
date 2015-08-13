@@ -56,10 +56,6 @@
                     "uriHtmlPath": "/lunchroom-landing~0/components/AppComponents/menu.cjs.jsx",
                     "fsHtmlPath": "{{__DIRNAME__}}/components/AppComponents/menu.cjs.jsx"
                 },
-                "menu-item": {
-                    "uriHtmlPath": "/lunchroom-landing~0/components/AppComponents/menu-item.cjs.jsx",
-                    "fsHtmlPath": "{{__DIRNAME__}}/components/AppComponents/menu-item.cjs.jsx"
-                },
                 "share": {
                     "uriHtmlPath": "/lunchroom-landing~0/components/AppComponents/share.cjs.jsx",
                     "fsHtmlPath": "{{__DIRNAME__}}/components/AppComponents/share.cjs.jsx"
