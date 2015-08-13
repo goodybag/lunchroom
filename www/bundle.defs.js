@@ -633,50 +633,53 @@
 					},
 					fill: function (element, data, Context) {
 
-						var items = Context.items[Context.appContext.get('selectedDay')].map(function(item) {
-							return {
-								"id": item.get('id'),
-								"item_id": item.get('item_id'),
-								"photoUrl": item.get("item.photo_url"),
-								"title": item.get("item.title"),
-								"price": item.get("item.format.price"),
-								"description": item.get("item.description"),
-							};
-						});
+						var items = Context.items[Context.appContext.get('selectedDay')];
 
-						this.renderSection("items", items, function getView (data) {
-							return 'default';
-					    }, function hookEvents(elm, data) {
+						if (items) {
 
-							$('[data-component-elm="addButton"]', elm).click(function () {
+							this.renderSection("items", items.map(function(item) {
+								return {
+									"id": item.get('id'),
+									"item_id": item.get('item_id'),
+									"photoUrl": item.get("item.photo_url"),
+									"title": item.get("item.title"),
+									"price": item.get("item.format.price"),
+									"description": item.get("item.description"),
+								};
+							}), function getView (data) {
+								return 'default';
+						    }, function hookEvents(elm, data) {
 
-					    		var options = {};
+								$('[data-component-elm="addButton"]', elm).click(function () {
+
+						    		var options = {};
 	/*
-					    		var itemBlock = $(this).parentsUntil(element, '.item-block');
+						    		var itemBlock = $(this).parentsUntil(element, '.item-block');
 
-					    		var error = false;
-					    		$('.ui.dropdown', itemBlock).each(function () {
-					    			var value = $(this).dropdown("get value");
-					    			if (value) {
-						    			options[$(this).attr("data-option")] = value;
-					    				$(this).removeClass("error");
-					    			} else {
-					    				$(this).addClass("error");
-					    				error = true;
-					    			}
-					    		});
+						    		var error = false;
+						    		$('.ui.dropdown', itemBlock).each(function () {
+						    			var value = $(this).dropdown("get value");
+						    			if (value) {
+							    			options[$(this).attr("data-option")] = value;
+						    				$(this).removeClass("error");
+						    			} else {
+						    				$(this).addClass("error");
+						    				error = true;
+						    			}
+						    		});
 
-					    		if (error) return;
+						    		if (error) return;
 
-						        $('.ui.modal[data-id="' + itemBlock.attr("data-id") + '"][data-day="' + itemBlock.attr("data-day") + '"]').modal('hide');
+							        $('.ui.modal[data-id="' + itemBlock.attr("data-id") + '"][data-day="' + itemBlock.attr("data-day") + '"]').modal('hide');
 
-								Context.appContext.get('stores').cart.addItem(itemBlock.attr("data-id"), options);
+									Context.appContext.get('stores').cart.addItem(itemBlock.attr("data-id"), options);
 	*/
 
-								Context.appContext.get('stores').cart.addItem(data.item_id, options);
-								return false;
-							});
-					    });
+									Context.appContext.get('stores').cart.addItem(data.item_id, options);
+									return false;
+								});
+						    });
+						}
 					}
 				})
 			};
@@ -686,15 +689,6 @@
 
 			$('.tab', element).removeClass('active');
 		    $('.tab[data-tab="' + Context.appContext.get('selectedDay') + '"]', element).addClass('active');
-
-		    Context.ensureForNodes(
-		    	$('[data-link="action:add"]', element),
-		    	'click',
-		    	function () {
-
-		    	}
-		    );
-
 
 		    Context.ensureForNodes(
 		    	$('a[data-link="action:show-detail"]', element),
@@ -736,126 +730,6 @@
 					);
 
 				} else {
-
-					var Items = "";
-					if (Object.keys(Context.items).length > 0) {
-
-						// TODO: Base on active selection.
-						Items = (
-							React.createElement("div", {className: "sixteen wide column"}, 
-								Object.keys(Context.days).map(function(day) {
-
-									function makeOptions (item) {
-										var Options = [];
-										var options = JSON.parse(item.get("item.options") || "{}");
-										Object.keys(options).forEach(function (name) {
-											Options.push(
-												React.createElement("div", {className: "two fields"}, 
-													React.createElement("div", {className: "ui pointing right label"}, name), 
-													React.createElement("select", {"data-option": name, className: "ui dropdown"}, 
-													    React.createElement("option", {value: ""}, "Please select ..."), 
-														options[name].map(function (value) {
-													    	return React.createElement("option", {className: "item", key: value, value: value}, value)
-												    	})												  
-													)
-												)
-											);
-										});
-										if (Options.length === 0) Options = "";
-										return Options;
-									}
-
-						        	return (
-										React.createElement("div", {key: day, className: "ui bottom attached tab segment", "data-tab": day}, 
-
-											React.createElement("div", {className: "ui cards"}, 
-
-												Context.items[day].map(function (item) {								
-
-													var Spiciness = "";
-													var properties = JSON.parse(item.get("item.properties") || "{}");
-													if (properties && properties.Spiciness) {
-														Spiciness = (React.createElement("div", null, properties.Spiciness));
-													}
-
-													var OrderButton = "";
-													if (Context.days[day].get("canOrder")) {
-														OrderButton = (
-															React.createElement("div", {"data-link": "action:add", "data-id": item.get('item_id'), "data-day": day, className: "ui bottom attached button"}, 
-														      React.createElement("i", {className: "add icon"}), 
-														      "Add Dish"
-														    )
-														);
-													}
-
-													return (
-													  React.createElement("div", {key: item.get('id'), "data-id": item.get('item_id'), "data-day": day, className: "card item-block"}, 
-													    React.createElement("a", {className: "image", "data-link": "action:show-detail"}, 
-													      React.createElement("img", {className: "ui medium rounded image", src: item.get("item.photo_url")})
-													    ), 
-													    React.createElement("div", {className: "content"}, 
-													      React.createElement("a", {className: "header"}, item.get("item.title")), 
-													      React.createElement("div", {className: "meta"}, 
-													        Spiciness
-													      ), 
-													      React.createElement("div", {className: "description"}, 
-														    React.createElement("b", null, "$", item.get("item.format.price")), "     ", item.get("item.description")
-														  )
-													    ), 
-													    React.createElement("form", {className: "ui fluid form"}, 
-														    makeOptions(item)
-													    ), 
-													    OrderButton
-													  )
-													);
-												})
-
-											), 
-
-											Context.items[day].map(function (item) {
-
-												var Spiciness = "";
-												var properties = JSON.parse(item.get("item.properties") || "{}");
-												if (properties && properties.Spiciness) {
-													Spiciness = (React.createElement("div", null, properties.Spiciness));
-												}
-
-												return (
-													React.createElement("div", {key: item.get('id'), "data-id": item.get('item_id'), "data-day": day, className: "ui modal item-block"}, 
-													  React.createElement("i", {className: "close icon"}), 
-													  React.createElement("div", {className: "header"}, 
-													  	item.get("item.title")
-													  ), 
-													  React.createElement("div", {className: "content"}, 
-													    React.createElement("div", {className: "ui medium image"}, 
-													      React.createElement("img", {className: "ui medium rounded image", src: item.get("item.photo_url")})
-													    ), 
-													    React.createElement("div", {className: "description"}, 
-													    	React.createElement("p", null, Spiciness), 
-													        React.createElement("p", null, React.createElement("b", null, "$", item.get("item.format.price")), "     ", item.get("item.description")), 
-													        React.createElement("form", {className: "ui fluid form"}, 
-															    makeOptions(item)
-													    	)
-													    )
-													  ), 
-													  React.createElement("div", {className: "actions"}, 
-													    React.createElement("div", {className: "ui black deny button"}, 
-													      "No thanks!"
-													    ), 
-													    React.createElement("div", {"data-link": "action:add", className: "ui positive right labeled icon button"}, 
-													      "Add Dish"
-													    )
-													  )
-													)
-												);
-											})
-
-										)
-						        	);
-						        })
-						    )
-						);
-					}
 
 					Panel = [
 
@@ -14742,7 +14616,7 @@
 				return {
 					"id": item.get('id'),
 					"tabDay": item.get("format.ddd"),
-					"tabDate": item.get("format.MMM-M")
+					"tabDate": item.get("format.MMM-D")
 				};
 			});
 
@@ -14761,6 +14635,7 @@
 						Context.appContext.set('selectedView', "Checkout");
 						return false;
 					});
+
 				},
 				fill: function (element, data, Context) {
 
@@ -14775,17 +14650,15 @@
 
 				    this.renderSection("tabs", data.tabs, function getView (data) {
 						if (
-							Context.eventToday &&
-							Context.eventToday.get('day_id') === data.id
+							Context.appContext.get('selectedDay') === data.tabDay
 						) {
 							return 'active';
 						} else {
 							return 'default';
 						}
-				    }, function hookEvents(elm) {
+				    }, function hookEvents(elm, data) {
 						elm.on("click", function () {
-	// TODO: fix
-	//						Context.appContext.set('selectedDay', tab.id);
+							Context.appContext.set('selectedDay', data.tabDay);
 							Context.appContext.set('selectedView', "Menu_Web");
 							return false;
 						});
@@ -18245,7 +18118,7 @@
 	                      value = elm.val();
 	                    }
 
-	                    if (typeof value === "object" || !value) {
+	                    if (typeof value === "object" || value === "") {
 	                        elm.addClass("error");
 	                        error = true;
 	                        return;
@@ -45059,7 +44932,7 @@
 		var config = {
 			sessionToken: JSON.parse(decodeURIComponent($('head > meta[name="session.token"]').attr("value"))),
 			context: JSON.parse(decodeURIComponent($('head > meta[name="app.context"]').attr("value"))),
-		    selectedDay: MOMENT().add(0, 'days').format("ddd"),
+		    selectedDay: MOMENT().format("ddd"),
 		    windowOrigin: window.location.origin || (window.location.protocol + "//" + window.location.host)
 		};
 
@@ -45201,12 +45074,13 @@
 					window.scrollTo(0, 0);
 				}
 			});
-
+	/*
 			appContext.on("change:selectedDay", function () {
 				if (appContext.get('selectedView') != "Landing") {
 					appContext.set('selectedView', "Landing");
 				}
 			});
+	*/
 		}
 
 		function initLiveNotify () {
@@ -45287,9 +45161,18 @@
 			} else
 			if (context.type === "event") {
 
-				if (context.dbfilter.event_id) {				
+				if (context.dbfilter.consumer_group_id) {				
+
+					return appContext.get('stores').events.loadForConsumerGroupId(context.dbfilter.consumer_group_id).then(function (events) {
+						return appContext.get('stores').menus.loadForEvents(events.map(function (event) {
+							return event.get('id');
+						}));
+					});
+
+	/*
+
 					Q.all([
-						appContext.get('stores').events.loadForId(context.dbfilter.event_id),
+						appContext.get('stores').events.loadForConsumerGroupId(context.dbfilter.consumer_group_id),
 						appContext.get('stores').menus.loadForEvent(context.dbfilter.event_id)					
 					]).then(function() {
 
@@ -45326,6 +45209,7 @@
 					}).fail(function (err) {
 						console.error("Error loading data", err.stack);
 					});
+	*/
 				}
 
 			} else
@@ -50830,9 +50714,9 @@
 		        today: "string",
 		        todayId: "string",
 		        lockedView: "string",
-		        windowOrigin: "string"
-			},
-		    session: {
+		        windowOrigin: "string",
+	//		},
+	//	    session: {
 		        selectedView: "string",
 		        selectedDay: "string"
 		    },
@@ -58111,13 +57995,11 @@
 
 	var store = new Store();
 
-	/*
-	for (var day=0 ; day<=4 ; day++) {
+	for (var day=1 ; day<=5 ; day++) {
 		store.add({
-			"id": COMMON.API.MOMENT().add(day, 'days').format("YYYY-MM-DD")
+			"id": COMMON.API.MOMENT().startOf('week').add(day, 'days').format("YYYY-MM-DD")
 		});
 	}
-	*/
 
 	exports['for'] = function (context) {
 
@@ -58136,19 +58018,20 @@
 		            	return COMMON.API.MOMENT(this.id, "YYYY-MM-DD").format("ddd");
 		            }
 			    },
-			    "format.MMM-M": {
+			    "format.MMM-D": {
 					deps: [
 						"id"
 					],
 		            fn: function () {
-		            	return COMMON.API.MOMENT(this.id, "YYYY-MM-DD").format("MMM M");
+		            	return COMMON.API.MOMENT(this.id, "YYYY-MM-DD").format("MMM D");
 		            }
 			    }
 			}
 		});
 
 		store.loadForEvent = function (event_id) {
-
+	// TODO: DEPRECATE
+	/*
 			var day_id = context.appContext.get('stores').events.get(event_id).get("day_id");
 
 			if (!store.get(day_id)) {
@@ -58156,7 +58039,7 @@
 					"id": day_id
 				});
 			}
-
+	*/
 			return COMMON.API.Q.resolve();
 		}
 
@@ -58351,6 +58234,22 @@
 		            }),
 		            success: function () {
 		            	return callback(null);
+		            }
+		        });
+			})();
+		}
+
+		store.loadForConsumerGroupId = function (id) {
+			var self = this;
+			return COMMON.API.Q.denodeify(function (callback) {
+		        self.fetch({
+		            data: $.param({
+		                "filter[consumer_group_id]": id
+		            }),
+		            success: function () {
+		            	return callback(null, store.where({
+		            		"consumer_group_id": id
+		            	}));
 		            }
 		        });
 			})();
@@ -59052,6 +58951,20 @@
 		        self.fetch({
 		            data: $.param({
 		                "filter[event_id]": ""+event_id
+		            }),
+		            success: function () {
+		            	return callback(null);
+		            }
+		        });
+			})();
+		}
+
+		store.loadForEvents = function (event_ids) {
+			var self = this;
+			return COMMON.API.Q.denodeify(function (callback) {
+		        self.fetch({
+		            data: $.param({
+		                "filter[event_id]": event_ids
 		            }),
 		            success: function () {
 		            	return callback(null);

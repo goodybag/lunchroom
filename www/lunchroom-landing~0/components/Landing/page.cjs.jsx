@@ -62,7 +62,7 @@ module.exports = function (Context) {
 <section className="page-section section-dark" id="new-menu-everyday">
   <div className="container">
     <h1 className="section-title">A new menu every day</h1>
-    <img src="/lunchroom-landing~0/resources/assets/img~browsers_3mockups-9efbc85.png" className="section-screenshot" alt="Menu screenshot"/>
+    <img src="/lunchroom-landing~0/resources/assets/img~browsers_3mockups-de6a12d.png" className="section-screenshot" alt="Menu screenshot"/>
   </div>
 </section>
 
