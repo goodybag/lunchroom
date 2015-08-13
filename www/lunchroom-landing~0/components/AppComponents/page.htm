@@ -18,34 +18,34 @@
 <section class="page-section" id="section-lunchroom-header" component:id="navbar">
   <div class="lunchroom-header">
     <div class="container">
-      <div class="tabs">
-        <a class="active" href="#">Mon<small>Jan 26</small></a>
-        <a href="#">Tues<small>Jan 27</small></a>
-        <a href="#">Weds<small>Jan 28</small></a>
-        <a href="#">Thurs<small>Jan 29</small></a>
-        <a href="#">Fri<small>Jan 30</small></a>
+      <div class="tabs" component:section="tabs">
+        <a component:section="tabs" component:view="active" class="active" href="#"><span component:prop="tabDay">Mon</span><small component:prop="tabDate">Jan 26</small></a>
+        <a component:section="tabs" component:view="default" href="#"><span component:prop="tabDay">Tues</span><small component:prop="tabDate">Jan 27</small></a>
+        <a href="#"><span component:prop="tabDay">Weds</span><small component:prop="tabDate">Jan 28</small></a>
+        <a href="#"><span component:prop="tabDay">Thurs</span><small component:prop="tabDate">Jan 29</small></a>
+        <a href="#"><span component:prop="tabDay">Fri</span><small component:prop="tabDate">Jan 30</small></a>
       </div>
       <div class="module">
-        Delivery to: <small>Bazaarvoice</small>
+        Delivery to: <small component:prop="deliverTo">Bazaarvoice</small>
       </div>
       <div class="module">
-        Delivery Time: <small>12:00-12:30 PM</small>
+        Delivery Time: <small component:prop="deliveryTime">12:00-12:30 PM</small>
       </div>
       <div class="module">
         Time left to order:
-        <small class="text-important">1 hr 26min</small>
+        <small class="text-important" component:prop="timeLeftToOrder">1 hr 26min</small>
       </div>
       <div class="module module-right module-unpadded">
-        <a class="btn btn-primary" href="checkout">Checkout (1)</a>
+        <a component:elm="checkoutButton" class="btn btn-primary" href="checkout">Checkout (<span component:prop="cartItemCount">1</span>)</a>
       </div>
     </div>
   </div>
 </section>
 
-<section class="page-section" id="section-item-tiles">
+<section class="page-section" id="section-item-tiles" component:id="menu">
   <div class="container">
     <div class="tiles item-tiles">
-        <div class="tile item-tile">
+        <div class="tile item-tile" component:id="menu-item">
           <div class="tile-cover" style="background-image: url('https://www.filepicker.io/api/file/SZoK9zUvTPWXzmK81aGg/convert?w=400&amp;h=195&amp;fit=crop');">
           </div>
           <div class="tile-info">
@@ -58,7 +58,7 @@
             <button class="btn btn-default btn-add" data-toggle="modal" data-target="#item-modal">Add</button>
           </div>
         </div>
-        <div class="tile item-tile">
+        <div class="tile item-tile" component:id="menu-item">
           <div class="tile-cover" style="background-image: url('https://www.filepicker.io/api/file/SZoK9zUvTPWXzmK81aGg/convert?w=400&amp;h=195&amp;fit=crop');">
           </div>
           <div class="tile-info">
@@ -71,7 +71,7 @@
             <button class="btn btn-default btn-add" data-toggle="modal" data-target="#item-modal">Add</button>
           </div>
         </div>
-        <div class="tile item-tile">
+        <div class="tile item-tile" component:id="menu-item">
           <div class="tile-cover" style="background-image: url('https://www.filepicker.io/api/file/SZoK9zUvTPWXzmK81aGg/convert?w=400&amp;h=195&amp;fit=crop');">
           </div>
           <div class="tile-info">
@@ -82,7 +82,7 @@
             <button class="btn btn-default btn-add" data-toggle="modal" data-target="#item-modal">Add</button>
           </div>
         </div>
-        <div class="tile item-tile">
+        <div class="tile item-tile" component:id="menu-item">
           <div class="tile-cover" style="background-image: url('https://www.filepicker.io/api/file/SZoK9zUvTPWXzmK81aGg/convert?w=400&amp;h=195&amp;fit=crop');">
           </div>
           <div class="tile-info">
@@ -95,7 +95,7 @@
             <button class="btn btn-default btn-add" data-toggle="modal" data-target="#item-modal">Add</button>
           </div>
         </div>
-        <div class="tile item-tile">
+        <div class="tile item-tile" component:id="menu-item">
           <div class="tile-cover" style="background-image: url('https://www.filepicker.io/api/file/SZoK9zUvTPWXzmK81aGg/convert?w=400&amp;h=195&amp;fit=crop');">
           </div>
           <div class="tile-info">
@@ -108,7 +108,7 @@
             <button class="btn btn-default btn-add" data-toggle="modal" data-target="#item-modal">Add</button>
           </div>
         </div>
-        <div class="tile item-tile">
+        <div class="tile item-tile" component:id="menu-item">
           <div class="tile-cover" style="background-image: url('https://www.filepicker.io/api/file/SZoK9zUvTPWXzmK81aGg/convert?w=400&amp;h=195&amp;fit=crop');">
           </div>
           <div class="tile-info">
@@ -121,7 +121,7 @@
             <button class="btn btn-default btn-add" data-toggle="modal" data-target="#item-modal">Add</button>
           </div>
         </div>
-        <div class="tile item-tile">
+        <div class="tile item-tile" component:id="menu-item">
           <div class="tile-cover" style="background-image: url('https://www.filepicker.io/api/file/SZoK9zUvTPWXzmK81aGg/convert?w=400&amp;h=195&amp;fit=crop');">
           </div>
           <div class="tile-info">
@@ -134,7 +134,7 @@
             <button class="btn btn-default btn-add" data-toggle="modal" data-target="#item-modal">Add</button>
           </div>
         </div>
-        <div class="tile item-tile">
+        <div class="tile item-tile" component:id="menu-item">
           <div class="tile-cover" style="background-image: url('https://www.filepicker.io/api/file/SZoK9zUvTPWXzmK81aGg/convert?w=400&amp;h=195&amp;fit=crop');">
           </div>
           <div class="tile-info">
@@ -147,7 +147,7 @@
             <button class="btn btn-default btn-add" data-toggle="modal" data-target="#item-modal">Add</button>
           </div>
         </div>
-        <div class="tile item-tile">
+        <div class="tile item-tile" component:id="menu-item">
           <div class="tile-cover" style="background-image: url('https://www.filepicker.io/api/file/SZoK9zUvTPWXzmK81aGg/convert?w=400&amp;h=195&amp;fit=crop');">
           </div>
           <div class="tile-info">
@@ -184,15 +184,15 @@
         <h3 class="section-title">Your Info</h3>
         <div class="form-group">
           <label for="">Name</label>
-          <input type="text" class="form-control">
+          <input type="text" class="form-control" component:elm="info[name]">
         </div>
         <div class="form-group">
           <label for="">Email</label>
-          <input type="email" class="form-control">
+          <input type="email" class="form-control" component:elm="info[email]">
         </div>
         <div class="form-group">
           <label for="">Phone Number</label>
-          <input type="tel" class="form-control">
+          <input type="tel" class="form-control" component:elm="info[phone]">
         </div>
         <p class="checkout-info-note">We'll email/text you when your meal has arrived!</p>
       </div>
@@ -200,22 +200,22 @@
         <h3 class="section-title">Payment Info</h3>
           <div class="form-group form-group-member-name">
             <label for="">Name on card</label>
-            <input type="text" class="form-control" name="card_member_name">
+            <input type="text" class="form-control" name="card_member_name" component:elm="card[name]">
           </div>
           <div class="inline-form-group-list">
             <div class="form-group form-group-card-number">
               <label for="">Card number</label>
-              <input type="text" class="form-control" name="card_number">
+              <input type="text" class="form-control" name="card_number" component:elm="card[number]">
             </div>
             <div class="form-group form-group-card-cvv">
               <label for="">CVV</label>
-              <input type="text" class="form-control" name="card_cvv">
+              <input type="text" class="form-control" name="card_cvv" component:elm="card[cvc]">
             </div>
             <div class="form-group form-group-expiration">
               <label for="">Expiration date</label>
-              <input type="text" class="form-control" placeholder="MM" name="card_expiration_month">
+              <input type="text" class="form-control" placeholder="MM" name="card_expiration_month" component:elm="card[expire-month]">
               /
-              <input type="text" class="form-control" placeholder="YY" name="card_expiration_year">
+              <input type="text" class="form-control" placeholder="YY" name="card_expiration_year" component:elm="card[expire-year]">
             </div>
           </div>
       </div>
@@ -227,51 +227,55 @@
   <div class="container">
     <div class="order-reviewer">
       <h3 class="order-reviewer-header">Today's order
-        <a href="#" class="order-reviewer-item-add-link">Add items</a>
+        <a href="#" class="order-reviewer-item-add-link" component:elm="addItemsLink">Add items</a>
       </h3>
 
-      <div class="order-reviewer-items">
-          <div class="order-reviewer-item">
+      <div class="order-reviewer-items" component:section="items">
+          <div class="order-reviewer-item" component:section="items" component:view="default">
             <div class="order-reviewer-item-col photo-col">
-              <img src="https://www.filepicker.io/api/file/SZoK9zUvTPWXzmK81aGg/convert?w=352&amp;h=210&amp;fit=crop" alt="Pirata Dos Tacos">
+              <img src="https://www.filepicker.io/api/file/SZoK9zUvTPWXzmK81aGg/convert?w=352&amp;h=210&amp;fit=crop" alt="Pirata Dos Tacos" component:prop="photo">
             </div>
             <div class="order-reviewer-item-col item-desc">
               <div class="order-reviewer-item-description-wrapper">
                 <div class="order-reviewer-item-description">
-                  <h4 class="order-reviewer-item-title">Pirata Dos Tacos</h4>
+                  <h4 class="order-reviewer-item-title" component:prop="title">Pirata Dos Tacos</h4>
                 </div>
                 <ul class="order-reviewer-item-actions">
-                  <li class="action"><a href="#">edit</a></li>
-                  <li class="action"><a href="#">remove</a></li>
+                  <li class="action"><a href="#" component:elm="removeLink">remove</a></li>
                 </ul>
               </div>
             </div>
             <div class="order-reviewer-item-col">
-              <strong>Quantity:</strong> 1
+              <strong>Quantity:</strong> <span component:prop="quantity">1</span>
             </div>
-            <div class="order-reviewer-item-col price-col">
+            <div class="order-reviewer-item-col price-col" component:prop="price">
+              $10.90
+            </div>
+            <div class="order-reviewer-item-col price-col" component:prop="amount">
               $10.90
             </div>
           </div>
-          <div class="order-reviewer-item">
+          <div class="order-reviewer-item" component:section="items" component:view="default">
             <div class="order-reviewer-item-col photo-col">
-              <img src="https://www.filepicker.io/api/file/SZoK9zUvTPWXzmK81aGg/convert?w=352&amp;h=210&amp;fit=crop" alt="Poop Taco Box">
+              <img src="https://www.filepicker.io/api/file/SZoK9zUvTPWXzmK81aGg/convert?w=352&amp;h=210&amp;fit=crop" alt="Poop Taco Box" component:prop="photo">
             </div>
             <div class="order-reviewer-item-col item-desc">
               <div class="order-reviewer-item-description-wrapper">
                 <div class="order-reviewer-item-description">
-                  <h4 class="order-reviewer-item-title">Poop Taco Box</h4>
+                  <h4 class="order-reviewer-item-title" component:prop="title">Poop Taco Box</h4>
                 </div>
                 <ul class="order-reviewer-item-actions">
-                  <li class="action"><a href="#">edit</a></li>
-                  <li class="action"><a href="#">remove</a></li>
+                  <li class="action"><a href="#" component:elm="removeLink">remove</a></li>
                 </ul>
               </div>
             </div>
             <div class="order-reviewer-item-col">
-              <strong>Quantity:</strong> 1
+              <strong>Quantity:</strong> <span component:prop="quantity">1</span>
             </div>
-            <div class="order-reviewer-item-col price-col">
+            <div class="order-reviewer-item-col price-col" component:prop="price">
+              $12.00
+            </div>
+            <div class="order-reviewer-item-col price-col" component:prop="amount">
               $12.00
             </div>
           </div>
@@ -286,22 +290,22 @@
       <div class="order-summary">
         <div class="order-summary-item">
           <div class="order-summary-col order-summary-key">Subtotal</div>
-          <div class="order-summary-col order-summary-value">$8.80</div>
+          <div class="order-summary-col order-summary-value" component:prop="subtotal">$8.80</div>
         </div>
         <div class="order-summary-item">
-          <div class="order-summary-col order-summary-key">Tax</div>
-          <div class="order-summary-col order-summary-value">$0.73</div>
+          <div class="order-summary-col order-summary-key">Tax (<span component:prop="taxRate">5%</span>)</div>
+          <div class="order-summary-col order-summary-value" component:prop="taxAmount">$0.73</div>
         </div>
         <div class="order-summary-item">
           <div class="order-summary-col order-summary-key">Goodybag Fee</div>
-          <div class="order-summary-col order-summary-value">$2.99</div>
+          <div class="order-summary-col order-summary-value" component:prop="goodybagFee">$2.99</div>
         </div>
         <div class="order-summary-item order-summary-item-total">
           <div class="order-summary-col order-summary-key">Total</div>
-          <div class="order-summary-col order-summary-value">$12.37</div>
+          <div class="order-summary-col order-summary-value" component:prop="total">$12.37</div>
         </div>
       </div>
-      <button class="btn btn-primary btn-place-order">Place Order</button>
+      <button class="btn btn-primary btn-place-order" component:elm="placeOrderButton">Place Order</button>
     </div>
   </div>
 </section>
@@ -309,7 +313,7 @@
 <section class="page-section" id="section-order-success" component:id="order-success">
   <div class="container order-success">
     <img src="/lunchroom-landing~0/resources/assets/img~success-d84e5c8.png" alt="" class="success-img">
-    <p class="order-success-note">Your order is placed and will be <strong>delivered today between 12:00-12:30pm</strong>.</p>
+    <p class="order-success-note">Your order is placed and will be <strong>delivered today between <span component:prop="pickupTime">12:00-12:30pm</span></strong>.</p>
     <p class="order-success-note">We'll send you an email when it arrives.</p>
 
     <div class="menu-share">

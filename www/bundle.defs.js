@@ -413,12 +413,12 @@
 		if (skin === "app") {
 			return __webpack_require__(9);
 		} else {
-			return __webpack_require__(118);
+			return __webpack_require__(129);
 		}
 	}
 
 
-	__webpack_require__(160);
+	__webpack_require__(170);
 
 
 	// ##################################################
@@ -427,9 +427,9 @@
 
 
 	var React = __webpack_require__(15);
-	var Backbone = __webpack_require__(161);
+	var Backbone = __webpack_require__(171);
 	Backbone.$ = window.$;
-	__webpack_require__(163);
+	__webpack_require__(173);
 
 
 
@@ -450,19 +450,19 @@
 
 	var storeContext = {};
 
-	var appContext = __webpack_require__(170)['for']({
+	var appContext = __webpack_require__(180)['for']({
 		stores: {
-			days: __webpack_require__(241)['for'](storeContext),
-			events: __webpack_require__(242)['for'](storeContext),
-			items: __webpack_require__(245)['for'](storeContext),
-			vendors: __webpack_require__(246)['for'](storeContext),
-			menus: __webpack_require__(247)['for'](storeContext),
-			consumers: __webpack_require__(248)['for'](storeContext),
-			consumerGroups: __webpack_require__(244)['for'](storeContext),
-			consumerGroupSubscriptions: __webpack_require__(249)['for'](storeContext),
-			cart: __webpack_require__(250)['for'](storeContext),
-			orders: __webpack_require__(251)['for'](storeContext),
-			orderStatus: __webpack_require__(252)['for'](storeContext)
+			days: __webpack_require__(251)['for'](storeContext),
+			events: __webpack_require__(252)['for'](storeContext),
+			items: __webpack_require__(255)['for'](storeContext),
+			vendors: __webpack_require__(256)['for'](storeContext),
+			menus: __webpack_require__(257)['for'](storeContext),
+			consumers: __webpack_require__(258)['for'](storeContext),
+			consumerGroups: __webpack_require__(254)['for'](storeContext),
+			consumerGroupSubscriptions: __webpack_require__(259)['for'](storeContext),
+			cart: __webpack_require__(260)['for'](storeContext),
+			orders: __webpack_require__(261)['for'](storeContext),
+			orderStatus: __webpack_require__(262)['for'](storeContext)
 		},
 		skin: skin
 		// TODO: Inject config
@@ -474,27 +474,27 @@
 
 	appContext.on("change:ready", function () {
 
+	console.log("appContext.get('context').dev", appContext.get('context').dev);
+
 		if (!appContext.get('context').dev) return;
 
 		setTimeout(function () {
 
-			if (appContext.get('selectedView') === 'Checkout') {
-
-				// DEV: Init cart
-				appContext.get('stores').cart.addItem("1");
+	//		if (appContext.get('selectedView') === 'Checkout') {
 
 				// DEV: Init order form
-				var order = appContext.get('stores').orders.getOrder(appContext.todayId);
-				order.set("form", {
+				var order = appContext.get('stores').orders.getOrder(appContext.get('todayId'));
+				order.set("form", JSON.stringify({
 				 	"info[name]": "Bill Smith",
 				 	"info[email]": "cadorn.test@gmail.com",
+				 	"info[phone]": "+17788219208",
 				 	"card[name]": "Bill Smith",
 				 	"card[cvc]": "123",
 				 	"card[number]": "1234 1234 1234 1234",
 				 	"card[expire-month]": "4",
 				 	"card[expire-year]": "2018"
-				});
-			}
+				}));
+	//		}
 
 			$('#form-subscribe input[type="email"]').val("cadorn.test@gmail.com");
 
@@ -520,16 +520,16 @@
 	// # Initialize UI and attach to DOM & Context
 	// ##################################################
 
-	try {
-
-		__webpack_require__(15).render(
-			React.createElement(skin.RootView, {appContext: appContext}),
-			document.getElementById('GBL_DEV_Views')
-		);
-
-	} catch (err) {
-		console.error("ERROR attaching react to DOM", err.stack || err.message || err);
-	}
+	$(function () {
+		try {
+			__webpack_require__(15).render(
+				React.createElement(skin.RootView, {appContext: appContext}),
+				document.getElementById('GBL_DEV_Views')
+			);
+		} catch (err) {
+			console.error("ERROR attaching react to DOM", err.stack || err.message || err);
+		}
+	});
 
 
 
@@ -571,38 +571,44 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
-	exports.RootView = __webpack_require__(104);
+	var WEB_COMPONENTS = {
+		"Header": __webpack_require__(105),
+		"Menu": __webpack_require__(108),
+		"Footer": __webpack_require__(111)
+	};
+
+	exports.RootView = __webpack_require__(114);
 
 	exports.views = {
-		"Landing": {
-			"component": __webpack_require__(106),
-			"config": {}
-		},
 		"Menu_Email": {
-			"component": __webpack_require__(108),
+			"component": __webpack_require__(116),
 			"config": {}
 		},
 		"Menu_Web": {
-			"component": __webpack_require__(110),
-			"config": {}
+			"component": __webpack_require__(10),
+			"config": {},
+			"components": WEB_COMPONENTS
 		},
 		"Checkout": {
-			"component": __webpack_require__(10),
-			"config": {}
+			"component": __webpack_require__(118),
+			"config": {},
+			"components": WEB_COMPONENTS
 		},
 		"Order_Placed": {
-			"component": __webpack_require__(112),
-			"config": {}
+			"component": __webpack_require__(123),
+			"config": {},
+			"components": WEB_COMPONENTS
 		},
 		"Receipt": {
-			"component": __webpack_require__(114),
+			"component": __webpack_require__(125),
 			"config": {}
 		},
 		"Order_Arrived": {
-			"component": __webpack_require__(116),
+			"component": __webpack_require__(127),
 			"config": {}
 		}
 	};
+
 
 
 /***/ },
@@ -617,53 +623,17 @@
 			var React = Context.REACT;
 
 			return (
-				React.createElement("main", null, 
-			      React.createElement("div", {className: "container"}, 
-			        React.createElement("div", {className: "actions"}, 
-			          React.createElement("a", {href: "/"}, "Back")
-			        ), 
+	        	React.createElement("div", {className: "ui grid"}, 
 
-			        React.createElement("form", {className: "panel form-checkout", action: ""}, 
-			          React.createElement("div", {className: "user-info-group"}, 
-			            React.createElement("h1", null, "Your Info"), 
-			            React.createElement("div", {className: "form-group"}, 
-			              React.createElement("label", {"data-for": "name"}, "Name"), 
-			              React.createElement("input", {type: "text", id: "name"})
-			            ), 
-			            React.createElement("div", {className: "form-group"}, 
-			              React.createElement("label", {"data-for": "name"}, "Email"), 
-			              React.createElement("input", {type: "email", id: "email"})
-			            ), 
-			            React.createElement("div", {className: "form-group"}, 
-			              React.createElement("i", null, "We will email you when your meal has arrived!")
-			            )
-			          ), 
-			          React.createElement("div", {className: "payment-info-group"}, 
-			            React.createElement("h1", null, "Payment Info"), 
-			            React.createElement("div", {className: "form-group"}, 
-			              React.createElement("label", {"data-for": "name-on-card"}, "Name on card"), 
-			              React.createElement("input", {type: "text", id: "name-on-card"})
-			            ), 
-			            React.createElement("div", {className: "form-group"}, 
-			              React.createElement("label", {"data-for": "card-num"}, "Card Number"), 
-			              React.createElement("input", {type: "text", id: "card-num"})
-			            ), 
-			            React.createElement("div", {className: "form-group"}, 
-			              React.createElement("label", {"data-for": "card-cvc"}, "CVC"), 
-			              React.createElement("input", {type: "text", id: "card-num"})
-			            ), 
-			            React.createElement("div", {className: "form-group"}, 
-			              React.createElement("label", {"data-for": "card-exp-month"}, "Exp Month", 
-			                React.createElement("input", {className: "input-half", type: "text", id: "card-exp-month"})
-			              ), 
-			              React.createElement("label", {"data-for": "card-exp-year"}, "Exp Year", 
-			                React.createElement("input", {className: "input-half", type: "text", id: "card-exp-year"})
-			              )
-			            )
-			          )
-			        )
-			      )
-			    )
+		        	Context.components.Header, 
+
+		        	Context.components.Menu, 
+
+					React.createElement("div", null, "Panel"), 
+
+		        	Context.components.Footer
+
+				)
 	        );
 		}
 	});
@@ -697,52 +667,62 @@
 
 		module.exports = COMPONENT.create(Context, {
 
-			appContextView: "Checkout",
+			appContextView: "Menu_Web",
 
 		    onMount: function () {
-				this.props.appContext.get('stores').cart.on("update", this._trigger_forceUpdate);
-				this.props.appContext.get('stores').orders.on("update", this._trigger_forceUpdate);
+				this.props.appContext.get('stores').events.on("sync", this._trigger_forceUpdate);
+				this.props.appContext.get('stores').menus.on("sync", this._trigger_forceUpdate);
 				this.props.appContext.get('stores').items.on("sync", this._trigger_forceUpdate);
 		    },
 
 		    onUnmount: function () {
-				this.props.appContext.get('stores').cart.off("update", this._trigger_forceUpdate);
-				this.props.appContext.get('stores').orders.off("update", this._trigger_forceUpdate);
+				this.props.appContext.get('stores').events.off("sync", this._trigger_forceUpdate);
+				this.props.appContext.get('stores').menus.off("sync", this._trigger_forceUpdate);
 				this.props.appContext.get('stores').items.off("sync", this._trigger_forceUpdate);
 		    },
 
-		    render: function() {
+		    render: function () {
 		    	var self = this;
 
-		        var cart = self.props.appContext.get('stores').cart;
-				var order = self.props.appContext.get('stores').orders.getOrder(self.props.appContext.get('todayId'));
+		        var events = self.props.appContext.get('stores').events;
+		        var menus = self.props.appContext.get('stores').menus;
 
-				var events = self.props.appContext.get('stores').events;
+		        var eventIds = {};
+
+		        var days = {};
+
+		        self.modelRecordsWithStore(events, events.where()).forEach(function (item) {
+
+					var ddd = item.get("day.format.ddd");
+					days[ddd] = item;
+
+		        	eventIds[item.get("id")] = ddd;
+		        });
+
+				var items = {};
+
+		        self.modelRecordsWithStore(menus, menus.getForEventIds(eventIds)).forEach(function (item) {
+
+					if (!items[eventIds[item.get("event_id")]]) {
+						items[eventIds[item.get("event_id")]] = [];
+					}
+	                // Group menu items per day
+					items[eventIds[item.get("event_id")]].push(item);
+		        });
 
 		        return {
 
 					eventToday: self.modelRecordsWithStore(events, events.getToday()).pop(),
 
-		        	// The items in the cart
-		        	items: self.modelRecordsWithStore(cart, cart.where()),
+		        	// Info for each event (multiple menus grouped by 'Mon", "Tue", ...)
+		        	days: days,
 
-		        	order: order,
-
-		        	summary: cart.getSummary(),
-
-		        	saveForm: function (formSelector) {
-
-		        		var values = {};
-						$(':input', $(formSelector)).each(function() {
-							values[this.name] = $(this).val();
-						});
-
-						order.set("form", values);
-		        	}
+		        	// The items for each day
+		        	items: items
 		        };
 		    }
-
 		});
+
 	}
 
 
@@ -756,7 +736,8 @@
 		UNDERSCORE: __webpack_require__(14),
 		REACT: __webpack_require__(15),
 		EXTEND: __webpack_require__(16),
-		MOMENT: __webpack_require__(17)
+		MOMENT: __webpack_require__(17),
+		GBL_TEMPLATE: __webpack_require__(104)
 	};
 
 
@@ -828,13 +809,43 @@
 
 			universalMarkup(element);
 
+
 			if (!afterRender) return;
 			afterRender.call(component, ctx, element);
 		}
 
+
+		function callTemplate (component, method) {
+			// New template-based logic.
+			if (!component._render_Context._template) return;
+			if (!component._render_Context._template[method]) return;
+
+			if (method === "markup") {
+				// Called once per mount.
+				component._render_Context._template[method](
+					$(component.getDOMNode())
+				);
+			} else
+			if (method === "fill") {
+				// Called multiple times per mount.
+				if (implementation.getTemplateData || Context.getTemplateData) {
+					component._render_Context._template[method](
+						$(component.getDOMNode()),
+						(implementation.getTemplateData || Context.getTemplateData).call(component, component._render_Context),
+						component._render_Context
+					);
+				}
+			}
+		}
+
+
 		var def = {
 
-		    displayName: implementation.displayName || 'GBL_ReactComponent',
+		    displayName:
+		    	implementation.appContextView ||
+		    	implementation.segmentName ||
+		    	implementation.displayName ||
+		    	'GBL_ReactComponent',
 
 		    _trigger_forceUpdate: function () {
 		    	var self = this;
@@ -853,9 +864,15 @@
 				if (implementation.onMount) {
 					implementation.onMount.call(this);
 				}
+
+				// New template-based logic.
+				callTemplate(this, "markup");
+				callTemplate(this, "fill");
+
 				afterRender(this);
 		    },
 		    componentDidUpdate: function () {
+				callTemplate(this, "fill");
 				afterRender(this);
 		    },
 		    componentWillUnmount: function () {
@@ -883,42 +900,97 @@
 
 
 		    render: function () {
+		    	var self = this;
 
 				// TODO: Remove this once we can inject 'React' automatically at build time.
 				var React = API.REACT;
 
+				var implName = def.displayName;
+
 		    	if (implementation.appContextView) {
-		    		if (this.props.appContext.get('selectedView') !== implementation.appContextView) {
-		    			console.log("Cancel render of view '" + implementation.appContextView + "' because it is not the selecetd view '" + this.props.appContext.get('selectedView') + "'");
+		    		if (self.props.appContext.get('selectedView') !== implementation.appContextView) {
+		    			console.log("Cancel render of view '" + implementation.appContextView + "' because it is not the selecetd view '" + self.props.appContext.get('selectedView') + "'");
 		    			return (
 		    				React.createElement("div", null)
 		    			);
 		    		}
 
-			    	console.info("Render component");
+			    	console.info("Render component: " + implName);
 		    	} else {
-			    	console.info("Render component");
+			    	console.info("Render component: " + implName);
 		    	}
 
-		    	this._render_Context = implementation.render.call(this);
+		    	self._render_Context = implementation.render.call(self);
 
-		    	this._render_Context.REACT = API.REACT;
-		    	this._render_Context.appContext = this.props.appContext;
+		    	self._render_Context._implName = implName;
 
-		        var tags = (
-		        	implementation.getHTML ||
-		        	Context.getHTML
-		        ).call(this, this._render_Context);
+		    	self._render_Context.Template = API.GBL_TEMPLATE.for(self._render_Context);
 
-		    	if (implementation.appContextView) {	    		
-	//		    	console.info("Render component:", implementation.appContextView, "tags", tags);
-		    	} else {
-	//		    	console.info("Render component:", implementation, "tags", tags);
+		    	self._render_Context.REACT = API.REACT;
+		    	self._render_Context.appContext = self.props.appContext;
+
+
+		    	// Setup sub-components for the page.
+	    		self._render_Context.components = {};
+		    	var components = self.props.appContext.get('view').components;
+		    	if (components) {
+		    		Object.keys(components).forEach(function (name) {
+						try {
+							self._render_Context.components[name] = React.createElement(
+				        		components[name],
+				        		{
+				        			appContext: self.props.appContext
+				        		}
+				        	);
+				        } catch (err) {
+				        	console.error("Error creating react element for component '" + name + "' from class:", components[name]);
+				        }
+		    		});
 		    	}
 
-		    	console.info("Hand off to react");
 
-		        return tags;
+		    	// New sub-template logic.
+		    	if (implementation.getTemplates || Context.getTemplates) {
+
+		    		if (!self._templateInstances) {
+						self._templateInstances = (
+				        	implementation.getTemplates ||
+				        	Context.getTemplates
+				        ).call(this, this._render_Context);
+				    }
+
+			        self._render_Context.templates = self._templateInstances;
+		    	}
+
+
+		    	if (implementation.getHTML || Context.getHTML) {
+			        var tags = (
+			        	implementation.getHTML ||
+			        	Context.getHTML
+			        ).call(this, this._render_Context);
+
+			    	console.info("Hand off to react: " + implName);
+
+			        return tags;
+			    } else
+		    	if (implementation.getTemplate || Context.getTemplate) {
+
+		    		if (!self._templateInstance) {
+
+						self._templateInstance = (
+				        	implementation.getTemplate ||
+				        	Context.getTemplate
+				        ).call(this, this._render_Context);
+				    }
+
+			        self._render_Context._template = self._templateInstance;
+
+			    	console.info("Hand off to react template: " + implName);
+
+			        return this._render_Context._template.impl;
+		    	} else {
+		    		throw new Error("No template source declared!");
+		    	}
 		    }
 		};
 
@@ -14036,91 +14108,500 @@
 
 /***/ },
 /* 104 */
+/***/ function(module, exports) {
+
+	/** @jsx React.DOM */
+	exports['for'] = function (Context) {
+
+		var Template = function (options) {
+			var self = this;
+			self.impl = options.impl(Context);
+			self.comp = Context.REACT.createClass({
+				componentDidMount: function () {
+					var elm = $(this.getDOMNode());			
+					if (self.markup) {
+						self.markup(elm);
+					}
+					if (self.fill) {
+						self.fill(elm, Context, Context);
+					}
+				},
+				componentDidUpdate: function () {
+					var elm = $(this.getDOMNode());			
+					if (self.fill) {
+						self.fill(elm, Context, Context);
+					}
+				},
+				render: function () {				
+					return self.impl;
+				}
+			});
+
+			self.markup = options.markup || null;
+			self.fill = options.fill || null;
+			self.sections = {};
+		}
+
+		Template.prototype.fillProperties = function (element, data) {
+			var self = this;
+
+			$('[data-component-prop]', element).each(function () {
+				var propertyElement = $(this);
+				var propertyName = propertyElement.attr("data-component-prop");
+				if (typeof data[propertyName] === "undefined") {
+					console.warn("Property '" + propertyName + "' not set for component: " + Context._implName);
+					data[propertyName] = "?";
+				}
+				propertyElement.html(data[propertyName]);
+			});
+		}
+
+		Template.prototype.fillElements = function (element, data) {
+			var self = this;
+
+			$('[data-component-elm]', element).each(function () {
+				var propertyElement = $(this);
+				var propertyName = propertyElement.attr("data-component-elm");
+				if (typeof data[propertyName] === "undefined") {
+					console.warn("Property '" + propertyName + "' not set for component: " + Context._implName);
+					data[propertyName] = "?";
+				}
+
+	console.log("TODO", "SET VALUE", data[propertyName], "FOR", propertyName, propertyElement);
+	 
+				if (propertyElement.prop("tagName") === "INPUT") {
+					propertyElement.val(data[propertyName]);
+				} else
+				if (propertyElement.prop("tagName") === "IMG") {
+					propertyElement.attr("src", data[propertyName]);
+				}
+			});
+		}
+
+		Template.prototype.liftSections = function (element) {
+			var self = this;
+
+			$('[data-component-section][data-component-view]', element).each(function () {
+				var sectionElement = $(this);
+				var sectionName = sectionElement.attr("data-component-section");
+				var sectionView = sectionElement.attr("data-component-view");
+				if (!self.sections[sectionName]) {
+					self.sections[sectionName] = {};
+				}
+				self.sections[sectionName][sectionView] = sectionElement.detach();
+			});
+		}
+
+		Template.prototype.renderSection = function (name, data, getView, hookEvents) {
+			var self = this;
+
+			var sectionContainer = $('[data-component-section="' + name + '"]');
+
+			// TODO: Rather than resetting container, update changed rows only.
+			sectionContainer.html("");
+
+		    data.forEach(function (record) {
+
+		    	var view = getView(record);
+
+		    	if (!self.sections[name][view]) {
+		    		throw new Error("View '" + view + "' for section '" + name + "' not found!");
+		    	}
+
+				var elm = self.sections[name][view].clone();
+
+				self.fillProperties(elm, record);
+
+				if (hookEvents) {
+					hookEvents(elm);
+				}
+
+				elm.appendTo(sectionContainer);
+		    });
+		}
+
+		return Template;
+	}
+
+
+
+/***/ },
+/* 105 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(module) {/** @jsx React.DOM *//** @jsx React.DOM */
-	'use strict'
-
-	var React = __webpack_require__(15);
-
-
-	__webpack_require__(105)['for'](module, {
-		getViewTabHTML: function (Context) {
-			return (
-				React.createElement("li", {className: "menu", onClick: Context.onClick}, Context.label)
-			);
-		},
+	/* WEBPACK VAR INJECTION */(function(module) {/** @jsx React.DOM */
+	__webpack_require__(106)['for'](module, {
 		getHTML: function (Context) {
-	        return (
-	        	React.createElement("div", null, 
-					React.createElement("ul", {className: "GBL_DEV_Views__menu"}, 
-						Object.keys(Context.views).map(function(viewAlias) {
-				        	return (
-				        		React.createElement(Context.ViewLink, {
-					        		key: viewAlias, 
-					        		data: Context.views[viewAlias], 
-					        		appContext: Context.appContext}
-					        	)
-					        );
-				        })
-				    ), 
 
-				    React.createElement("div", {className: "container"}, 
-						React.createElement(Context.ViewComponent, {
-					  		appContext: Context.appContext}
-					  	)
-					), 
+			var tpl = __webpack_require__(107)(Context);
 
-					React.createElement("br", null), 
-					React.createElement("br", null), 
-
-				    React.createElement("div", {className: "container"}, 
-					  Context.ViewMockup
-					), 
-
-
-				    React.createElement("div", {className: "container"}, 
-				      React.createElement("div", {className: "title"}, 
-				        React.createElement("h1", null, "Kitchen Sink", React.createElement("small", null, "examples and tid bits"))
-				      ), 
-				      React.createElement("h1", null, "h1"), 
-				      React.createElement("h2", null, "h2"), 
-				      React.createElement("h3", null, "h3"), 
-				      React.createElement("h4", null, "h4"), 
-				      React.createElement("button", {className: "btn"}, "Click"), 
-				      React.createElement("button", {className: "btn btn-checkout"}, "Checkout"), 
-				      React.createElement("p", null, 
-				        "Here is a paragraph with links ", React.createElement("a", {href: "#"}, "here"), " and", 
-				        React.createElement("a", {href: "#"}, "here"), ". Wayfarers 8-bit High Life normcore street art."
-				      ), 
-				      React.createElement("p", null, 
-				        "Truffaut squid mixtape, wayfarers irony Banksy next level. Locavore" + " " +
-				        "mumblecore sriracha, fap hashtag cornhole meggings listicle Etsy."
-				      ), 
-				      React.createElement("ul", null, 
-				        React.createElement("li", null, React.createElement("a", {href: "#"}, "Learn More"), " - Get the scoop on daily lunch specials around your office "), 
-				        React.createElement("li", null, React.createElement("a", {href: "#"}, "Get Started"), " - Click here to sign up"), 
-				        React.createElement("li", null, React.createElement("a", {href: "#"}, "Help"), " - Contact us for more assistance")
-				      ), 
-				      React.createElement("div", {className: "title"}, 
-				        React.createElement("h1", null, "Inputs")
-				      ), 
-				      React.createElement("p", null, "Inline inputs"), 
-				      React.createElement("input", {type: "text", placeholder: "Text input"}), 
-				      React.createElement("input", {type: "text", placeholder: "Text input"}), 
-				      React.createElement("input", {type: "text", placeholder: "Text input"}), 
-				      React.createElement("p", null, "Block level inputs"), 
-				      React.createElement("input", {type: "text", placeholder: "Charlie Sheen", className: "input-block"})
-				    )
-			    )
-	        );
+			return tpl;
 		}
 	});
 
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(11)(module)))
 
 /***/ },
-/* 105 */
+/* 106 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/** @jsx React.DOM */
+	var COMPONENT = __webpack_require__(13);
+
+	exports['for'] = function (module, Context) {
+
+	console.log("INIT HEADER COMPONENT", module, Context);
+
+		module.exports = COMPONENT.create(Context, {
+
+			segmentName: "Header",
+
+		    render: function () {
+		    	var self = this;
+
+	console.log("RENDER HEADER COMPONENT");
+
+		        return {};
+		    }
+		});
+
+	}
+
+
+/***/ },
+/* 107 */
+/***/ function(module, exports) {
+
+	/** @jsx React.DOM */module.exports = function (Context) {
+	  // TODO: Remove this once we can inject 'React' automatically at build time.
+	  var React = Context.REACT;
+	  return (
+	    React.createElement("header", {className: "navbar collapsed"}, 
+
+	      React.createElement("div", {className: "container"}, 
+	        React.createElement("a", {href: "/"}, 
+	          React.createElement("img", {src: "https://d3bqck8kwfkhx5.cloudfront.net/img/logo.png", alt: "Goodybag.com", className: "navbar-logo"})
+	        )
+	      )
+	    
+	    )
+	  );
+	}
+
+/***/ },
+/* 108 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(module) {/** @jsx React.DOM */
+	__webpack_require__(109)['for'](module, {
+
+		getTemplateData: function (Context) {
+
+			var data = {};
+
+			if (Context.eventToday) {
+				data['deliveryTime'] = Context.eventToday.get("format.deliveryTime");
+				data['timeLeftToOrder'] = Context.eventToday.get("format.orderTimer");
+				data['deliverTo'] = Context.eventToday.get("consumerGroup.title");
+				data['cartItemCount'] = Context.cartItemCount;
+			}
+
+			data["tabs"] = Context.days.map(function (item) {
+				return {
+					"id": item.get('id'),
+					"tabDay": item.get("format.ddd"),
+					"tabDate": item.get("format.MMM-M")
+				};
+			});
+
+			return data;
+		},
+
+		getTemplate: function (Context) {
+
+			return new Context.Template({
+				impl: __webpack_require__(110),
+				markup: function (element) {
+
+					this.liftSections(element);
+
+					$('[data-component-elm="checkoutButton"]', element).click(function () {
+						Context.appContext.set('selectedView', "Checkout");
+						return false;
+					});
+				},
+				fill: function (element, data, Context) {
+
+					this.fillProperties(element, data);
+
+					// TODO: Verify
+				    if (data.cartItemCount > 0) {
+				    	$('[data-component-elm="checkoutButton"]', element).removeClass("disabled");
+				    } else {
+				    	$('[data-component-elm="checkoutButton"]', element).addClass("disabled");
+				    }
+
+				    this.renderSection("tabs", data.tabs, function getView (data) {
+						if (
+							Context.eventToday &&
+							Context.eventToday.get('day_id') === data.id
+						) {
+							return 'active';
+						} else {
+							return 'default';
+						}
+				    }, function hookEvents(elm) {
+						elm.on("click", function () {
+	// TODO: fix
+	//						Context.appContext.set('selectedDay', tab.id);
+							Context.appContext.set('selectedView', "Menu_Web");
+							return false;
+						});
+				    });
+				}
+			});
+		}
+	});
+
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(11)(module)))
+
+/***/ },
+/* 109 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/** @jsx React.DOM */
+	var COMPONENT = __webpack_require__(13);
+
+	exports['for'] = function (module, Context) {
+
+		module.exports = COMPONENT.create(Context, {
+
+			segmentName: "Menu",
+
+		    onMount: function () {
+				this.props.appContext.get('stores').cart.on("update", this._trigger_forceUpdate);
+				this.props.appContext.get('stores').events.on("update", this._trigger_forceUpdate);
+		    },
+
+		    onUnmount: function () {
+		    	if (this.eventsCheckInterval) {
+		    		clearInterval(this.eventsCheckInterval);
+		    		this.eventsCheckInterval = null;
+		    	}
+				this.props.appContext.get('stores').cart.off("update", this._trigger_forceUpdate);
+				this.props.appContext.get('stores').events.off("update", this._trigger_forceUpdate);
+		    },
+
+			afterRender: function (Context, element) {
+				var self = this;
+
+	// TODO: Port
+				$('.menu .item', element).tab();
+				$('.menu .item', element).on('click', function () {
+					var selectedDay = $(this).attr("data-tab");
+					Context.appContext.set('selectedDay', selectedDay);
+					Context.appContext.set('selectedView', "Menu_Web");
+				});
+				$('.menu .item', element).removeClass('active');
+			    $('.menu .item[data-tab="' + Context.appContext.get('selectedDay') + '"]', element).addClass('active');
+
+
+			    Context.ensureForNodes(
+			    	$('.button[data-link]', element),
+			    	'click',
+			    	function () {
+			    		var selectedView = $(this).attr("data-link").replace(/^#/, "");
+						Context.appContext.set('selectedView', selectedView);
+			    	}
+			    );
+
+
+			    if (Context.cartItemCount > 0) {
+			    	$('.button[data-link="#Checkout"]', element).removeClass("disabled");
+			    } else {
+			    	$('.button[data-link="#Checkout"]', element).addClass("disabled");
+			    }
+
+
+	// TODO: Port
+			    if (
+			    	Context.eventToday &&
+			    	!self.eventsCheckInterval
+			    ) {
+			    	var lastOrderTimer = null;
+			    	self.eventsCheckInterval = setInterval(function () {
+						if (lastOrderTimer === null) {
+							lastOrderTimer = Context.eventToday.get('format.orderTimer');
+						} else
+						if (Context.eventToday.get('format.orderTimer') !== lastOrderTimer) {
+							lastOrderTimer = Context.eventToday.get('format.orderTimer');
+							self._trigger_forceUpdate();
+						}
+						if (Context.eventToday.get("ordersLocked") && self.eventsCheckInterval) {
+							// Once orders are locked we can stop querying.
+							clearInterval(self.eventsCheckInterval);
+		    				self.eventsCheckInterval = null;
+						}
+					}, 1 * 1000);
+				}
+			},
+
+		    render: function () {
+		    	var self = this;
+
+		        var days = self.props.appContext.get('stores').days;
+		        var cart = self.props.appContext.get('stores').cart;
+		        var events = self.props.appContext.get('stores').events;
+
+		        var cartItemCount = 0;
+
+		        return {
+
+		        	// The menu grouped by 'Mon", "Tue", ...
+		        	days: self.modelRecordsWithStore(days, days.where()),
+
+		        	// The shopping cart
+		        	cart: self.modelRecordsWithStore(cart, cart.where()).map(function (item) {
+		        		cartItemCount += item.get("quantity");
+		        		return item;
+		        	}),
+
+		        	cartItemCount: cartItemCount,
+
+		        	eventToday: self.modelRecordsWithStore(events, events.getToday()).pop()
+		        };
+		    }
+
+		});
+
+	}
+
+
+/***/ },
+/* 110 */
+/***/ function(module, exports) {
+
+	/** @jsx React.DOM */module.exports = function (Context) {
+	  // TODO: Remove this once we can inject 'React' automatically at build time.
+	  var React = Context.REACT;
+	  return (
+	    React.createElement("section", {className: "page-section", id: "section-lunchroom-header"}, 
+
+	  React.createElement("div", {className: "lunchroom-header"}, 
+	    React.createElement("div", {className: "container"}, 
+	      React.createElement("div", {className: "tabs", "data-component-section": "tabs"}, 
+	        React.createElement("a", {"data-component-section": "tabs", "data-component-view": "active", className: "active", href: "#"}, React.createElement("span", {"data-component-prop": "tabDay"}, "Mon"), React.createElement("small", {"data-component-prop": "tabDate"}, "Jan 26")), 
+	        React.createElement("a", {"data-component-section": "tabs", "data-component-view": "default", href: "#"}, React.createElement("span", {"data-component-prop": "tabDay"}, "Tues"), React.createElement("small", {"data-component-prop": "tabDate"}, "Jan 27")), 
+	        React.createElement("a", {href: "#"}, React.createElement("span", {"data-component-prop": "tabDay"}, "Weds"), React.createElement("small", {"data-component-prop": "tabDate"}, "Jan 28")), 
+	        React.createElement("a", {href: "#"}, React.createElement("span", {"data-component-prop": "tabDay"}, "Thurs"), React.createElement("small", {"data-component-prop": "tabDate"}, "Jan 29")), 
+	        React.createElement("a", {href: "#"}, React.createElement("span", {"data-component-prop": "tabDay"}, "Fri"), React.createElement("small", {"data-component-prop": "tabDate"}, "Jan 30"))
+	      ), 
+	      React.createElement("div", {className: "module"}, 
+	        "Delivery to: ", React.createElement("small", {"data-component-prop": "deliverTo"}, "Bazaarvoice")
+	      ), 
+	      React.createElement("div", {className: "module"}, 
+	        "Delivery Time: ", React.createElement("small", {"data-component-prop": "deliveryTime"}, "12:00-12:30 PM")
+	      ), 
+	      React.createElement("div", {className: "module"}, 
+	        "Time left to order:", 
+	        React.createElement("small", {className: "text-important", "data-component-prop": "timeLeftToOrder"}, "1 hr 26min")
+	      ), 
+	      React.createElement("div", {className: "module module-right module-unpadded"}, 
+	        React.createElement("a", {"data-component-elm": "checkoutButton", className: "btn btn-primary", href: "checkout"}, "Checkout (", React.createElement("span", {"data-component-prop": "cartItemCount"}, "1"), ")")
+	      )
+	    )
+	  )
+
+	    )
+	  );
+	}
+
+/***/ },
+/* 111 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(module) {/** @jsx React.DOM */
+	__webpack_require__(112)['for'](module, {
+		getHTML: function (Context) {
+
+			var tpl = __webpack_require__(113)(Context);
+
+			return tpl;
+		}
+	});
+
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(11)(module)))
+
+/***/ },
+/* 112 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/** @jsx React.DOM */
+	var COMPONENT = __webpack_require__(13);
+
+	exports['for'] = function (module, Context) {
+
+		module.exports = COMPONENT.create(Context, {
+
+			segmentName: "Footer",
+
+		    render: function () {
+		    	var self = this;
+
+
+	console.log("render footer comp");
+
+		        return {};
+		    }
+		});
+
+	}
+
+
+/***/ },
+/* 113 */
+/***/ function(module, exports) {
+
+	/** @jsx React.DOM */module.exports = function (Context) {
+	  // TODO: Remove this once we can inject 'React' automatically at build time.
+	  var React = Context.REACT;
+	  return (
+	    React.createElement("footer", {className: "footer"}, 
+
+	  React.createElement("ul", {className: "nav footer-nav"}, 
+	    React.createElement("li", null, React.createElement("a", {href: "#", "data-toggle": "modal", "data-target": "#contact-us-modal"}, "Contact Us")), 
+	    React.createElement("li", null, React.createElement("a", {href: "https://www.goodybag.com/legal"}, "Terms of service")), 
+	    React.createElement("li", null, React.createElement("a", {href: "https://www.goodybag.com/privacy"}, "Privacy policy"))
+	  )
+
+	    )
+	  );
+	}
+
+/***/ },
+/* 114 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(module) {/** @jsx React.DOM *//** @jsx React.DOM */
+	'use strict'
+
+
+	__webpack_require__(115)['for'](module, {
+		getHTML: function (Context) {
+
+			// TODO: Remove this once we can inject 'React' automatically at build time.
+			var React = Context.REACT;
+
+			return (
+				React.createElement(Context.ViewComponent, {appContext: Context.appContext})
+			);
+		}
+	});
+
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(11)(module)))
+
+/***/ },
+/* 115 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM *//** @jsx React.DOM */
@@ -14245,6 +14726,7 @@
 		    	}
 
 		        return context.getHTML.call(self, {
+		        	REACT: COMPONENT.API.REACT,
 		        	ViewLink: ViewLink,
 		        	ViewComponent: ViewComponent,
 		        	ViewMockup: ViewMockup,
@@ -14260,102 +14742,18 @@
 
 
 /***/ },
-/* 106 */
+/* 116 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(module) {/** @jsx React.DOM */
-	__webpack_require__(107)['for'](module, {
-
-		getHTML: function (Context) {
-
-
-			// TODO: Remove this once we can inject 'React' automatically at build time.
-			var React = Context.REACT;
-
-
-	        return (
-	        	React.createElement("div", {className: "ui grid"}, 
-
-				    React.createElement("div", {className: "sixteen wide column"}, 
-
-				    	"Landing Page"
-
-					)
-
-				)
-	        );
-		}
-	});
-
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(11)(module)))
-
-/***/ },
-/* 107 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/** @jsx React.DOM */
-	var COMPONENT = __webpack_require__(13);
-
-	exports['for'] = function (module, Context) {
-
-		module.exports = COMPONENT.create(Context, {
-
-			appContextView: "Landing",
-
-		    onMount: function () {
-				this.props.appContext.get('stores').consumerGroups.on("sync", this._trigger_forceUpdate);
-		    },
-
-		    onUnmount: function () {
-				this.props.appContext.get('stores').consumerGroups.off("sync", this._trigger_forceUpdate);
-		    },
-
-		    render: function () {
-		    	var self = this;
-
-		        var consumerGroups = self.props.appContext.get('stores').consumerGroups;
-				var consumerGroup = self.modelRecordsWithStore(consumerGroups, consumerGroups.where())[0];
-
-		        var consumerGroupSubscriptions = self.props.appContext.get('stores').consumerGroupSubscriptions;
-				var consumerGroupSubscription = self.modelRecordsWithStore(consumerGroupSubscriptions, consumerGroupSubscriptions.where())[0];
-
-		        return {
-
-		        	config: {
-		        		doNothingOnEmptyEmailSubmit: true
-		        	},
-
-		        	consumerGroup: consumerGroup,
-		        	consumerGroupSubscription: consumerGroupSubscription,
-
-		        	subscribeWithEmail: function (email) {
-
-						self.props.appContext.get('stores').consumerGroupSubscriptions.subscribeWithEmail(
-							consumerGroup.get("id"), email
-						);
-					}
-		        };
-		    }
-		});
-
-	}
-
-
-/***/ },
-/* 108 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/* WEBPACK VAR INJECTION */(function(module) {/** @jsx React.DOM */
-	__webpack_require__(109)['for'](module, {
+	__webpack_require__(117)['for'](module, {
 		getHTML: function (Context) {
 
 			// TODO: Remove this once we can inject 'React' automatically at build time.
 			var React = Context.REACT;
 
 			return (
-				React.createElement("main", null, 
-					"TODO: Menu Web"
-			    )
+				React.createElement("div", null, "Menu Email")
 	        );
 		}
 	});
@@ -14363,7 +14761,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(11)(module)))
 
 /***/ },
-/* 109 */
+/* 117 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
@@ -14443,135 +14841,264 @@
 
 
 /***/ },
-/* 110 */
+/* 118 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(module) {/** @jsx React.DOM */
-	__webpack_require__(111)['for'](module, {
-		getHTML: function (Context) {
+	__webpack_require__(119)['for'](module, {
 
+
+
+
+		getTemplates: function (Context) {
+			return {
+				"form": new Context.Template({
+					impl: __webpack_require__(120),
+					markup: function (element) {
+					},
+					fill: function (element, data, Context) {
+				    	var values = Context.order.get("form");
+				    	if (values) {
+				    		values = JSON.parse(values);
+
+							this.fillProperties(element, values);
+							this.fillElements(element, values);
+						}
+					}
+				}),
+				"items": new Context.Template({
+					impl: __webpack_require__(121),
+					markup: function (element) {
+
+	console.log("MARKUP ITEMS", element.html());
+
+					},
+					fill: function (element, data, Context) {
+
+	console.log("FILL ITEMS");
+
+					}
+				}),
+				"summary": new Context.Template({
+					impl: __webpack_require__(122),
+					markup: function (element) {
+
+						$('[data-component-elm="placeOrderButton"]', element).click(function () {
+
+	console.log("PLACE ORDER");
+
+							return false;
+						});
+
+					},
+					fill: function (element, data, Context) {
+
+						var values = {
+							"subtotal": Context.summary["format.amount"],
+							"taxRate": Context.summary["format.tax"],
+							"taxAmount": Context.summary["format.taxAmount"],
+							"goodybagFee": Context.summary["format.goodybagFee"],
+							"total": Context.summary["format.total"]
+						};
+
+						this.fillProperties(element, values);
+					}
+				})
+			};
+		},
+
+
+
+		afterRender: function (Context, element) {
+
+
+			// Remove item from cart
+		    Context.ensureForNodes(
+		    	$('.button[data-link="action:remove-item"]', element),
+		    	'click',
+		    	function () {
+		    		Context.appContext.get('stores').cart.remove($(this).attr("data-id"));
+		    	}
+		    );
+
+
+		    // Save form on change to any order field.
+		    Context.ensureForNodes(
+		    	$('#form-order select', element),
+		    	'change',
+		    	function () {
+		    		Context.saveForm('#form-order');
+		    	}
+		    );
+		    Context.ensureForNodes(
+		    	$('#form-order input', element),
+		    	'keyup',
+		    	function () {
+		    		Context.saveForm('#form-order');
+		    	}
+		    );
+
+			Context.ensureForNodes(
+	            $('.ui.dropdown', element),
+	            'dropdown()'
+	        );
+
+
+		    // Copy name from info to billing in form
+		    Context.ensureForNodes(
+		    	$('#form-order input[name="info[name]"]', element),
+		    	'keyup',
+		    	function () {
+		    		var copyName = Context.singleton('copyName');
+		    		var newValue = $(this).val();
+		    		var existingValue = $('#form-order input[name="card[name]"]', element).val();
+		    		if (
+		    			newValue === existingValue ||
+		    			// 'card[name]' was changed so we should no longer sync it.
+		    			(
+		    				copyName.lastValue &&
+			    			existingValue !== copyName.lastValue
+			    		)
+		    		) {
+		    			return;
+		    		}
+		    		copyName.lastValue = newValue;
+					$('#form-order input[name="card[name]"]', element).val(copyName.lastValue);
+		    	}
+		    );
+
+		    // Form submission
+		    Context.ensureForNodes(
+		    	$('#form-order DIV.button.form-submit', element),
+		    	'click',
+		    	function () {
+		    		Context.saveForm('#form-order');
+		    		Context.order.submit();
+		    	}
+		    );
+
+		},
+
+		getHTML: function (Context) {
 
 			// TODO: Remove this once we can inject 'React' automatically at build time.
 			var React = Context.REACT;
 
+			var panel = null;
 
-			var Items = "";
-			// TODO: Base on active selection.
-			if (Context.day) {
-				Items = [(
-					React.createElement("div", {className: "row"}, 
-			          React.createElement("div", {className: "lead"}, 
-			            React.createElement("h1", null, "Dos Batos Wood Fire Tacos")
-				            
-			            //.share-linkspan <b>Share this link</b> with coworkers to let them view the menu and place their own order!
-			            //input(type="text", value=" http://goodybag.com/bazaarvoice")
+			if (!Context.eventToday) {
 
-			          )
-			        )
-			    	),(
-			        React.createElement("div", {className: "cards"}, 
-						
-						Context.day.map(function (item) {
-	{
-		// ##################################################
-		// # Menu item summary card
-		// ##################################################
-	}
-							return (
-					          React.createElement("div", {key: item.get("id"), className: "card"}, 
-					            React.createElement("div", {className: "cover"}, 
-							      React.createElement("img", {src: "https://cdn.filepicker.io/api/file/6PqREn6qQHWCQsPdKJXK/convert?cache=true&fit=scale"})
-					            ), 
-					            React.createElement("div", {className: "info"}, 
-					              React.createElement("h1", null, item.get("item.title")), 
-					              React.createElement("button", {className: "btn btn-add"}, "+ Add"), React.createElement("span", null, "Spicy Vegetarian"), 
-					              React.createElement("div", {className: "details"}, "$10.90")
-					            )
-					          )
-							);
-						})
+				panel = (
+					React.createElement("div", {className: "sixteen wide column"}, 
+						React.createElement("div", {className: "ui message"}, 
+						  React.createElement("div", {className: "header"}, 
+						    "No active event!"
+						  )
+						)
+					)
+				);
 
-			        )
-		        )];
-			}
+			} else
+			if (Context.items.length === 0) {
 
-	        return (
-	        	React.createElement("div", null, 
+				panel = (
+					React.createElement("div", {className: "sixteen wide column"}, 
+						React.createElement("div", {className: "ui message"}, 
+						  React.createElement("div", {className: "header"}, 
+						    "Grab something ", React.createElement("a", {href: "#Menu_Web"}, "here")
+						  ), 
+						  React.createElement("p", null, "You are going to go hungry because there is nothing in your cart!")
+						)
+					)
+				);
 
-		// ##################################################
-		// # Header
-		// ##################################################
+			} else {
 
-					React.createElement("nav", null, 
-				      React.createElement("div", {className: "container"}, 
-				        React.createElement("h1", {className: "logo"}, "Goodybag")
-				      )
-				    ), 
+				panel = [
 
-		// ##################################################
-		// # Menu
-		// ##################################################
+					React.createElement(Context.templates.form.comp, null),
+					React.createElement(Context.templates.items.comp, null),
+					React.createElement(Context.templates.summary.comp, null),
 
-				    React.createElement("header", null, 
-				      React.createElement("div", {className: "container"}, 
-				        React.createElement("ul", {className: "details-list"}, 
-				          React.createElement("li", null, 
-				            React.createElement("h1", null, "Deliver To:"), 
-				            React.createElement("div", null, "Bazaarvoice")
-				          ), 
-				          React.createElement("li", null, 
-				            React.createElement("h1", null, "Delivery Time:"), 
-				            React.createElement("div", null, "12:00 - 12:30pm")
-				          ), 
-				          React.createElement("li", {className: "warning"}, 
-				            React.createElement("h1", null, "Time left to order:"), 
-				            React.createElement("div", null, "1 hr 26 min")
-				          ), 
-				          React.createElement("li", null, 
-				            React.createElement("button", {className: "btn btn-checkout"}, "Checkout (1)")
-				          )
-				        ), 
-				        React.createElement("ul", {className: "dates"}, 
-							Object.keys(Context.days).map(function (day) {
-								var item = Context.days[day][0];
+				(
+					React.createElement("div", {className: "sixteen wide column"}, 
+
+						React.createElement("br", null), 
+						React.createElement("br", null), 
+						React.createElement("div", {className: "ui message"}, 
+						  React.createElement("div", {className: "header"}, 
+						    "Grab something else ", React.createElement("a", {href: "#Menu_Web"}, "here")
+						  )
+						), 
+						React.createElement("br", null), 
+						React.createElement("br", null), 
+
+						React.createElement("table", {className: "ui table"}, 
+						  React.createElement("thead", null, 
+						    React.createElement("tr", null, 
+						      React.createElement("th", {className: "ten wide"}, "Item"), 
+						      React.createElement("th", {className: "two wide"}, "Quantity"), 
+						      React.createElement("th", {className: "two wide"}, "Price"), 
+						      React.createElement("th", {className: "two wide"}, "Amount")
+						    )
+						  ), 
+						  React.createElement("tbody", null, 
+
+				            Context.items.map(function(item) {
 								return (
-									React.createElement("li", {key: item.get("id")}, item.get("day.format.ddd"), React.createElement("small", null, item.get("day.format.MMM"), " ", item.get("day.format.D")))
+									React.createElement("tr", {key: item.get('id')}, 
+										React.createElement("td", null, 
+
+											item.get("title"), 
+
+											item.get("options"), 
+
+											"   ", 
+
+											React.createElement("div", {"data-link": "action:remove-item", "data-id": item.get('id'), className: "ui primary button"}, 
+												"Remove"
+											)
+
+										), 
+										React.createElement("td", null, item.get("quantity")), 
+										React.createElement("td", null, "$", item.get("format.price")), 
+										React.createElement("td", null, "$", item.get("format.amount"))
+									)
 								);
-							})
-				        )
-				      )
+					        })
+						    
+						  )
+						)
+			            
+			        )
+
+		        )];
+		    }
+
+			return (
+	        	React.createElement("div", {className: "ui grid"}, 
+
+		        	Context.components.Header, 
+
+		        	Context.components.Menu, 
+
+					React.createElement("div", {className: "two column row"}, 
+
+			        	panel
+
 				    ), 
 
-		// ##################################################
-		// # Page Header
-		// ##################################################
+		        	Context.components.Footer
 
-				    React.createElement("main", null, 
-				      React.createElement("div", {className: "container"}, 
-				        Items
-				      )
-				    ), 
-
-		// ##################################################
-		// # Footer
-		// ##################################################
-
-				    React.createElement("footer", null, 
-				      React.createElement("ul", null, 
-				        React.createElement("li", null, React.createElement("a", {href: "#"}, "Contact Us")), 
-				        React.createElement("li", null, React.createElement("a", {href: "#"}, "Terms of Service")), 
-				        React.createElement("li", null, React.createElement("a", {href: "#"}, "Privacy Policy"))
-				      )
-				    )
-	        	)
-	        );
+		        )
+			);
 		}
 	});
 
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(11)(module)))
 
 /***/ },
-/* 111 */
+/* 119 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
@@ -14581,80 +15108,237 @@
 
 		module.exports = COMPONENT.create(Context, {
 
-			appContextView: "Menu_Web",
+			appContextView: "Checkout",
 
 		    onMount: function () {
-				this.props.appContext.get('stores').events.on("sync", this._trigger_forceUpdate);
-				this.props.appContext.get('stores').menus.on("sync", this._trigger_forceUpdate);
+				this.props.appContext.get('stores').cart.on("update", this._trigger_forceUpdate);
+				this.props.appContext.get('stores').orders.on("update", this._trigger_forceUpdate);
 				this.props.appContext.get('stores').items.on("sync", this._trigger_forceUpdate);
 		    },
 
 		    onUnmount: function () {
-				this.props.appContext.get('stores').events.off("sync", this._trigger_forceUpdate);
-				this.props.appContext.get('stores').menus.off("sync", this._trigger_forceUpdate);
+				this.props.appContext.get('stores').cart.off("update", this._trigger_forceUpdate);
+				this.props.appContext.get('stores').orders.off("update", this._trigger_forceUpdate);
 				this.props.appContext.get('stores').items.off("sync", this._trigger_forceUpdate);
 		    },
 
-		    render: function () {
+		    render: function() {
 		    	var self = this;
 
-		        var events = self.props.appContext.get('stores').events;
-		        var menus = self.props.appContext.get('stores').menus;
+		        var cart = self.props.appContext.get('stores').cart;
+				var order = self.props.appContext.get('stores').orders.getOrder(self.props.appContext.get('todayId'));
 
-		        var eventIds = {};
-
-		        var days = {};
-
-		        self.modelRecordsWithStore(events, events.where()).forEach(function (item) {
-
-					var ddd = item.get("day.format.ddd");
-					days[ddd] = item;
-
-		        	eventIds[item.get("id")] = ddd;
-		        });
-
-				var items = {};
-
-		        self.modelRecordsWithStore(menus, menus.getForEventIds(eventIds)).forEach(function (item) {
-
-					if (!items[eventIds[item.get("event_id")]]) {
-						items[eventIds[item.get("event_id")]] = [];
-					}
-	                // Group menu items per day
-					items[eventIds[item.get("event_id")]].push(item);
-		        });
+				var events = self.props.appContext.get('stores').events;
 
 		        return {
 
 					eventToday: self.modelRecordsWithStore(events, events.getToday()).pop(),
 
-		        	// Info for each event (multiple menus grouped by 'Mon", "Tue", ...)
-		        	days: days,
+		        	// The items in the cart
+		        	items: self.modelRecordsWithStore(cart, cart.where()),
 
-		        	// The items for each day
-		        	items: items
+		        	order: order,
+
+		        	summary: cart.getSummary(),
+
+		        	saveForm: function (formSelector) {
+
+		        		var values = {};
+						$(':input', $(formSelector)).each(function() {
+							values[this.name] = $(this).val();
+						});
+
+						order.set("form", values);
+		        	}
 		        };
 		    }
-		});
 
+		});
 	}
 
 
 /***/ },
-/* 112 */
+/* 120 */
+/***/ function(module, exports) {
+
+	/** @jsx React.DOM */module.exports = function (Context) {
+	  // TODO: Remove this once we can inject 'React' automatically at build time.
+	  var React = Context.REACT;
+	  return (
+	    React.createElement("section", {className: "page-section", id: "section-checkout-info"}, 
+
+	  React.createElement("div", {className: "container"}, 
+	    React.createElement("fieldset", {className: "checkout-info form-vertical"}, 
+	      React.createElement("div", {className: "user-info"}, 
+	        React.createElement("h3", {className: "section-title"}, "Your Info"), 
+	        React.createElement("div", {className: "form-group"}, 
+	          React.createElement("label", {for: ""}, "Name"), 
+	          React.createElement("input", {type: "text", className: "form-control", "data-component-elm": "info[name]"})
+	        ), 
+	        React.createElement("div", {className: "form-group"}, 
+	          React.createElement("label", {for: ""}, "Email"), 
+	          React.createElement("input", {type: "email", className: "form-control", "data-component-elm": "info[email]"})
+	        ), 
+	        React.createElement("div", {className: "form-group"}, 
+	          React.createElement("label", {for: ""}, "Phone Number"), 
+	          React.createElement("input", {type: "tel", className: "form-control", "data-component-elm": "info[phone]"})
+	        ), 
+	        React.createElement("p", {className: "checkout-info-note"}, "We'll email/text you when your meal has arrived!")
+	      ), 
+	      React.createElement("div", {className: "payment-info"}, 
+	        React.createElement("h3", {className: "section-title"}, "Payment Info"), 
+	          React.createElement("div", {className: "form-group form-group-member-name"}, 
+	            React.createElement("label", {for: ""}, "Name on card"), 
+	            React.createElement("input", {type: "text", className: "form-control", name: "card_member_name", "data-component-elm": "card[name]"})
+	          ), 
+	          React.createElement("div", {className: "inline-form-group-list"}, 
+	            React.createElement("div", {className: "form-group form-group-card-number"}, 
+	              React.createElement("label", {for: ""}, "Card number"), 
+	              React.createElement("input", {type: "text", className: "form-control", name: "card_number", "data-component-elm": "card[number]"})
+	            ), 
+	            React.createElement("div", {className: "form-group form-group-card-cvv"}, 
+	              React.createElement("label", {for: ""}, "CVV"), 
+	              React.createElement("input", {type: "text", className: "form-control", name: "card_cvv", "data-component-elm": "card[cvc]"})
+	            ), 
+	            React.createElement("div", {className: "form-group form-group-expiration"}, 
+	              React.createElement("label", {for: ""}, "Expiration date"), 
+	              React.createElement("input", {type: "text", className: "form-control", placeholder: "MM", name: "card_expiration_month", "data-component-elm": "card[expire-month]"}), 
+	              "/", 
+	              React.createElement("input", {type: "text", className: "form-control", placeholder: "YY", name: "card_expiration_year", "data-component-elm": "card[expire-year]"})
+	            )
+	          )
+	      )
+	    )
+	  )
+
+	    )
+	  );
+	}
+
+/***/ },
+/* 121 */
+/***/ function(module, exports) {
+
+	/** @jsx React.DOM */module.exports = function (Context) {
+	  // TODO: Remove this once we can inject 'React' automatically at build time.
+	  var React = Context.REACT;
+	  return (
+	    React.createElement("section", {className: "page-section", id: "section-order-reviewer"}, 
+
+	  React.createElement("div", {className: "container"}, 
+	    React.createElement("div", {className: "order-reviewer"}, 
+	      React.createElement("h3", {className: "order-reviewer-header"}, "Today's order", 
+	        React.createElement("a", {href: "#", className: "order-reviewer-item-add-link", "data-component-elm": "addItemsLink"}, "Add items")
+	      ), 
+
+	      React.createElement("div", {className: "order-reviewer-items", "data-component-section": "items"}, 
+	          React.createElement("div", {className: "order-reviewer-item", "data-component-section": "items", "data-component-view": "default"}, 
+	            React.createElement("div", {className: "order-reviewer-item-col photo-col"}, 
+	              React.createElement("img", {src: "https://www.filepicker.io/api/file/SZoK9zUvTPWXzmK81aGg/convert?w=352&h=210&fit=crop", alt: "Pirata Dos Tacos", "data-component-prop": "photo"})
+	            ), 
+	            React.createElement("div", {className: "order-reviewer-item-col item-desc"}, 
+	              React.createElement("div", {className: "order-reviewer-item-description-wrapper"}, 
+	                React.createElement("div", {className: "order-reviewer-item-description"}, 
+	                  React.createElement("h4", {className: "order-reviewer-item-title", "data-component-prop": "title"}, "Pirata Dos Tacos")
+	                ), 
+	                React.createElement("ul", {className: "order-reviewer-item-actions"}, 
+	                  React.createElement("li", {className: "action"}, React.createElement("a", {href: "#", "data-component-elm": "removeLink"}, "remove"))
+	                )
+	              )
+	            ), 
+	            React.createElement("div", {className: "order-reviewer-item-col"}, 
+	              React.createElement("strong", null, "Quantity:"), " ", React.createElement("span", {"data-component-prop": "quantity"}, "1")
+	            ), 
+	            React.createElement("div", {className: "order-reviewer-item-col price-col", "data-component-prop": "price"}, 
+	              "$10.90"
+	            ), 
+	            React.createElement("div", {className: "order-reviewer-item-col price-col", "data-component-prop": "amount"}, 
+	              "$10.90"
+	            )
+	          ), 
+	          React.createElement("div", {className: "order-reviewer-item", "data-component-section": "items", "data-component-view": "default"}, 
+	            React.createElement("div", {className: "order-reviewer-item-col photo-col"}, 
+	              React.createElement("img", {src: "https://www.filepicker.io/api/file/SZoK9zUvTPWXzmK81aGg/convert?w=352&h=210&fit=crop", alt: "Poop Taco Box", "data-component-prop": "photo"})
+	            ), 
+	            React.createElement("div", {className: "order-reviewer-item-col item-desc"}, 
+	              React.createElement("div", {className: "order-reviewer-item-description-wrapper"}, 
+	                React.createElement("div", {className: "order-reviewer-item-description"}, 
+	                  React.createElement("h4", {className: "order-reviewer-item-title", "data-component-prop": "title"}, "Poop Taco Box")
+	                ), 
+	                React.createElement("ul", {className: "order-reviewer-item-actions"}, 
+	                  React.createElement("li", {className: "action"}, React.createElement("a", {href: "#", "data-component-elm": "removeLink"}, "remove"))
+	                )
+	              )
+	            ), 
+	            React.createElement("div", {className: "order-reviewer-item-col"}, 
+	              React.createElement("strong", null, "Quantity:"), " ", React.createElement("span", {"data-component-prop": "quantity"}, "1")
+	            ), 
+	            React.createElement("div", {className: "order-reviewer-item-col price-col", "data-component-prop": "price"}, 
+	              "$12.00"
+	            ), 
+	            React.createElement("div", {className: "order-reviewer-item-col price-col", "data-component-prop": "amount"}, 
+	              "$12.00"
+	            )
+	          )
+	      )
+	    )
+	  )
+
+	    )
+	  );
+	}
+
+/***/ },
+/* 122 */
+/***/ function(module, exports) {
+
+	/** @jsx React.DOM */module.exports = function (Context) {
+	  // TODO: Remove this once we can inject 'React' automatically at build time.
+	  var React = Context.REACT;
+	  return (
+	    React.createElement("section", {className: "page-section", id: "section-order-summary"}, 
+
+	  React.createElement("div", {className: "container"}, 
+	    React.createElement("div", {className: "order-summary-wrapper"}, 
+	      React.createElement("div", {className: "order-summary"}, 
+	        React.createElement("div", {className: "order-summary-item"}, 
+	          React.createElement("div", {className: "order-summary-col order-summary-key"}, "Subtotal"), 
+	          React.createElement("div", {className: "order-summary-col order-summary-value", "data-component-prop": "subtotal"}, "$8.80")
+	        ), 
+	        React.createElement("div", {className: "order-summary-item"}, 
+	          React.createElement("div", {className: "order-summary-col order-summary-key"}, "Tax (", React.createElement("span", {"data-component-prop": "taxRate"}, "5%"), ")"), 
+	          React.createElement("div", {className: "order-summary-col order-summary-value", "data-component-prop": "taxAmount"}, "$0.73")
+	        ), 
+	        React.createElement("div", {className: "order-summary-item"}, 
+	          React.createElement("div", {className: "order-summary-col order-summary-key"}, "Goodybag Fee"), 
+	          React.createElement("div", {className: "order-summary-col order-summary-value", "data-component-prop": "goodybagFee"}, "$2.99")
+	        ), 
+	        React.createElement("div", {className: "order-summary-item order-summary-item-total"}, 
+	          React.createElement("div", {className: "order-summary-col order-summary-key"}, "Total"), 
+	          React.createElement("div", {className: "order-summary-col order-summary-value", "data-component-prop": "total"}, "$12.37")
+	        )
+	      ), 
+	      React.createElement("button", {className: "btn btn-primary btn-place-order", "data-component-elm": "placeOrderButton"}, "Place Order")
+	    )
+	  )
+
+	    )
+	  );
+	}
+
+/***/ },
+/* 123 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(module) {/** @jsx React.DOM */
-	__webpack_require__(113)['for'](module, {
+	__webpack_require__(124)['for'](module, {
 		getHTML: function (Context) {
 
 			// TODO: Remove this once we can inject 'React' automatically at build time.
 			var React = Context.REACT;
 
 			return (
-				React.createElement("main", null, 
-					"TODO: Order Placed"
-			    )
+				React.createElement("div", null, "Order Placed")
 	        );
 		}
 	});
@@ -14662,7 +15346,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(11)(module)))
 
 /***/ },
-/* 113 */
+/* 124 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
@@ -14706,20 +15390,18 @@
 
 
 /***/ },
-/* 114 */
+/* 125 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(module) {/** @jsx React.DOM */
-	__webpack_require__(115)['for'](module, {
+	__webpack_require__(126)['for'](module, {
 		getHTML: function (Context) {
 
 			// TODO: Remove this once we can inject 'React' automatically at build time.
 			var React = Context.REACT;
 
 			return (
-				React.createElement("main", null, 
-					"TODO: Receipt"
-			    )
+				React.createElement("div", null, "Receipt")
 	        );
 		}
 	});
@@ -14727,7 +15409,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(11)(module)))
 
 /***/ },
-/* 115 */
+/* 126 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
@@ -14785,20 +15467,18 @@
 
 
 /***/ },
-/* 116 */
+/* 127 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(module) {/** @jsx React.DOM */
-	__webpack_require__(117)['for'](module, {
+	__webpack_require__(128)['for'](module, {
 		getHTML: function (Context) {
 
 			// TODO: Remove this once we can inject 'React' automatically at build time.
 			var React = Context.REACT;
 
 			return (
-				React.createElement("main", null, 
-					"TODO: Order Arrived"
-			    )
+				React.createElement("div", null, "Order Arrived")
 	        );
 		}
 	});
@@ -14806,7 +15486,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(11)(module)))
 
 /***/ },
-/* 117 */
+/* 128 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
@@ -14850,397 +15530,405 @@
 
 
 /***/ },
-/* 118 */
+/* 129 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
 	var WEB_COMPONENTS = {
-		"Header": __webpack_require__(119),
-		"Menu": __webpack_require__(120),
-		"Footer": __webpack_require__(121)
+		"Header": __webpack_require__(132),
+		"Menu": __webpack_require__(133),
+		"Footer": __webpack_require__(134)
 	};
 
 	var EMAIL_COMPONENTS = {
 		CORRESPONDENCE: {
-			"Header": __webpack_require__(122),
-			"Footer": __webpack_require__(125)
+			"Header": __webpack_require__(135),
+			"Footer": __webpack_require__(138)
 		},
 		LIST: {
-			"Header": __webpack_require__(126),
-			"Footer": __webpack_require__(129)
+			"Header": __webpack_require__(139),
+			"Footer": __webpack_require__(142)
 		}
 	};
 
 
-	exports.RootView = __webpack_require__(130);
+	exports.RootView = __webpack_require__(143);
 
 	exports.views = {
-		"Home": {
-			"component": __webpack_require__(131),
-			"config": {}
-		},
 		"Landing": {
-			"component": __webpack_require__(133),
+			"component": __webpack_require__(144),
 			"config": {}
 		},
 		"Menu_Email": {
-			"component": __webpack_require__(134),
+			"component": __webpack_require__(146),
 			"config": {},
 			"components": EMAIL_COMPONENTS.LIST
 		},
 		"Menu_Web": {
-			"component": __webpack_require__(135),
+			"component": __webpack_require__(147),
 			"config": {},
 			"components": WEB_COMPONENTS
 		},
 		"Checkout": {
-			"component": __webpack_require__(136),
+			"component": __webpack_require__(148),
 			"config": {},
 			"components": WEB_COMPONENTS
 		},
 		"Order_Placed": {
-			"component": __webpack_require__(137),
+			"component": __webpack_require__(149),
 			"config": {},
 			"components": WEB_COMPONENTS
 		},
 		"Receipt": {
-			"component": __webpack_require__(138),
+			"component": __webpack_require__(150),
 			"config": {},
 			"components": EMAIL_COMPONENTS.CORRESPONDENCE
 		},
 		"Order_Arrived": {
-			"component": __webpack_require__(139),
+			"component": __webpack_require__(151),
 			"config": {},
 			"components": WEB_COMPONENTS.CORRESPONDENCE
 		},
 		"ContactUs": {
-			"component": __webpack_require__(140),
+			"component": __webpack_require__(152),
 			"config": {},
 			"components": WEB_COMPONENTS
 		},
 		"PrivacyPolicy": {
-			"component": __webpack_require__(142),
+			"component": __webpack_require__(130),
 			"config": {},
 			"components": WEB_COMPONENTS
 		},
 		"TermsOfService": {
-			"component": __webpack_require__(144),
+			"component": __webpack_require__(154),
 			"config": {},
 			"components": WEB_COMPONENTS
 		},
 		"Admin_Events": {
 			"group": "admin",
 			"container": "iframe",
-			"component": __webpack_require__(146),
+			"component": __webpack_require__(156),
 			"config": {}
 		},
 		"Admin_Orders": {
 			"group": "admin",
 			"container": "iframe",
-			"component": __webpack_require__(147),
+			"component": __webpack_require__(157),
 			"config": {}
 		},
 		"Admin_Restaurant": {
 			"group": "admin",
 			"container": "iframe",
-			"component": __webpack_require__(148),
+			"component": __webpack_require__(158),
 			"config": {}
 		},	
 		"Model_Days": {
 			"group": "model",
-			"component": __webpack_require__(149),
+			"component": __webpack_require__(159),
 			"config": {}
 		},
 		"Model_Events": {
 			"group": "model",
-			"component": __webpack_require__(150),
+			"component": __webpack_require__(160),
 			"config": {}
 		},
 		"Model_Vendors": {
 			"group": "model",
-			"component": __webpack_require__(151),
+			"component": __webpack_require__(161),
 			"config": {}
 		},
 		"Model_Items": {
 			"group": "model",
-			"component": __webpack_require__(152),
+			"component": __webpack_require__(162),
 			"config": {}
 		},
 		"Model_Menus": {
 			"group": "model",
-			"component": __webpack_require__(153),
+			"component": __webpack_require__(163),
 			"config": {}
 		},
 		"Model_ConsumerGroups": {
 			"group": "model",
-			"component": __webpack_require__(154),
+			"component": __webpack_require__(164),
 			"config": {}
 		},
 		"Model_Consumers": {
 			"group": "model",
-			"component": __webpack_require__(155),
+			"component": __webpack_require__(165),
 			"config": {}
 		},
 		"Model_ConsumerGroupSubscriptions": {
 			"group": "model",
-			"component": __webpack_require__(156),
+			"component": __webpack_require__(166),
 			"config": {}
 		},
 		"Model_Cart": {
 			"group": "model",
-			"component": __webpack_require__(157),
+			"component": __webpack_require__(167),
 			"config": {}
 		},
 		"Model_Orders": {
 			"group": "model",
-			"component": __webpack_require__(158),
+			"component": __webpack_require__(168),
 			"config": {}
 		},
 		"Model_OrderStatus": {
 			"group": "model",
-			"component": __webpack_require__(159),
+			"component": __webpack_require__(169),
 			"config": {}
 		}
 	};
 
 
 /***/ },
-/* 119 */
+/* 130 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/** @jsx React.DOM */
-	var React = __webpack_require__(15);
+	/* WEBPACK VAR INJECTION */(function(module) {/** @jsx React.DOM */
+	__webpack_require__(131)['for'](module, {
 
-	module.exports = (
-	    React.createElement("div", {id: "page-header", className: "sixteen wide column"}, 
+		getHTML: function (Context) {
 
-	    	React.createElement("h1", {className: "ui header"}, React.createElement("a", {href: "#", "data-link": "#Landing"}, "Goodybag"))
 
-	    )
-	);
+			// TODO: Remove this once we can inject 'React' automatically at build time.
+			var React = Context.REACT;
 
+
+	        return (
+	        	React.createElement("div", {className: "ui grid page-content"}, 
+
+		        	Context.appContext.get('view').components.Header, 
+
+				    React.createElement("div", {className: "sixteen wide column"}, 
+
+	React.createElement("h1", {className: "page-title"}, "Privacy Policy"), 
+
+	React.createElement("h3", null, "WHAT DO WE USE YOUR INFORMATION FOR?"), 
+	React.createElement("p", null, "Any of the information we collect from you may be used in one of the following ways:"), 
+	React.createElement("ul", null, 
+		React.createElement("li", null, "To personalize your experience. (Your information helps us to better respond to your individual needs.) "), 
+		React.createElement("li", null, "To improve our website. (We continually strive to improve our website offerings based on the information and feedback we receive from you.)"), 
+		React.createElement("li", null, "To improve customer service. (Your information helps us to more effectively respond to your customer service requests and support needs.)"), 
+		React.createElement("li", null, "To process transactions. (Your information, whether public or private, will not be sold, exchanged, transferred, or given to any other company for any reason whatsoever, without your consent, other than for the express purpose of delivering the purchased product or service requested.)"), 
+		React.createElement("li", null, "To administer a contest, promotion, survey, or other site feature."), 
+		React.createElement("li", null, "To send periodic emails. (The email address you provide for order processing may be used to send you information and updates pertaining to your order, in addition to occasional company news, updates, related product or service information, etc.)")
+	), 
+	React.createElement("h3", null, "HOW DO WE PROTECT YOUR INFORMATION?"), 
+	React.createElement("p", null, "We implement a variety of security measures to maintain the safety of your personal information when you place an order or enter, submit, or access your personal information."), 
+	React.createElement("p", null, "We offer the use of a secure server. All supplied sensitive/credit information is transmitted via Secure Socket Layer (SSL) technology and then encrypted into our payment gateway provider's database only to be accessed by those authorized with special access rights to such systems, who are required to keep the information confidential."), 
+	React.createElement("h3", null, "DO WE USE COOKIES?"), 
+	React.createElement("p", null, "Yes. Cookies are small files that a site or its service provider transfers to your computer's hard drive through your Web browser (if you \"Allow\") that enables the site's or service provider's systems to recognize your browser and capture and remember certain information. We use cookies to understand and save your preferences for future visits and compile aggregate data about site traffic and site interaction so that we can offer better site experiences and tools."), 
+	React.createElement("h3", null, "DO WE DISCLOSE ANY INFORMATION TO OUTSIDE PARTIES?"), 
+	React.createElement("p", null, "We do not sell, trade, or otherwise transfer to outside parties your personally identifiable information. This does not include trusted third parties who assist us in operating our website, conducting our business, or servicing you, so long as those parties agree to keep this information confidential. We may also release your information when we believe release is appropriate to comply with the law, enforce our site policies, or protect our or others' rights, property, or safety. However, non-personally identifiable visitor information may be provided to other parties for marketing, advertising, or other uses."), 
+	React.createElement("h3", null, "THIRD-PARTY LINKS"), 
+	React.createElement("p", null, "Occasionally, at our discretion, we may include or offer third-party products or services on our website. These third-party sites have separate and independent privacy policies. We therefore have no responsibility or liability for the content and activities of these linked sites. Nonetheless, we seek to protect the integrity of our site and welcome any feedback about these sites."), 
+	React.createElement("h3", null, "CALIFORNIA ONLINE PRIVACY PROTECTION ACT COMPLIANCE"), 
+	React.createElement("p", null, "Because we value your privacy, we have taken the necessary precautions to be in compliance with the California Online Privacy Protection Act. We therefore will not distribute your personal information to outside parties without your consent. As part of the California Online Privacy Protection Act, all users of our site may make any changes to their information at anytime by logging into their account and going to the ", React.createElement("a", {href: "/users/me"}, "'Profile View/Edit'"), " page."), 
+	React.createElement("h3", null, "CHILDREN’S ONLINE PRIVACY PROTECTION ACT"), 
+	React.createElement("p", null, "We are in compliance with the requirements of COPPA (Children’s Online Privacy Protection Act): We do not collect any information from anyone under 13 years of age. Our website, products, and services are all directed to individuals who are at least 13 years old or older."), 
+	React.createElement("h3", null, "ONLINE PRIVACY POLICY ONLY"), 
+	React.createElement("p", null, "This Online Privacy Policy applies only to information collected through our website and not to information collected offline."), 
+	React.createElement("h3", null, "TERMS AND CONDITIONS"), 
+	React.createElement("p", null, "Please also visit our ", React.createElement("a", {href: "/legal"}, "Terms and Conditions section"), " establishing the use, disclaimers, and limitations of liability governing the use of our website at www.goodybag.com and biz.goodybag.com."), 
+	React.createElement("h3", null, "YOUR CONSENT"), 
+	React.createElement("p", null, "By using our site, you consent to our Online Privacy Policy."), 
+	React.createElement("h3", null, "CHANGES TO OUR PRIVACY POLICY"), 
+	React.createElement("p", null, "If we decide to change our privacy policy, we will post any changes to this page, and/or update the Privacy Policy modification date below."), 
+	React.createElement("p", null, "This policy was last modified on 6/18/2013."), 
+	React.createElement("h3", null, "CONTACT US"), 
+	React.createElement("p", null, "If you have any questions regarding this Privacy Policy you may contact us using the following:", React.createElement("br", null), 
+	React.createElement("a", {href: "http://www.goodybag.com"}, "www.goodybag.com"), React.createElement("br", null), 
+	React.createElement("a", {href: "mailto:support@goodybag.com"}, "support@goodybag.com"))
+
+					), 
+
+		        	Context.appContext.get('view').components.Footer
+
+				)
+	        );
+		}
+	});
+
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(11)(module)))
 
 /***/ },
-/* 120 */
+/* 131 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
 	var COMPONENT = __webpack_require__(13);
 
-	exports['for'] = function (Context) {
+	exports['for'] = function (module, Context) {
 
-		var Tag = COMPONENT.create(Context, {
+		module.exports = COMPONENT.create(Context, {
 
-		    displayName: 'Menu',
-
-		    onMount: function () {
-				this.props.appContext.get('stores').cart.on("update", this._trigger_forceUpdate);
-				this.props.appContext.get('stores').events.on("update", this._trigger_forceUpdate);
-		    },
-
-		    onUnmount: function () {
-		    	if (this.eventsCheckInterval) {
-		    		clearInterval(this.eventsCheckInterval);
-		    		this.eventsCheckInterval = null;
-		    	}
-				this.props.appContext.get('stores').cart.off("update", this._trigger_forceUpdate);
-				this.props.appContext.get('stores').events.off("update", this._trigger_forceUpdate);
-		    },
-
-			afterRender: function (Context, element) {
-				var self = this;
-
-				$('.menu .item', element).tab();
-				$('.menu .item', element).on('click', function () {
-					var selectedDay = $(this).attr("data-tab");
-					Context.appContext.set('selectedDay', selectedDay);
-					Context.appContext.set('selectedView', "Menu_Web");
-				});
-				$('.menu .item', element).removeClass('active');
-			    $('.menu .item[data-tab="' + Context.appContext.get('selectedDay') + '"]', element).addClass('active');
-
-			    Context.ensureForNodes(
-			    	$('.button[data-link]', element),
-			    	'click',
-			    	function () {
-			    		var selectedView = $(this).attr("data-link").replace(/^#/, "");
-						Context.appContext.set('selectedView', selectedView);
-			    	}
-			    );
-
-			    if (Context.cartItemCount > 0) {
-			    	$('.button[data-link="#Checkout"]', element).removeClass("disabled");
-			    } else {
-			    	$('.button[data-link="#Checkout"]', element).addClass("disabled");
-			    }
-
-			    if (
-			    	Context.eventToday &&
-			    	!self.eventsCheckInterval
-			    ) {
-			    	var lastOrderTimer = null;
-			    	self.eventsCheckInterval = setInterval(function () {
-						if (lastOrderTimer === null) {
-							lastOrderTimer = Context.eventToday.get('format.orderTimer');
-						} else
-						if (Context.eventToday.get('format.orderTimer') !== lastOrderTimer) {
-							lastOrderTimer = Context.eventToday.get('format.orderTimer');
-							self._trigger_forceUpdate();
-						}
-						if (Context.eventToday.get("ordersLocked") && self.eventsCheckInterval) {
-							// Once orders are locked we can stop querying.
-							clearInterval(self.eventsCheckInterval);
-		    				self.eventsCheckInterval = null;
-						}
-					}, 1 * 1000);
-				}
-			},
+			appContextView: "PrivacyPolicy",
 
 		    render: function () {
 		    	var self = this;
 
-		        var days = self.props.appContext.get('stores').days;
-		        var cart = self.props.appContext.get('stores').cart;
-		        var events = self.props.appContext.get('stores').events;
-
-		        var cartItemCount = 0;
-
 		        return {
-
-		        	// The menu grouped by 'Mon", "Tue", ...
-		        	days: self.modelRecordsWithStore(days, days.where()),
-
-		        	// The shopping cart
-		        	cart: self.modelRecordsWithStore(cart, cart.where()).map(function (item) {
-		        		cartItemCount += item.get("quantity");
-		        		return item;
-		        	}),
-
-		        	cartItemCount: cartItemCount,
-
-		        	eventToday: self.modelRecordsWithStore(events, events.getToday()).pop()
 		        };
-		    },
-
-		    getHTML: function (Context) {
-
-				var DaysTabs = "";
-
-				var SneakPeak = "";
-				if (Context.appContext.get('selectedDay') !== Context.appContext.get('today')) {
-					SneakPeak = (
-						React.createElement("div", null, 
-							"Sneak Peak! (You can look but not order)"
-						)
-					);
-				}
-
-				DaysTabs = (
-				    React.createElement("div", {className: "seven wide column"}, 
-						React.createElement("div", {className: "ui top attached tabular menu"}, 
-							Context.days.map(function (item) {
-					        	return React.createElement("div", {key: item.get('id'), className: "item", "data-tab": item.get("format.ddd")}, item.get("format.ddd"));
-							})		
-						), 
-						SneakPeak
-				    )
-				);
-
-				var DeliveryTime = "";
-				var TimeLeft = "";
-				var CompanyHeading = "";
-				if (Context.eventToday) {
-					DeliveryTime = (
-					    React.createElement("div", {className: "three wide column"}, 
-					    	"Delivery Time:", React.createElement("br", null), 
-					    	React.createElement("b", null, Context.eventToday.get("format.deliveryTime"))
-					    )
-					);
-					if (Context.eventToday.get("format.orderTimer")) {
-						TimeLeft = (
-							React.createElement("div", {className: "three wide column"}, 
-						    	"Time left to order:", React.createElement("br", null), 
-						    	React.createElement("b", null, Context.eventToday.get("format.orderTimer"))
-						    )
-						);
-					}
-					CompanyHeading = (
-						React.createElement("div", {className: "six wide column"}, 
-							React.createElement("div", {className: "ui basic segment"}, 
-							  "For company: ", React.createElement("b", null, Context.eventToday.get("consumerGroup.title"))
-							)
-						)
-					);
-					if (Context.appContext.get('selectedView') === "Menu_Web") {
-						CompanyHeading = [
-							{CompanyHeading:CompanyHeading},
-							(
-								React.createElement("div", {className: "ten wide column"}
-
-								)
-							)
-						];
-					}
-				}
-
-				return (
-					React.createElement("div", {id: "page-menu", className: "five column row"}, 
-
-						DaysTabs, 
-					    
-					    DeliveryTime, 
-					    TimeLeft, 
-					    React.createElement("div", {className: "three wide right aligned column"}, 
-							React.createElement("div", {"data-link": "#Checkout", className: "ui primary button"}, 
-							  "Checkout (", Context.cartItemCount, ")"
-							)
-					    ), 
-
-					    CompanyHeading
-
-				    )
-				);
 		    }
 		});
 
-		var React = COMPONENT.API.REACT;
-		return (
-			React.createElement(Tag, {appContext: Context.appContext})
-		);
 	}
 
 
 /***/ },
-/* 121 */
+/* 132 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/** @jsx React.DOM */
-	var React = __webpack_require__(15);
+	/* WEBPACK VAR INJECTION */(function(module) {/** @jsx React.DOM */
+	__webpack_require__(106)['for'](module, {
+		getHTML: function (Context) {
 
-	module.exports = (
-		React.createElement("div", {id: "page-footer", className: "sixteen wide column"}, 
+			// TODO: Remove this once we can inject 'React' automatically at build time.
+			var React = Context.REACT;
 
-			React.createElement("div", {className: "ui secondary center aligned segment"}, 
-			  React.createElement("p", null, React.createElement("a", {"data-link": "#ContactUs"}, "Contact Us"), " | ", React.createElement("a", {"data-link": "#TermsOfService"}, "Terms of Service"), " | ", React.createElement("a", {"data-link": "#PrivacyPolicy"}, "Privacy Policy"))
-			)
+			return (
+	    	    React.createElement("div", {id: "page-header", className: "sixteen wide column"}, 
 
-		)
-	);
+					React.createElement("h1", {className: "ui header"}, React.createElement("a", {href: "#", "data-link": "#Landing"}, "Goodybag"))
 
+				)
+	        );
+		}
+	});
+
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(11)(module)))
 
 /***/ },
-/* 122 */
-[253, 123],
-/* 123 */
-[254, 124],
-/* 124 */
+/* 133 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(module) {/** @jsx React.DOM */
+	__webpack_require__(109)['for'](module, {
+		getHTML: function (Context) {
+
+			// TODO: Remove this once we can inject 'React' automatically at build time.
+			var React = Context.REACT;
+
+			var DaysTabs = "";
+
+	// TODO: Port
+			var SneakPeak = "";
+			if (Context.appContext.get('selectedDay') !== Context.appContext.get('today')) {
+				SneakPeak = (
+					React.createElement("div", null, 
+						"Sneak Peak! (You can look but not order)"
+					)
+				);
+			}
+
+			DaysTabs = (
+			    React.createElement("div", {className: "seven wide column"}, 
+					React.createElement("div", {className: "ui top attached tabular menu"}, 
+						Context.days.map(function (item) {
+				        	return React.createElement("div", {key: item.get('id'), className: "item", "data-tab": item.get("format.ddd")}, item.get("format.ddd"));
+						})		
+					), 
+					SneakPeak
+			    )
+			);
+
+			var DeliveryTime = "";
+			var TimeLeft = "";
+			var CompanyHeading = "";
+			if (Context.eventToday) {
+				DeliveryTime = (
+				    React.createElement("div", {className: "three wide column"}, 
+				    	"Delivery Time:", React.createElement("br", null), 
+				    	React.createElement("b", null, Context.eventToday.get("format.deliveryTime"))
+				    )
+				);
+				if (Context.eventToday.get("format.orderTimer")) {
+					TimeLeft = (
+						React.createElement("div", {className: "three wide column"}, 
+					    	"Time left to order:", React.createElement("br", null), 
+					    	React.createElement("b", null, Context.eventToday.get("format.orderTimer"))
+					    )
+					);
+				}
+				CompanyHeading = (
+					React.createElement("div", {className: "six wide column"}, 
+						React.createElement("div", {className: "ui basic segment"}, 
+						  "For company: ", React.createElement("b", null, Context.eventToday.get("consumerGroup.title"))
+						)
+					)
+				);
+				if (Context.appContext.get('selectedView') === "Menu_Web") {
+					CompanyHeading = [
+						{CompanyHeading:CompanyHeading},
+						(
+							React.createElement("div", {className: "ten wide column"}
+
+							)
+						)
+					];
+				}
+			}
+
+			return (
+				React.createElement("div", {id: "page-menu", className: "five column row"}, 
+
+					DaysTabs, 
+				    
+				    DeliveryTime, 
+				    TimeLeft, 
+				    React.createElement("div", {className: "three wide right aligned column"}, 
+						React.createElement("div", {"data-link": "#Checkout", className: "ui primary button"}, 
+						  "Checkout (", Context.cartItemCount, ")"
+						)
+				    ), 
+
+				    CompanyHeading
+
+			    )
+			);
+		}
+	});
+
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(11)(module)))
+
+/***/ },
+/* 134 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(module) {/** @jsx React.DOM */
+	__webpack_require__(112)['for'](module, {
+		getHTML: function (Context) {
+
+			// TODO: Remove this once we can inject 'React' automatically at build time.
+			var React = Context.REACT;
+
+			return (
+	        	React.createElement("div", {id: "page-footer", className: "sixteen wide column"}, 
+
+					React.createElement("div", {className: "ui secondary center aligned segment"}, 
+					  React.createElement("p", null, React.createElement("a", {"data-link": "#ContactUs"}, "Contact Us"), " | ", React.createElement("a", {"data-link": "#TermsOfService"}, "Terms of Service"), " | ", React.createElement("a", {"data-link": "#PrivacyPolicy"}, "Privacy Policy"))
+					)
+
+				)
+	        );
+		}
+	});
+
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(11)(module)))
+
+/***/ },
+/* 135 */
+[263, 136],
+/* 136 */
+[264, 137],
+/* 137 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(4)();
 	exports.push([module.id, "", ""]);
 
 /***/ },
-/* 125 */
+/* 138 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
@@ -15261,18 +15949,18 @@
 
 
 /***/ },
-/* 126 */
-[253, 127],
-/* 127 */
-[254, 128],
-/* 128 */
+/* 139 */
+[263, 140],
+/* 140 */
+[264, 141],
+/* 141 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(4)();
 	exports.push([module.id, "\n.ui.basic.table.GBL_Skin_invisibleTable td {\n\tborder-top: 0px !important;\n}\n.ui.basic.table.GBL_Skin_lessPadding td {\n\tpadding-top: 3px;\n\tpadding-bottom: 3px;\n}\n\n.ui.table tr.GBL_Skin_invisibleRowBorder td {\n\tborder-top: 0px !important;\n}\n.ui.table tr.GBL_Skin_lessPadding td {\n\tpadding-top: 3px !important;\n\tpadding-bottom: 3px !important;\n}\n", ""]);
 
 /***/ },
-/* 129 */
+/* 142 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
@@ -15299,16 +15987,14 @@
 
 
 /***/ },
-/* 130 */
+/* 143 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(module) {/** @jsx React.DOM *//** @jsx React.DOM */
 	'use strict'
 
-	var React = __webpack_require__(15);
 
-
-	__webpack_require__(105)['for'](module, {
+	__webpack_require__(115)['for'](module, {
 		getViewTabHTML: function (Context) {
 			return (
 			  React.createElement("div", {className: "item", onClick: Context.onClick}, 
@@ -15319,6 +16005,9 @@
 			);
 		},
 		getHTML: function (Context) {
+
+			// TODO: Remove this once we can inject 'React' automatically at build time.
+			var React = Context.REACT;
 
 			if (
 				!Context.isTopFrame ||
@@ -15443,65 +16132,11 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(11)(module)))
 
 /***/ },
-/* 131 */
+/* 144 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(module) {/** @jsx React.DOM */
-	__webpack_require__(132)['for'](module, {
-
-		getHTML: function (Context) {
-
-
-			// TODO: Remove this once we can inject 'React' automatically at build time.
-			var React = Context.REACT;
-
-
-	        return (
-	        	React.createElement("div", {className: "ui grid"}, 
-
-				    React.createElement("div", {className: "sixteen wide column"}, 
-
-				    	"Home"
-
-					)
-
-				)
-	        );
-		}
-	});
-
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(11)(module)))
-
-/***/ },
-/* 132 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/** @jsx React.DOM */
-	var COMPONENT = __webpack_require__(13);
-
-	exports['for'] = function (module, Context) {
-
-		module.exports = COMPONENT.create(Context, {
-
-			appContextView: "Home",
-
-		    render: function () {
-		    	var self = this;
-
-		        return {
-		        };
-		    }
-		});
-
-	}
-
-
-/***/ },
-/* 133 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/* WEBPACK VAR INJECTION */(function(module) {/** @jsx React.DOM */
-	__webpack_require__(107)['for'](module, {
+	__webpack_require__(145)['for'](module, {
 
 		afterRender: function (Context, element) {
 			var self = this;
@@ -15834,11 +16469,63 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(11)(module)))
 
 /***/ },
-/* 134 */
+/* 145 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/** @jsx React.DOM */
+	var COMPONENT = __webpack_require__(13);
+
+	exports['for'] = function (module, Context) {
+
+		module.exports = COMPONENT.create(Context, {
+
+			appContextView: "Landing",
+
+		    onMount: function () {
+				this.props.appContext.get('stores').consumerGroups.on("sync", this._trigger_forceUpdate);
+		    },
+
+		    onUnmount: function () {
+				this.props.appContext.get('stores').consumerGroups.off("sync", this._trigger_forceUpdate);
+		    },
+
+		    render: function () {
+		    	var self = this;
+
+		        var consumerGroups = self.props.appContext.get('stores').consumerGroups;
+				var consumerGroup = self.modelRecordsWithStore(consumerGroups, consumerGroups.where())[0];
+
+		        var consumerGroupSubscriptions = self.props.appContext.get('stores').consumerGroupSubscriptions;
+				var consumerGroupSubscription = self.modelRecordsWithStore(consumerGroupSubscriptions, consumerGroupSubscriptions.where())[0];
+
+		        return {
+
+		        	config: {
+		        		doNothingOnEmptyEmailSubmit: true
+		        	},
+
+		        	consumerGroup: consumerGroup,
+		        	consumerGroupSubscription: consumerGroupSubscription,
+
+		        	subscribeWithEmail: function (email) {
+
+						self.props.appContext.get('stores').consumerGroupSubscriptions.subscribeWithEmail(
+							consumerGroup.get("id"), email
+						);
+					}
+		        };
+		    }
+		});
+
+	}
+
+
+/***/ },
+/* 146 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(module) {/** @jsx React.DOM */
-	__webpack_require__(109)['for'](module, {
+	__webpack_require__(117)['for'](module, {
 		getHTML: function (Context) {
 
 
@@ -15954,11 +16641,11 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(11)(module)))
 
 /***/ },
-/* 135 */
+/* 147 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(module) {/** @jsx React.DOM */
-	__webpack_require__(111)['for'](module, {
+	__webpack_require__(12)['for'](module, {
 		afterRender: function (Context, element) {
 
 			$('.tab', element).removeClass('active');
@@ -16178,13 +16865,13 @@
 	        return (
 	        	React.createElement("div", {className: "ui grid"}, 
 
-		        	Context.appContext.get('view').components.Header, 
+		        	Context.components.Header, 
 
-		        	Context.appContext.get('view').components.Menu['for'](Context), 
+		        	Context.components.Menu, 
 
 					Panel, 
 
-				    Context.appContext.get('view').components.Footer
+		        	Context.components.Footer
 
 				)
 	        );
@@ -16195,11 +16882,11 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(11)(module)))
 
 /***/ },
-/* 136 */
+/* 148 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(module) {/** @jsx React.DOM */
-	__webpack_require__(12)['for'](module, {
+	__webpack_require__(119)['for'](module, {
 
 		afterRender: function (Context, element) {
 
@@ -16517,7 +17204,7 @@
 
 		        	Context.appContext.get('view').components.Header, 
 
-		        	Context.appContext.get('view').components.Menu['for'](Context), 
+		        	Context.appContext.get('view').components.Menu, 
 
 					React.createElement("div", {className: "two column row"}, 
 
@@ -16535,11 +17222,11 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(11)(module)))
 
 /***/ },
-/* 137 */
+/* 149 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(module) {/** @jsx React.DOM */
-	__webpack_require__(113)['for'](module, {
+	__webpack_require__(124)['for'](module, {
 
 		afterRender: function (Context, element) {
 		},
@@ -16615,11 +17302,11 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(11)(module)))
 
 /***/ },
-/* 138 */
+/* 150 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(module) {/** @jsx React.DOM */
-	__webpack_require__(115)['for'](module, {
+	__webpack_require__(126)['for'](module, {
 
 		afterRender: function (Context, element) {
 		},
@@ -16767,11 +17454,11 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(11)(module)))
 
 /***/ },
-/* 139 */
+/* 151 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(module) {/** @jsx React.DOM */
-	__webpack_require__(117)['for'](module, {
+	__webpack_require__(128)['for'](module, {
 
 		afterRender: function (Context, element) {
 		},
@@ -16828,11 +17515,11 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(11)(module)))
 
 /***/ },
-/* 140 */
+/* 152 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(module) {/** @jsx React.DOM */
-	__webpack_require__(141)['for'](module, {
+	__webpack_require__(153)['for'](module, {
 
 		afterRender: function (Context, element) {
 			var self = this;
@@ -16964,7 +17651,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(11)(module)))
 
 /***/ },
-/* 141 */
+/* 153 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
@@ -16988,106 +17675,11 @@
 
 
 /***/ },
-/* 142 */
+/* 154 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(module) {/** @jsx React.DOM */
-	__webpack_require__(143)['for'](module, {
-
-		getHTML: function (Context) {
-
-
-			// TODO: Remove this once we can inject 'React' automatically at build time.
-			var React = Context.REACT;
-
-
-	        return (
-	        	React.createElement("div", {className: "ui grid page-content"}, 
-
-		        	Context.appContext.get('view').components.Header, 
-
-				    React.createElement("div", {className: "sixteen wide column"}, 
-
-	React.createElement("h1", {className: "page-title"}, "Privacy Policy"), 
-
-	React.createElement("h3", null, "WHAT DO WE USE YOUR INFORMATION FOR?"), 
-	React.createElement("p", null, "Any of the information we collect from you may be used in one of the following ways:"), 
-	React.createElement("ul", null, 
-		React.createElement("li", null, "To personalize your experience. (Your information helps us to better respond to your individual needs.) "), 
-		React.createElement("li", null, "To improve our website. (We continually strive to improve our website offerings based on the information and feedback we receive from you.)"), 
-		React.createElement("li", null, "To improve customer service. (Your information helps us to more effectively respond to your customer service requests and support needs.)"), 
-		React.createElement("li", null, "To process transactions. (Your information, whether public or private, will not be sold, exchanged, transferred, or given to any other company for any reason whatsoever, without your consent, other than for the express purpose of delivering the purchased product or service requested.)"), 
-		React.createElement("li", null, "To administer a contest, promotion, survey, or other site feature."), 
-		React.createElement("li", null, "To send periodic emails. (The email address you provide for order processing may be used to send you information and updates pertaining to your order, in addition to occasional company news, updates, related product or service information, etc.)")
-	), 
-	React.createElement("h3", null, "HOW DO WE PROTECT YOUR INFORMATION?"), 
-	React.createElement("p", null, "We implement a variety of security measures to maintain the safety of your personal information when you place an order or enter, submit, or access your personal information."), 
-	React.createElement("p", null, "We offer the use of a secure server. All supplied sensitive/credit information is transmitted via Secure Socket Layer (SSL) technology and then encrypted into our payment gateway provider's database only to be accessed by those authorized with special access rights to such systems, who are required to keep the information confidential."), 
-	React.createElement("h3", null, "DO WE USE COOKIES?"), 
-	React.createElement("p", null, "Yes. Cookies are small files that a site or its service provider transfers to your computer's hard drive through your Web browser (if you \"Allow\") that enables the site's or service provider's systems to recognize your browser and capture and remember certain information. We use cookies to understand and save your preferences for future visits and compile aggregate data about site traffic and site interaction so that we can offer better site experiences and tools."), 
-	React.createElement("h3", null, "DO WE DISCLOSE ANY INFORMATION TO OUTSIDE PARTIES?"), 
-	React.createElement("p", null, "We do not sell, trade, or otherwise transfer to outside parties your personally identifiable information. This does not include trusted third parties who assist us in operating our website, conducting our business, or servicing you, so long as those parties agree to keep this information confidential. We may also release your information when we believe release is appropriate to comply with the law, enforce our site policies, or protect our or others' rights, property, or safety. However, non-personally identifiable visitor information may be provided to other parties for marketing, advertising, or other uses."), 
-	React.createElement("h3", null, "THIRD-PARTY LINKS"), 
-	React.createElement("p", null, "Occasionally, at our discretion, we may include or offer third-party products or services on our website. These third-party sites have separate and independent privacy policies. We therefore have no responsibility or liability for the content and activities of these linked sites. Nonetheless, we seek to protect the integrity of our site and welcome any feedback about these sites."), 
-	React.createElement("h3", null, "CALIFORNIA ONLINE PRIVACY PROTECTION ACT COMPLIANCE"), 
-	React.createElement("p", null, "Because we value your privacy, we have taken the necessary precautions to be in compliance with the California Online Privacy Protection Act. We therefore will not distribute your personal information to outside parties without your consent. As part of the California Online Privacy Protection Act, all users of our site may make any changes to their information at anytime by logging into their account and going to the ", React.createElement("a", {href: "/users/me"}, "'Profile View/Edit'"), " page."), 
-	React.createElement("h3", null, "CHILDREN’S ONLINE PRIVACY PROTECTION ACT"), 
-	React.createElement("p", null, "We are in compliance with the requirements of COPPA (Children’s Online Privacy Protection Act): We do not collect any information from anyone under 13 years of age. Our website, products, and services are all directed to individuals who are at least 13 years old or older."), 
-	React.createElement("h3", null, "ONLINE PRIVACY POLICY ONLY"), 
-	React.createElement("p", null, "This Online Privacy Policy applies only to information collected through our website and not to information collected offline."), 
-	React.createElement("h3", null, "TERMS AND CONDITIONS"), 
-	React.createElement("p", null, "Please also visit our ", React.createElement("a", {href: "/legal"}, "Terms and Conditions section"), " establishing the use, disclaimers, and limitations of liability governing the use of our website at www.goodybag.com and biz.goodybag.com."), 
-	React.createElement("h3", null, "YOUR CONSENT"), 
-	React.createElement("p", null, "By using our site, you consent to our Online Privacy Policy."), 
-	React.createElement("h3", null, "CHANGES TO OUR PRIVACY POLICY"), 
-	React.createElement("p", null, "If we decide to change our privacy policy, we will post any changes to this page, and/or update the Privacy Policy modification date below."), 
-	React.createElement("p", null, "This policy was last modified on 6/18/2013."), 
-	React.createElement("h3", null, "CONTACT US"), 
-	React.createElement("p", null, "If you have any questions regarding this Privacy Policy you may contact us using the following:", React.createElement("br", null), 
-	React.createElement("a", {href: "http://www.goodybag.com"}, "www.goodybag.com"), React.createElement("br", null), 
-	React.createElement("a", {href: "mailto:support@goodybag.com"}, "support@goodybag.com"))
-
-					), 
-
-		        	Context.appContext.get('view').components.Footer
-
-				)
-	        );
-		}
-	});
-
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(11)(module)))
-
-/***/ },
-/* 143 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/** @jsx React.DOM */
-	var COMPONENT = __webpack_require__(13);
-
-	exports['for'] = function (module, Context) {
-
-		module.exports = COMPONENT.create(Context, {
-
-			appContextView: "PrivacyPolicy",
-
-		    render: function () {
-		    	var self = this;
-
-		        return {
-		        };
-		    }
-		});
-
-	}
-
-
-/***/ },
-/* 144 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/* WEBPACK VAR INJECTION */(function(module) {/** @jsx React.DOM */
-	__webpack_require__(145)['for'](module, {
+	__webpack_require__(155)['for'](module, {
 
 		getHTML: function (Context) {
 
@@ -17161,7 +17753,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(11)(module)))
 
 /***/ },
-/* 145 */
+/* 155 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
@@ -17185,7 +17777,7 @@
 
 
 /***/ },
-/* 146 */
+/* 156 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM *//** @jsx React.DOM */
@@ -17768,7 +18360,7 @@
 
 
 /***/ },
-/* 147 */
+/* 157 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM *//** @jsx React.DOM */
@@ -17892,7 +18484,7 @@
 
 
 /***/ },
-/* 148 */
+/* 158 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM *//** @jsx React.DOM */
@@ -18140,7 +18732,7 @@
 
 
 /***/ },
-/* 149 */
+/* 159 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM *//** @jsx React.DOM */
@@ -18186,7 +18778,7 @@
 
 
 /***/ },
-/* 150 */
+/* 160 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM *//** @jsx React.DOM */
@@ -18241,7 +18833,7 @@
 
 
 /***/ },
-/* 151 */
+/* 161 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM *//** @jsx React.DOM */
@@ -18284,7 +18876,7 @@
 
 
 /***/ },
-/* 152 */
+/* 162 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
@@ -18353,7 +18945,7 @@
 
 
 /***/ },
-/* 153 */
+/* 163 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM *//** @jsx React.DOM */
@@ -18520,7 +19112,7 @@
 
 
 /***/ },
-/* 154 */
+/* 164 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM *//** @jsx React.DOM */
@@ -18563,7 +19155,7 @@
 
 
 /***/ },
-/* 155 */
+/* 165 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM *//** @jsx React.DOM */
@@ -18606,7 +19198,7 @@
 
 
 /***/ },
-/* 156 */
+/* 166 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
@@ -18679,7 +19271,7 @@
 
 
 /***/ },
-/* 157 */
+/* 167 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM *//** @jsx React.DOM */
@@ -18737,7 +19329,7 @@
 
 
 /***/ },
-/* 158 */
+/* 168 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM *//** @jsx React.DOM */
@@ -18786,7 +19378,7 @@
 
 
 /***/ },
-/* 159 */
+/* 169 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM *//** @jsx React.DOM */
@@ -18829,7 +19421,7 @@
 
 
 /***/ },
-/* 160 */
+/* 170 */
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM */ /*
@@ -39735,7 +40327,7 @@
 	})( jQuery, window , document );
 
 /***/ },
-/* 161 */
+/* 171 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/* WEBPACK VAR INJECTION */(function(global) {/** @jsx React.DOM *///     Backbone.js 1.2.1
@@ -39754,7 +40346,7 @@
 
 	  // Set up Backbone appropriately for the environment. Start with AMD.
 	  if (true) {
-	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(14), __webpack_require__(162), exports], __WEBPACK_AMD_DEFINE_RESULT__ = function(_, $, exports) {
+	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(14), __webpack_require__(172), exports], __WEBPACK_AMD_DEFINE_RESULT__ = function(_, $, exports) {
 	      // Export global even in AMD case in case this script is loaded with
 	      // others that may still expect a global Backbone.
 	      root.Backbone = factory(root, exports, _, $);
@@ -41615,13 +42207,13 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 162 */
+/* 172 */
 /***/ function(module, exports) {
 
 	module.exports = $;
 
 /***/ },
-/* 163 */
+/* 173 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/** @jsx React.DOM *//*!
@@ -41650,7 +42242,7 @@
 	 */
 	(function(main) {
 	    if (true) {
-	        !(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(164), __webpack_require__(166), __webpack_require__(15), __webpack_require__(161), __webpack_require__(14), __webpack_require__(168)], __WEBPACK_AMD_DEFINE_RESULT__ = function(ReactMixinManager, ReactEvents, React, Backbone, _) {
+	        !(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(174), __webpack_require__(176), __webpack_require__(15), __webpack_require__(171), __webpack_require__(14), __webpack_require__(178)], __WEBPACK_AMD_DEFINE_RESULT__ = function(ReactMixinManager, ReactEvents, React, Backbone, _) {
 	            // AMD
 	            return main(ReactMixinManager, ReactEvents, React, Backbone, _);
 	        }.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
@@ -42663,13 +43255,13 @@
 
 
 /***/ },
-/* 164 */
+/* 174 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/** @jsx React.DOM */module.exports = __webpack_require__(165);
+	/** @jsx React.DOM */module.exports = __webpack_require__(175);
 
 /***/ },
-/* 165 */
+/* 175 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/** @jsx React.DOM *//*!
@@ -43100,13 +43692,13 @@
 
 
 /***/ },
-/* 166 */
+/* 176 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/** @jsx React.DOM */module.exports = __webpack_require__(167);
+	/** @jsx React.DOM */module.exports = __webpack_require__(177);
 
 /***/ },
-/* 167 */
+/* 177 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/** @jsx React.DOM *//*!
@@ -43136,7 +43728,7 @@
 	 */
 	(function(main) {
 	    if (true) {
-	        !(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(164)], __WEBPACK_AMD_DEFINE_RESULT__ = function(ReactMixinManager) {
+	        !(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(174)], __WEBPACK_AMD_DEFINE_RESULT__ = function(ReactMixinManager) {
 	            // AMD
 	            return main(ReactMixinManager);
 	        }.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
@@ -43716,14 +44308,14 @@
 
 
 /***/ },
-/* 168 */
+/* 178 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/** @jsx React.DOM */module.exports = __webpack_require__(169);
+	/** @jsx React.DOM */module.exports = __webpack_require__(179);
 
 
 /***/ },
-/* 169 */
+/* 179 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/** @jsx React.DOM *//*!
@@ -43752,7 +44344,7 @@
 	 */
 	(function(main) {
 	    if (true) {
-	        !(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(161), __webpack_require__(14)], __WEBPACK_AMD_DEFINE_RESULT__ = function(Backbone, _) {
+	        !(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(171), __webpack_require__(14)], __WEBPACK_AMD_DEFINE_RESULT__ = function(Backbone, _) {
 	            // AMD
 	            return main(Backbone, _);
 	        }.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
@@ -44095,18 +44687,18 @@
 
 
 /***/ },
-/* 170 */
+/* 180 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
-	var COMMON = __webpack_require__(171);
+	var COMMON = __webpack_require__(181);
 	var UNDERSCORE = __webpack_require__(14);
-	var PAGE = __webpack_require__(185);
+	var PAGE = __webpack_require__(195);
 	var MOMENT = __webpack_require__(17);
-	var Q = __webpack_require__(174);
+	var Q = __webpack_require__(184);
 	var HEAD = head;
 
-	var Model = __webpack_require__(188);
+	var Model = __webpack_require__(198);
 
 
 	exports['for'] = function (overrides) {
@@ -44266,7 +44858,7 @@
 
 		function initLiveNotify () {
 
-			var client = __webpack_require__(189);
+			var client = __webpack_require__(199);
 			var socket = client.connect(appContext.get("windowOrigin"));
 
 			// TODO: Handle re-connects by re-sending init.
@@ -44375,6 +44967,7 @@
 
 							monitorOrderDeadline(today);
 
+							finalizeInit();
 						});
 
 					}).fail(function (err) {
@@ -44451,16 +45044,16 @@
 
 
 /***/ },
-/* 171 */
+/* 181 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
 
 	// The API for the data stores running in the UI.
 	// Running all API access through here allows for easy porting later.
-	var API = exports.API = Object.create(__webpack_require__(172).API);
-	API.BACKBONE = __webpack_require__(161);
-	API.FIRENODE = __webpack_require__(183);
+	var API = exports.API = Object.create(__webpack_require__(182).API);
+	API.BACKBONE = __webpack_require__(171);
+	API.FIRENODE = __webpack_require__(193);
 
 
 	exports.makeEndpointUrl = function (name) {
@@ -44667,7 +45260,7 @@
 
 
 /***/ },
-/* 172 */
+/* 182 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
@@ -44675,14 +45268,14 @@
 	// The API for models that works in client and on server.
 	// Running all API access through here allows for easy porting later.
 	var API = exports.API = {
-		Q: __webpack_require__(174),
+		Q: __webpack_require__(184),
 		UNDERSCORE: __webpack_require__(14),
-		AMPERSAND_STATE: __webpack_require__(177),
+		AMPERSAND_STATE: __webpack_require__(187),
 		MOMENT: __webpack_require__(17),
-		NUMERAL: __webpack_require__(173),
-		UUID: __webpack_require__(179),
-		JSSHA: __webpack_require__(181),
-		CJSON: __webpack_require__(182)
+		NUMERAL: __webpack_require__(183),
+		UUID: __webpack_require__(189),
+		JSSHA: __webpack_require__(191),
+		CJSON: __webpack_require__(192)
 	};
 
 
@@ -44725,7 +45318,7 @@
 
 
 /***/ },
-/* 173 */
+/* 183 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/** @jsx React.DOM *//*!
@@ -45410,7 +46003,7 @@
 
 
 /***/ },
-/* 174 */
+/* 184 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process, setImmediate) {/** @jsx React.DOM */// vim:ts=4:sts=4:sw=4:
@@ -47462,10 +48055,10 @@
 
 	});
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(175), __webpack_require__(176).setImmediate))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(185), __webpack_require__(186).setImmediate))
 
 /***/ },
-/* 175 */
+/* 185 */
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM */// shim for using process in browser
@@ -47561,10 +48154,10 @@
 
 
 /***/ },
-/* 176 */
+/* 186 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(setImmediate, clearImmediate) {/** @jsx React.DOM */var nextTick = __webpack_require__(175).nextTick;
+	/* WEBPACK VAR INJECTION */(function(setImmediate, clearImmediate) {/** @jsx React.DOM */var nextTick = __webpack_require__(185).nextTick;
 	var apply = Function.prototype.apply;
 	var slice = Array.prototype.slice;
 	var immediateIds = {};
@@ -47640,10 +48233,10 @@
 	exports.clearImmediate = typeof clearImmediate === "function" ? clearImmediate : function(id) {
 	  delete immediateIds[id];
 	};
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(176).setImmediate, __webpack_require__(176).clearImmediate))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(186).setImmediate, __webpack_require__(186).clearImmediate))
 
 /***/ },
-/* 177 */
+/* 187 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
@@ -47685,7 +48278,7 @@
 	    }
 	*/
 
-	var EVENTS = __webpack_require__(178);
+	var EVENTS = __webpack_require__(188);
 	// Below only works on server while above only works in browser.
 	if (EVENTS.EventEmitter2) EVENTS = EVENTS.EventEmitter2;
 
@@ -47754,7 +48347,7 @@
 
 
 /***/ },
-/* 178 */
+/* 188 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_RESULT__;/** @jsx React.DOM *//*!
@@ -48333,7 +48926,7 @@
 
 
 /***/ },
-/* 179 */
+/* 189 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM *///     uuid.js
@@ -48344,7 +48937,7 @@
 	// Unique ID creation requires a high quality random # generator.  We feature
 	// detect to determine the best RNG source, normalizing to a function that
 	// returns 128-bits of randomness, since that's what's usually required
-	var _rng = __webpack_require__(180);
+	var _rng = __webpack_require__(190);
 
 	// Maps for number <-> hex string conversion
 	var _byteToHex = [];
@@ -48522,7 +49115,7 @@
 
 
 /***/ },
-/* 180 */
+/* 190 */
 /***/ function(module, exports) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {/** @jsx React.DOM */
@@ -48560,7 +49153,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 181 */
+/* 191 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_RESULT__;/** @jsx React.DOM *//*
@@ -48603,7 +49196,7 @@
 
 
 /***/ },
-/* 182 */
+/* 192 */
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM */
@@ -48828,11 +49421,11 @@
 
 
 /***/ },
-/* 183 */
+/* 193 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
-	var COOKIES = __webpack_require__(184);
+	var COOKIES = __webpack_require__(194);
 
 
 	var Client = exports.Client = function (sessionToken, context) {
@@ -48847,7 +49440,7 @@
 
 
 /***/ },
-/* 184 */
+/* 194 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;/** @jsx React.DOM *//*!
@@ -48992,7 +49585,7 @@
 
 
 /***/ },
-/* 185 */
+/* 195 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/** @jsx React.DOM */  /* globals require, module */
@@ -49003,7 +49596,7 @@
 	   * Module dependencies.
 	   */
 
-	  var pathtoRegexp = __webpack_require__(186);
+	  var pathtoRegexp = __webpack_require__(196);
 
 	  /**
 	   * Module exports.
@@ -49618,13 +50211,13 @@
 
 	  page.sameOrigin = sameOrigin;
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(175)))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(185)))
 
 /***/ },
-/* 186 */
+/* 196 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/** @jsx React.DOM */var isArray = __webpack_require__(187);
+	/** @jsx React.DOM */var isArray = __webpack_require__(197);
 
 	/**
 	 * Expose `pathToRegexp`.
@@ -49829,7 +50422,7 @@
 
 
 /***/ },
-/* 187 */
+/* 197 */
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM */module.exports = Array.isArray || function (arr) {
@@ -49838,11 +50431,11 @@
 
 
 /***/ },
-/* 188 */
+/* 198 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
-	var COMMON = __webpack_require__(172);
+	var COMMON = __webpack_require__(182);
 
 
 	exports.makeContextForClient = function (overrides) {
@@ -49975,7 +50568,7 @@
 
 
 /***/ },
-/* 189 */
+/* 199 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
@@ -49983,10 +50576,10 @@
 	 * Module dependencies.
 	 */
 
-	var url = __webpack_require__(191);
-	var parser = __webpack_require__(193);
-	var Manager = __webpack_require__(201);
-	var debug = __webpack_require__(190)('socket.io-client');
+	var url = __webpack_require__(201);
+	var parser = __webpack_require__(203);
+	var Manager = __webpack_require__(211);
+	var debug = __webpack_require__(200)('socket.io-client');
 
 	/**
 	 * Module exports.
@@ -50063,12 +50656,12 @@
 	 * @api public
 	 */
 
-	exports.Manager = __webpack_require__(201);
-	exports.Socket = __webpack_require__(233);
+	exports.Manager = __webpack_require__(211);
+	exports.Socket = __webpack_require__(243);
 
 
 /***/ },
-/* 190 */
+/* 200 */
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM */
@@ -50211,7 +50804,7 @@
 
 
 /***/ },
-/* 191 */
+/* 201 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {/** @jsx React.DOM */
@@ -50219,8 +50812,8 @@
 	 * Module dependencies.
 	 */
 
-	var parseuri = __webpack_require__(192);
-	var debug = __webpack_require__(190)('socket.io-client:url');
+	var parseuri = __webpack_require__(202);
+	var debug = __webpack_require__(200)('socket.io-client:url');
 
 	/**
 	 * Module exports.
@@ -50291,7 +50884,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 192 */
+/* 202 */
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM *//**
@@ -50322,7 +50915,7 @@
 
 
 /***/ },
-/* 193 */
+/* 203 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
@@ -50330,12 +50923,12 @@
 	 * Module dependencies.
 	 */
 
-	var debug = __webpack_require__(195)('socket.io-parser');
-	var json = __webpack_require__(196);
-	var isArray = __webpack_require__(198);
-	var Emitter = __webpack_require__(194);
-	var binary = __webpack_require__(199);
-	var isBuf = __webpack_require__(200);
+	var debug = __webpack_require__(205)('socket.io-parser');
+	var json = __webpack_require__(206);
+	var isArray = __webpack_require__(208);
+	var Emitter = __webpack_require__(204);
+	var binary = __webpack_require__(209);
+	var isBuf = __webpack_require__(210);
 
 	/**
 	 * Protocol version.
@@ -50728,7 +51321,7 @@
 
 
 /***/ },
-/* 194 */
+/* 204 */
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM */
@@ -50898,9 +51491,9 @@
 
 
 /***/ },
-/* 195 */
-190,
-/* 196 */
+/* 205 */
+200,
+/* 206 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_RESULT__;/** @jsx React.DOM *//*! JSON v3.2.6 | http://bestiejs.github.io/json3 | Copyright 2012-2013, Kit Cambridge | http://kit.mit-license.org */
@@ -50910,7 +51503,7 @@
 
 	  // Detect the `define` function exposed by asynchronous module loaders. The
 	  // strict `define` check is necessary for compatibility with `r.js`.
-	  var isLoader = "function" === "function" && __webpack_require__(197);
+	  var isLoader = "function" === "function" && __webpack_require__(207);
 
 	  // Detect native implementations.
 	  var nativeJSON = typeof JSON == "object" && JSON;
@@ -51767,7 +52360,7 @@
 
 
 /***/ },
-/* 197 */
+/* 207 */
 /***/ function(module, exports) {
 
 	/* WEBPACK VAR INJECTION */(function(__webpack_amd_options__) {module.exports = __webpack_amd_options__;
@@ -51775,9 +52368,9 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, {}))
 
 /***/ },
-/* 198 */
-187,
-/* 199 */
+/* 208 */
+197,
+/* 209 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {/** @jsx React.DOM *//*global Blob,File*/
@@ -51786,8 +52379,8 @@
 	 * Module requirements
 	 */
 
-	var isArray = __webpack_require__(198);
-	var isBuf = __webpack_require__(200);
+	var isArray = __webpack_require__(208);
+	var isBuf = __webpack_require__(210);
 
 	/**
 	 * Replaces every Buffer | ArrayBuffer in packet with a numbered placeholder.
@@ -51925,7 +52518,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 200 */
+/* 210 */
 /***/ function(module, exports) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {/** @jsx React.DOM */
@@ -51945,7 +52538,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 201 */
+/* 211 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
@@ -51953,17 +52546,17 @@
 	 * Module dependencies.
 	 */
 
-	var url = __webpack_require__(191);
-	var eio = __webpack_require__(202);
-	var Socket = __webpack_require__(233);
-	var Emitter = __webpack_require__(222);
-	var parser = __webpack_require__(193);
-	var on = __webpack_require__(235);
-	var bind = __webpack_require__(236);
-	var object = __webpack_require__(239);
-	var debug = __webpack_require__(190)('socket.io-client:manager');
-	var indexOf = __webpack_require__(230);
-	var Backoff = __webpack_require__(240);
+	var url = __webpack_require__(201);
+	var eio = __webpack_require__(212);
+	var Socket = __webpack_require__(243);
+	var Emitter = __webpack_require__(232);
+	var parser = __webpack_require__(203);
+	var on = __webpack_require__(245);
+	var bind = __webpack_require__(246);
+	var object = __webpack_require__(249);
+	var debug = __webpack_require__(200)('socket.io-client:manager');
+	var indexOf = __webpack_require__(240);
+	var Backoff = __webpack_require__(250);
 
 	/**
 	 * Module exports
@@ -52454,19 +53047,19 @@
 
 
 /***/ },
-/* 202 */
+/* 212 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
-	module.exports =  __webpack_require__(203);
+	module.exports =  __webpack_require__(213);
 
 
 /***/ },
-/* 203 */
+/* 213 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
-	module.exports = __webpack_require__(204);
+	module.exports = __webpack_require__(214);
 
 	/**
 	 * Exports parser
@@ -52474,25 +53067,25 @@
 	 * @api public
 	 *
 	 */
-	module.exports.parser = __webpack_require__(213);
+	module.exports.parser = __webpack_require__(223);
 
 
 /***/ },
-/* 204 */
+/* 214 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {/** @jsx React.DOM *//**
 	 * Module dependencies.
 	 */
 
-	var transports = __webpack_require__(205);
-	var Emitter = __webpack_require__(222);
-	var debug = __webpack_require__(224)('engine.io-client:socket');
-	var index = __webpack_require__(230);
-	var parser = __webpack_require__(213);
-	var parseuri = __webpack_require__(231);
-	var parsejson = __webpack_require__(232);
-	var parseqs = __webpack_require__(223);
+	var transports = __webpack_require__(215);
+	var Emitter = __webpack_require__(232);
+	var debug = __webpack_require__(234)('engine.io-client:socket');
+	var index = __webpack_require__(240);
+	var parser = __webpack_require__(223);
+	var parseuri = __webpack_require__(241);
+	var parsejson = __webpack_require__(242);
+	var parseqs = __webpack_require__(233);
 
 	/**
 	 * Module exports.
@@ -52607,9 +53200,9 @@
 	 */
 
 	Socket.Socket = Socket;
-	Socket.Transport = __webpack_require__(212);
-	Socket.transports = __webpack_require__(205);
-	Socket.parser = __webpack_require__(213);
+	Socket.Transport = __webpack_require__(222);
+	Socket.transports = __webpack_require__(215);
+	Socket.parser = __webpack_require__(223);
 
 	/**
 	 * Creates transport of the given type.
@@ -53190,17 +53783,17 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 205 */
+/* 215 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {/** @jsx React.DOM *//**
 	 * Module dependencies
 	 */
 
-	var XMLHttpRequest = __webpack_require__(206);
-	var XHR = __webpack_require__(209);
-	var JSONP = __webpack_require__(227);
-	var websocket = __webpack_require__(228);
+	var XMLHttpRequest = __webpack_require__(216);
+	var XHR = __webpack_require__(219);
+	var JSONP = __webpack_require__(237);
+	var websocket = __webpack_require__(238);
 
 	/**
 	 * Export transports.
@@ -53250,11 +53843,11 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 206 */
+/* 216 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */// browser shim for xmlhttprequest module
-	var hasCORS = __webpack_require__(207);
+	var hasCORS = __webpack_require__(217);
 
 	module.exports = function(opts) {
 	  var xdomain = opts.xdomain;
@@ -53292,7 +53885,7 @@
 
 
 /***/ },
-/* 207 */
+/* 217 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
@@ -53300,7 +53893,7 @@
 	 * Module dependencies.
 	 */
 
-	var global = __webpack_require__(208);
+	var global = __webpack_require__(218);
 
 	/**
 	 * Module exports.
@@ -53321,7 +53914,7 @@
 
 
 /***/ },
-/* 208 */
+/* 218 */
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM */
@@ -53335,18 +53928,18 @@
 
 
 /***/ },
-/* 209 */
+/* 219 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {/** @jsx React.DOM *//**
 	 * Module requirements.
 	 */
 
-	var XMLHttpRequest = __webpack_require__(206);
-	var Polling = __webpack_require__(210);
-	var Emitter = __webpack_require__(222);
-	var inherit = __webpack_require__(211);
-	var debug = __webpack_require__(224)('engine.io-client:polling-xhr');
+	var XMLHttpRequest = __webpack_require__(216);
+	var Polling = __webpack_require__(220);
+	var Emitter = __webpack_require__(232);
+	var inherit = __webpack_require__(221);
+	var debug = __webpack_require__(234)('engine.io-client:polling-xhr');
 
 	/**
 	 * Module exports.
@@ -53726,18 +54319,18 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 210 */
+/* 220 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM *//**
 	 * Module dependencies.
 	 */
 
-	var Transport = __webpack_require__(212);
-	var parseqs = __webpack_require__(223);
-	var parser = __webpack_require__(213);
-	var inherit = __webpack_require__(211);
-	var debug = __webpack_require__(224)('engine.io-client:polling');
+	var Transport = __webpack_require__(222);
+	var parseqs = __webpack_require__(233);
+	var parser = __webpack_require__(223);
+	var inherit = __webpack_require__(221);
+	var debug = __webpack_require__(234)('engine.io-client:polling');
 
 	/**
 	 * Module exports.
@@ -53750,7 +54343,7 @@
 	 */
 
 	var hasXHR2 = (function() {
-	  var XMLHttpRequest = __webpack_require__(206);
+	  var XMLHttpRequest = __webpack_require__(216);
 	  var xhr = new XMLHttpRequest({ xdomain: false });
 	  return null != xhr.responseType;
 	})();
@@ -53977,7 +54570,7 @@
 
 
 /***/ },
-/* 211 */
+/* 221 */
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM */
@@ -53989,15 +54582,15 @@
 	};
 
 /***/ },
-/* 212 */
+/* 222 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM *//**
 	 * Module dependencies.
 	 */
 
-	var parser = __webpack_require__(213);
-	var Emitter = __webpack_require__(222);
+	var parser = __webpack_require__(223);
+	var Emitter = __webpack_require__(232);
 
 	/**
 	 * Module exports.
@@ -54154,19 +54747,19 @@
 
 
 /***/ },
-/* 213 */
+/* 223 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {/** @jsx React.DOM *//**
 	 * Module dependencies.
 	 */
 
-	var keys = __webpack_require__(214);
-	var hasBinary = __webpack_require__(215);
-	var sliceBuffer = __webpack_require__(217);
-	var base64encoder = __webpack_require__(218);
-	var after = __webpack_require__(219);
-	var utf8 = __webpack_require__(220);
+	var keys = __webpack_require__(224);
+	var hasBinary = __webpack_require__(225);
+	var sliceBuffer = __webpack_require__(227);
+	var base64encoder = __webpack_require__(228);
+	var after = __webpack_require__(229);
+	var utf8 = __webpack_require__(230);
 
 	/**
 	 * Check if we are running an android browser. That requires us to use
@@ -54223,7 +54816,7 @@
 	 * Create a blob api even for blob builder when vendor prefixes exist
 	 */
 
-	var Blob = __webpack_require__(221);
+	var Blob = __webpack_require__(231);
 
 	/**
 	 * Encodes a packet.
@@ -54755,7 +55348,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 214 */
+/* 224 */
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM */
@@ -54780,7 +55373,7 @@
 
 
 /***/ },
-/* 215 */
+/* 225 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {/** @jsx React.DOM */
@@ -54788,7 +55381,7 @@
 	 * Module requirements.
 	 */
 
-	var isArray = __webpack_require__(216);
+	var isArray = __webpack_require__(226);
 
 	/**
 	 * Module exports.
@@ -54845,9 +55438,9 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 216 */
-187,
-/* 217 */
+/* 226 */
+197,
+/* 227 */
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM *//**
@@ -54882,7 +55475,7 @@
 
 
 /***/ },
-/* 218 */
+/* 228 */
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM *//*
@@ -54947,7 +55540,7 @@
 
 
 /***/ },
-/* 219 */
+/* 229 */
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM */module.exports = after
@@ -54981,7 +55574,7 @@
 
 
 /***/ },
-/* 220 */
+/* 230 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_RESULT__;/* WEBPACK VAR INJECTION */(function(module, global) {/** @jsx React.DOM *//*! http://mths.be/utf8js v2.0.0 by @mathias */
@@ -55225,7 +55818,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(11)(module), (function() { return this; }())))
 
 /***/ },
-/* 221 */
+/* 231 */
 /***/ function(module, exports) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {/** @jsx React.DOM *//**
@@ -55281,9 +55874,9 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 222 */
-194,
-/* 223 */
+/* 232 */
+204,
+/* 233 */
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM *//**
@@ -55326,7 +55919,7 @@
 
 
 /***/ },
-/* 224 */
+/* 234 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
@@ -55336,7 +55929,7 @@
 	 * Expose `debug()` as the module.
 	 */
 
-	exports = module.exports = __webpack_require__(225);
+	exports = module.exports = __webpack_require__(235);
 	exports.log = log;
 	exports.formatArgs = formatArgs;
 	exports.save = save;
@@ -55479,7 +56072,7 @@
 
 
 /***/ },
-/* 225 */
+/* 235 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
@@ -55495,7 +56088,7 @@
 	exports.disable = disable;
 	exports.enable = enable;
 	exports.enabled = enabled;
-	exports.humanize = __webpack_require__(226);
+	exports.humanize = __webpack_require__(236);
 
 	/**
 	 * The currently active debug mode names, and names to skip.
@@ -55682,7 +56275,7 @@
 
 
 /***/ },
-/* 226 */
+/* 236 */
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM *//**
@@ -55799,7 +56392,7 @@
 
 
 /***/ },
-/* 227 */
+/* 237 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {/** @jsx React.DOM */
@@ -55807,8 +56400,8 @@
 	 * Module requirements.
 	 */
 
-	var Polling = __webpack_require__(210);
-	var inherit = __webpack_require__(211);
+	var Polling = __webpack_require__(220);
+	var inherit = __webpack_require__(221);
 
 	/**
 	 * Module exports.
@@ -56039,18 +56632,18 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 228 */
+/* 238 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM *//**
 	 * Module dependencies.
 	 */
 
-	var Transport = __webpack_require__(212);
-	var parser = __webpack_require__(213);
-	var parseqs = __webpack_require__(223);
-	var inherit = __webpack_require__(211);
-	var debug = __webpack_require__(224)('engine.io-client:websocket');
+	var Transport = __webpack_require__(222);
+	var parser = __webpack_require__(223);
+	var parseqs = __webpack_require__(233);
+	var inherit = __webpack_require__(221);
+	var debug = __webpack_require__(234)('engine.io-client:websocket');
 
 	/**
 	 * `ws` exposes a WebSocket-compatible interface in
@@ -56058,7 +56651,7 @@
 	 * in the browser.
 	 */
 
-	var WebSocket = __webpack_require__(229);
+	var WebSocket = __webpack_require__(239);
 
 	/**
 	 * Module exports.
@@ -56283,7 +56876,7 @@
 
 
 /***/ },
-/* 229 */
+/* 239 */
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM */
@@ -56332,7 +56925,7 @@
 
 
 /***/ },
-/* 230 */
+/* 240 */
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM */
@@ -56347,7 +56940,7 @@
 	};
 
 /***/ },
-/* 231 */
+/* 241 */
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM *//**
@@ -56392,7 +56985,7 @@
 
 
 /***/ },
-/* 232 */
+/* 242 */
 /***/ function(module, exports) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {/** @jsx React.DOM *//**
@@ -56430,7 +57023,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 233 */
+/* 243 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
@@ -56438,13 +57031,13 @@
 	 * Module dependencies.
 	 */
 
-	var parser = __webpack_require__(193);
-	var Emitter = __webpack_require__(222);
-	var toArray = __webpack_require__(234);
-	var on = __webpack_require__(235);
-	var bind = __webpack_require__(236);
-	var debug = __webpack_require__(190)('socket.io-client:socket');
-	var hasBin = __webpack_require__(237);
+	var parser = __webpack_require__(203);
+	var Emitter = __webpack_require__(232);
+	var toArray = __webpack_require__(244);
+	var on = __webpack_require__(245);
+	var bind = __webpack_require__(246);
+	var debug = __webpack_require__(200)('socket.io-client:socket');
+	var hasBin = __webpack_require__(247);
 
 	/**
 	 * Module exports.
@@ -56821,7 +57414,7 @@
 
 
 /***/ },
-/* 234 */
+/* 244 */
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM */module.exports = toArray
@@ -56840,7 +57433,7 @@
 
 
 /***/ },
-/* 235 */
+/* 245 */
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM */
@@ -56870,7 +57463,7 @@
 
 
 /***/ },
-/* 236 */
+/* 246 */
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM *//**
@@ -56899,7 +57492,7 @@
 
 
 /***/ },
-/* 237 */
+/* 247 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {/** @jsx React.DOM */
@@ -56907,7 +57500,7 @@
 	 * Module requirements.
 	 */
 
-	var isArray = __webpack_require__(238);
+	var isArray = __webpack_require__(248);
 
 	/**
 	 * Module exports.
@@ -56964,9 +57557,9 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 238 */
-187,
-/* 239 */
+/* 248 */
+197,
+/* 249 */
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM */
@@ -57055,7 +57648,7 @@
 	};
 
 /***/ },
-/* 240 */
+/* 250 */
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM */
@@ -57146,11 +57739,11 @@
 
 
 /***/ },
-/* 241 */
+/* 251 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
-	var COMMON = __webpack_require__(171);
+	var COMMON = __webpack_require__(181);
 
 
 
@@ -57188,6 +57781,14 @@
 					],
 		            fn: function () {
 		            	return COMMON.API.MOMENT(this.id, "YYYY-MM-DD").format("ddd");
+		            }
+			    },
+			    "format.MMM-M": {
+					deps: [
+						"id"
+					],
+		            fn: function () {
+		            	return COMMON.API.MOMENT(this.id, "YYYY-MM-DD").format("MMM M");
 		            }
 			    }
 			}
@@ -57228,11 +57829,11 @@
 
 
 /***/ },
-/* 242 */
+/* 252 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
-	var COMMON = __webpack_require__(171);
+	var COMMON = __webpack_require__(181);
 
 
 	var ENDPOINT = COMMON.makeEndpointUrl("events");
@@ -57363,7 +57964,7 @@
 		var store = new Store();
 
 
-		store.Model = __webpack_require__(243).forContext(context);
+		store.Model = __webpack_require__(253).forContext(context);
 
 
 		store.getToday = function () {
@@ -57405,7 +58006,7 @@
 		store.modelRecords = function (records) {
 			return COMMON.resolveForeignKeys(store, records, {
 				"consumer_group_id": {
-					store: __webpack_require__(244),
+					store: __webpack_require__(254),
 					model: context.appContext.get('stores').consumerGroups.Model,
 					localFieldPrefix: "consumerGroup"
 				}
@@ -57437,7 +58038,7 @@
 			}
 			return COMMON.resolveForeignKeys(store, record, {
 				"consumer_group_id": {
-					store: __webpack_require__(244),
+					store: __webpack_require__(254),
 					model: context.appContext.get('stores').consumerGroups.Model,
 					localFieldPrefix: "consumerGroup"
 				}
@@ -57468,12 +58069,12 @@
 
 
 /***/ },
-/* 243 */
+/* 253 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
 
-	var COMMON = __webpack_require__(172);
+	var COMMON = __webpack_require__(182);
 
 
 	exports.forContext = function (context) {
@@ -57639,11 +58240,11 @@
 
 
 /***/ },
-/* 244 */
+/* 254 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
-	var COMMON = __webpack_require__(171);
+	var COMMON = __webpack_require__(181);
 
 	var ENDPOINT = COMMON.makeEndpointUrl("consumer-groups");
 
@@ -57747,11 +58348,11 @@
 
 
 /***/ },
-/* 245 */
+/* 255 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
-	var COMMON = __webpack_require__(171);
+	var COMMON = __webpack_require__(181);
 
 	var ENDPOINT = COMMON.makeEndpointUrl("items");
 
@@ -57852,7 +58453,7 @@
 		store.modelRecords = function (records) {
 			return COMMON.resolveForeignKeys(store, records, {
 				"vendor_id": {
-					store: __webpack_require__(246),
+					store: __webpack_require__(256),
 					model: context.appContext.get('stores').vendors.Model,
 					localFieldPrefix: "vendor"
 				}
@@ -57890,7 +58491,7 @@
 
 			return COMMON.resolveForeignKeys(store, records, {
 				"vendor_id": {
-					store: __webpack_require__(246),
+					store: __webpack_require__(256),
 					model: context.appContext.get('stores').vendors.Model,
 					localFieldPrefix: "vendor"
 				}
@@ -57920,12 +58521,12 @@
 
 
 /***/ },
-/* 246 */
+/* 256 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
-	var COMMON = __webpack_require__(171);
-	var NUMERAL = __webpack_require__(173);
+	var COMMON = __webpack_require__(181);
+	var NUMERAL = __webpack_require__(183);
 
 	var ENDPOINT = COMMON.makeEndpointUrl("vendors");
 
@@ -58031,11 +58632,11 @@
 
 
 /***/ },
-/* 247 */
+/* 257 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
-	var COMMON = __webpack_require__(171);
+	var COMMON = __webpack_require__(181);
 
 
 	var ENDPOINT = COMMON.makeEndpointUrl("menus");
@@ -58168,12 +58769,12 @@
 		store.modelRecords = function (records) {
 			return COMMON.resolveForeignKeys(store, records, {
 				"vendor_id": {
-					store: __webpack_require__(246),
+					store: __webpack_require__(256),
 					model: context.appContext.get('stores').vendors.Model,
 					localFieldPrefix: "vendor"
 				},
 				"item_id": {
-					store: __webpack_require__(245),
+					store: __webpack_require__(255),
 					model: context.appContext.get('stores').items.Model,
 					localFieldPrefix: "item"
 				}
@@ -58201,13 +58802,13 @@
 
 
 /***/ },
-/* 248 */
+/* 258 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
-	var COMMON = __webpack_require__(171);
+	var COMMON = __webpack_require__(181);
 
-	var BACKBONE = __webpack_require__(161);
+	var BACKBONE = __webpack_require__(171);
 	var UNDERSCORE = __webpack_require__(14);
 
 
@@ -58257,11 +58858,11 @@
 
 
 /***/ },
-/* 249 */
+/* 259 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
-	var COMMON = __webpack_require__(171);
+	var COMMON = __webpack_require__(181);
 
 	var ENDPOINT = COMMON.makeEndpointUrl("consumer-group-subscriptions");
 
@@ -58388,7 +58989,7 @@
 		store.modelRecords = function (records) {
 			return COMMON.resolveForeignKeys(store, records, {
 				"consumer_group_id": {
-					store: __webpack_require__(244),
+					store: __webpack_require__(254),
 					model: context.appContext.get('stores').consumerGroups.Model,
 					localFieldPrefix: "consumerGroup"
 				}
@@ -58414,11 +59015,11 @@
 
 
 /***/ },
-/* 250 */
+/* 260 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
-	var COMMON = __webpack_require__(171);
+	var COMMON = __webpack_require__(181);
 
 
 	//var ENDPOINT = COMMON.makeEndpointUrl("items");
@@ -58483,6 +59084,10 @@
 
 			var events = context.appContext.get('stores').events;
 			var eventToday = events.modelRecords(events.getToday()).pop();
+
+			if (!eventToday) {
+				return {};
+			}
 
 			var summary = {
 				"amount": amount,
@@ -58559,7 +59164,7 @@
 				if (self.get(cartItemId)) {
 					return COMMON.API.Q.resolve(self.get(cartItemId));
 				}
-				return __webpack_require__(245)['for']({
+				return __webpack_require__(255)['for']({
 					appContext: context.appContext,
 					ids: [
 						itemId
@@ -58625,11 +59230,11 @@
 
 
 /***/ },
-/* 251 */
+/* 261 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
-	var COMMON = __webpack_require__(171);
+	var COMMON = __webpack_require__(181);
 
 
 	var ENDPOINT = COMMON.makeEndpointUrl("orders");
@@ -58962,11 +59567,11 @@
 
 
 /***/ },
-/* 252 */
+/* 262 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
-	var COMMON = __webpack_require__(171);
+	var COMMON = __webpack_require__(181);
 
 
 	var ENDPOINT = COMMON.makeEndpointUrl("order-status");
@@ -59104,7 +59709,7 @@
 
 
 /***/ },
-/* 253 */
+/* 263 */
 /***/ function(module, exports, __webpack_require__, __webpack_module_template_argument_0__) {
 
 	/** @jsx React.DOM */
@@ -59122,7 +59727,7 @@
 
 
 /***/ },
-/* 254 */
+/* 264 */
 /***/ function(module, exports, __webpack_require__, __webpack_module_template_argument_0__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag

@@ -8,25 +8,25 @@
 
   <div class="lunchroom-header">
     <div class="container">
-      <div class="tabs">
-        <a class="active" href="#">Mon<small>Jan 26</small></a>
-        <a href="#">Tues<small>Jan 27</small></a>
-        <a href="#">Weds<small>Jan 28</small></a>
-        <a href="#">Thurs<small>Jan 29</small></a>
-        <a href="#">Fri<small>Jan 30</small></a>
+      <div class="tabs" component:section="tabs">
+        <a component:section="tabs" component:view="active" class="active" href="#"><span component:prop="tabDay">Mon</span><small component:prop="tabDate">Jan 26</small></a>
+        <a component:section="tabs" component:view="default" href="#"><span component:prop="tabDay">Tues</span><small component:prop="tabDate">Jan 27</small></a>
+        <a href="#"><span component:prop="tabDay">Weds</span><small component:prop="tabDate">Jan 28</small></a>
+        <a href="#"><span component:prop="tabDay">Thurs</span><small component:prop="tabDate">Jan 29</small></a>
+        <a href="#"><span component:prop="tabDay">Fri</span><small component:prop="tabDate">Jan 30</small></a>
       </div>
       <div class="module">
-        Delivery to: <small>Bazaarvoice</small>
+        Delivery to: <small component:prop="deliverTo">Bazaarvoice</small>
       </div>
       <div class="module">
-        Delivery Time: <small>12:00-12:30 PM</small>
+        Delivery Time: <small component:prop="deliveryTime">12:00-12:30 PM</small>
       </div>
       <div class="module">
         Time left to order:
-        <small class="text-important">1 hr 26min</small>
+        <small class="text-important" component:prop="timeLeftToOrder">1 hr 26min</small>
       </div>
       <div class="module module-right module-unpadded">
-        <a class="btn btn-primary" href="checkout">Checkout (1)</a>
+        <a component:elm="checkoutButton" class="btn btn-primary" href="checkout">Checkout (<span component:prop="cartItemCount">1</span>)</a>
       </div>
     </div>
   </div>
