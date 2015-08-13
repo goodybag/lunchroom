@@ -1522,7 +1522,7 @@ table {
   top: -2px;
   width: 23px;
   height: 25px;
-  background: url("/404?url=http://localhost:8083/img/checkpoints-bullet.svg") no-repeat;
+  background: url("/404?url=http://localhost:3011/img/checkpoints-bullet.svg") no-repeat;
 }
 
 .check-points .subtext {
@@ -1716,7 +1716,7 @@ table {
   width: 100%;
   padding-top: 60px;
   padding-bottom: 0;
-  background: url("/404?url=http://localhost:8083/img/landing-hero-unit-bg.jpg");
+  background: url("/404?url=http://localhost:3011/img/landing-hero-unit-bg.jpg");
   background-size: cover;
   border-bottom: solid 1px #b7b6ad;
   overflow: hidden;
@@ -3182,7 +3182,7 @@ body {
   position: absolute;
   width: 48px;
   height: 38px;
-  background-image: url("/404?url=http://localhost:8083/img/quote-rotator-quotes.png");
+  background-image: url("/404?url=http://localhost:3011/img/quote-rotator-quotes.png");
   background-position-y: -34px;
 }
 
@@ -3232,7 +3232,7 @@ body {
   bottom: -48px;
   width: 66px;
   height: 48px;
-  background: url("/404?url=http://localhost:8083/img/speech-box-triangle-left.png");
+  background: url("/404?url=http://localhost:3011/img/speech-box-triangle-left.png");
 }
 
 @media screen and (max-width: 620px) {
@@ -3247,7 +3247,7 @@ body {
 
 .speech-boxes > .box-reverse:after {
   left: 64px;
-  background: url("/404?url=http://localhost:8083/img/speech-box-triangle-right.png");
+  background: url("/404?url=http://localhost:3011/img/speech-box-triangle-right.png");
 }
 
 .speech-boxes blockquote {

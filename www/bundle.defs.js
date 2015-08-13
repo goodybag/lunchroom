@@ -410,7 +410,7 @@
 	function getSkin () {
 		var skin = $("body").attr("skin");
 		// TODO: Do this dynamically so we don't need to pre-load views into same bundle.
-		if (skin === "index") {
+		if (skin === "app") {
 			return __webpack_require__(9);
 		} else {
 			return __webpack_require__(118);

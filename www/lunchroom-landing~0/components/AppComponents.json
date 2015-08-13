@@ -18,44 +18,11 @@
         {
             "tag": "IMG",
             "attributes": {
-                "src": "404?url=http://localhost:8083/https:/d3bqck8kwfkhx5.cloudfront.net/img/logo.png",
-                "alt": "Goodybag.com",
-                "class": "navbar-logo"
-            },
-            "exportPath": ""
-        },
-        {
-            "tag": "IMG",
-            "attributes": {
-                "src": "404?url=http://localhost:8083/https:/www.filepicker.io/api/file/SZoK9zUvTPWXzmK81aGg/convert?w=352&h=210&fit=crop",
-                "alt": "Pirata Dos Tacos"
-            },
-            "exportPath": ""
-        },
-        {
-            "tag": "IMG",
-            "attributes": {
-                "src": "404?url=http://localhost:8083/https:/www.filepicker.io/api/file/SZoK9zUvTPWXzmK81aGg/convert?w=352&h=210&fit=crop",
-                "alt": "Poop Taco Box"
-            },
-            "exportPath": ""
-        },
-        {
-            "tag": "IMG",
-            "attributes": {
                 "src": "/lunchroom-landing~0/resources/assets/img~success-d84e5c8.png",
                 "alt": "",
                 "class": "success-img"
             },
             "exportPath": "/pinf.genesis.consulting/GoodyBag/goodybag-core/07-lunchroom-landing/.sm.hoisted/lunchroom-landing~0/resources/assets/img~success-d84e5c8.png"
-        },
-        {
-            "tag": "IMG",
-            "attributes": {
-                "class": "modal-photo",
-                "src": "404?url=http://localhost:8083/https:/www.filepicker.io/api/file/SZoK9zUvTPWXzmK81aGg/convert?w=430&h=400&fit=crop"
-            },
-            "exportPath": ""
         }
     ],
     "components": {
