@@ -141,7 +141,7 @@ module.exports = COMPONENT.create({
                     );
 
                     var Actions = null;
-
+/*
                     if (item.get("status.id") !== "delivered") {
                         var key = item.get('id') + "-actions";
                         Actions = (
@@ -160,7 +160,7 @@ module.exports = COMPONENT.create({
                             </tr>
                         );
                     }
-
+*/
                     var Rows = [
                         Row,
                         Items
@@ -224,7 +224,9 @@ module.exports = COMPONENT.create({
         var vendors = self.props.appContext.get('stores').vendors;
 
         var activeVendor = null;
-        var ordersWhere = {};
+        var ordersWhere = {
+            day_id: this.props.appContext.get('todayId')
+        };
 
         if (this.props.selectedRestaurant) {
             activeVendor = vendors.get(this.props.selectedRestaurant);

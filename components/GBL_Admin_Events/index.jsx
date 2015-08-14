@@ -35,6 +35,29 @@ module.exports = COMPONENT.create({
         );
 
         Context.ensureForNodes(
+          $('button[data-link="action:delivered"]', element),
+          'click',
+          function () {
+              self.props.appContext.get('stores').events.setDeliveredForEventId(self.props.selectedEvent).then(function () {
+                self._trigger_forceUpdate();
+              });
+              return false;
+          }
+        );
+
+        Context.ensureForNodes(
+          $('button[data-link="action:delete"]', element),
+          'click',
+          function () {
+              self.props.appContext.get('stores').events.deleteForEventId(self.props.selectedEvent).then(function () {
+                self.props.selectedEvent = null;
+                self._trigger_forceUpdate();
+              });
+              return false;
+          }
+        );
+
+        Context.ensureForNodes(
           $('#form-vendor-filter [data-fieldname="vendor_id"]', element),
           'dropdown()', {
             onChange: function(value, text) {
@@ -227,10 +250,19 @@ module.exports = COMPONENT.create({
         if (Context.selectedEvent) {
 
           var ReadyButton = Context.selectedEvent.get("format.menuReady");
+          var DeliveredButton = Context.selectedEvent.get("format.delivered");
+
           if (!Context.selectedEvent.get("menuReady")) {
             ReadyButton = (
               <button data-link="action:ready" className="ui primary small button">
                   Ready
+              </button>
+            );
+          } else
+          if (!Context.selectedEvent.get("delivered")) {
+            DeliveredButton = (
+              <button data-link="action:delivered" className="ui primary small button">
+                  Delivered
               </button>
             );
           }
@@ -238,6 +270,8 @@ module.exports = COMPONENT.create({
           Panel = (
             <div className="ui segment">
               <button className="ui button" data-link="action:deselectEvent">Back to all events</button>
+
+              <p>NOTE: 'Ready' button send out menu 9 am CT day of. 'Delivered' button sends out order arrived emails within 1 min.</p>
 
               <table className="ui celled selectable table events-table">
                 <thead>
@@ -248,7 +282,7 @@ module.exports = COMPONENT.create({
                       <th>Company</th>
                       <th>Pickup</th>
                       <th>Ready</th>
-                      <th>Notified</th>
+                      <th>Delivered</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -259,7 +293,7 @@ module.exports = COMPONENT.create({
                     <td>{Context.selectedEvent.get("consumerGroup.title")}</td>
                     <td>{Context.selectedEvent.get("consumerGroup.pickupLocation")}</td>
                     <td>{ReadyButton}</td>
-                    <td>{Context.selectedEvent.get("format.notificationsSent")}</td>
+                    <td>{DeliveredButton}</td>
                   </tr>
                 </tbody>
               </table>
@@ -344,6 +378,10 @@ module.exports = COMPONENT.create({
 
                 </div>
               </div>
+
+              <button data-link="action:delete" className="ui primary small button">
+                  Delete
+              </button>
 
             </div>
           );
@@ -447,7 +485,7 @@ module.exports = COMPONENT.create({
                     <th>Company</th>
                     <th>Pickup</th>
                     <th>Ready</th>
-                    <th>Notified</th>
+                    <th>Delivered</th>
                 </tr>
               </thead>
               <tbody>
@@ -461,7 +499,7 @@ module.exports = COMPONENT.create({
                           <td>{item.get("consumerGroup.title")}</td>
                           <td>{item.get("consumerGroup.pickupLocation")}</td>
                           <td>{item.get("format.menuReady")}</td>
-                          <td>{item.get("format.notificationsSent")}</td>
+                          <td>{item.get("format.delivered")}</td>
                         </tr>
                     );
 

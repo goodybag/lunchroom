@@ -57,7 +57,7 @@ module.exports = COMPONENT.create({
                     );
 
                     var Actions = null;
-
+/*
                     if (item.get("status.id") !== "delivered") {
                         var key = item.get('id') + "-actions";
                         Actions = (
@@ -76,7 +76,7 @@ module.exports = COMPONENT.create({
                             </tr>
                         );
                     }
-
+*/
                     if (Actions) {
                         return [
                             Row,
@@ -112,7 +112,9 @@ module.exports = COMPONENT.create({
         var orders = self.props.appContext.get('stores').orders;
 
         return {
-            orders: self.modelRecordsWithStore(orders, orders.where())
+            orders: self.modelRecordsWithStore(orders, orders.where({
+                day_id: this.props.appContext.get('todayId')
+            }))
         };
     }
 });
