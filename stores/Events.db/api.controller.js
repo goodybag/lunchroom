@@ -5,6 +5,8 @@ var ENDPOINTS = require('endpoints');
 var EXTEND = require("extend");
 var UUID = require("uuid");
 
+var DB = require("../../server/db/bookshelf.knex.postgresql");
+
 
 var store = EXTEND(false, {}, ENDPOINTS.Store.bookshelf);
 
@@ -34,6 +36,17 @@ console.error("Error creating record:", err.stack);
 */
 	
 }
+
+
+var upstreamDestroy = store.destroy;
+store.destroy = function (model) {
+
+	return DB.getKnex()('menus').where("event_id", model.attributes.id).delete().then(function (result) {
+
+		return upstreamDestroy(model);
+	});
+}
+
 
 
 // @docs http://endpointsjs.com

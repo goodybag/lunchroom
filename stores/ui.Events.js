@@ -113,6 +113,9 @@ console.log("error!", err.stack);
 				url: ENDPOINT + "/" + event_id
 			})
 			.done(function (response) {
+
+				self.remove(event_id);
+
 				return callback(null);
 			})
 			.fail(function(err) {
