@@ -1,0 +1,85 @@
+{
+    "schemas": {
+        "DOCTYPE": "HTML"
+    },
+    "resources": [
+        {
+            "tag": "LINK",
+            "attributes": {
+                "rel": "stylesheet",
+                "href": "/lunchroom-landing~0/resources/ad9f552fd255c5d348748ac8ad8600cdf91e3413.css"
+            },
+            "exportPath": "/pinf.genesis.consulting/GoodyBag/goodybag-core/07-lunchroom-landing/.sm.hoisted/lunchroom-landing~0/resources/ad9f552fd255c5d348748ac8ad8600cdf91e3413.css"
+        },
+        {
+            "tag": "SCRIPT",
+            "attributes": {
+                "src": "/lunchroom-landing~0/resources/dist~app-4836539.js"
+            },
+            "exportPath": "/pinf.genesis.consulting/GoodyBag/goodybag-core/07-lunchroom-landing/.sm.hoisted/lunchroom-landing~0/resources/dist~app-4836539.js"
+        }
+    ],
+    "components": {
+        "header": {
+            "tag": "HEADER",
+            "attributes": {
+                "class": "navbar collapsed"
+            },
+            "innerHTML": "\n      <div class=\"container\">\n        <a href=\"/\">\n          <img src=\"https://d3bqck8kwfkhx5.cloudfront.net/img/logo.png\" alt=\"Goodybag.com\" class=\"navbar-logo\">\n        </a>\n      </div>\n    ",
+            "exportPaths": {
+                "htm": "/pinf.genesis.consulting/GoodyBag/goodybag-core/07-lunchroom-landing/.sm.hoisted/lunchroom-landing~0/components/AppMenu/header.htm",
+                "cjs.jsx": "/pinf.genesis.consulting/GoodyBag/goodybag-core/07-lunchroom-landing/.sm.hoisted/lunchroom-landing~0/components/AppMenu/header.cjs.jsx"
+            },
+            "exportPath": "/pinf.genesis.consulting/GoodyBag/goodybag-core/07-lunchroom-landing/.sm.hoisted/lunchroom-landing~0/components/AppMenu/header.htm"
+        },
+        "navbar": {
+            "tag": "DIV",
+            "attributes": {
+                "class": "lunchroom-header"
+            },
+            "innerHTML": "\n  <div class=\"container\">\n    <div class=\"tabs\" component:section=\"tabs\">\n      <a component:section=\"tabs\" component:view=\"active\" class=\"active\" href=\"#\"><span component:prop=\"tabDay\">Mon</span><small component:prop=\"tabDate\">Jan 26</small></a>\n      <a component:section=\"tabs\" component:view=\"default\" href=\"#\"><span component:prop=\"tabDay\">Tues</span><small component:prop=\"tabDate\">Jan 27</small></a>\n      <a href=\"#\"><span component:prop=\"tabDay\">Weds</span><small component:prop=\"tabDate\">Jan 28</small></a>\n      <a href=\"#\"><span component:prop=\"tabDay\">Thurs</span><small component:prop=\"tabDate\">Jan 29</small></a>\n      <a href=\"#\"><span component:prop=\"tabDay\">Fri</span><small component:prop=\"tabDate\">Jan 30</small></a>\n    </div>\n    <div class=\"module\">\n      Delivery to: <small component:prop=\"deliverTo\">Bazaarvoice</small>\n    </div>\n    <div class=\"module\">\n      Delivery Time: <small component:prop=\"deliveryTime\">12:00-12:30 PM</small>\n    </div>\n    <div class=\"module\">\n      Time left to order:\n      <small class=\"text-important\" component:prop=\"timeLeftToOrder\">1 hr 26min</small>\n    </div>\n    <div class=\"module module-right module-unpadded\">\n      <a component:elm=\"checkoutButton\" class=\"btn btn-primary\" href=\"checkout\">Checkout (<span component:prop=\"cartItemCount\">1</span>)</a>\n    </div>\n  </div>\n",
+            "exportPaths": {
+                "htm": "/pinf.genesis.consulting/GoodyBag/goodybag-core/07-lunchroom-landing/.sm.hoisted/lunchroom-landing~0/components/AppMenu/navbar.htm",
+                "cjs.jsx": "/pinf.genesis.consulting/GoodyBag/goodybag-core/07-lunchroom-landing/.sm.hoisted/lunchroom-landing~0/components/AppMenu/navbar.cjs.jsx"
+            },
+            "exportPath": "/pinf.genesis.consulting/GoodyBag/goodybag-core/07-lunchroom-landing/.sm.hoisted/lunchroom-landing~0/components/AppMenu/navbar.htm"
+        },
+        "menu": {
+            "tag": "DIV",
+            "attributes": {
+                "class": "container items-container"
+            },
+            "innerHTML": "\n  <div class=\"tiles item-tiles\" component:section=\"items\">\n      <div class=\"tile item-tile\" component:section=\"items\" component:view=\"default\">\n        <div class=\"tile-cover\" style=\"background-image: url('https://www.filepicker.io/api/file/SZoK9zUvTPWXzmK81aGg/convert?w=400&amp;h=195&amp;fit=crop');\" component:prop=\"photoUrl\" component:prop-target=\"style/background-image\">\n        </div>\n        <div class=\"tile-info\">\n          <h3 class=\"tile-title\" component:prop=\"title\">Pirata Dos Tacos</h3>\n          <ul class=\"diet-tags\">\n              <li class=\"diet-tag diet-tag-gluten-free\"></li>\n              <li class=\"diet-tag diet-tag-spicy\"></li>\n          </ul>\n          <div class=\"item-price\" component:prop=\"price\">$10.90</div>\n          <button class=\"btn btn-default btn-add\" data-toggle=\"modal\" data-target=\"#item-modal\" component:elm=\"addButton\">Add</button>\n        </div>\n      </div>\n      <div class=\"tile item-tile\" component:section=\"items\" component:view=\"default\">\n        <div class=\"tile-cover\" style=\"background-image: url('https://www.filepicker.io/api/file/SZoK9zUvTPWXzmK81aGg/convert?w=400&amp;h=195&amp;fit=crop');\" component:prop=\"photoUrl\" component:prop-target=\"style/background-image\">\n        </div>\n        <div class=\"tile-info\">\n          <h3 class=\"tile-title\" component:prop=\"title\">Poop Taco Box</h3>\n          <ul class=\"diet-tags\">\n              <li class=\"diet-tag diet-tag-vegan\"></li>\n              <li class=\"diet-tag diet-tag-vegetarian\"></li>\n          </ul>\n          <div class=\"item-price\" component:prop=\"price\">$12.00</div>\n          <button class=\"btn btn-default btn-add\" data-toggle=\"modal\" data-target=\"#item-modal\" component:elm=\"addButton\">Add</button>\n        </div>\n      </div>\n      <div class=\"tile item-tile\" component:section=\"items\" component:view=\"default\">\n        <div class=\"tile-cover\" style=\"background-image: url('https://www.filepicker.io/api/file/SZoK9zUvTPWXzmK81aGg/convert?w=400&amp;h=195&amp;fit=crop');\" component:prop=\"photoUrl\" component:prop-target=\"style/background-image\">\n        </div>\n        <div class=\"tile-info\">\n          <h3 class=\"tile-title\" component:prop=\"title\">Pirata Dos Tacos</h3>\n          <ul class=\"diet-tags\">\n          </ul>\n          <div class=\"item-price\" component:prop=\"price\">$10.90</div>\n          <button class=\"btn btn-default btn-add\" data-toggle=\"modal\" data-target=\"#item-modal\" component:elm=\"addButton\">Add</button>\n        </div>\n      </div>\n      <div class=\"tile item-tile\" component:section=\"items\" component:view=\"default\">\n        <div class=\"tile-cover\" style=\"background-image: url('https://www.filepicker.io/api/file/SZoK9zUvTPWXzmK81aGg/convert?w=400&amp;h=195&amp;fit=crop');\" component:prop=\"photoUrl\" component:prop-target=\"style/background-image\">\n        </div>\n        <div class=\"tile-info\">\n          <h3 class=\"tile-title\" component:prop=\"title\">Poop Taco Box but this one is a really long title</h3>\n          <ul class=\"diet-tags\">\n              <li class=\"diet-tag diet-tag-gluten-free\"></li>\n              <li class=\"diet-tag diet-tag-spicy\"></li>\n          </ul>\n          <div class=\"item-price\" component:prop=\"price\">$12.00</div>\n          <button class=\"btn btn-default btn-add\" data-toggle=\"modal\" data-target=\"#item-modal\" component:elm=\"addButton\">Add</button>\n        </div>\n      </div>\n      <div class=\"tile item-tile\" component:section=\"items\" component:view=\"default\">\n        <div class=\"tile-cover\" style=\"background-image: url('https://www.filepicker.io/api/file/SZoK9zUvTPWXzmK81aGg/convert?w=400&amp;h=195&amp;fit=crop');\" component:prop=\"photoUrl\" component:prop-target=\"style/background-image\">\n        </div>\n        <div class=\"tile-info\">\n          <h3 class=\"tile-title\" component:prop=\"title\">Poop Taco Box</h3>\n          <ul class=\"diet-tags\">\n              <li class=\"diet-tag diet-tag-gluten-free\"></li>\n              <li class=\"diet-tag diet-tag-spicy\"></li>\n          </ul>\n          <div class=\"item-price\" component:prop=\"price\">$12.00</div>\n          <button class=\"btn btn-default btn-add\" data-toggle=\"modal\" data-target=\"#item-modal\" component:elm=\"addButton\">Add</button>\n        </div>\n      </div>\n      <div class=\"tile item-tile\" component:section=\"items\" component:view=\"default\">\n        <div class=\"tile-cover\" style=\"background-image: url('https://www.filepicker.io/api/file/SZoK9zUvTPWXzmK81aGg/convert?w=400&amp;h=195&amp;fit=crop');\" component:prop=\"photoUrl\" component:prop-target=\"style/background-image\">\n        </div>\n        <div class=\"tile-info\">\n          <h3 class=\"tile-title\" component:prop=\"title\">Pirata Dos Tacos</h3>\n          <ul class=\"diet-tags\">\n              <li class=\"diet-tag diet-tag-gluten-free\"></li>\n              <li class=\"diet-tag diet-tag-spicy\"></li>\n          </ul>\n          <div class=\"item-price\" component:prop=\"price\">$10.90</div>\n          <button class=\"btn btn-default btn-add\" data-toggle=\"modal\" data-target=\"#item-modal\" component:elm=\"addButton\">Add</button>\n        </div>\n      </div>\n      <div class=\"tile item-tile\" component:section=\"items\" component:view=\"default\">\n        <div class=\"tile-cover\" style=\"background-image: url('https://www.filepicker.io/api/file/SZoK9zUvTPWXzmK81aGg/convert?w=400&amp;h=195&amp;fit=crop');\" component:prop=\"photoUrl\" component:prop-target=\"style/background-image\">\n        </div>\n        <div class=\"tile-info\">\n          <h3 class=\"tile-title\" component:prop=\"title\">Poop Taco Box</h3>\n          <ul class=\"diet-tags\">\n              <li class=\"diet-tag diet-tag-gluten-free\"></li>\n              <li class=\"diet-tag diet-tag-spicy\"></li>\n          </ul>\n          <div class=\"item-price\" component:prop=\"price\">$12.00</div>\n          <button class=\"btn btn-default btn-add\" data-toggle=\"modal\" data-target=\"#item-modal\" component:elm=\"addButton\">Add</button>\n        </div>\n      </div>\n      <div class=\"tile item-tile\" component:section=\"items\" component:view=\"default\">\n        <div class=\"tile-cover\" style=\"background-image: url('https://www.filepicker.io/api/file/SZoK9zUvTPWXzmK81aGg/convert?w=400&amp;h=195&amp;fit=crop');\" component:prop=\"photoUrl\" component:prop-target=\"style/background-image\">\n        </div>\n        <div class=\"tile-info\">\n          <h3 class=\"tile-title\" component:prop=\"title\">Poop Taco Box</h3>\n          <ul class=\"diet-tags\">\n              <li class=\"diet-tag diet-tag-gluten-free\"></li>\n              <li class=\"diet-tag diet-tag-spicy\"></li>\n          </ul>\n          <div class=\"item-price\" component:prop=\"price\">$12.00</div>\n          <button class=\"btn btn-default btn-add\" data-toggle=\"modal\" data-target=\"#item-modal\" component:elm=\"addButton\">Add</button>\n        </div>\n      </div>\n      <div class=\"tile item-tile\" component:section=\"items\" component:view=\"default\">\n        <div class=\"tile-cover\" style=\"background-image: url('https://www.filepicker.io/api/file/SZoK9zUvTPWXzmK81aGg/convert?w=400&amp;h=195&amp;fit=crop');\" component:prop=\"photoUrl\" component:prop-target=\"style/background-image\">\n        </div>\n        <div class=\"tile-info\">\n          <h3 class=\"tile-title\" component:prop=\"title\">Pirata Dos Tacos</h3>\n          <ul class=\"diet-tags\">\n              <li class=\"diet-tag diet-tag-gluten-free\"></li>\n              <li class=\"diet-tag diet-tag-spicy\"></li>\n          </ul>\n          <div class=\"item-price\" component:prop=\"price\">$10.90</div>\n          <button class=\"btn btn-default btn-add\" data-toggle=\"modal\" data-target=\"#item-modal\" component:elm=\"addButton\">Add</button>\n        </div>\n      </div>\n  </div>\n",
+            "exportPaths": {
+                "htm": "/pinf.genesis.consulting/GoodyBag/goodybag-core/07-lunchroom-landing/.sm.hoisted/lunchroom-landing~0/components/AppMenu/menu.htm",
+                "cjs.jsx": "/pinf.genesis.consulting/GoodyBag/goodybag-core/07-lunchroom-landing/.sm.hoisted/lunchroom-landing~0/components/AppMenu/menu.cjs.jsx"
+            },
+            "exportPath": "/pinf.genesis.consulting/GoodyBag/goodybag-core/07-lunchroom-landing/.sm.hoisted/lunchroom-landing~0/components/AppMenu/menu.htm"
+        },
+        "menu-item-popup": {
+            "tag": "DIV",
+            "attributes": {
+                "class": "modal item-modal fade",
+                "id": "item-modal"
+            },
+            "innerHTML": "\n  <div class=\"modal-dialog\">\n    <div class=\"modal-content\">\n      <div class=\"modal-photo-wrapper\">\n        <img class=\"modal-photo\" src=\"https://www.filepicker.io/api/file/SZoK9zUvTPWXzmK81aGg/convert?w=430&amp;h=400&amp;fit=crop\">\n      </div>\n      <div class=\"modal-main-content\">\n        <div class=\"modal-main-content-body\">\n          <h3 class=\"item-modal-title\">Fajita Torta\n            <span class=\"item-modal-price\">$12.00</span>\n          </h3>\n          <p class=\"item-modal-description\">Mexican sandwich with top sirloin steak, bell peppers, mushrooms, and onions. Topped with queso, avocado, tomatoes, and Mexican mayo dressing.</p>\n          <ul class=\"diet-tags\">\n            <li class=\"diet-tag diet-tag-spicy\"></li>\n          </ul>\n        </div>\n        <div class=\"item-modal-actions\">\n          <div class=\"form-group item-modal-quantity-form-group\">\n            <label class=\"item-modal-quantity-label\">Quantity:</label>\n            <input type=\"number\" value=\"1\" class=\"item-modal-quantity-input\">\n          </div>\n          <button class=\"btn btn-primary item-modal-save-btn\">Add to Order</button>\n        </div>\n      </div>\n    </div>\n  </div>\n",
+            "exportPaths": {
+                "htm": "/pinf.genesis.consulting/GoodyBag/goodybag-core/07-lunchroom-landing/.sm.hoisted/lunchroom-landing~0/components/AppMenu/menu-item-popup.htm",
+                "cjs.jsx": "/pinf.genesis.consulting/GoodyBag/goodybag-core/07-lunchroom-landing/.sm.hoisted/lunchroom-landing~0/components/AppMenu/menu-item-popup.cjs.jsx"
+            },
+            "exportPath": "/pinf.genesis.consulting/GoodyBag/goodybag-core/07-lunchroom-landing/.sm.hoisted/lunchroom-landing~0/components/AppMenu/menu-item-popup.htm"
+        },
+        "footer": {
+            "tag": "FOOTER",
+            "attributes": {
+                "class": "footer"
+            },
+            "innerHTML": "\n      <ul class=\"nav footer-nav\">\n        <li><a href=\"#\" data-toggle=\"modal\" data-target=\"#contact-us-modal\">Contact Us</a></li>\n        <li><a href=\"https://www.goodybag.com/legal\">Terms of service</a></li>\n        <li><a href=\"https://www.goodybag.com/privacy\">Privacy policy</a></li>\n      </ul>\n    ",
+            "exportPaths": {
+                "htm": "/pinf.genesis.consulting/GoodyBag/goodybag-core/07-lunchroom-landing/.sm.hoisted/lunchroom-landing~0/components/AppMenu/footer.htm",
+                "cjs.jsx": "/pinf.genesis.consulting/GoodyBag/goodybag-core/07-lunchroom-landing/.sm.hoisted/lunchroom-landing~0/components/AppMenu/footer.cjs.jsx"
+            },
+            "exportPath": "/pinf.genesis.consulting/GoodyBag/goodybag-core/07-lunchroom-landing/.sm.hoisted/lunchroom-landing~0/components/AppMenu/footer.htm"
+        }
+    }
+}

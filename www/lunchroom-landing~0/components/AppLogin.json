@@ -1,0 +1,60 @@
+{
+    "schemas": {
+        "DOCTYPE": "HTML"
+    },
+    "resources": [
+        {
+            "tag": "LINK",
+            "attributes": {
+                "rel": "stylesheet",
+                "href": "/lunchroom-landing~0/resources/ad9f552fd255c5d348748ac8ad8600cdf91e3413.css"
+            },
+            "exportPath": "/pinf.genesis.consulting/GoodyBag/goodybag-core/07-lunchroom-landing/.sm.hoisted/lunchroom-landing~0/resources/ad9f552fd255c5d348748ac8ad8600cdf91e3413.css"
+        },
+        {
+            "tag": "SCRIPT",
+            "attributes": {
+                "src": "/lunchroom-landing~0/resources/dist~app-4836539.js"
+            },
+            "exportPath": "/pinf.genesis.consulting/GoodyBag/goodybag-core/07-lunchroom-landing/.sm.hoisted/lunchroom-landing~0/resources/dist~app-4836539.js"
+        }
+    ],
+    "components": {
+        "header": {
+            "tag": "HEADER",
+            "attributes": {
+                "class": "navbar collapsed"
+            },
+            "innerHTML": "\n      <div class=\"container\">\n        <a href=\"/\">\n          <img src=\"https://d3bqck8kwfkhx5.cloudfront.net/img/logo.png\" alt=\"Goodybag.com\" class=\"navbar-logo\">\n        </a>\n      </div>\n    ",
+            "exportPaths": {
+                "htm": "/pinf.genesis.consulting/GoodyBag/goodybag-core/07-lunchroom-landing/.sm.hoisted/lunchroom-landing~0/components/AppLogin/header.htm",
+                "cjs.jsx": "/pinf.genesis.consulting/GoodyBag/goodybag-core/07-lunchroom-landing/.sm.hoisted/lunchroom-landing~0/components/AppLogin/header.cjs.jsx"
+            },
+            "exportPath": "/pinf.genesis.consulting/GoodyBag/goodybag-core/07-lunchroom-landing/.sm.hoisted/lunchroom-landing~0/components/AppLogin/header.htm"
+        },
+        "login": {
+            "tag": "DIV",
+            "attributes": {
+                "class": "page-section-standalone"
+            },
+            "innerHTML": "\n  <div class=\"medium-container\">\n    <form id=\"login-form\" class=\"login-form form-vertical\" action=\"/login\" method=\"POST\">\n      <h2 class=\"page-title\">Login</h2>\n      <div class=\"errors\">\n      </div>\n      <div class=\"form-group\">\n        <label for=\"login-email\">Email</label>\n        <input type=\"email\" name=\"email\" id=\"login-email\">\n      </div>\n      \n      <div class=\"form-group\">\n        <label for=\"login-password\">Password</label>\n        <input type=\"password\" name=\"password\" id=\"login-password\">\n      </div>\n      \n      <div class=\"form-group form-group-submit\">\n        <button class=\"btn btn-primary btn-submit btn-large\">Login</button>\n      </div>\n      <p class=\"login-footnote\">Don't have an account? <a href=\"/register\">Sign up</a></p>\n    </form>\n    <div class=\"supporting-graphic\">\n      <img src=\"https://d3bqck8kwfkhx5.cloudfront.net/img/login-takeout.png\">\n    </div>\n  </div>\n",
+            "exportPaths": {
+                "htm": "/pinf.genesis.consulting/GoodyBag/goodybag-core/07-lunchroom-landing/.sm.hoisted/lunchroom-landing~0/components/AppLogin/login.htm",
+                "cjs.jsx": "/pinf.genesis.consulting/GoodyBag/goodybag-core/07-lunchroom-landing/.sm.hoisted/lunchroom-landing~0/components/AppLogin/login.cjs.jsx"
+            },
+            "exportPath": "/pinf.genesis.consulting/GoodyBag/goodybag-core/07-lunchroom-landing/.sm.hoisted/lunchroom-landing~0/components/AppLogin/login.htm"
+        },
+        "footer": {
+            "tag": "FOOTER",
+            "attributes": {
+                "class": "footer"
+            },
+            "innerHTML": "\n      <ul class=\"nav footer-nav\">\n        <li><a href=\"#\" data-toggle=\"modal\" data-target=\"#contact-us-modal\">Contact Us</a></li>\n        <li><a href=\"https://www.goodybag.com/legal\">Terms of service</a></li>\n        <li><a href=\"https://www.goodybag.com/privacy\">Privacy policy</a></li>\n      </ul>\n    ",
+            "exportPaths": {
+                "htm": "/pinf.genesis.consulting/GoodyBag/goodybag-core/07-lunchroom-landing/.sm.hoisted/lunchroom-landing~0/components/AppLogin/footer.htm",
+                "cjs.jsx": "/pinf.genesis.consulting/GoodyBag/goodybag-core/07-lunchroom-landing/.sm.hoisted/lunchroom-landing~0/components/AppLogin/footer.cjs.jsx"
+            },
+            "exportPath": "/pinf.genesis.consulting/GoodyBag/goodybag-core/07-lunchroom-landing/.sm.hoisted/lunchroom-landing~0/components/AppLogin/footer.htm"
+        }
+    }
+}

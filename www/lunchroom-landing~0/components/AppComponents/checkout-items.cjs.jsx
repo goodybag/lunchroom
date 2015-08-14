@@ -2,10 +2,8 @@ module.exports = function (Context) {
   // TODO: Remove this once we can inject 'React' automatically at build time.
   var React = Context.REACT;
   return (
-    <section className="page-section" id="section-order-reviewer">
-
-  <div className="container">
     <div className="order-reviewer">
+
       <h3 className="order-reviewer-header">Today's order
         <a href="#" className="order-reviewer-item-add-link" data-component-elm="addItemsLink">Add items</a>
       </h3>
@@ -28,9 +26,6 @@ module.exports = function (Context) {
             <div className="order-reviewer-item-col">
               <strong>Quantity:</strong> <span data-component-prop="quantity">1</span>
             </div>
-            <div className="order-reviewer-item-col price-col" data-component-prop="price">
-              $10.90
-            </div>
             <div className="order-reviewer-item-col price-col" data-component-prop="amount">
               $10.90
             </div>
@@ -52,17 +47,12 @@ module.exports = function (Context) {
             <div className="order-reviewer-item-col">
               <strong>Quantity:</strong> <span data-component-prop="quantity">1</span>
             </div>
-            <div className="order-reviewer-item-col price-col" data-component-prop="price">
-              $12.00
-            </div>
             <div className="order-reviewer-item-col price-col" data-component-prop="amount">
               $12.00
             </div>
           </div>
       </div>
+    
     </div>
-  </div>
-
-    </section>
   );
 }

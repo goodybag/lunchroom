@@ -4,17 +4,15 @@
     <link rel="stylesheet" href="/lunchroom-landing~0/resources/c2c33c6a5ddf146804e1d148753890edf9a87e2f.css">
   </head>
   <body>
-    <section class="page-section" id="section-order-summary">
-
-  <div class="container">
     <div class="order-summary-wrapper">
+
       <div class="order-summary">
         <div class="order-summary-item">
           <div class="order-summary-col order-summary-key">Subtotal</div>
           <div class="order-summary-col order-summary-value" component:prop="subtotal">$8.80</div>
         </div>
         <div class="order-summary-item">
-          <div class="order-summary-col order-summary-key">Tax (<span component:prop="taxRate">5%</span>)</div>
+          <div class="order-summary-col order-summary-key">Tax</div>
           <div class="order-summary-col order-summary-value" component:prop="taxAmount">$0.73</div>
         </div>
         <div class="order-summary-item">
@@ -27,10 +25,8 @@
         </div>
       </div>
       <button class="btn btn-primary btn-place-order" component:elm="placeOrderButton">Place Order</button>
+    
     </div>
-  </div>
-
-    </section>
   </body>
     <script src="/lunchroom-landing~0/resources/dist~app-4836539.js"></script>
 </html>

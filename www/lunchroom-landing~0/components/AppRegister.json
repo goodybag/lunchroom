@@ -1,0 +1,60 @@
+{
+    "schemas": {
+        "DOCTYPE": "HTML"
+    },
+    "resources": [
+        {
+            "tag": "LINK",
+            "attributes": {
+                "rel": "stylesheet",
+                "href": "/lunchroom-landing~0/resources/ad9f552fd255c5d348748ac8ad8600cdf91e3413.css"
+            },
+            "exportPath": "/pinf.genesis.consulting/GoodyBag/goodybag-core/07-lunchroom-landing/.sm.hoisted/lunchroom-landing~0/resources/ad9f552fd255c5d348748ac8ad8600cdf91e3413.css"
+        },
+        {
+            "tag": "SCRIPT",
+            "attributes": {
+                "src": "/lunchroom-landing~0/resources/dist~app-4836539.js"
+            },
+            "exportPath": "/pinf.genesis.consulting/GoodyBag/goodybag-core/07-lunchroom-landing/.sm.hoisted/lunchroom-landing~0/resources/dist~app-4836539.js"
+        }
+    ],
+    "components": {
+        "header": {
+            "tag": "HEADER",
+            "attributes": {
+                "class": "navbar collapsed"
+            },
+            "innerHTML": "\n      <div class=\"container\">\n        <a href=\"/\">\n          <img src=\"https://d3bqck8kwfkhx5.cloudfront.net/img/logo.png\" alt=\"Goodybag.com\" class=\"navbar-logo\">\n        </a>\n      </div>\n    ",
+            "exportPaths": {
+                "htm": "/pinf.genesis.consulting/GoodyBag/goodybag-core/07-lunchroom-landing/.sm.hoisted/lunchroom-landing~0/components/AppRegister/header.htm",
+                "cjs.jsx": "/pinf.genesis.consulting/GoodyBag/goodybag-core/07-lunchroom-landing/.sm.hoisted/lunchroom-landing~0/components/AppRegister/header.cjs.jsx"
+            },
+            "exportPath": "/pinf.genesis.consulting/GoodyBag/goodybag-core/07-lunchroom-landing/.sm.hoisted/lunchroom-landing~0/components/AppRegister/header.htm"
+        },
+        "register": {
+            "tag": "DIV",
+            "attributes": {
+                "class": "page-section-standalone"
+            },
+            "innerHTML": "\n  <div class=\"medium-container\">\n    <form id=\"register-form\" class=\"register-form form-vertical\" action=\"/join?\" method=\"POST\">\n      <h2 class=\"page-title\">Get your free account</h2>\n      <p>Sign up to get delicious food delivered to your office</p>\n      <div class=\"errors\">\n      </div>\n      \n      <div class=\"form-group\">\n        <label for=\"register-email\">Email</label>\n        <input type=\"email\" name=\"email\" id=\"register-email\">\n      </div>\n      \n      <div class=\"form-group\">\n        <label for=\"register-phone\">Phone Number (optional)</label>\n        <input type=\"tel\" name=\"phone\" id=\"register-phone\">\n      </div>\n      \n      <div class=\"form-group\">\n        <label for=\"login-region\">Delivery Location:</label>\n        <select name=\"region_id\" id=\"login-region\">\n          <option value=\"1\" selected=\"\">BazaarVoice</option>\n          <option value=\"3\">Some other lunchroom</option>\n          <option value=\"4\">Another lunchroom</option>\n        </select>\n      </div>\n      \n      <div class=\"form-group\">\n        <label for=\"register-password\">Password</label>\n        <input type=\"password\" name=\"password\" id=\"register-password\">\n      </div>\n      \n      <div class=\"form-group\">\n        <label for=\"register-confirm-password\">Confirm password</label>\n        <input type=\"password\" name=\"password2\" id=\"register-confirm-password\">\n      </div>\n      \n      <div class=\"form-group form-group-submit\">\n        <button class=\"btn btn-primary btn-submit btn-large\">Start using Goodybag</button>\n      </div>\n      <p class=\"already-user\">Already have an account? <a href=\"/login\">Sign in</a></p>\n    </form>\n    <div class=\"supporting-graphic\">\n      <img src=\"https://d3bqck8kwfkhx5.cloudfront.net/img/login-takeout.png\">\n    </div>\n  </div>\n",
+            "exportPaths": {
+                "htm": "/pinf.genesis.consulting/GoodyBag/goodybag-core/07-lunchroom-landing/.sm.hoisted/lunchroom-landing~0/components/AppRegister/register.htm",
+                "cjs.jsx": "/pinf.genesis.consulting/GoodyBag/goodybag-core/07-lunchroom-landing/.sm.hoisted/lunchroom-landing~0/components/AppRegister/register.cjs.jsx"
+            },
+            "exportPath": "/pinf.genesis.consulting/GoodyBag/goodybag-core/07-lunchroom-landing/.sm.hoisted/lunchroom-landing~0/components/AppRegister/register.htm"
+        },
+        "footer": {
+            "tag": "FOOTER",
+            "attributes": {
+                "class": "footer"
+            },
+            "innerHTML": "\n      <ul class=\"nav footer-nav\">\n        <li><a href=\"#\" data-toggle=\"modal\" data-target=\"#contact-us-modal\">Contact Us</a></li>\n        <li><a href=\"https://www.goodybag.com/legal\">Terms of service</a></li>\n        <li><a href=\"https://www.goodybag.com/privacy\">Privacy policy</a></li>\n      </ul>\n    ",
+            "exportPaths": {
+                "htm": "/pinf.genesis.consulting/GoodyBag/goodybag-core/07-lunchroom-landing/.sm.hoisted/lunchroom-landing~0/components/AppRegister/footer.htm",
+                "cjs.jsx": "/pinf.genesis.consulting/GoodyBag/goodybag-core/07-lunchroom-landing/.sm.hoisted/lunchroom-landing~0/components/AppRegister/footer.cjs.jsx"
+            },
+            "exportPath": "/pinf.genesis.consulting/GoodyBag/goodybag-core/07-lunchroom-landing/.sm.hoisted/lunchroom-landing~0/components/AppRegister/footer.htm"
+        }
+    }
+}

@@ -85,7 +85,7 @@ module.exports = function (Context) {
           <div className="tile-cover" style={{"backgroundImage":"url('https://www.filepicker.io/api/file/SZoK9zUvTPWXzmK81aGg/convert?w=400&amp"}} data-component-prop="photoUrl" data-component-prop-target="style/background-image">
           </div>
           <div className="tile-info">
-            <h3 className="tile-title" data-component-prop="title">Poop Taco Box</h3>
+            <h3 className="tile-title" data-component-prop="title">Poop Taco Box but this one is a really long title</h3>
             <ul className="diet-tags">
                 <li className="diet-tag diet-tag-gluten-free"></li>
                 <li className="diet-tag diet-tag-spicy"></li>
@@ -222,9 +222,9 @@ module.exports = function (Context) {
   </div>
 </section>
 
-<section className="page-section" id="section-order-reviewer" data-component-id="checkout-items">
+<section className="page-section" id="section-order-reviewer">
   <div className="container">
-    <div className="order-reviewer">
+    <div className="order-reviewer" data-component-id="checkout-items">
       <h3 className="order-reviewer-header">Today's order
         <a href="#" className="order-reviewer-item-add-link" data-component-elm="addItemsLink">Add items</a>
       </h3>
@@ -247,9 +247,6 @@ module.exports = function (Context) {
             <div className="order-reviewer-item-col">
               <strong>Quantity:</strong> <span data-component-prop="quantity">1</span>
             </div>
-            <div className="order-reviewer-item-col price-col" data-component-prop="price">
-              $10.90
-            </div>
             <div className="order-reviewer-item-col price-col" data-component-prop="amount">
               $10.90
             </div>
@@ -271,9 +268,6 @@ module.exports = function (Context) {
             <div className="order-reviewer-item-col">
               <strong>Quantity:</strong> <span data-component-prop="quantity">1</span>
             </div>
-            <div className="order-reviewer-item-col price-col" data-component-prop="price">
-              $12.00
-            </div>
             <div className="order-reviewer-item-col price-col" data-component-prop="amount">
               $12.00
             </div>
@@ -283,16 +277,16 @@ module.exports = function (Context) {
   </div>
 </section>
 
-<section className="page-section" id="section-order-summary" data-component-id="checkout-summary">
+<section className="page-section" id="section-order-summary">
   <div className="container">
-    <div className="order-summary-wrapper">
+    <div className="order-summary-wrapper" data-component-id="checkout-summary">
       <div className="order-summary">
         <div className="order-summary-item">
           <div className="order-summary-col order-summary-key">Subtotal</div>
           <div className="order-summary-col order-summary-value" data-component-prop="subtotal">$8.80</div>
         </div>
         <div className="order-summary-item">
-          <div className="order-summary-col order-summary-key">Tax (<span data-component-prop="taxRate">5%</span>)</div>
+          <div className="order-summary-col order-summary-key">Tax</div>
           <div className="order-summary-col order-summary-value" data-component-prop="taxAmount">$0.73</div>
         </div>
         <div className="order-summary-item">

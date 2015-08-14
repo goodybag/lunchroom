@@ -47,7 +47,7 @@ module.exports = function (Context) {
           <div className="tile-cover" style={{"backgroundImage":"url('https://www.filepicker.io/api/file/SZoK9zUvTPWXzmK81aGg/convert?w=400&amp"}} data-component-prop="photoUrl" data-component-prop-target="style/background-image">
           </div>
           <div className="tile-info">
-            <h3 className="tile-title" data-component-prop="title">Poop Taco Box</h3>
+            <h3 className="tile-title" data-component-prop="title">Poop Taco Box but this one is a really long title</h3>
             <ul className="diet-tags">
                 <li className="diet-tag diet-tag-gluten-free"></li>
                 <li className="diet-tag diet-tag-spicy"></li>

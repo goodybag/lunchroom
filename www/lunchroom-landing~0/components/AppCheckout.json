@@ -1,0 +1,96 @@
+{
+    "schemas": {
+        "DOCTYPE": "HTML"
+    },
+    "resources": [
+        {
+            "tag": "LINK",
+            "attributes": {
+                "rel": "stylesheet",
+                "href": "/lunchroom-landing~0/resources/ad9f552fd255c5d348748ac8ad8600cdf91e3413.css"
+            },
+            "exportPath": "/pinf.genesis.consulting/GoodyBag/goodybag-core/07-lunchroom-landing/.sm.hoisted/lunchroom-landing~0/resources/ad9f552fd255c5d348748ac8ad8600cdf91e3413.css"
+        },
+        {
+            "tag": "SCRIPT",
+            "attributes": {
+                "src": "/lunchroom-landing~0/resources/dist~app-4836539.js"
+            },
+            "exportPath": "/pinf.genesis.consulting/GoodyBag/goodybag-core/07-lunchroom-landing/.sm.hoisted/lunchroom-landing~0/resources/dist~app-4836539.js"
+        }
+    ],
+    "components": {
+        "header": {
+            "tag": "HEADER",
+            "attributes": {
+                "class": "navbar collapsed"
+            },
+            "innerHTML": "\n      <div class=\"container\">\n        <a href=\"/\">\n          <img src=\"https://d3bqck8kwfkhx5.cloudfront.net/img/logo.png\" alt=\"Goodybag.com\" class=\"navbar-logo\">\n        </a>\n      </div>\n    ",
+            "exportPaths": {
+                "htm": "/pinf.genesis.consulting/GoodyBag/goodybag-core/07-lunchroom-landing/.sm.hoisted/lunchroom-landing~0/components/AppCheckout/header.htm",
+                "cjs.jsx": "/pinf.genesis.consulting/GoodyBag/goodybag-core/07-lunchroom-landing/.sm.hoisted/lunchroom-landing~0/components/AppCheckout/header.cjs.jsx"
+            },
+            "exportPath": "/pinf.genesis.consulting/GoodyBag/goodybag-core/07-lunchroom-landing/.sm.hoisted/lunchroom-landing~0/components/AppCheckout/header.htm"
+        },
+        "checkout-navbar": {
+            "tag": "DIV",
+            "attributes": {
+                "class": "container page-nav-container"
+            },
+            "innerHTML": "\n  <ul class=\"page-nav\">\n    <li class=\"page-nav-item\">\n      <a href=\"/pages/menu\" class=\"page-nav-item-link\">&lt; Back to menu</a>\n    </li>\n  </ul>\n",
+            "exportPaths": {
+                "htm": "/pinf.genesis.consulting/GoodyBag/goodybag-core/07-lunchroom-landing/.sm.hoisted/lunchroom-landing~0/components/AppCheckout/checkout-navbar.htm",
+                "cjs.jsx": "/pinf.genesis.consulting/GoodyBag/goodybag-core/07-lunchroom-landing/.sm.hoisted/lunchroom-landing~0/components/AppCheckout/checkout-navbar.cjs.jsx"
+            },
+            "exportPath": "/pinf.genesis.consulting/GoodyBag/goodybag-core/07-lunchroom-landing/.sm.hoisted/lunchroom-landing~0/components/AppCheckout/checkout-navbar.htm"
+        },
+        "checkout-form": {
+            "tag": "DIV",
+            "attributes": {
+                "class": "container checkout-info-container"
+            },
+            "innerHTML": "\n  <fieldset class=\"checkout-info form-vertical\">\n    <div class=\"user-info\">\n      <h3 class=\"section-title\">Your Info</h3>\n      <div class=\"form-group\">\n        <label for=\"\">Name</label>\n        <input type=\"text\" class=\"form-control\" component:elm=\"info[name]\">\n      </div>\n      <div class=\"form-group\">\n        <label for=\"\">Email</label>\n        <input type=\"email\" class=\"form-control\" component:elm=\"info[email]\">\n      </div>\n      <div class=\"form-group\">\n        <label for=\"\">Phone Number</label>\n        <input type=\"tel\" class=\"form-control\" component:elm=\"info[phone]\">\n      </div>\n      <p class=\"checkout-info-note\">We'll email/text you when your meal has arrived!</p>\n    </div>\n    <div class=\"payment-info\">\n      <h3 class=\"section-title\">Payment Info</h3>\n        <div class=\"form-group form-group-member-name\">\n          <label for=\"\">Name on card</label>\n          <input type=\"text\" class=\"form-control\" name=\"card_member_name\" component:elm=\"card[name]\">\n        </div>\n        <div class=\"inline-form-group-list\">\n          <div class=\"form-group form-group-card-number\">\n            <label for=\"\">Card number</label>\n            <input type=\"text\" class=\"form-control\" name=\"card_number\" component:elm=\"card[number]\">\n          </div>\n          <div class=\"form-group form-group-card-cvv\">\n            <label for=\"\">CVV</label>\n            <input type=\"text\" class=\"form-control\" name=\"card_cvv\" component:elm=\"card[cvc]\">\n          </div>\n          <div class=\"form-group form-group-expiration\">\n            <label for=\"\">Expiration date</label>\n            <input type=\"text\" class=\"form-control\" placeholder=\"MM\" name=\"card_expiration_month\" component:elm=\"card[expire-month]\">\n            /\n            <input type=\"text\" class=\"form-control\" placeholder=\"YY\" name=\"card_expiration_year\" component:elm=\"card[expire-year]\">\n          </div>\n        </div>\n    </div>\n  </fieldset>\n",
+            "exportPaths": {
+                "htm": "/pinf.genesis.consulting/GoodyBag/goodybag-core/07-lunchroom-landing/.sm.hoisted/lunchroom-landing~0/components/AppCheckout/checkout-form.htm",
+                "cjs.jsx": "/pinf.genesis.consulting/GoodyBag/goodybag-core/07-lunchroom-landing/.sm.hoisted/lunchroom-landing~0/components/AppCheckout/checkout-form.cjs.jsx"
+            },
+            "exportPath": "/pinf.genesis.consulting/GoodyBag/goodybag-core/07-lunchroom-landing/.sm.hoisted/lunchroom-landing~0/components/AppCheckout/checkout-form.htm"
+        },
+        "checkout-items": {
+            "tag": "DIV",
+            "attributes": {
+                "class": "container order-reviewer-container"
+            },
+            "innerHTML": "\n  <div class=\"order-reviewer\">\n    <h3 class=\"order-reviewer-header\">Today's order\n      <a href=\"#\" class=\"order-reviewer-item-add-link\" component:elm=\"addItemsLink\">Add items</a>\n    </h3>\n\n    <div class=\"order-reviewer-items\" component:section=\"items\">\n        <div class=\"order-reviewer-item\" component:section=\"items\" component:view=\"default\">\n          <div class=\"order-reviewer-item-col photo-col\">\n            <img src=\"https://www.filepicker.io/api/file/SZoK9zUvTPWXzmK81aGg/convert?w=352&amp;h=210&amp;fit=crop\" alt=\"Pirata Dos Tacos\" component:prop=\"photo\" component:prop-target=\"src\">\n          </div>\n          <div class=\"order-reviewer-item-col item-desc\">\n            <div class=\"order-reviewer-item-description-wrapper\">\n              <div class=\"order-reviewer-item-description\">\n                <h4 class=\"order-reviewer-item-title\" component:prop=\"title\">Pirata Dos Tacos</h4>\n              </div>\n              <ul class=\"order-reviewer-item-actions\">\n                <li class=\"action\"><a href=\"#\" component:elm=\"removeLink\">remove</a></li>\n              </ul>\n            </div>\n          </div>\n          <div class=\"order-reviewer-item-col\">\n            <strong>Quantity:</strong> <span component:prop=\"quantity\">1</span>\n          </div>\n          <div class=\"order-reviewer-item-col price-col\" component:prop=\"amount\">\n            $10.90\n          </div>\n        </div>\n        <div class=\"order-reviewer-item\" component:section=\"items\" component:view=\"default\">\n          <div class=\"order-reviewer-item-col photo-col\">\n            <img src=\"https://www.filepicker.io/api/file/SZoK9zUvTPWXzmK81aGg/convert?w=352&amp;h=210&amp;fit=crop\" alt=\"Poop Taco Box\" component:prop=\"photo\" component:prop-target=\"src\">\n          </div>\n          <div class=\"order-reviewer-item-col item-desc\">\n            <div class=\"order-reviewer-item-description-wrapper\">\n              <div class=\"order-reviewer-item-description\">\n                <h4 class=\"order-reviewer-item-title\" component:prop=\"title\">Poop Taco Box</h4>\n              </div>\n              <ul class=\"order-reviewer-item-actions\">\n                <li class=\"action\"><a href=\"#\" component:elm=\"removeLink\">remove</a></li>\n              </ul>\n            </div>\n          </div>\n          <div class=\"order-reviewer-item-col\">\n            <strong>Quantity:</strong> <span component:prop=\"quantity\">1</span>\n          </div>\n          <div class=\"order-reviewer-item-col price-col\" component:prop=\"amount\">\n            $12.00\n          </div>\n        </div>\n    </div>\n  </div>\n",
+            "exportPaths": {
+                "htm": "/pinf.genesis.consulting/GoodyBag/goodybag-core/07-lunchroom-landing/.sm.hoisted/lunchroom-landing~0/components/AppCheckout/checkout-items.htm",
+                "cjs.jsx": "/pinf.genesis.consulting/GoodyBag/goodybag-core/07-lunchroom-landing/.sm.hoisted/lunchroom-landing~0/components/AppCheckout/checkout-items.cjs.jsx"
+            },
+            "exportPath": "/pinf.genesis.consulting/GoodyBag/goodybag-core/07-lunchroom-landing/.sm.hoisted/lunchroom-landing~0/components/AppCheckout/checkout-items.htm"
+        },
+        "checkout-summary": {
+            "tag": "DIV",
+            "attributes": {
+                "class": "container order-summary-container"
+            },
+            "innerHTML": "\n  <div class=\"order-summary-wrapper\">\n    <div class=\"order-summary\">\n      <div class=\"order-summary-item\">\n        <div class=\"order-summary-col order-summary-key\">Subtotal</div>\n        <div class=\"order-summary-col order-summary-value\" component:prop=\"subtotal\">$8.80</div>\n      </div>\n      <div class=\"order-summary-item\">\n        <div class=\"order-summary-col order-summary-key\">Tax</div>\n        <div class=\"order-summary-col order-summary-value\" component:prop=\"taxAmount\">$0.73</div>\n      </div>\n      <div class=\"order-summary-item\">\n        <div class=\"order-summary-col order-summary-key\">Goodybag Fee</div>\n        <div class=\"order-summary-col order-summary-value\" component:prop=\"goodybagFee\">$2.99</div>\n      </div>\n      <div class=\"order-summary-item order-summary-item-total\">\n        <div class=\"order-summary-col order-summary-key\">Total</div>\n        <div class=\"order-summary-col order-summary-value\" component:prop=\"total\">$12.37</div>\n      </div>\n    </div>\n    <button class=\"btn btn-primary btn-place-order\" component:elm=\"placeOrderButton\">Place Order</button>\n  </div>\n",
+            "exportPaths": {
+                "htm": "/pinf.genesis.consulting/GoodyBag/goodybag-core/07-lunchroom-landing/.sm.hoisted/lunchroom-landing~0/components/AppCheckout/checkout-summary.htm",
+                "cjs.jsx": "/pinf.genesis.consulting/GoodyBag/goodybag-core/07-lunchroom-landing/.sm.hoisted/lunchroom-landing~0/components/AppCheckout/checkout-summary.cjs.jsx"
+            },
+            "exportPath": "/pinf.genesis.consulting/GoodyBag/goodybag-core/07-lunchroom-landing/.sm.hoisted/lunchroom-landing~0/components/AppCheckout/checkout-summary.htm"
+        },
+        "footer": {
+            "tag": "FOOTER",
+            "attributes": {
+                "class": "footer"
+            },
+            "innerHTML": "\n      <ul class=\"nav footer-nav\">\n        <li><a href=\"#\" data-toggle=\"modal\" data-target=\"#contact-us-modal\">Contact Us</a></li>\n        <li><a href=\"https://www.goodybag.com/legal\">Terms of service</a></li>\n        <li><a href=\"https://www.goodybag.com/privacy\">Privacy policy</a></li>\n      </ul>\n    ",
+            "exportPaths": {
+                "htm": "/pinf.genesis.consulting/GoodyBag/goodybag-core/07-lunchroom-landing/.sm.hoisted/lunchroom-landing~0/components/AppCheckout/footer.htm",
+                "cjs.jsx": "/pinf.genesis.consulting/GoodyBag/goodybag-core/07-lunchroom-landing/.sm.hoisted/lunchroom-landing~0/components/AppCheckout/footer.cjs.jsx"
+            },
+            "exportPath": "/pinf.genesis.consulting/GoodyBag/goodybag-core/07-lunchroom-landing/.sm.hoisted/lunchroom-landing~0/components/AppCheckout/footer.htm"
+        }
+    }
+}
