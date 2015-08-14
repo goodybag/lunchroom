@@ -17406,9 +17406,10 @@
 					    // Save form on change to any order field.
 				    	$('input', element).on('keyup', function () {
 							var values = {};
-							$(':input', element).each(function() {
-								values[this.name] = $(this).val();
+							$(':input[data-component-elm]', element).each(function() {
+								values[$(this).attr("data-component-elm")] = $(this).val();
 							});
+	console.log("values", values);						
 							Context.order.set("form", JSON.stringify(values));
 						});
 
@@ -18431,9 +18432,9 @@
 
 /***/ },
 /* 139 */
-[264, 140],
+[265, 140],
 /* 140 */
-[265, 141],
+[266, 141],
 /* 141 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -18463,9 +18464,9 @@
 
 /***/ },
 /* 143 */
-[264, 144],
+[265, 144],
 /* 144 */
-[265, 145],
+[266, 145],
 /* 145 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -60080,7 +60081,7 @@
 		var store = new Store();
 
 
-		store.Model = __webpack_require__(266).forContext(context);
+		store.Model = __webpack_require__(264).forContext(context);
 
 
 		store.fetchStatusInfoForOrderHashId = function (orderHashId) {
@@ -60163,50 +60164,6 @@
 
 /***/ },
 /* 264 */
-/***/ function(module, exports, __webpack_require__, __webpack_module_template_argument_0__) {
-
-	/** @jsx React.DOM */
-	__webpack_require__(__webpack_module_template_argument_0__);
-
-	var React = __webpack_require__(102);
-
-	module.exports = (
-	    React.createElement("div", {className: "sixteen wide column"}, 
-
-	    	React.createElement("h1", {className: "ui header"}, "Goodybag")
-
-	    )
-	);
-
-
-/***/ },
-/* 265 */
-/***/ function(module, exports, __webpack_require__, __webpack_module_template_argument_0__) {
-
-	// style-loader: Adds some css to the DOM by adding a <style> tag
-
-	// load the styles
-	var content = __webpack_require__(__webpack_module_template_argument_0__);
-	if(typeof content === 'string') content = [[module.id, content, '']];
-	// add the styles to the DOM
-	var update = __webpack_require__(5)(content, {});
-	if(content.locals) module.exports = content.locals;
-	// Hot Module Replacement
-	if(false) {
-		// When the styles change, update the <style> tags
-		if(!content.locals) {
-			module.hot.accept("!!./../../../../../../pinf.genesis/03-vm.pinf.io/.deps/github.com~pinf-io~io.pinf.server.webpack~0/source/installed/master/node_modules/css-loader/index.js!./style.css", function() {
-				var newContent = require("!!./../../../../../../pinf.genesis/03-vm.pinf.io/.deps/github.com~pinf-io~io.pinf.server.webpack~0/source/installed/master/node_modules/css-loader/index.js!./style.css");
-				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
-				update(newContent);
-			});
-		}
-		// When the module is disposed, remove the <style> tags
-		module.hot.dispose(function() { update(); });
-	}
-
-/***/ },
-/* 266 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
@@ -60257,6 +60214,50 @@
 		return Model;
 	}
 
+
+/***/ },
+/* 265 */
+/***/ function(module, exports, __webpack_require__, __webpack_module_template_argument_0__) {
+
+	/** @jsx React.DOM */
+	__webpack_require__(__webpack_module_template_argument_0__);
+
+	var React = __webpack_require__(102);
+
+	module.exports = (
+	    React.createElement("div", {className: "sixteen wide column"}, 
+
+	    	React.createElement("h1", {className: "ui header"}, "Goodybag")
+
+	    )
+	);
+
+
+/***/ },
+/* 266 */
+/***/ function(module, exports, __webpack_require__, __webpack_module_template_argument_0__) {
+
+	// style-loader: Adds some css to the DOM by adding a <style> tag
+
+	// load the styles
+	var content = __webpack_require__(__webpack_module_template_argument_0__);
+	if(typeof content === 'string') content = [[module.id, content, '']];
+	// add the styles to the DOM
+	var update = __webpack_require__(5)(content, {});
+	if(content.locals) module.exports = content.locals;
+	// Hot Module Replacement
+	if(false) {
+		// When the styles change, update the <style> tags
+		if(!content.locals) {
+			module.hot.accept("!!./../../../../../../pinf.genesis/03-vm.pinf.io/.deps/github.com~pinf-io~io.pinf.server.webpack~0/source/installed/master/node_modules/css-loader/index.js!./style.css", function() {
+				var newContent = require("!!./../../../../../../pinf.genesis/03-vm.pinf.io/.deps/github.com~pinf-io~io.pinf.server.webpack~0/source/installed/master/node_modules/css-loader/index.js!./style.css");
+				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+				update(newContent);
+			});
+		}
+		// When the module is disposed, remove the <style> tags
+		module.hot.dispose(function() { update(); });
+	}
 
 /***/ }
 /******/ ])));
