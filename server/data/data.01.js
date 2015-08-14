@@ -18,7 +18,25 @@ exports.seeds = {
       address: "Somewhere<br/>accross the<br/>Rainbow",
       pickupLocation: "In the clouds",
       orderTax: "15"
-    }
+    },
+    "3": {
+      "id": 3,
+      "title": "Test: Hungry Company",
+      "alias": "test-hc",
+      contact: "Big stomach",
+      address: "Right<br/>where it need<br/>to be",
+      pickupLocation: "Hold out your hands and wiggle your nose",
+      orderTax: "10"
+    },
+    "4": {
+      "id": 4,
+      "title": "Bazaarvoice (test)",
+      "alias": "test-bazaarvoice",
+      contact: "Gillian Lambert",
+      address: "7901 Cameron Rd<br/>Bldg 2, Ste. 300<br/>Austin, TX 78754",
+      pickupLocation: "3rd floor Game Room!",
+      orderTax: "5"
+    }    
   }
 };
 
