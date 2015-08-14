@@ -7,7 +7,7 @@ require("./component.jsx")['for'](module, {
 
 		if (Context.eventToday) {
 			data['deliveryTime'] = Context.eventToday.get("format.deliveryTime");
-			data['timeLeftToOrder'] = Context.eventToday.get("format.orderTimer");
+			data['timeLeftToOrder'] = Context.eventToday.get("format.orderTimer") || "Too late for today!";
 			data['deliverTo'] = Context.eventToday.get("consumerGroup.title");
 			data['cartItemCount'] = Context.cartItemCount;
 		}
@@ -32,7 +32,9 @@ require("./component.jsx")['for'](module, {
 				this.liftSections(element);
 
 				$('[data-component-elm="checkoutButton"]', element).click(function () {
-					Context.appContext.set('selectedView', "Checkout");
+				    if (Context.appContext.get('stores').cart.getItemCount() > 0) {
+						Context.appContext.set('selectedView', "Checkout");
+					}
 					return false;
 				});
 

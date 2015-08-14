@@ -9,6 +9,7 @@ var SERVICES = require("../../server/services");
 
 
 var store = EXTEND(false, {}, ENDPOINTS.Store.bookshelf);
+
 store.create = function (model, data) {
 
 	return SERVICES['for']({}).then(function (SERVICES) {
@@ -19,39 +20,40 @@ store.create = function (model, data) {
 		// Let DB create order id
 		delete data.attributes.id;
 
+		return ENDPOINTS.Store.bookshelf.create.call(store, model, data);
+	});
+}
 
-		return ENDPOINTS.Store.bookshelf.create.call(store, model, data).then(function (resp) {
+store.update = function (model, params) {
+
+	return SERVICES['for']({}).then(function (SERVICES) {
+
+		return ENDPOINTS.Store.bookshelf.update.call(store, model, params).then(function (resp) {
 
 			try {
 
-				// TODO: Move to job based on OrderStatus
+				if (resp.attributes['paymentConfirmation']) {
 
-				SERVICES.email.send("Order_Placed", {
-		            "to": [
-		                {
-		                    "email": "christoph+test1@christophdorn.com",
-		                    "name": "Christoph Dorn",
-		                    "type": "to"
-		                }
-		            ]
-		        }).then(function () {
+					var form = JSON.parse(resp.attributes.form);
 
-					console.log("Email sent!");
+					SERVICES.email.send("Receipt", {
+			            "to": [
+			                {
+			                    "email": form["info[email]"],
+			                    "name": form["info[name]"] || form["info[email]"],
+			                    "type": "to"
+			                }
+			            ],
+			            "data": {
+			            	"items": JSON.parse(resp.attributes.items),
+			            	"summary": JSON.parse(resp.attributes.summary),
+			            	"orderHashId": resp.attributes.orderHashId
+			            }
+			        }).fail(function (err) {
+						console.error(err.stack);
+					});
 
-				}).fail(function (err) {
-					console.error(err.stack);
-				});
-
-
-				SERVICES.sms.send("Order_Placed", {
-		            "to": "+17788219208"
-		        }).then(function () {
-
-					console.log("SMS sent!");
-
-				}).fail(function (err) {
-					console.error(err.stack);
-				});
+				}
 
 			} catch (err) {
 				console.error(err.stack);
@@ -61,6 +63,7 @@ store.create = function (model, data) {
 		});
 	});
 }
+
 
 
 // @docs http://endpointsjs.com

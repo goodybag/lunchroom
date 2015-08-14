@@ -5,8 +5,18 @@ var API = exports.API = {
 	REACT: require("react"),
 	EXTEND: require("extend"),
 	MOMENT: require("moment"),
+	Q: require("q"),
 	GBL_TEMPLATE: require('./GBL_ReactTemplate')
 };
+
+
+
+function callOnceForId (id, handler) {
+	var S = callOnceForId;
+	if (!S.ids) S.ids = {};
+	if (S[id]) return S[id];
+	return (S[id] = (handler() || true));
+}
 
 
 exports.create = function (Context, implementation) {
@@ -204,6 +214,7 @@ exports.create = function (Context, implementation) {
 	    	self._render_Context.Template = API.GBL_TEMPLATE.for(self);
 
 	    	self._render_Context.REACT = API.REACT;
+	    	self._render_Context.Q = API.Q;
 	    	self._render_Context.appContext = self.props.appContext;
 
 
@@ -227,13 +238,22 @@ exports.create = function (Context, implementation) {
 
 
 	    	// New sub-template logic.
+	    	if (implementation.singleton || Context.singleton) {
+	    		callOnceForId(self._render_Context._implName, function () {
+		    		(
+			        	implementation.singleton ||
+			        	Context.singleton
+			        ).call(self, self._render_Context);
+
+	    		});
+	    	}
 	    	if (implementation.getTemplates || Context.getTemplates) {
 
 	    		if (!self._templateInstances) {
 					self._templateInstances = (
 			        	implementation.getTemplates ||
 			        	Context.getTemplates
-			        ).call(this, this._render_Context);
+			        ).call(self, self._render_Context);
 			    }
 
 		        self._render_Context.templates = self._templateInstances;
@@ -244,7 +264,7 @@ exports.create = function (Context, implementation) {
 		        var tags = (
 		        	implementation.getHTML ||
 		        	Context.getHTML
-		        ).call(this, this._render_Context);
+		        ).call(self, self._render_Context);
 
 		    	console.info("Hand off to react: " + implName);
 
@@ -257,14 +277,14 @@ exports.create = function (Context, implementation) {
 					self._templateInstance = (
 			        	implementation.getTemplate ||
 			        	Context.getTemplate
-			        ).call(this, this._render_Context);
+			        ).call(self, self._render_Context);
 			    }
 
 		        self._render_Context._template = self._templateInstance;
 
 		    	console.info("Hand off to react template: " + implName);
 
-		        return this._render_Context._template.impl;
+		        return self._render_Context._template.impl;
 	    	} else {
 	    		throw new Error("No template source declared!");
 	    	}

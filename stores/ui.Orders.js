@@ -63,7 +63,7 @@ var Store = COMMON.API.BACKBONE.Collection.extend({
 				});
 				order.set("id", response.data.id);
 
-				return callback(null, order.get("orderHashId"));
+				return callback(null, order);
 			})
 			.fail(function(err) {
 
@@ -99,6 +99,7 @@ exports['for'] = function (context) {
 			day_id: "string",
 	        form: "object",
 	        items: "object",
+	        summary: "object",
 	        event: "object",
 	        "deliveryStartTime": "string",
 	        "pickupEndTime": "string",
@@ -281,7 +282,14 @@ console.log("TODO: trigger save of order info in local storage so nothing is los
 
 					return context.appContext.get('stores').cart.getSerializedModels().then(function (serializedItems) {
 
+						var form = order.get("form");
+						if (!form) {
+							order.set("form", JSON.stringify({}));
+						}
+
 						order.set("items", serializedItems);
+						order.set("summary", JSON.stringify(context.appContext.get('stores').cart.getSummary()));
+
 						var orderFrom = {};
 						var vendor_ids = {};
 						serializedItems.forEach(function (item) {
@@ -300,14 +308,11 @@ console.log("TODO: trigger save of order info in local storage so nothing is los
 
 							// TODO: Send order to server and redirect to receipt using order ID hash.
 
-							return store.submitOrder(order.get("id")).then(function (orderHashId) {
+							return store.submitOrder(order.get("id")).then(function () {
 
-								context.appContext.get('stores').cart.reset();
+								context.appContext.get('stores').cart.clearAllItems();
 
-								return context.appContext.redirectTo(
-									"order-" + orderHashId + "/placed",
-									"Order_Placed"
-								);
+								return order;
 							});
 						});
 
@@ -318,6 +323,43 @@ console.log("TODO: trigger save of order info in local storage so nothing is los
 					console.error(err.stack);
 					throw err;
 				});
+			}
+
+			order.addPaymentConfirmation = function (paymentConfirmation) {
+
+				return COMMON.API.Q.denodeify(function (callback) {
+
+					order.set("paymentConfirmation", JSON.stringify(paymentConfirmation));
+
+					var payload = {
+						data: {
+							type: "orders",
+							id: order.get("id"),
+							attributes: {
+								"paymentConfirmation": order.get("paymentConfirmation")
+							}
+						}
+					};
+
+					return $.ajax({
+						method: "PATCH",
+						url: ENDPOINT + "/" + order.get("id"),
+						contentType: "application/vnd.api+json",
+						headers: {
+							"Accept": "application/vnd.api+json"
+						},
+		    			dataType: "json",
+						data: JSON.stringify(payload)
+					})
+					.done(function (response) {
+
+						return callback(null);
+					})
+					.fail(function(err) {
+						console.log("error!", err.stack);
+						return callback(err);
+					});
+				})();
 			}
 
 			return order;

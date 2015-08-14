@@ -219,6 +219,9 @@ exports['for'] = function (overrides) {
 		// data to init the UI.
 		if (context.type === "order") {
 
+			// When loading order confirmation we don't want to keep cart in local storage.
+			appContext.get('stores').cart.keepInLocalStorage = false;
+
 			appContext.get('stores').orders.loadOrderByHashId(context.id).then(function (order) {
 
 				context.dbfilter.event_id = JSON.parse(order.get("event")).id
@@ -249,48 +252,39 @@ exports['for'] = function (overrides) {
 					return appContext.get('stores').menus.loadForEvents(events.map(function (event) {
 						return event.get('id');
 					}));
-				});
+				}).then(function () {
 
-/*
-
-				Q.all([
-					appContext.get('stores').events.loadForConsumerGroupId(context.dbfilter.consumer_group_id),
-					appContext.get('stores').menus.loadForEvent(context.dbfilter.event_id)					
-				]).then(function() {
-
-					return appContext.get('stores').days.loadForEvent(context.dbfilter.event_id).then(function () {
-
-						var today = appContext.get('stores').events.modelRecords(appContext.get('stores').events.getToday())[0];
-
-						function monitorOrderDeadline (today) {
-							var ordersLocked = null;
-							var interval = setInterval(function () {
-								if (ordersLocked === null) {
-									ordersLocked = today.ordersLocked;
-								} else
-								if (today.ordersLocked !== ordersLocked) {
-									ordersLocked = today.ordersLocked;
-									// Status has changed so we reload to lock the UI.
-									console.log("Lock event due to ordersLocked");
-									appContext.get('stores').events.loadForId(context.dbfilter.event_id).fail(function (err) {
-										console.error("Error loading event", err.stack);
-									});
-								}
-								if (ordersLocked && interval) {
-									clearInterval(interval);
-									interval = null;
-								}
-							}, 5 * 1000);
-						}
-
-						monitorOrderDeadline(today);
-
-						finalizeInit();
-					});
+					finalizeInit();
 
 				}).fail(function (err) {
 					console.error("Error loading data", err.stack);
 				});
+
+/*
+					var today = appContext.get('stores').events.modelRecords(appContext.get('stores').events.getToday())[0];
+
+					function monitorOrderDeadline (today) {
+						var ordersLocked = null;
+						var interval = setInterval(function () {
+							if (ordersLocked === null) {
+								ordersLocked = today.ordersLocked;
+							} else
+							if (today.ordersLocked !== ordersLocked) {
+								ordersLocked = today.ordersLocked;
+								// Status has changed so we reload to lock the UI.
+								console.log("Lock event due to ordersLocked");
+								appContext.get('stores').events.loadForId(context.dbfilter.event_id).fail(function (err) {
+									console.error("Error loading event", err.stack);
+								});
+							}
+							if (ordersLocked && interval) {
+								clearInterval(interval);
+								interval = null;
+							}
+						}, 5 * 1000);
+					}
+
+					monitorOrderDeadline(today);
 */
 			}
 

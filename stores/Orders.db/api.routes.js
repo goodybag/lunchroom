@@ -20,8 +20,10 @@ exports.map = {
         '/:id/:related': CONTROLLER.readRelated(),
         '/:id/links/:relation': CONTROLLER.readRelation()
     },
-    delete: {
-        '/:id': CONTROLLER.destroy(),
-        '/:id/links/:relation': CONTROLLER.destroyRelation()
+    patch: {
+        '/:id': CONTROLLER.update({
+            schema: SCHEMA
+        }),
+        '/:id/relationships/:relation': CONTROLLER.updateRelation()
     }
 };

@@ -88,6 +88,8 @@ console.log("appContext.get('context').dev", appContext.get('context').dev);
 			var order = appContext.get('stores').orders.getOrder(appContext.get('todayId'));
 			var form = order.get("form");
 			if (form) form = JSON.parse(form);
+
+
 			if (!form || !form['info[name]']) {
 				order.set("form", JSON.stringify({
 				 	"info[name]": "Bill Smith",
@@ -111,7 +113,10 @@ console.log("appContext.get('context').dev", appContext.get('context').dev);
 
 appContext.redirectTo = function (contextId, viewId) {
 
-	var url = window.location.origin + '/' + contextId + '#' + viewId;
+	var url = window.location.origin + '/' + contextId;
+	if (viewId) {
+		url += '#' + viewId;
+	}
 
 	console.log("Redirect to", url);
 

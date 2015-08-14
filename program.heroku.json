@@ -189,28 +189,40 @@
             			"config": {
 			                "email": {
 			                    "actionBaseUrl": "http://goodybag-lunchroom-staging.herokuapp.com/a"
-			                }
+			                },
+                            "clientContext": {
+                                "stripePublishableKey": "pk_test_9N1srz1fVmWGyRAAhmzAA7aP"                                
+                            }
                			}
                     },
                     "staging.lunchroom.goodybag.com": {
             			"config": {
 			                "email": {
 			                    "actionBaseUrl": "http://staging.lunchroom.goodybag.com/a"
-			                }
+			                },
+                            "clientContext": {
+                                "stripePublishableKey": "pk_test_9N1srz1fVmWGyRAAhmzAA7aP"                                
+                            }
                			}
                 	},
                     "goodybag-lunchroom.herokuapp.com": {
             			"config": {
 			                "email": {
 			                    "actionBaseUrl": "http://goodybag-lunchroom.herokuapp.com/a"
-			                }
+			                },
+                            "clientContext": {
+                                "stripePublishableKey": "pk_live_kShOkv0NSx9Lj1qWGqxAXotN"                                
+                            }
                			}
                     },
                     "lunchroom.goodybag.com": {
             			"config": {
 			                "email": {
 			                    "actionBaseUrl": "http://lunchroom.goodybag.com/a"
-			                }
+			                },
+                            "clientContext": {
+                                "stripePublishableKey": "pk_live_kShOkv0NSx9Lj1qWGqxAXotN"                                
+                            }
                			}
                     }                    
                 }

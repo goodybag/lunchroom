@@ -1,6 +1,18 @@
 
 require("./component.jsx")['for'](module, {
 
+	singleton: function (Context) {
+
+		// @see https://stripe.com/docs/stripe.js
+		head.load("https://js.stripe.com/v2/", function() {
+			
+			Stripe.setPublishableKey(
+				Context.appContext.get('context').stripePublishableKey
+			);
+		});
+
+	},
+
 	getTemplates: function (Context) {
 
 		var copyName = {};
@@ -89,7 +101,53 @@ require("./component.jsx")['for'](module, {
 				markup: function (element) {
 
 					$('[data-component-elm="placeOrderButton"]', element).click(function () {
-			    		Context.order.submit();
+
+						function prepareOrder (order) {
+							return order.submit();
+						}
+
+						function chargeCard (order) {
+							return Context.Q.denodeify(function (callback) {
+								Stripe.card.createToken({
+									number: "4242424242424242",
+									cvc: "123",
+									exp_month: "12",
+									exp_year: "2016"
+								}, function (status, response) {
+									if (status !== 200) {
+										return callback(new Error("Got status '" + status + "' while calling 'stripe.com'"));
+									}
+									if (response.error) {
+										return callback(new Error(response.error.message));
+									}
+									return callback(null, response);
+								});
+							})();
+						}
+
+						function finalizeOrder (order, paymentConfirmation) {
+							return order.addPaymentConfirmation(paymentConfirmation);
+						}
+
+						function redirect (order) {
+							return Context.appContext.redirectTo(
+								"order-" + order.get("orderHashId") + "/placed"
+							);
+						}
+
+						Context.Q.fcall(function () {
+							return prepareOrder(Context.order).then(function (order) {
+								return chargeCard(order).then(function (paymentConfirmation) {
+									return finalizeOrder(order, paymentConfirmation);
+								}).then(function () {
+									return redirect(order);
+								});
+							});
+						}).fail(function (err) {
+// TODO: Show error message
+							console.error("Error submitting order:", err.message);
+						});
+
 						return false;
 					});
 

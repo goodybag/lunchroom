@@ -202,6 +202,23 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
 	    	}
 
 
+	    	function sendStatusEmails () {
+/*
+				if (form["info[phone]"]) {
+					SERVICES.sms.send("Order_Placed", {
+			            "to": form["info[phone]"]
+			        }).then(function () {
+
+						console.log("SMS sent!");
+
+					}).fail(function (err) {
+						console.error(err.stack);
+					});
+				}	    		
+*/
+	    	}
+
+
 	    	return sendMenuEmails();
 	    }
 

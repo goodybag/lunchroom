@@ -57,10 +57,10 @@ exports.init = function (config, options) {
 			}
 
 			function getExistingFields (tableName) {
-				return knex.raw("select column_name, data_type, character_maximum_length from INFORMATION_SCHEMA.COLUMNS where table_name = '" + tableName + "'").then(function (resp) {
+				return knex.raw("select * from INFORMATION_SCHEMA.COLUMNS where table_name = '" + tableName + "'").then(function (resp) {
 					var rows = {};
 					resp.rows.forEach(function (row) {
-						rows[row.column_name] = true;
+						rows[row.column_name] = row;
 					});
 					return rows;
 				});
@@ -69,14 +69,33 @@ exports.init = function (config, options) {
 			function ensureFields (tableName, schema) {
 				return getExistingFields(tableName).then(function (existingFields) {
 
-					var schemaFields = {};
+					var currentFields = {};
 
 					return knex.schema.table(tableName, function (table) {
 
 						// Add new fields.
 						schema.fields.forEach(function (field) {
-							schemaFields[field.name] = true;
-							if (existingFields[field.name]) return;
+
+							currentFields[field.name] = true;
+
+							if (existingFields[field.name]) {
+
+								// Remove constraints if no longer in schema
+								if (field.constraints) {
+									if (
+										schema.primaryKey !== field.name &&
+										field.constraints.required !== true &&
+										existingFields[field.name].is_nullable === 'NO'
+									) {
+										console.log("[db] Drop 'required' from field '" + field.name + "' for table '" + tableName + "'");
+
+										knex.raw('ALTER TABLE "' + tableName + '" ALTER COLUMN "' + field.name + '" DROP NOT NULL;').catch(function (err) {
+											console.error("SQL Error:", err.stack);
+										});
+									}
+								}
+								return;
+							}
 
 							// TODO: Modify column on change.
 
@@ -115,17 +134,24 @@ exports.init = function (config, options) {
 								} else {
 									fieldDef = fieldDef.defaultTo(field.default);
 								}
+							} else
+							if (
+								(field.type === "string" || !field.type) &&
+								(field.constraints && field.constraints.required === true)
+							) {
+								fieldDef = fieldDef.defaultTo("");
 							}
 
 						});
 					}).then(function () {
 
 						// Drop 'required' constraint on old fields to ensure we
-						// can insert ne records while ignoring old fields.
+						// can insert new records while ignoring old fields.
 						return Q.all(Object.keys(existingFields).map(function (name) {
-							if (schemaFields[name]) return Q.resolve();
-							return knex.raw('ALTER TABLE "' + tableName + '" ALTER COLUMN "' + name + '" DROP NOT NULL;').then(function (resp) {
+							if (currentFields[name]) return Q.resolve();
 
+							return knex.raw('ALTER TABLE "' + tableName + '" ALTER COLUMN "' + name + '" DROP NOT NULL;').catch(function (err) {
+								console.error("SQL Error:", err.stack);
 							});
 						}));
 					});

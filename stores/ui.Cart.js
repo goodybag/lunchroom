@@ -27,9 +27,11 @@ exports['for'] = function (context) {
 
 	var store = new Store();
 
+	store.keepInLocalStorage = true;
 
 
 	function syncToLocalStorage () {
+		if (!store.keepInLocalStorage) return;
 		COMMON.storeLocalValueFor("cart", "models", JSON.stringify(store.where().map(function (record) {
 			return record.toJSON();
 		})));
@@ -50,6 +52,12 @@ exports['for'] = function (context) {
 		}
 	}
 	recoverFromLocalStorage();
+
+
+	store.clearAllItems = function () {
+		COMMON.storeLocalValueFor("cart", "models", JSON.stringify([]));
+		this.reset();
+	}
 
 
 	store.getSummary = function (options) {
@@ -128,6 +136,14 @@ exports['for'] = function (context) {
 			});
 			return model;
 		});
+	}
+
+	store.getItemCount = function () {
+		var count = 0;
+		this.where().map(function (item) {
+    		count += item.get("quantity");
+    	});
+    	return count;
 	}
 
 	store.addItem = function (itemId, options) {

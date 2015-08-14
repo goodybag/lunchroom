@@ -6,7 +6,6 @@
 				{
 					"name": "id",
 					"constraints": {
-						"required": true,
 						"unique": true,
 						"autoincrement": true
 					}
@@ -55,7 +54,6 @@
 				{
 					"name": "id",
 					"constraints": {
-						"required": true,
 						"unique": true,
 						"autoincrement": true
 					}
@@ -104,7 +102,6 @@
 				{
 					"name": "id",
 					"constraints": {
-						"required": true,
 						"unique": true,
 						"autoincrement": true
 					}
@@ -135,7 +132,6 @@
 				{
 					"name": "id",
 					"constraints": {
-						"required": true,
 						"unique": true,
 						"autoincrement": true
 					}
@@ -223,7 +219,6 @@
 				{
 					"name": "id",
 					"constraints": {
-						"required": true,
 						"unique": true,
 						"autoincrement": true
 					}
@@ -269,7 +264,6 @@
 				{
 					"name": "id",
 					"constraints": {
-						"required": true,
 						"unique": true,
 						"autoincrement": true
 					}
@@ -300,7 +294,6 @@
 				{
 					"name": "id",
 					"constraints": {
-						"required": true,
 						"unique": true,
 						"autoincrement": true
 					}
@@ -338,6 +331,12 @@
 					}
 				},
 				{
+					"name": "summary",
+					"constraints": {
+						"required": true
+					}
+				},
+				{
 					"name": "event",
 					"constraints": {
 						"required": true
@@ -368,6 +367,9 @@
 					"constraints": {
 						"required": true
 					}
+				},
+				{
+					"name": "paymentConfirmation"
 				}
 			]
 		},
@@ -377,7 +379,6 @@
 				{
 					"name": "id",
 					"constraints": {
-						"required": true,
 						"unique": true,
 						"autoincrement": true
 					}
@@ -410,7 +411,6 @@
 				{
 					"name": "id",
 					"constraints": {
-						"required": true,
 						"unique": true,
 						"autoincrement": true
 					}
