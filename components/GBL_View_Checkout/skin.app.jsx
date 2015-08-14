@@ -25,8 +25,8 @@ require("./component.jsx")['for'](module, {
 				    // Save form on change to any order field.
 			    	$('input', element).on('keyup', function () {
 						var values = {};
-						$(':input', element).each(function() {
-							values[this.name] = $(this).val();
+						$(':input[data-component-elm]', element).each(function() {
+							values[$(this).attr("data-component-elm")] = $(this).val();
 						});
 						Context.order.set("form", JSON.stringify(values));
 					});
