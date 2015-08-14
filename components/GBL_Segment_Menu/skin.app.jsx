@@ -26,7 +26,7 @@ require("./component.jsx")['for'](module, {
 	getTemplate: function (Context) {
 
 		return new Context.Template({
-			impl: require("../../www/lunchroom-landing~0/components/AppComponents/navbar.cjs.jsx"),
+			impl: require("../../www/lunchroom-landing~0/components/AppMenu/navbar.cjs.jsx"),
 			markup: function (element) {
 
 				this.liftSections(element);

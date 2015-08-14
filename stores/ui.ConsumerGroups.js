@@ -57,12 +57,31 @@ exports['for'] = function (context) {
 		props: {
 			id: "string",
 	        title: "string",
+	        alias: "string",
 	        contact: "string",
 	        address: "string",
 	        pickupLocation: "string",
 	        orderTax: "string"
+		},
+		derived: {
+		    "lunchroomUrl": {
+		    	deps: [
+					"alias"
+				],
+				cache: false,
+	            fn: function () {
+	            	return context.appContext.get("windowOrigin") + "/" + this["alias"];
+	            }
+		    }
 		}
 	});
+
+	store.getLunchroom = function () {
+		var today = context.appContext.get("stores").events.getToday()[0];
+		return [
+			store.get(today.get("consumer_group_id"))
+		];
+	}
 
 	store.loadForId = function (consumer_group_id) {
 		var self = this;

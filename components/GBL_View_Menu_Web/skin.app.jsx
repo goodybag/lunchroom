@@ -4,7 +4,7 @@ require("./component.jsx")['for'](module, {
 	getTemplates: function (Context) {
 		return {
 			"menu": new Context.Template({
-				impl: require("../../www/lunchroom-landing~0/components/AppComponents/menu.cjs.jsx"),
+				impl: require("../../www/lunchroom-landing~0/components/AppMenu/menu.cjs.jsx"),
 				markup: function (element) {
 
 					this.liftSections(element);

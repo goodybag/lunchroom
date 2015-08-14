@@ -18,19 +18,26 @@ exports['for'] = function (module, Context) {
 	    render: function() {
 	    	var self = this;
 
-			var order = self.props.appContext.get('stores').orders.getActiveOrder();
+			var events = self.props.appContext.get('stores').events;
 
+//			var order = self.props.appContext.get('stores').orders.getOrder(self.props.appContext.get('todayId'));
+			var consumerGroups = self.props.appContext.get('stores').consumerGroups;
+/*
 			if (!order) {
 				return {
 					order: null
 				};
 			}
-
-			order = self.modelRecordsWithStore(self.props.appContext.get('stores').orders, [order])[0];
+*/
+//			order = self.modelRecordsWithStore(self.props.appContext.get('stores').orders, [order])[0];
 
 	        return {
 
-	        	order: order
+				eventToday: self.modelRecordsWithStore(events, events.getToday()).pop(),
+
+				lunchroom: self.modelRecordsWithStore(consumerGroups, consumerGroups.getLunchroom()).pop()
+
+//	        	order: order
 	        };
 	    }
 

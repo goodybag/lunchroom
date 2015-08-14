@@ -121,8 +121,11 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
 
             API.ASSERT.equal(typeof message.to, "string");
 
-            message.to = "+" + message.to.replace(/^\D/g, "");
-
+            message.to = message.to.replace(/^\D/g, "");
+//            if (message.to.length === 10) {
+//                message.to = "1" + message.to;
+//            }
+//            message.to = "+" + message.to;
 
             console.log("Sending SMS '" + templateId + "' to '" + message.to + "'");
 

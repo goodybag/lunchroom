@@ -26,10 +26,13 @@ exports['for'] = function (module, Context) {
 			var order = self.props.appContext.get('stores').orders.getOrder(self.props.appContext.get('todayId'));
 
 			var events = self.props.appContext.get('stores').events;
+			var consumerGroups = self.props.appContext.get('stores').consumerGroups;
 
 	        return {
 
 				eventToday: self.modelRecordsWithStore(events, events.getToday()).pop(),
+
+				lunchroom: self.modelRecordsWithStore(consumerGroups, consumerGroups.getLunchroom()).pop(),
 
 	        	// The items in the cart
 	        	items: self.modelRecordsWithStore(cart, cart.where()),

@@ -60,7 +60,7 @@ exports['for'] = function (overrides) {
 */
 
 		} else {
-
+/*
 			if (
 				appContext.get('selectedView') === "Order_Placed" ||
 				appContext.get('selectedView') === "Order_Arrived" ||
@@ -72,6 +72,8 @@ exports['for'] = function (overrides) {
 					return true;
 				}
 			} else
+*/
+
 			if (!appContext.get('selectedView')) {
 				appContext.set('selectedView', "Menu_Web");
 				return true;
@@ -86,34 +88,39 @@ exports['for'] = function (overrides) {
 	function initPageManagement () {
 
 		PAGE('*', function load(ctx) {
-			var pathname = ctx.pathname;
-//debugger;
-//console.log("ON PAGE CHANGE ctx", ctx);
+			try {
 
-			var view = pathname.replace(PATHNAME, "").replace(/^#/, "");
+				var pathname = ctx.pathname;
+	//debugger;
+	//console.log("ON PAGE CHANGE ctx", ctx);
 
-//console.log("view", view);
-//console.log("pathname", pathname);
-			if (
-				/^\//.test(view) &&
-				appContext.get('lockedView') &&
-				view !== appContext.get('lockedView') &&
-				appContext.get('lockedView').split(",").indexOf(view) === -1
-			) {
-//console.log("REDIRECT TO", window.location.origin + view);
-				// We are selecting a new view and updating the URL using a REDIRECT which
-				// loads the new page from the server.
+				var view = pathname.replace(PATHNAME, "").replace(/^#/, "");
 
-				// NOTE: This will not work if only the Hash changes.
-				//       In those cases you need to redirect to a new URL.
-				window.location.href = appContext.get("windowOrigin") + view;
-			} else {
-//console.log("SET VIEW", view);
+	//console.log("view", view);
+	//console.log("pathname", pathname);
+				if (
+					/^\//.test(view) &&
+					appContext.get('lockedView') &&
+					view !== appContext.get('lockedView') &&
+					appContext.get('lockedView').split(",").indexOf(view) === -1
+				) {
+	//console.log("REDIRECT TO", window.location.origin + view);
+					// We are selecting a new view and updating the URL using a REDIRECT which
+					// loads the new page from the server.
 
-				// We are selecting a new view and updating the URL using PUSH-STATE
-				// without reloading the page.
+					// NOTE: This will not work if only the Hash changes.
+					//       In those cases you need to redirect to a new URL.
+					window.location.href = appContext.get("windowOrigin") + view;
+				} else {
+	//console.log("SET VIEW", view);
 
-				appContext.set('selectedView', view);
+					// We are selecting a new view and updating the URL using PUSH-STATE
+					// without reloading the page.
+
+					appContext.set('selectedView', view);
+				}
+			} catch (err) {
+				console.error("page changed error:", err.stack);
 			}
 		});
 		PAGE({
@@ -123,37 +130,42 @@ exports['for'] = function (overrides) {
 
 		appContext.on("change:selectedView", function () {
 
-//console.log("ON VIEW CHANGE appContext.selectedView", appContext.selectedView);
-//console.log("ON VIEW CHANGE appContext.lockedView", appContext.lockedView);
+			try {
 
-			if (
-				appContext.get('lockedView') &&
-				appContext.get('selectedView') !== appContext.get('lockedView') &&
-				appContext.get('lockedView').split(",").indexOf(appContext.get('selectedView')) === -1
-			) {
-//console.log("REDIRECT TO", window.location.origin + PATHNAME + "#" + appContext.selectedView);
-				// We are selecting a new view and updating the URL using a REDIRECT which
-				// loads the new page from the server.
+	//console.log("ON VIEW CHANGE appContext.selectedView", appContext.selectedView);
+	//console.log("ON VIEW CHANGE appContext.lockedView", appContext.lockedView);
 
-				// NOTE: This will not work if only the Hash changes.
-				//       In those cases you need to redirect to a new URL.
-				window.location.href = appContext.get("windowOrigin") + PATHNAME + "#" + appContext.get('selectedView');
-			} else {
+				if (
+					appContext.get('lockedView') &&
+					appContext.get('selectedView') !== appContext.get('lockedView') &&
+					appContext.get('lockedView').split(",").indexOf(appContext.get('selectedView')) === -1
+				) {
+	//console.log("REDIRECT TO", window.location.origin + PATHNAME + "#" + appContext.selectedView);
+					// We are selecting a new view and updating the URL using a REDIRECT which
+					// loads the new page from the server.
 
-//console.log("SET PAGE1", PATHNAME + "#" + appContext.selectedView);
+					// NOTE: This will not work if only the Hash changes.
+					//       In those cases you need to redirect to a new URL.
+					window.location.href = appContext.get("windowOrigin") + PATHNAME + "#" + appContext.get('selectedView');
+				} else {
 
-				// We are selecting a new view and updating the URL using PUSH-STATE
-				// without reloading the page.
+	//console.log("SET PAGE1", PATHNAME + "#" + appContext.selectedView);
 
-				if (handleSelectedViewInit()) return;
-//console.log("SET PAGE2", PATHNAME + "#" + appContext.selectedView);
+					// We are selecting a new view and updating the URL using PUSH-STATE
+					// without reloading the page.
 
-				PAGE.redirect(PATHNAME + "#" + appContext.get('selectedView'));
+					if (handleSelectedViewInit()) return;
+	//console.log("SET PAGE2", PATHNAME + "#" + appContext.selectedView);
 
-//				PAGE(PATHNAME + "#" + appContext.selectedView);
-//console.log("SET PAGE DONE", PATHNAME + "#" + appContext.selectedView);
+					PAGE.redirect(PATHNAME + "#" + appContext.get('selectedView'));
 
-				window.scrollTo(0, 0);
+	//				PAGE(PATHNAME + "#" + appContext.selectedView);
+	//console.log("SET PAGE DONE", PATHNAME + "#" + appContext.selectedView);
+
+					window.scrollTo(0, 0);
+				}
+			} catch (err) {
+				console.error("selectedView change error:", err.stack);
 			}
 		});
 /*
@@ -166,189 +178,202 @@ exports['for'] = function (overrides) {
 	}
 
 	function initLiveNotify () {
+		try {
 
-		var client = require("socket.io/node_modules/socket.io-client/lib/index.js");
-		var socket = client.connect(appContext.get("windowOrigin"));
+			var client = require("socket.io/node_modules/socket.io-client/lib/index.js");
+			var socket = client.connect(appContext.get("windowOrigin"));
 
-		// TODO: Handle re-connects by re-sending init.
+			// TODO: Handle re-connects by re-sending init.
 
-		// Init connection
-		socket.emit('context', appContext.get('context') || {});
+			// Init connection
+			socket.emit('context', appContext.get('context') || {});
 
-		socket.on('notify', function (data) {
+			socket.on('notify', function (data) {
 
-			if (data.collection === "order-status") {
+				if (data.collection === "order-status") {
 
-				appContext.get('stores').orderStatus.fetchStatusInfoForOrderHashId(data.orderHashId);
+					appContext.get('stores').orderStatus.fetchStatusInfoForOrderHashId(data.orderHashId);
 
-			}
-		});
+				}
+			});
+
+		} catch (err) {
+			console.error("Error initializing live notify:", err.stack);
+		}
 	}
 
 	initPageManagement();
 
 	appContext.on("change:initialized", function () {
 
-		function finalizeInit () {
+		try {
+
+			function finalizeInit () {
+
+				var context = appContext.get('context');
+
+				if (context.initLiveNotify) {
+					initLiveNotify();
+				}
+
+				appContext.set('ready', true);
+			}
 
 			var context = appContext.get('context');
 
-			if (context.initLiveNotify) {
-				initLiveNotify();
+			var m = PATHNAME.match(/\/(order|vendor|event)-([^\/]+)\/?/);
+			if (m) {
+				context.type = m[1];
+				context.id = m[2];
 			}
 
-			appContext.set('ready', true);
-		}
+			if (context.selectedView) {
+				appContext.set('selectedView', context.selectedView);
+			}
+			if (context.lockedView) {
+				appContext.set('lockedView', context.lockedView);
+			}
 
-		var context = appContext.get('context');
+			// We have a context ID that we should use to load
+			// data to init the UI.
+			if (context.type === "order") {
 
-		var m = PATHNAME.match(/\/(order|vendor|event)-([^\/]+)\/?/);
-		if (m) {
-			context.type = m[1];
-			context.id = m[2];
-		}
+				// When loading order confirmation we don't want to keep cart in local storage.
+				appContext.get('stores').cart.keepInLocalStorage = false;
 
-		if (context.selectedView) {
-			appContext.set('selectedView', context.selectedView);
-		}
-		if (context.lockedView) {
-			appContext.set('lockedView', context.lockedView);
-		}
+				appContext.get('stores').orders.loadOrderByHashId(context.id).then(function (order) {
 
-		// We have a context ID that we should use to load
-		// data to init the UI.
-		if (context.type === "order") {
+					context.dbfilter.event_id = JSON.parse(order.get("event")).id
 
-			// When loading order confirmation we don't want to keep cart in local storage.
-			appContext.get('stores').cart.keepInLocalStorage = false;
+					return appContext.get('stores').events.loadForId(context.dbfilter.event_id).then(function (event) {
 
-			appContext.get('stores').orders.loadOrderByHashId(context.id).then(function (order) {
+						return appContext.get('stores').consumerGroups.loadForId(event.get("consumer_group_id")).then(function () {
 
-				context.dbfilter.event_id = JSON.parse(order.get("event")).id
+							if (!(
+								appContext.get('selectedView') === "Order_Placed" ||
+								appContext.get('selectedView') === "Order_Arrived" ||
+								appContext.get('selectedView') === "Receipt"
+							)) {
+								appContext.set('selectedView', "Receipt");
+							}
 
-				return appContext.get('stores').events.loadForId(context.dbfilter.event_id).then(function () {
-
-					if (!(
-						appContext.get('selectedView') === "Order_Placed" ||
-						appContext.get('selectedView') === "Order_Arrived" ||
-						appContext.get('selectedView') === "Receipt"
-					)) {
-						appContext.set('selectedView', "Receipt");
-					}
-
-					finalizeInit();
-				});
-
-			}).fail(function (err) {
-				console.error("Error loading order!", err.stack);
-			});
-
-		} else
-		if (context.type === "event") {
-
-			if (context.dbfilter.consumer_group_id) {				
-
-				return appContext.get('stores').events.loadForConsumerGroupId(context.dbfilter.consumer_group_id).then(function (events) {
-					return appContext.get('stores').menus.loadForEvents(events.map(function (event) {
-						return event.get('id');
-					}));
-				}).then(function () {
-
-					finalizeInit();
+							finalizeInit();
+						});
+					});
 
 				}).fail(function (err) {
-					console.error("Error loading data", err.stack);
+					console.error("Error loading order!", err.stack);
 				});
 
-/*
-					var today = appContext.get('stores').events.modelRecords(appContext.get('stores').events.getToday())[0];
+			} else
+			if (context.type === "event") {
 
-					function monitorOrderDeadline (today) {
-						var ordersLocked = null;
-						var interval = setInterval(function () {
-							if (ordersLocked === null) {
-								ordersLocked = today.ordersLocked;
-							} else
-							if (today.ordersLocked !== ordersLocked) {
-								ordersLocked = today.ordersLocked;
-								// Status has changed so we reload to lock the UI.
-								console.log("Lock event due to ordersLocked");
-								appContext.get('stores').events.loadForId(context.dbfilter.event_id).fail(function (err) {
-									console.error("Error loading event", err.stack);
-								});
-							}
-							if (ordersLocked && interval) {
-								clearInterval(interval);
-								interval = null;
-							}
-						}, 5 * 1000);
-					}
+				if (context.dbfilter.consumer_group_id) {				
 
-					monitorOrderDeadline(today);
-*/
-			}
+					return appContext.get('stores').events.loadForConsumerGroupId(context.dbfilter.consumer_group_id).then(function (events) {
+						return appContext.get('stores').menus.loadForEvents(events.map(function (event) {
+							return event.get('id');
+						}));
+					}).then(function () {
 
-		} else
-		if (context.type === "vendor") {
+						finalizeInit();
 
-			appContext.get('stores').vendors.idForAdminAccessToken(context.id).then(function (vendor_id) {
+					}).fail(function (err) {
+						console.error("Error loading data", err.stack);
+					});
 
-				context.vendor_id = vendor_id;
+	/*
+						var today = appContext.get('stores').events.modelRecords(appContext.get('stores').events.getToday())[0];
 
-				return appContext.get('stores').orders.loadForVendorId(context.vendor_id).then(function () {
-/*
-					if (!(
-						appContext.get('selectedView') === "Admin_Restaurant"
-					)) {
-						appContext.set('selectedView', "Admin_Restaurant");
-					}
-*/
+						function monitorOrderDeadline (today) {
+							var ordersLocked = null;
+							var interval = setInterval(function () {
+								if (ordersLocked === null) {
+									ordersLocked = today.ordersLocked;
+								} else
+								if (today.ordersLocked !== ordersLocked) {
+									ordersLocked = today.ordersLocked;
+									// Status has changed so we reload to lock the UI.
+									console.log("Lock event due to ordersLocked");
+									appContext.get('stores').events.loadForId(context.dbfilter.event_id).fail(function (err) {
+										console.error("Error loading event", err.stack);
+									});
+								}
+								if (ordersLocked && interval) {
+									clearInterval(interval);
+									interval = null;
+								}
+							}, 5 * 1000);
+						}
 
-					finalizeInit();
+						monitorOrderDeadline(today);
+	*/
+				}
+
+			} else
+			if (context.type === "vendor") {
+
+				appContext.get('stores').vendors.idForAdminAccessToken(context.id).then(function (vendor_id) {
+
+					context.vendor_id = vendor_id;
+
+					return appContext.get('stores').orders.loadForVendorId(context.vendor_id).then(function () {
+	/*
+						if (!(
+							appContext.get('selectedView') === "Admin_Restaurant"
+						)) {
+							appContext.set('selectedView', "Admin_Restaurant");
+						}
+	*/
+
+						finalizeInit();
+					});
+				}).fail(function (err) {
+					console.error("Error loading for vendor!", err.stack);
 				});
-			}).fail(function (err) {
-				console.error("Error loading for vendor!", err.stack);
-			});
 
-		} else {
+			} else {
 
-			function initializeDefaultsForContext () {
-				var all = [];
-				if (
-					context.dbfilter
-				) {
+				function initializeDefaultsForContext () {
+					var all = [];
+					if (
+						context.dbfilter
+					) {
 
-					if (context.type === "lunchroom") {
-						if (context.dbfilter.consumer_group_id) {
+						if (context.type === "lunchroom") {
+							if (context.dbfilter.consumer_group_id) {
+								all.push(Q.fcall(function () {
+									return appContext.get('stores').consumerGroups.loadForId(
+										context.dbfilter.consumer_group_id
+									);
+								}));
+							}
+						}
+
+						if (context.dbfilter.email) {
 							all.push(Q.fcall(function () {
-								return appContext.get('stores').consumerGroups.loadForId(
-									context.dbfilter.consumer_group_id
+								return appContext.get('stores').consumerGroupSubscriptions.loadForEmail(
+									context.dbfilter.email
 								);
 							}));
 						}
 					}
-
-					if (context.dbfilter.email) {
-						all.push(Q.fcall(function () {
-							return appContext.get('stores').consumerGroupSubscriptions.loadForEmail(
-								context.dbfilter.email
-							);
-						}));
-					}
+					return Q.all(all);
 				}
-				return Q.all(all);
+
+				return initializeDefaultsForContext().then(function () {
+
+					handleSelectedViewInit();
+					finalizeInit();
+
+				}).fail(function (err) {
+					console.error("Error initializing context", err);
+					throw err;
+				});
 			}
-
-			return initializeDefaultsForContext().then(function () {
-
-				handleSelectedViewInit();
-				finalizeInit();
-
-			}).fail(function (err) {
-				console.error("Error initializing context", err);
-				throw err;
-			});
-		}
+		} catch (err) {
+			console.error("Error while initializing:", err.stack);
+		}		
 	});
 
 	return appContext;

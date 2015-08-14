@@ -110,11 +110,11 @@
                             "router": {
                                 "impl": "07-lunchroom/order-router/0"
                             },
-                            "internalUri": "/harness.htm",
+                            "internalUri": "/app.htm",
                             "clientContext": {
                                 "sessionCookieName": "gblosid",
                                 "selectedView": "Order_Placed",
-                                "lockedView": "Order_Placed,Order_Arrived,Receipt",
+                                "lockedView": "Order_Placed",
                                 "type": "order",
                                 "overrideSkinUri": ""
                             }
@@ -130,7 +130,7 @@
                             "clientContext": {
                                 "sessionCookieName": "gblosid",
                                 "selectedView": "Receipt",
-                                "lockedView": "Order_Placed,Order_Arrived,Receipt",
+                                "lockedView": "Receipt",
                                 "type": "order",
                                 "overrideSkinUri": ""
                             }

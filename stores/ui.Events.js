@@ -226,7 +226,7 @@ exports['for'] = function (context) {
 	                "filter[id]": id
 	            }),
 	            success: function () {
-	            	return callback(null);
+	            	return callback(null, store.get(id));
 	            }
 	        });
 		})();

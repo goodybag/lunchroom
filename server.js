@@ -181,7 +181,7 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
 		}
 
 		var landingResources = getResourceMappingsForSkinPage("Landing");
-		var appResources = getResourceMappingsForSkinPage("AppComponents");
+		var appResources = getResourceMappingsForSkinPage("AppMenu");
 
 		app.get(/^(\/(?:vendor|order|event)-[^\/]+)?(\/.*)$/, function (req, res, next) {
 

@@ -312,8 +312,6 @@ console.log("TODO: trigger save of order info in local storage so nothing is los
 
 							return store.submitOrder(order.get("id")).then(function () {
 
-								context.appContext.get('stores').cart.clearAllItems();
-
 								return order;
 							});
 						});
@@ -322,7 +320,7 @@ console.log("TODO: trigger save of order info in local storage so nothing is los
 
 				}).fail(function (err) {
 					// TODO: Error submitting order!
-					console.error(err.stack);
+					console.error("submit error:", err.stack);
 					throw err;
 				});
 			}
@@ -361,7 +359,11 @@ console.log("TODO: trigger save of order info in local storage so nothing is los
 						console.log("error!", err.stack);
 						return callback(err);
 					});
-				})();
+				})().fail(function (err) {
+					// TODO: Error submitting order!
+					console.error("add payment confirmation error:", err.stack);
+					throw err;
+				});
 			}
 
 			return order;

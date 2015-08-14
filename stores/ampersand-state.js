@@ -88,9 +88,14 @@ exports.extend = function (definition) {
 		if (this.values[name] === value) return;
 
 		this.values[name] = value;
-		this.emit("change:" + name);
-		this.emit("change");
 
+		try {
+			this.emit("change:" + name);
+			this.emit("change");
+		} catch (err) {
+console.error("Error while emitting change event for '" + name + "':", err.stack);
+			throw err;			
+		}
 	}
 
 	State.getFields = function () {

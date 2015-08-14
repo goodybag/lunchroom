@@ -27,6 +27,7 @@ exports.forContext = function (context) {
 
 	        // TODO: Add these dynamically using foreign model.
 	        "consumerGroup.title": "string",
+	        "consumerGroup.alias": "string",
 	        "consumerGroup.contact": "string",
 	        "consumerGroup.address": "string",
 	        "consumerGroup.pickupLocation": "string",

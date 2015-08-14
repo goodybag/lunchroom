@@ -19,7 +19,7 @@ require("./component.jsx")['for'](module, {
 
 		return {
 			"form": new Context.Template({
-				impl: require("../../www/lunchroom-landing~0/components/AppComponents/checkout-form.cjs.jsx"),
+				impl: require("../../www/lunchroom-landing~0/components/AppCheckout/checkout-form.cjs.jsx"),
 				markup: function (element) {
 
 				    // Save form on change to any order field.
@@ -60,7 +60,7 @@ require("./component.jsx")['for'](module, {
 				}
 			}),
 			"items": new Context.Template({
-				impl: require("../../www/lunchroom-landing~0/components/AppComponents/checkout-items.cjs.jsx"),
+				impl: require("../../www/lunchroom-landing~0/components/AppCheckout/checkout-items.cjs.jsx"),
 				markup: function (element) {
 
 					this.liftSections(element);
@@ -97,55 +97,108 @@ require("./component.jsx")['for'](module, {
 				}
 			}),
 			"summary": new Context.Template({
-				impl: require("../../www/lunchroom-landing~0/components/AppComponents/checkout-summary.cjs.jsx"),
+				impl: require("../../www/lunchroom-landing~0/components/AppCheckout/checkout-summary.cjs.jsx"),
 				markup: function (element) {
 
 					$('[data-component-elm="placeOrderButton"]', element).click(function () {
 
+						function validateOrder (order) {
+							return Context.Q.fcall(function () {
+
+								var form = JSON.parse(order.get("form"));
+
+								if (!Stripe.card.validateCardNumber(form["card[number]"])) {
+									throw new Error("Card number format not valid!");
+								}
+								if (!Stripe.card.validateExpiry(form["card[expire-month]"], form["card[expire-year]"])) {
+									throw new Error("Card expiry not valid!");
+								}
+								if (!Stripe.card.validateCVC(form["card[cvc]"])) {
+									throw new Error("Card CVC not valid!");
+								}
+
+							}).fail(function (err) {
+								console.error("Error validating order:", err.message);
+								throw err;
+							});
+						}
+
 						function prepareOrder (order) {
-							return order.submit();
+							return order.submit().fail(function (err) {
+								console.error("Error preparing order:", err.message);
+								throw err;
+							});
 						}
 
 						function chargeCard (order) {
 							return Context.Q.denodeify(function (callback) {
-								Stripe.card.createToken({
-									number: "4242424242424242",
-									cvc: "123",
-									exp_month: "12",
-									exp_year: "2016"
-								}, function (status, response) {
-									if (status !== 200) {
-										return callback(new Error("Got status '" + status + "' while calling 'stripe.com'"));
-									}
-									if (response.error) {
-										return callback(new Error(response.error.message));
-									}
-									return callback(null, response);
-								});
-							})();
+								try {
+									var form = JSON.parse(order.get("form"));
+									Stripe.card.createToken({
+										number: form["card[number]"],
+										cvc: form["card[cvc]"],
+										exp_month: form["card[expire-month]"],
+										exp_year: form["card[expire-year]"],
+										name: form["card[name]"]
+									}, function (status, response) {
+										if (status !== 200) {
+											return callback(new Error("Got status '" + status + "' while calling 'stripe.com'"));
+										}
+										if (response.error) {
+											return callback(new Error(response.error.message));
+										}
+										return callback(null, response);
+									});
+								} catch (err) {
+									return callback(err);
+								}
+							})().fail(function (err) {
+								console.error("Error charging card:", err.message);
+								throw err;
+							});
 						}
 
 						function finalizeOrder (order, paymentConfirmation) {
-							return order.addPaymentConfirmation(paymentConfirmation);
+							return order.addPaymentConfirmation(paymentConfirmation).then(function () {
+
+								return Context.appContext.get('stores').cart.clearAllItems();
+
+							}).fail(function (err) {
+								console.error("Error finalizing order:", err.message);
+								throw err;
+							});
 						}
 
 						function redirect (order) {
-							return Context.appContext.redirectTo(
-								"order-" + order.get("orderHashId") + "/placed"
-							);
+							try {
+
+								Context.appContext.set("selectedView", "Order_Placed");
+
+								return Context.Q.resolve();
+							} catch (err) {
+								console.error("Error redirecting after order:", err.message);
+								return Context.Q.reject(err);
+							}
+
+							//return Context.appContext.redirectTo(
+							//	"order-" + order.get("orderHashId") + "/placed"
+							//);
 						}
 
 						Context.Q.fcall(function () {
-							return prepareOrder(Context.order).then(function (order) {
-								return chargeCard(order).then(function (paymentConfirmation) {
-									return finalizeOrder(order, paymentConfirmation);
-								}).then(function () {
-									return redirect(order);
+							return validateOrder(Context.order).then(function () {
+								return prepareOrder(Context.order).then(function (order) {
+									return chargeCard(order).then(function (paymentConfirmation) {
+										return finalizeOrder(order, paymentConfirmation);
+									}).then(function () {
+										return redirect(order);
+									});
 								});
 							});
 						}).fail(function (err) {
 // TODO: Show error message
 							console.error("Error submitting order:", err.message);
+							alert("ERROR: " + err.message);
 						});
 
 						return false;
