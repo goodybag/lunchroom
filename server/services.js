@@ -124,7 +124,7 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
             message.to = "+" + message.to.replace(/^\D/g, "");
 
 
-            console.log("Sending email '" + templateId + "' to '" + message.to + "'");
+            console.log("Sending SMS '" + templateId + "' to '" + message.to + "'");
 
             if (templateId === "Order_Arrived") {
 
