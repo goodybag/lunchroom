@@ -25,5 +25,9 @@ exports.map = {
             schema: SCHEMA
         }),
         '/:id/relationships/:relation': CONTROLLER.updateRelation()
+    },
+    delete: {
+        '/:id': CONTROLLER.destroy(),
+        '/:id/links/:relation': CONTROLLER.destroyRelation()
     }
 };

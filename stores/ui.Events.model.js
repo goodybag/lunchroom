@@ -21,8 +21,9 @@ exports.forContext = function (context) {
 	        "tip": "string",
 	        "token": "string",
 	        "menuReady": "boolean",
-	        "notificationsSent": "boolean",
+	        "menuEmailsSent": "boolean",
 	        "delivered": "boolean",
+	        "deliveredEmailsSent": "boolean",
 
 	        // TODO: Add these dynamically using foreign model.
 	        "consumerGroup.title": "string",
@@ -131,13 +132,13 @@ exports.forContext = function (context) {
 	            	return (this.menuReady ? "Yes" : "No");
 	            }
 		    },
-		    "format.notificationsSent": {
+		    "format.menuEmailsSent": {
 		    	deps: [
-					"notificationsSent"
+					"menuEmailsSent"
 				],
 				cache: false,
 	            fn: function () {
-	            	return (this.notificationsSent ? "Yes" : "No");
+	            	return (this.menuEmailsSent ? "Yes" : "No");
 	            }
 		    },
 		    "format.delivered": {

@@ -196,7 +196,7 @@
 					}
 				},
 				{
-					"name": "notificationsSent",
+					"name": "menuEmailsSent",
 					"type": "boolean",
 					"default": false,
 					"constraints": {
@@ -205,6 +205,14 @@
 				},
 				{
 					"name": "delivered",
+					"type": "boolean",
+					"default": false,
+					"constraints": {
+						"required": true
+					}
+				},
+				{
+					"name": "deliveredEmailsSent",
 					"type": "boolean",
 					"default": false,
 					"constraints": {
@@ -332,6 +340,12 @@
 				},
 				{
 					"name": "summary",
+					"constraints": {
+						"required": true
+					}
+				},
+				{
+					"name": "event_id",
 					"constraints": {
 						"required": true
 					}

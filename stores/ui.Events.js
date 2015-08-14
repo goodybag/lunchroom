@@ -62,6 +62,69 @@ console.log("error!", err.stack);
 		});
 	},
 
+	setDeliveredForEventId: function (event_id) {
+		var self = this;
+
+		return COMMON.API.Q.denodeify(function (callback) {
+
+			var payload = {
+				data: {
+					type: "events",
+					id: event_id,
+					attributes: {
+						"delivered": true
+					}
+				}
+			};
+
+			return $.ajax({
+				method: "PATCH",
+				url: ENDPOINT + "/" + event_id,
+				contentType: "application/vnd.api+json",
+				headers: {
+					"Accept": "application/vnd.api+json"
+				},
+    			dataType: "json",
+				data: JSON.stringify(payload)
+			})
+			.done(function (response) {
+
+				return callback(null);
+			})
+			.fail(function(err) {
+
+// TODO: Ask user to submit again.
+console.log("error!", err.stack);
+
+				return callback(err);
+			});
+		})().then(function () {
+
+			return self.loadForId(event_id);
+		});
+	},
+
+	deleteForEventId: function (event_id) {
+		var self = this;
+		return COMMON.API.Q.denodeify(function (callback) {
+
+			return $.ajax({
+				method: "DELETE",
+				url: ENDPOINT + "/" + event_id
+			})
+			.done(function (response) {
+				return callback(null);
+			})
+			.fail(function(err) {
+
+// TODO: Ask user to submit again.
+console.log("error!", err.stack);
+
+				return callback(err);
+			});
+		})();
+	},
+
 	createEvent: function (fields) {
 		var self = this;
 

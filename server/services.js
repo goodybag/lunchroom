@@ -89,6 +89,27 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
 
                 return API["mandrill-send"]["$io.pinf.service.mandrill/send/0"].sendMessage(message);
 
+            } else
+            if (templateId === "Order_Arrived") {
+
+                message = API.DEEPMERGE({
+                    "subject": "Your meal has arrived!",
+                    "text": [
+                        "Hi there",
+                        "",
+                        "Your meal has arrived!",
+                        "",
+                        "<TODO>",
+                        "",
+                        "See you soon",
+                        "-Goodybot",
+                        "",
+                        "http://goodybag.com"                        
+                    ].join("\n")
+                }, message || {});
+
+                return API["mandrill-send"]["$io.pinf.service.mandrill/send/0"].sendMessage(message);
+
             } else {
                 return API.Q.reject(new Error("Template with id '" + templateId + "' not declared!"));
             }

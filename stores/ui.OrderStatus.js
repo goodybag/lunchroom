@@ -27,15 +27,8 @@ exports['for'] = function (context) {
 	var store = new Store();
 
 
-	// @see http://ampersandjs.com/docs#ampersand-state
-	var Model = COMMON.API.AMPERSAND_STATE.extend({
-		name: "order-status",
-		props: {
-			id: "string",
-			orderHashId: "string",
-			status: "string"
-	    }
-	});
+	store.Model = require("./ui.OrderStatus.model").forContext(context);
+
 
 	store.fetchStatusInfoForOrderHashId = function (orderHashId) {
 
@@ -51,30 +44,9 @@ exports['for'] = function (context) {
 			}),
 			success: function () {
 
-				var records = store.where({
+				var status = store.Model.latestStatusForRecords(store.where({
 					orderHashId: orderHashId
-				});
-
-				var status = {
-					active: null,
-					activeTime: null,
-					history: []
-				};
-				records.forEach(function (record) {
-					status.history.push([
-						COMMON.API.MOMENT.utc(record.get("time")).unix(),
-						record.get("status")
-					]);
-				});
-				status.history.sort(function (a, b) {
-					if (a[0] === b[0]) return 0;
-					if (a[0] > b[0]) return -1;
-					return 1;
-				});
-				if (status.history.length > 0) {
-					status.activeTime = status.history[0][0];
-					status.active = status.history[0][1];
-				}
+				}));
 
 				var order = context.appContext.get('stores').orders.findWhere({
 					orderHashId: orderHashId
@@ -84,7 +56,7 @@ exports['for'] = function (context) {
 			    	order.set("statusInfo", status);
 				}
 
-				deferred.resolve(status);
+				return deferred.resolve(status);
 			}
 		});
 

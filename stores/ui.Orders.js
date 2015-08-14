@@ -101,6 +101,7 @@ exports['for'] = function (context) {
 	        items: "object",
 	        summary: "object",
 	        event: "object",
+	        "event_id": "string",
 	        "deliveryStartTime": "string",
 	        "pickupEndTime": "string",
 	        "orderFrom": "string",
@@ -305,6 +306,7 @@ console.log("TODO: trigger save of order info in local storage so nothing is los
 							order.set("deliveryStartTime", today.get("deliveryStartTime"));
 							order.set("pickupEndTime", today.get("pickupEndTime"));
 							order.set("event", today.getValues());
+							order.set("event_id", today.get("id"));
 
 							// TODO: Send order to server and redirect to receipt using order ID hash.
 

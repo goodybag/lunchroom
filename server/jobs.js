@@ -1,5 +1,5 @@
 
-const DEV = true;
+const DEV = false;
 
 var SERVICES = require("./services");
 
@@ -37,20 +37,16 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
 								return menuData.items[itemId];
 							})
 			            }
-			        }).then(function () {
-
-						console.log("Email sent!");
-
-					}).fail(function (err) {
+			        }).fail(function (err) {
 						console.error("Error sending email but ignoring", err.stack);
 						// TODO: Resend email
 					});
 				}));
 			}
 
-			function setNotificationsSent () {
+			function setMenuEmailsSent () {
 				return API.Q.when(db.knex('events').update({
-					'notificationsSent': true
+					'menuEmailsSent': true
 				}).where({
 					'id': menuData.event.get("id")
 				}).then(function (result) {
@@ -66,14 +62,83 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
 
 				console.log("All emails sent!");
 
-				return setNotificationsSent();
+				return setMenuEmailsSent();
 			});
     	}
 
 
+    	function sendDeliveredEmailsForEventTo (eventData, ordersData) {
+
+			function sendEmails () {
+
+				return API.Q.all(Object.keys(ordersData).map(function (orderId) {
+
+					console.log("Sending delivered email to:", ordersData[orderId].email);
+
+					return SERVICES.email.send("Order_Arrived", {
+			            "to": [
+			                {
+			                    "email": ordersData[orderId].email,
+			                    "name": ordersData[orderId].name || ordersData[orderId].email,
+			                    "type": "to"
+			                }
+			            ],
+			            "data": {
+			            }
+			        }).fail(function (err) {
+						console.error("Error sending email but ignoring", err.stack);
+						// TODO: Resend email
+					});
+				}));
+			}
+
+			function sendSMSs () {
+
+				return API.Q.all(Object.keys(ordersData).map(function (orderId) {
+
+					if (!ordersData[orderId].phone) return API.Q.resolve();
+
+					console.log("Sending delivered SMS to:", ordersData[orderId].phone);
+
+					return SERVICES.sms.send("Order_Arrived", {
+			            "to": ordersData[orderId].phone
+			        }).fail(function (err) {
+						console.error("Error sending SMS but ignoring", err.stack);
+					// TODO: Resend email
+					});
+				}));
+			}
+
+			function setDeliveredEmailsSent () {
+				return API.Q.when(db.knex('events').update({
+					'deliveredEmailsSent': true
+				}).where({
+					'id': eventData.get("id")
+				}).then(function (result) {
+					// TODO: Check `result == 1`
+				})).then(function () {
+					// TODO: Use transactions instead of waiting to ensure out update goes
+					//       through before the enxt job cycle?
+					return API.Q.delay(15 * 1000);
+				});
+			}
+
+			return sendEmails().then(function () {
+
+				return sendSMSs().then(function () {
+
+					console.log("All emails and sendSMSs sent!");
+
+					return setDeliveredEmailsSent();
+				});
+			});
+    	}
+
+
+
     	function iterate () {
 
-	    	function fetchPendingEvents () {
+	    	function fetchPendingEvents (type) {
 
 	    		var EventsModel = require("../stores/ui.Events.model").forContext({
 	    			appContext: API.appContext
@@ -81,14 +146,32 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
 
 	    		// Find all events for today for which the notifications
 	    		// have not yet gone out.
+	    		var query = db.knex('events');
 
-				return API.Q.when(db.knex('events').where({
-					'notificationsSent': false,
-					'menuReady': true
-				}).whereBetween('orderByTime', [
-					API.MOMENT().second(0).minute(0).hour(0).format(),
-					API.MOMENT().second(0).minute(0).hour(0).add(1, 'day').format()
-				]).then(function (result) {
+	    		if (type === "menus") {
+	    			query = query.where({
+						'menuReady': true,
+						'menuEmailsSent': false
+					}).whereBetween('orderByTime', [
+						API.MOMENT_TZ().tz("America/Chicago").second(0).minute(0).hour(0).format(),
+						API.MOMENT_TZ().tz("America/Chicago").second(0).minute(0).hour(0).add(1, 'day').format()
+					]);
+	    		} else
+	    		if (type === "deliveries") {
+	    			query = query.where({
+						'menuReady': true,
+						'delivered': true,
+						'deliveredEmailsSent': false
+					});
+//					.whereBetween('deliveryStartTime', [
+//						API.MOMENT_TZ().tz("America/Chicago").format(),
+//						API.MOMENT_TZ().tz("America/Chicago").add(1, 'day').format()
+//					]);
+	    		} else {
+	    			throw new Error("Unknown type '" + type + "'!");
+	    		}
+
+				return API.Q.when(query.then(function (result) {
 					var events = {};
 					result.forEach(function (row) {
 						events[row.id] = new EventsModel(row);
@@ -168,7 +251,7 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
 					return API.Q.resolve();
 	    		};
 
-				return fetchPendingEvents().then(function (events) {
+				return fetchPendingEvents("menus").then(function (events) {
 
 					var eventIds = Object.keys(events);
 
@@ -202,24 +285,59 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
 	    	}
 
 
-	    	function sendStatusEmails () {
-/*
-				if (form["info[phone]"]) {
-					SERVICES.sms.send("Order_Placed", {
-			            "to": form["info[phone]"]
-			        }).then(function () {
-
-						console.log("SMS sent!");
-
-					}).fail(function (err) {
-						console.error(err.stack);
+			function fetchOrders (eventIds) {
+				return API.Q.when(db.knex('orders')
+					.select('id', 'event_id', 'form')
+					.whereIn('event_id', eventIds)
+				.then(function (result) {
+					var orders = {};
+					result.forEach(function (row) {
+						if (!orders[row.event_id]) {
+							orders[row.event_id] = {};
+						}
+						try {
+							var form = JSON.parse(row.form);
+							orders[row.event_id][row.id] = {
+								name: form['info[name]'],
+								email: form['info[email]'],
+								phone: form['info[phone]']
+							}
+						} catch (err) {
+							console.error("Ignoring error:", err.stack);
+						}
 					});
-				}	    		
-*/
+					return orders;
+				}));
+	    	}
+
+	    	function sendStatusEmails () {
+
+				return fetchPendingEvents("deliveries").then(function (events) {
+
+					var eventIds = Object.keys(events);
+
+					if (eventIds.length === 0) {
+						// No new pending events.
+						return;
+					}
+
+					return fetchOrders(eventIds).then(function (orders) {
+						return API.Q.all(Object.keys(events).map(function (eventId) {
+							
+							return sendDeliveredEmailsForEventTo(
+								events[eventId],
+								orders[eventId]
+							);
+						}));
+					});
+				});
 	    	}
 
 
-	    	return sendMenuEmails();
+	    	return sendMenuEmails().then(function () {
+
+				return sendStatusEmails();
+	    	});
 	    }
 
 	    setInterval(function () {

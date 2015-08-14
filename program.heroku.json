@@ -239,7 +239,7 @@
             }
         },
         "io.pinf.service.twilio/0": {
-            "enabled": false,
+            "enabled": true,
             "profile": {
                 "accountSid": "AC4ec9863aecd8248803144972fc51bac0",
                 "authToken": "f45e26c40cd7481c872c3552676b598b"
