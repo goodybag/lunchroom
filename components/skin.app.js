@@ -30,10 +30,6 @@ exports.views = {
 	"Receipt": {
 		"component": require("./GBL_View_Receipt/skin.app.jsx"),
 		"config": {}
-	},
-	"Order_Arrived": {
-		"component": require("./GBL_View_Order_Arrived/skin.app.jsx"),
-		"config": {}
 	}
 };
 

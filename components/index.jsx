@@ -97,9 +97,9 @@ console.log("appContext.get('context').dev", appContext.get('context').dev);
 				 	"info[phone]": "+17788219208",
 				 	"card[name]": "Bill Smith",
 				 	"card[cvc]": "123",
-				 	"card[number]": "1234 1234 1234 1234",
-				 	"card[expire-month]": "4",
-				 	"card[expire-year]": "2018"
+				 	"card[number]": "4242424242424242",
+				 	"card[expire-month]": "12",
+				 	"card[expire-year]": "2016"
 				}));
 			}
 //		}
