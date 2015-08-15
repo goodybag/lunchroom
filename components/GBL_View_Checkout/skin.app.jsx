@@ -18,6 +18,18 @@ require("./component.jsx")['for'](module, {
 		var copyName = {};
 
 		return {
+			"navbar": new Context.Template({
+				impl: require("../../www/lunchroom-landing~0/components/AppCheckout/checkout-navbar.cjs.jsx"),
+				markup: function (element) {
+
+					$('[data-component-elm="addItemsLink"]', element).click(function () {
+						Context.appContext.set('selectedView', "Menu_Web");
+						return false;
+					});
+				},
+				fill: function (element, data, Context) {
+				}
+			}),
 			"form": new Context.Template({
 				impl: require("../../www/lunchroom-landing~0/components/AppCheckout/checkout-form.cjs.jsx"),
 				markup: function (element) {
@@ -258,6 +270,7 @@ require("./component.jsx")['for'](module, {
 		} else {
 
 			Panel = [
+				<Context.templates.navbar.comp />,
 				<Context.templates.form.comp />,
 				<Context.templates.items.comp />,
 				<Context.templates.summary.comp />,

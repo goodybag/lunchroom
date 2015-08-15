@@ -7,20 +7,37 @@ exports['for'] = function (Component) {
 		self.impl = options.impl(Context);
 		self.comp = Context.REACT.createClass({
 			componentDidMount: function () {
-				var elm = $(this.getDOMNode());			
-				if (self.markup) {
-					self.markup(elm);
+				self.elm = $(this.getDOMNode());
+				$('[data-component-view]', self.elm).each(function () {
+					var e = $(this);
+					if (typeof e.attr("data-component-section") !== "undefined") return;
+					e.hide();
+				});
+				if (self._markup) {
+					try {
+						self._markup(self.elm);
+					} catch (err) {
+						console.error("Error marking up component!", err.stack);
+					}
 				}
-				if (self.fill) {
+				if (self._fill) {
 					var Context = Component.getRenderContext();
-					self.fill(elm, Context, Context);
+					try {
+						self._fill(self.elm, Context, Context);
+					} catch (err) {
+						console.error("Error filling component!", err.stack);
+					}
 				}
 			},
 			componentDidUpdate: function () {
-				var elm = $(this.getDOMNode());			
-				if (self.fill) {
+				self.elm = $(this.getDOMNode());			
+				if (self._fill) {
 					var Context = Component.getRenderContext();
-					self.fill(elm, Context, Context);
+					try {
+						self._fill(self.elm, Context, Context);
+					} catch (err) {
+						console.error("Error filling component!", err.stack);
+					}
 				}
 			},
 			render: function () {				
@@ -28,11 +45,34 @@ exports['for'] = function (Component) {
 			}
 		});
 
-		self.markup = options.markup || null;
-		self.fill = options.fill || null;
+		self.elm = null;
+
+		self._markup = options.markup || null;
+		self._fill = options.fill || null;
 		self.sections = {};
+
+		self.data = null;
 	}
 
+	Template.prototype.getData = function () {
+		if (this.data === null) {
+			throw new Error("No data vailable. You must wait with calling 'getData()' until after the first 'fill'. i.e. do not use in the 'markup()' turn.");
+		}
+		return this.data;
+	}
+
+	Template.prototype.fill = function (data, element) {
+		var self = this;
+		if (!element) {
+			element = self.elm;
+		}
+		self.data = data;
+		self.fillProperties(element, data);
+	}
+
+	// TODO: Make 'element' optional and default to 'this.elm'?
+	// TODO: Add support for filling 'input' fields.
+	// TODO: Move to 'Template.prototype.fill'
 	Template.prototype.fillProperties = function (element, data) {
 		var self = this;
 		var Context = Component.getRenderContext();
@@ -70,6 +110,8 @@ exports['for'] = function (Component) {
 		});
 	}
 
+	// TODO: Make 'element' optional and default to 'this.elm'?
+	// TODO: Move filling 'input' fields to 'Template.prototype.fillProperties'.
 	Template.prototype.fillElements = function (element, data) {
 		var self = this;
 		var Context = Component.getRenderContext();
@@ -96,6 +138,19 @@ exports['for'] = function (Component) {
 		});
 	}
 
+	// TODO: Make 'element' optional and default to 'this.elm'?
+	Template.prototype.showViews = function (element, views) {
+		$('[data-component-view]', element).each(function () {
+			var e = $(this);
+			if (typeof e.attr("data-component-section") !== "undefined") return;
+			e.hide();
+		});
+		views.forEach(function (view) {
+			$('[data-component-view="' + view + '"]', element).show();
+		});
+	}
+
+	// TODO: Make 'element' optional and default to 'this.elm'?
 	Template.prototype.liftSections = function (element) {
 		var self = this;
 		$('[data-component-section][data-component-view]', element).each(function () {

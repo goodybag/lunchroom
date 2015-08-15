@@ -169,13 +169,26 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
 			var descriptor = require("./www/lunchroom-landing~0/hoisted.json");
 			var resources = {
 				css: null,
-				js: null
+				js: {
+					lib: null,
+					app: null
+				}
 			};
 			descriptor.pages[pageId].resources.forEach(function (resource) {
-				if (resources[resource.type]) {
-					throw new Error("Each resource type should only exist once! Make sure everything is inlined.");
+
+				if (resource.type === "js") {
+					var bundle = resource.uriPath.match(/dist~([^-]+)-[^\.]+\.js$/)[1];
+					if (resources[resource.type][bundle]) {
+						throw new Error("Each resource type for bundle '" + bundle + "' should only exist once! Make sure everything is inlined.");
+					}
+					resources[resource.type][bundle] = resource.uriPath;
+
+				} else {
+					if (resources[resource.type]) {
+						throw new Error("Each resource type should only exist once! Make sure everything is inlined.");
+					}
+					resources[resource.type] = resource.uriPath;
 				}
-				resources[resource.type] = resource.uriPath;
 			});
 			return resources;
 		}
@@ -202,8 +215,9 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
 				content = content.replace(/\{\{landingCssUrl\}\}/g, landingResources.css);
 				content = content.replace(/\{\{landingJsUrl\}\}/g, landingResources.js);
 
-				content = content.replace(/\{\{appCssUrl\}\}/g, appResources.css);
-				content = content.replace(/\{\{appJsUrl\}\}/g, appResources.js);
+				content = content.replace(/\{\{skinCssUrl\}\}/g, appResources.css);
+				content = content.replace(/\{\{skinLibJsUrl\}\}/g, appResources.js.lib);
+				content = content.replace(/\{\{skinAppJsUrl\}\}/g, appResources.js.app);
 
 				content = content.replace(
 					/\{\{sessionToken\}\}/g,

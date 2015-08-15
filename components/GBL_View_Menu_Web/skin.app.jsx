@@ -3,18 +3,51 @@ require("./component.jsx")['for'](module, {
 
 	getTemplates: function (Context) {
 		return {
-			"menu": new Context.Template({
-				impl: require("../../www/lunchroom-landing~0/components/AppMenu/menu.cjs.jsx"),
+			"menu_not_created": new Context.Template({
+				impl: require("../../www/lunchroom-landing~0/components/AppComponents/menu-not-created.cjs.jsx"),
 				markup: function (element) {
+				},
+				fill: function (element, data, Context) {
+				}
+			}),
+			"popup": new Context.Template({
+				impl: require("../../www/lunchroom-landing~0/components/AppMenu/menu-item-popup.cjs.jsx"),
+				markup: function (element) {
+					var self = this;
 
-					this.liftSections(element);
+					self.liftSections(element);
 
+					$('[data-component-elm="addButton"]', element).click(function () {
+
+						Context.appContext.get('stores').cart.addItem(self.getData().item_id, {});
+						return false;
+					});
 				},
 				fill: function (element, data, Context) {
 
+					this.fillProperties(element, data)
+
+					if (
+						Context.eventToday &&
+						Context.appContext.get('selectedDay') === Context.eventToday.get("day.format.ddd")
+					) {
+						this.showViews(element, [
+							"orderable"
+						]);
+					}
+				}
+			}),
+			"menu": new Context.Template({
+				impl: require("../../www/lunchroom-landing~0/components/AppMenu/menu.cjs.jsx"),
+				markup: function (element) {
+					this.liftSections(element);
+				},
+				fill: function (element, data, Context) {
+					var self = this;
+
 					var items = Context.items[Context.appContext.get('selectedDay')] || [];
 
-					this.renderSection("items", items.map(function(item) {
+					self.renderSection("items", items.map(function(item) {
 						return {
 							"id": item.get('id'),
 							"item_id": item.get('item_id'),
@@ -26,6 +59,10 @@ require("./component.jsx")['for'](module, {
 					}), function getView (data) {
 						return 'default';
 				    }, function hookEvents(elm, data) {
+
+						$('[data-component-elm="showDetailsLink"]', elm).click(function () {
+							Context.templates.popup.fill(data);
+						});
 
 						$('[data-component-elm="addButton"]', elm).click(function () {
 
@@ -55,6 +92,15 @@ require("./component.jsx")['for'](module, {
 							Context.appContext.get('stores').cart.addItem(data.item_id, options);
 							return false;
 						});
+
+						if (
+							Context.eventToday &&
+							Context.appContext.get('selectedDay') === Context.eventToday.get("day.format.ddd")
+						) {
+							self.showViews(elm, [
+								"orderable"
+							]);
+						}
 				    });
 				}
 			})
@@ -93,13 +139,19 @@ require("./component.jsx")['for'](module, {
 
 		var Panel = "";
 
-		if (Context.eventToday) {
-
-			Panel = [
-
-				<Context.templates.menu.comp />
-
-			];
+		var items = Context.items[Context.appContext.get('selectedDay')] || [];
+		if (
+			Context.eventToday &&
+			items.length > 0
+		) {
+			Panel = (
+				<div>
+					<Context.templates.popup.comp />
+					<Context.templates.menu.comp />
+				</div>
+			);
+		} else {
+			Panel = <Context.templates.menu_not_created.comp />
 		}
 
         return (

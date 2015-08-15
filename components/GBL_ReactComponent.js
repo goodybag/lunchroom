@@ -96,20 +96,20 @@ exports.create = function (Context, implementation) {
 	function callTemplate (component, method) {
 		// New template-based logic.
 		if (!component._render_Context._template) return;
-		if (!component._render_Context._template[method]) return;
+		if (!component._render_Context._template["_" + method]) return;
 
 		try {
 
 			if (method === "markup") {
 				// Called once per mount.
-				component._render_Context._template[method](
+				component._render_Context._template["_" + method](
 					$(component.getDOMNode())
 				);
 			} else
 			if (method === "fill") {
 				// Called multiple times per mount.
 				if (implementation.getTemplateData || Context.getTemplateData) {
-					component._render_Context._template[method](
+					component._render_Context._template["_" + method](
 						$(component.getDOMNode()),
 						(implementation.getTemplateData || Context.getTemplateData).call(component, component._render_Context),
 						component._render_Context

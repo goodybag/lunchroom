@@ -236,7 +236,7 @@ module.exports = COMPONENT.create({
           deliveryStartTime: COMPONENT.API.MOMENT().add(2, 'h').format("H:mm"),
           pickupEndTime: COMPONENT.API.MOMENT().add(2, 'h').add(15, 'm').format("H:mm"),
           tip: "0",
-          goodybagFee: "5.00"
+          goodybagFee: "2.99"
         });
 
     },
