@@ -20,11 +20,6 @@ exports['for'] = function (overrides) {
 
 	COMMON.API.UNDERSCORE.extend(config, overrides || {});
 
-	if (config.context.overrideSkinUri) {
-		HEAD.load([
-			config.context.overrideSkinUri + "?t=" + Date.now()
-		]);
-	}
 
 	var appContext = Model.makeContextForClient(config);
 
