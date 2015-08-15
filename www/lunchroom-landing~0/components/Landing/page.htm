@@ -3,9 +3,10 @@
   <head>
     <link rel="stylesheet" href="/lunchroom-landing~0/resources/24b055d163e99ad86ad373609a756136be131f09.css">
   </head>
-    <body class="page">
+  <body>
+    <div>
 
-    
+
 <header class="navbar navbar-transparent navbar-transparent-dark">
   <div class="container">
     <a href="/">
@@ -20,17 +21,17 @@
   </div>
 </header>
 
-<section class="page-section hero-unit primary-section" id="email-signup-cta">
+<section class="page-section hero-unit primary-section" id="email-signup-cta" component:id="subscription">
   <div class="container">
     <h1 class="section-header">Get your lunch delivered every day.</h1>
     <p>Your choice of meal brought to you at work. Starts August 17th, 2015.</p>
     <form action="#" class="cta-form form" component:id="subscribe">
       <div class="form-group">
         <div class="email-wrapper">
-          <input type="email" name="email">
+          <input type="email" name="email" component:elm="email">
         </div>
         <div class="submit-wrapper">
-          <button class="btn btn-primary">Get notified</button>
+          <button class="btn btn-primary" component:elm="subscribeButton">Get notified</button>
         </div>
       </div>
       <p class="form-explanation">Enter your email to receive daily menus when we launch!</p>
@@ -117,12 +118,9 @@
   </ul>
 </footer>
 
-    
-    
-    
-  
 
-    </body>
-    <script src="/lunchroom-landing~0/resources/dist~lib-f7dff85.js"></script>
-    <script src="/lunchroom-landing~0/resources/dist~app-c742899.js"></script>
+    </div>
+  </body>
+    <script src="/lunchroom-landing~0/resources/dist~lib-71d7b1f.js"></script>
+    <script src="/lunchroom-landing~0/resources/dist~app-7dabcde.js"></script>
 </html>

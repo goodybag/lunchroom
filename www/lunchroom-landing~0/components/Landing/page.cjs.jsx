@@ -2,9 +2,9 @@ module.exports = function (Context) {
   // TODO: Remove this once we can inject 'React' automatically at build time.
   var React = Context.REACT;
   return (
-    <body className="page">
+    <div>
 
-    
+
 <header className="navbar navbar-transparent navbar-transparent-dark">
   <div className="container">
     <a href="/">
@@ -19,17 +19,17 @@ module.exports = function (Context) {
   </div>
 </header>
 
-<section className="page-section hero-unit primary-section" id="email-signup-cta">
+<section className="page-section hero-unit primary-section" id="email-signup-cta" data-component-id="subscription">
   <div className="container">
     <h1 className="section-header">Get your lunch delivered every day.</h1>
     <p>Your choice of meal brought to you at work. Starts August 17th, 2015.</p>
     <form action="#" className="cta-form form" data-component-id="subscribe">
       <div className="form-group">
         <div className="email-wrapper">
-          <input type="email" name="email"/>
+          <input type="email" name="email" data-component-elm="email"/>
         </div>
         <div className="submit-wrapper">
-          <button className="btn btn-primary">Get notified</button>
+          <button className="btn btn-primary" data-component-elm="subscribeButton">Get notified</button>
         </div>
       </div>
       <p className="form-explanation">Enter your email to receive daily menus when we launch!</p>
@@ -116,11 +116,7 @@ module.exports = function (Context) {
   </ul>
 </footer>
 
-    
-    
-    
-  
 
-    </body>
+    </div>
   );
 }
