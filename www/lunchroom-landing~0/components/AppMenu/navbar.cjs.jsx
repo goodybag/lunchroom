@@ -23,7 +23,7 @@ module.exports = function (Context) {
       <small className="text-important" data-component-prop="timeLeftToOrder">1 hr 26min</small>
     </div>
     <div className="module module-right module-unpadded">
-      <a data-component-elm="checkoutButton" className="btn btn-primary" href="checkout">Checkout (<span data-component-prop="cartItemCount">1</span>)</a>
+      <a data-component-elm="checkoutButton" data-component-view="not-on-checkout" className="btn btn-primary" href="checkout">Checkout (<span data-component-prop="cartItemCount">1</span>)</a>
     </div>
   </div>
 

@@ -24,6 +24,15 @@
                 "src": "/lunchroom-landing~0/resources/dist~app-c742899.js"
             },
             "exportPath": "/pinf.genesis.consulting/GoodyBag/goodybag-core/07-lunchroom-landing/.sm.hoisted/lunchroom-landing~0/resources/dist~app-c742899.js"
+        },
+        {
+            "tag": "IMG",
+            "attributes": {
+                "src": "/lunchroom-landing~0/resources/assets/img~cupcake-shocked-9c195d3.png",
+                "alt": "",
+                "class": "warning-section-supporting-graphic"
+            },
+            "exportPath": "/pinf.genesis.consulting/GoodyBag/goodybag-core/07-lunchroom-landing/.sm.hoisted/lunchroom-landing~0/resources/assets/img~cupcake-shocked-9c195d3.png"
         }
     ],
     "components": {
@@ -50,6 +59,31 @@
                 "cjs.jsx": "/pinf.genesis.consulting/GoodyBag/goodybag-core/07-lunchroom-landing/.sm.hoisted/lunchroom-landing~0/components/AppCheckout/checkout-navbar.cjs.jsx"
             },
             "exportPath": "/pinf.genesis.consulting/GoodyBag/goodybag-core/07-lunchroom-landing/.sm.hoisted/lunchroom-landing~0/components/AppCheckout/checkout-navbar.htm"
+        },
+        "no-items": {
+            "tag": "SECTION",
+            "attributes": {
+                "class": "page-section",
+                "id": "section-warning-section"
+            },
+            "innerHTML": "\n  <div class=\"container\">\n    <div class=\"warning-section\" component:id=\"warning-section\">\n      <img src=\"/img/cupcake-shocked.png\" alt=\"\" class=\"warning-section-supporting-graphic\">\n      <h2 class=\"warning-section-header\">You have nothing in your cart!</h2>\n      <p><a href=\"#\" component:elm=\"addItemsLink\">Add items</a></p>\n    </div>\n  </div>\n",
+            "exportPaths": {
+                "htm": "/pinf.genesis.consulting/GoodyBag/goodybag-core/07-lunchroom-landing/.sm.hoisted/lunchroom-landing~0/components/AppCheckout/no-items.htm",
+                "cjs.jsx": "/pinf.genesis.consulting/GoodyBag/goodybag-core/07-lunchroom-landing/.sm.hoisted/lunchroom-landing~0/components/AppCheckout/no-items.cjs.jsx"
+            },
+            "exportPath": "/pinf.genesis.consulting/GoodyBag/goodybag-core/07-lunchroom-landing/.sm.hoisted/lunchroom-landing~0/components/AppCheckout/no-items.htm"
+        },
+        "warning-section": {
+            "tag": "DIV",
+            "attributes": {
+                "class": "warning-section"
+            },
+            "innerHTML": "\n      <img src=\"/img/cupcake-shocked.png\" alt=\"\" class=\"warning-section-supporting-graphic\">\n      <h2 class=\"warning-section-header\">You have nothing in your cart!</h2>\n      <p><a href=\"#\" component:elm=\"addItemsLink\">Add items</a></p>\n    ",
+            "exportPaths": {
+                "htm": "/pinf.genesis.consulting/GoodyBag/goodybag-core/07-lunchroom-landing/.sm.hoisted/lunchroom-landing~0/components/AppCheckout/warning-section.htm",
+                "cjs.jsx": "/pinf.genesis.consulting/GoodyBag/goodybag-core/07-lunchroom-landing/.sm.hoisted/lunchroom-landing~0/components/AppCheckout/warning-section.cjs.jsx"
+            },
+            "exportPath": "/pinf.genesis.consulting/GoodyBag/goodybag-core/07-lunchroom-landing/.sm.hoisted/lunchroom-landing~0/components/AppCheckout/warning-section.htm"
         },
         "checkout-form": {
             "tag": "DIV",

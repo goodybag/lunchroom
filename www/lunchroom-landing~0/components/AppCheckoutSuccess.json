@@ -1,0 +1,76 @@
+{
+    "schemas": {
+        "DOCTYPE": "HTML"
+    },
+    "resources": [
+        {
+            "tag": "LINK",
+            "attributes": {
+                "rel": "stylesheet",
+                "href": "/lunchroom-landing~0/resources/ad9f552fd255c5d348748ac8ad8600cdf91e3413.css"
+            },
+            "exportPath": "/pinf.genesis.consulting/GoodyBag/goodybag-core/07-lunchroom-landing/.sm.hoisted/lunchroom-landing~0/resources/ad9f552fd255c5d348748ac8ad8600cdf91e3413.css"
+        },
+        {
+            "tag": "SCRIPT",
+            "attributes": {
+                "src": "/lunchroom-landing~0/resources/dist~lib-f7dff85.js"
+            },
+            "exportPath": "/pinf.genesis.consulting/GoodyBag/goodybag-core/07-lunchroom-landing/.sm.hoisted/lunchroom-landing~0/resources/dist~lib-f7dff85.js"
+        },
+        {
+            "tag": "SCRIPT",
+            "attributes": {
+                "src": "/lunchroom-landing~0/resources/dist~app-c742899.js"
+            },
+            "exportPath": "/pinf.genesis.consulting/GoodyBag/goodybag-core/07-lunchroom-landing/.sm.hoisted/lunchroom-landing~0/resources/dist~app-c742899.js"
+        },
+        {
+            "tag": "IMG",
+            "attributes": {
+                "src": "/lunchroom-landing~0/resources/assets/img~success-d84e5c8.png",
+                "alt": "",
+                "class": "success-img"
+            },
+            "exportPath": "/pinf.genesis.consulting/GoodyBag/goodybag-core/07-lunchroom-landing/.sm.hoisted/lunchroom-landing~0/resources/assets/img~success-d84e5c8.png"
+        }
+    ],
+    "components": {
+        "header": {
+            "tag": "HEADER",
+            "attributes": {
+                "class": "navbar collapsed"
+            },
+            "innerHTML": "\n      <div class=\"container\">\n        <a href=\"/\">\n          <img src=\"https://d3bqck8kwfkhx5.cloudfront.net/img/logo.png\" alt=\"Goodybag.com\" class=\"navbar-logo\">\n        </a>\n      </div>\n    ",
+            "exportPaths": {
+                "htm": "/pinf.genesis.consulting/GoodyBag/goodybag-core/07-lunchroom-landing/.sm.hoisted/lunchroom-landing~0/components/AppCheckoutSuccess/header.htm",
+                "cjs.jsx": "/pinf.genesis.consulting/GoodyBag/goodybag-core/07-lunchroom-landing/.sm.hoisted/lunchroom-landing~0/components/AppCheckoutSuccess/header.cjs.jsx"
+            },
+            "exportPath": "/pinf.genesis.consulting/GoodyBag/goodybag-core/07-lunchroom-landing/.sm.hoisted/lunchroom-landing~0/components/AppCheckoutSuccess/header.htm"
+        },
+        "order-success": {
+            "tag": "DIV",
+            "attributes": {
+                "class": "container order-success"
+            },
+            "innerHTML": "\n  <img src=\"/img/success.png\" alt=\"\" class=\"success-img\">\n\n  <p class=\"order-success-note\">Your order is placed and will be <strong>delivered today between <span component:prop=\"pickupTime\">12:00-12:30pm</span></strong>.</p>\n\n  <p class=\"order-success-note\">Your meal will be delivered <strong component:prop=\"deliveryLocation\">in the Bazaarvoice Lobby</strong>.</p>\n\n  <p class=\"order-success-note\">We'll send you an email and text you when it arrives.</p>\n\n  <div class=\"menu-share\">\n    <h4 class=\"menu-share-title\">Share this link</h4>\n    <p class=\"menu-share-followup\">with coworkers to let them view the menu and place their own order!</p>\n    <input class=\"menu-share-input\" type=\"text\" value=\"http://lunchroom.goodybag.com/bazaarvoice\" component:elm=\"shareUrl\">\n  </div>\n",
+            "exportPaths": {
+                "htm": "/pinf.genesis.consulting/GoodyBag/goodybag-core/07-lunchroom-landing/.sm.hoisted/lunchroom-landing~0/components/AppCheckoutSuccess/order-success.htm",
+                "cjs.jsx": "/pinf.genesis.consulting/GoodyBag/goodybag-core/07-lunchroom-landing/.sm.hoisted/lunchroom-landing~0/components/AppCheckoutSuccess/order-success.cjs.jsx"
+            },
+            "exportPath": "/pinf.genesis.consulting/GoodyBag/goodybag-core/07-lunchroom-landing/.sm.hoisted/lunchroom-landing~0/components/AppCheckoutSuccess/order-success.htm"
+        },
+        "footer": {
+            "tag": "FOOTER",
+            "attributes": {
+                "class": "footer"
+            },
+            "innerHTML": "\n      <ul class=\"nav footer-nav\">\n        <li><a href=\"#\" data-toggle=\"modal\" data-target=\"#contact-us-modal\">Contact Us</a></li>\n        <li><a href=\"https://www.goodybag.com/legal\">Terms of service</a></li>\n        <li><a href=\"https://www.goodybag.com/privacy\">Privacy policy</a></li>\n      </ul>\n    ",
+            "exportPaths": {
+                "htm": "/pinf.genesis.consulting/GoodyBag/goodybag-core/07-lunchroom-landing/.sm.hoisted/lunchroom-landing~0/components/AppCheckoutSuccess/footer.htm",
+                "cjs.jsx": "/pinf.genesis.consulting/GoodyBag/goodybag-core/07-lunchroom-landing/.sm.hoisted/lunchroom-landing~0/components/AppCheckoutSuccess/footer.cjs.jsx"
+            },
+            "exportPath": "/pinf.genesis.consulting/GoodyBag/goodybag-core/07-lunchroom-landing/.sm.hoisted/lunchroom-landing~0/components/AppCheckoutSuccess/footer.htm"
+        }
+    }
+}
