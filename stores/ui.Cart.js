@@ -30,9 +30,14 @@ exports['for'] = function (context) {
 	store.keepInLocalStorage = true;
 
 
+	function getLocalStorageNamespace () {
+		var ctx = context.appContext.get("context");
+		return ctx.dbfilter.consumer_group_id + "." + ctx.dbfilter.event_id;
+	}
+
 	function syncToLocalStorage () {
 		if (!store.keepInLocalStorage) return;
-		COMMON.storeLocalValueFor("cart", "models", JSON.stringify(store.where().map(function (record) {
+		COMMON.storeLocalValueFor("cart", getLocalStorageNamespace(), JSON.stringify(store.where().map(function (record) {
 			return record.toJSON();
 		})));
 	}
@@ -40,7 +45,7 @@ exports['for'] = function (context) {
 	store.on("change", syncToLocalStorage);
 	store.on("update", syncToLocalStorage);
 	function recoverFromLocalStorage () {
-		var records = COMMON.getLocalValueFor("cart", "models");
+		var records = COMMON.getLocalValueFor("cart", getLocalStorageNamespace());
 		if (records) {
 			try {
 				JSON.parse(records).forEach(function (record) {
@@ -51,11 +56,13 @@ exports['for'] = function (context) {
 			}
 		}
 	}
-	recoverFromLocalStorage();
+	setTimeout(function () {
+		recoverFromLocalStorage();
+	}, 100);
 
 
 	store.clearAllItems = function () {
-		COMMON.storeLocalValueFor("cart", "models", JSON.stringify([]));
+		COMMON.storeLocalValueFor("cart", getLocalStorageNamespace(), JSON.stringify([]));
 		this.reset();
 	}
 
@@ -205,9 +212,6 @@ exports['for'] = function (context) {
 	store.resetToSerializedModels = function (models) {
 
 		return COMMON.API.Q.fcall(function () {
-
-console.log("MODELS", models);
-
 
 			models.forEach(function (model) {
 				var record = {};

@@ -28,8 +28,9 @@ require("./component.jsx")['for'](module, {
 		return new Context.Template({
 			impl: require("../../www/lunchroom-landing~0/components/AppMenu/navbar.cjs.jsx"),
 			markup: function (element) {
+				var self = this;
 
-				this.liftSections(element);
+				self.liftSections(element);
 
 				$('[data-component-elm="checkoutButton"]', element).click(function () {
 				    if (Context.appContext.get('stores').cart.getItemCount() > 0) {
@@ -38,10 +39,18 @@ require("./component.jsx")['for'](module, {
 					return false;
 				});
 
+				if (Context.appContext.get('selectedView') !== "Checkout") {
+					self.showViews(element, [
+						"not-on-checkout"
+					]);
+				} else {
+					self.showViews(element, []);						
+				}
 			},
 			fill: function (element, data, Context) {
+				var self = this;
 
-				this.fillProperties(element, data);
+				self.fillProperties(element, data);
 
 				// TODO: Verify
 			    if (data.cartItemCount > 0) {
@@ -50,7 +59,7 @@ require("./component.jsx")['for'](module, {
 			    	$('[data-component-elm="checkoutButton"]', element).addClass("disabled");
 			    }
 
-			    this.renderSection("tabs", data.tabs, function getView (data) {
+			    self.renderSection("tabs", data.tabs, function getView (data) {
 					if (
 						Context.appContext.get('selectedDay') === data.tabDay
 					) {

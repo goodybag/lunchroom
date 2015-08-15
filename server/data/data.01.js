@@ -7,7 +7,7 @@ exports.seeds = {
       "alias": "bazaarvoice",
       contact: "Gillian Lambert",
       address: "7901 Cameron Rd<br/>Bldg 2, Ste. 300<br/>Austin, TX 78754",
-      pickupLocation: "3rd floor Game Room!",
+      pickupLocation: "in the Bazaarvoice Lobby",
       orderTax: "5"
     },
     "2": {
@@ -34,7 +34,7 @@ exports.seeds = {
       "alias": "test-bazaarvoice",
       contact: "Gillian Lambert",
       address: "7901 Cameron Rd<br/>Bldg 2, Ste. 300<br/>Austin, TX 78754",
-      pickupLocation: "3rd floor Game Room!",
+      pickupLocation: "in the Bazaarvoice Lobby",
       orderTax: "5"
     }    
   }

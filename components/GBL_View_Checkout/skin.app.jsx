@@ -18,6 +18,18 @@ require("./component.jsx")['for'](module, {
 		var copyName = {};
 
 		return {
+			"no_items":  new Context.Template({
+				impl: require("../../www/lunchroom-landing~0/components/AppCheckout/no-items.cjs.jsx"),
+				markup: function (element) {
+
+					$('[data-component-elm="addItemsLink"]', element).click(function () {
+						Context.appContext.set('selectedView', "Menu_Web");
+						return false;
+					});
+				},
+				fill: function (element, data, Context) {
+				}
+			}),
 			"navbar": new Context.Template({
 				impl: require("../../www/lunchroom-landing~0/components/AppCheckout/checkout-navbar.cjs.jsx"),
 				markup: function (element) {
@@ -257,14 +269,7 @@ require("./component.jsx")['for'](module, {
 		if (Context.items.length === 0) {
 
 			Panel = (
-				<div className="sixteen wide column">
-					<div className="ui message">
-					  <div className="header">
-					    Grab something <a href="#Menu_Web">here</a>
-					  </div>
-					  <p>You are going to go hungry because there is nothing in your cart!</p>
-					</div>
-				</div>
+				<Context.templates.no_items.comp />
 			);
 
 		} else {
@@ -273,7 +278,7 @@ require("./component.jsx")['for'](module, {
 				<Context.templates.navbar.comp />,
 				<Context.templates.form.comp />,
 				<Context.templates.items.comp />,
-				<Context.templates.summary.comp />,
+				<Context.templates.summary.comp />
 			];
 	    }
 
