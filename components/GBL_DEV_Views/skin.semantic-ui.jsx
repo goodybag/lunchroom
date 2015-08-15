@@ -1,6 +1,3 @@
-/** @jsx React.DOM */
-'use strict'
-
 
 require("./component.jsx")['for'](module, {
 	getViewTabHTML: function (Context) {

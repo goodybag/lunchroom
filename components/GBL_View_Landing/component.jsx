@@ -38,7 +38,7 @@ console.log("INTI LANDING");
 	        	subscribeWithEmail: function (email) {
 
 					self.props.appContext.get('stores').consumerGroupSubscriptions.subscribeWithEmail(
-						consumerGroup.get("id"), email
+						consumerGroups.where()[0].get("id"), email
 					);
 				}
 	        };

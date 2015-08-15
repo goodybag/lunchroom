@@ -237,10 +237,14 @@ exports['for'] = function (context) {
 
 	store.loadForConsumerGroupId = function (id) {
 		var self = this;
+
+		var dayIds = context.appContext.get('stores').days.getDayIds();
+
 		return COMMON.API.Q.denodeify(function (callback) {
 	        self.fetch({
 	            data: $.param({
-	                "filter[consumer_group_id]": id
+	                "filter[consumer_group_id]": id,
+	                "filter[day_id]": dayIds
 	            }),
 	            success: function () {
 	            	return callback(null, store.where({

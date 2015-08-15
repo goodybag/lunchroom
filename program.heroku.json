@@ -173,7 +173,7 @@
                             "internalUri": "/app.htm",
                             "clientContext": {
                                 "selectedView": "Landing",
-                                "lockedView": "Landing,ContactUs,TermsOfService,PrivacyPolicy"
+                                "lockedView": ""
                             }
                         }
                     }

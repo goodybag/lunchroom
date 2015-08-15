@@ -21,6 +21,9 @@ var classProps = {
         },
         event_id: function (qb, value) {
             return qb.whereIn('event_id', value);
+        },
+        day_id: function (qb, value) {
+            return qb.whereIn('day_id', value);
         }
     },
     relations: [

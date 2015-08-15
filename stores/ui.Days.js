@@ -14,9 +14,21 @@ var Store = COMMON.API.BACKBONE.Collection.extend({
 
 var store = new Store();
 
+function makeStartOfWeek () {
+	var startOfWeek = COMMON.API.MOMENT().startOf('week');
+	// If Saturday or Sunday, jump to next week.
+	if (
+		COMMON.API.MOMENT().day() === 6 ||
+		COMMON.API.MOMENT().day() === 0
+	) {
+		startOfWeek.add(7, 'days');
+	}
+	return startOfWeek;
+}
+
 for (var day=1 ; day<=5 ; day++) {
 	store.add({
-		"id": COMMON.API.MOMENT().startOf('week').add(day, 'days').format("YYYY-MM-DD")
+		"id": makeStartOfWeek().add(day, 'days').format("YYYY-MM-DD")
 	});
 }
 
@@ -47,6 +59,12 @@ exports['for'] = function (context) {
 		    }
 		}
 	});
+
+	store.getDayIds = function () {
+		return store.where().map(function (day) {
+			return day.get("id");
+		});
+	}
 
 	store.loadForEvent = function (event_id) {
 // TODO: DEPRECATE
