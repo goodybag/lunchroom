@@ -8,6 +8,10 @@ var WEB_COMPONENTS = {
 exports.RootView = require("./GBL_DEV_Views/skin.app.jsx");
 
 exports.views = {
+	"Landing": {
+		"component": require("./GBL_View_Landing/skin.app.jsx"),
+		"config": {}
+	},
 	"Menu_Email": {
 		"component": require("./GBL_View_Menu_Email/skin.app.jsx"),
 		"config": {}

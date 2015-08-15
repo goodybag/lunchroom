@@ -413,12 +413,20 @@
 		if (skin === "app") {
 			return __webpack_require__(9);
 		} else {
+<<<<<<< Updated upstream
 			return __webpack_require__(136);
+=======
+			return __webpack_require__(139);
+>>>>>>> Stashed changes
 		}
 	}
 
 
+<<<<<<< Updated upstream
 	__webpack_require__(178);
+=======
+	__webpack_require__(180);
+>>>>>>> Stashed changes
 
 
 	// ##################################################
@@ -427,9 +435,15 @@
 
 
 	var React = __webpack_require__(102);
+<<<<<<< Updated upstream
 	var Backbone = __webpack_require__(179);
 	Backbone.$ = window.$;
 	__webpack_require__(181);
+=======
+	var Backbone = __webpack_require__(181);
+	Backbone.$ = window.$;
+	__webpack_require__(183);
+>>>>>>> Stashed changes
 
 
 
@@ -450,6 +464,7 @@
 
 	var storeContext = {};
 
+<<<<<<< Updated upstream
 	var appContext = __webpack_require__(188)['for']({
 		stores: {
 			days: __webpack_require__(256)['for'](storeContext),
@@ -463,6 +478,21 @@
 			cart: __webpack_require__(265)['for'](storeContext),
 			orders: __webpack_require__(266)['for'](storeContext),
 			orderStatus: __webpack_require__(267)['for'](storeContext)
+=======
+	var appContext = __webpack_require__(190)['for']({
+		stores: {
+			days: __webpack_require__(258)['for'](storeContext),
+			events: __webpack_require__(259)['for'](storeContext),
+			items: __webpack_require__(262)['for'](storeContext),
+			vendors: __webpack_require__(263)['for'](storeContext),
+			menus: __webpack_require__(264)['for'](storeContext),
+			consumers: __webpack_require__(265)['for'](storeContext),
+			consumerGroups: __webpack_require__(261)['for'](storeContext),
+			consumerGroupSubscriptions: __webpack_require__(266)['for'](storeContext),
+			cart: __webpack_require__(267)['for'](storeContext),
+			orders: __webpack_require__(268)['for'](storeContext),
+			orderStatus: __webpack_require__(269)['for'](storeContext)
+>>>>>>> Stashed changes
 		},
 		skin: skin
 		// TODO: Inject config
@@ -581,35 +611,51 @@
 
 	/** @jsx React.DOM */
 	var WEB_COMPONENTS = {
-		"Header": __webpack_require__(10),
-		"Menu": __webpack_require__(109),
-		"Footer": __webpack_require__(112)
+		"Header": __webpack_require__(108),
+		"Menu": __webpack_require__(111),
+		"Footer": __webpack_require__(114)
 	};
 
-	exports.RootView = __webpack_require__(115);
+	exports.RootView = __webpack_require__(117);
 
 	exports.views = {
+		"Landing": {
+			"component": __webpack_require__(119),
+			"config": {}
+		},
 		"Menu_Email": {
-			"component": __webpack_require__(117),
+			"component": __webpack_require__(10),
 			"config": {}
 		},
 		"Menu_Web": {
-			"component": __webpack_require__(119),
+			"component": __webpack_require__(122),
 			"config": {},
 			"components": WEB_COMPONENTS
 		},
 		"Checkout": {
+<<<<<<< Updated upstream
 			"component": __webpack_require__(124),
+=======
+			"component": __webpack_require__(127),
+>>>>>>> Stashed changes
 			"config": {},
 			"components": WEB_COMPONENTS
 		},
 		"Order_Placed": {
+<<<<<<< Updated upstream
 			"component": __webpack_require__(131),
+=======
+			"component": __webpack_require__(134),
+>>>>>>> Stashed changes
 			"config": {},
 			"components": WEB_COMPONENTS
 		},
 		"Receipt": {
+<<<<<<< Updated upstream
 			"component": __webpack_require__(134),
+=======
+			"component": __webpack_require__(137),
+>>>>>>> Stashed changes
 			"config": {}
 		}
 	};
@@ -624,9 +670,12 @@
 	__webpack_require__(12)['for'](module, {
 		getHTML: function (Context) {
 
-			var tpl = __webpack_require__(108)(Context);
+			// TODO: Remove this once we can inject 'React' automatically at build time.
+			var React = Context.REACT;
 
-			return tpl;
+			return (
+				React.createElement("div", null, "Menu Email")
+	        );
 		}
 	});
 
@@ -659,12 +708,69 @@
 
 		module.exports = COMPONENT.create(Context, {
 
-			segmentName: "Header",
+			appContextView: "Menu_Email",
+
+		    onMount: function () {
+				this.props.appContext.get('stores').menus.on("sync", this._trigger_forceUpdate);
+				this.props.appContext.get('stores').items.on("sync", this._trigger_forceUpdate);
+		    },
+
+		    onUnmount: function () {
+				this.props.appContext.get('stores').menus.off("sync", this._trigger_forceUpdate);
+				this.props.appContext.get('stores').items.off("sync", this._trigger_forceUpdate);
+		    },
 
 		    render: function () {
 		    	var self = this;
 
-		        return {};
+		        var events = self.props.appContext.get('stores').events;
+		        var menus = self.props.appContext.get('stores').menus;
+
+		        var eventIds = {};
+
+		        var days = {};
+
+		        self.modelRecordsWithStore(events, events.where()).forEach(function (item) {
+
+					var ddd = item.get("day.format.ddd");
+					days[ddd] = item;
+
+		        	eventIds[item.get("id")] = ddd;
+		        });
+
+				var items = {};
+				var vendor = {};
+
+		        self.modelRecordsWithStore(menus, menus.getForEventIds(eventIds)).forEach(function (item) {
+
+					if (!items[eventIds[item.get("event_id")]]) {
+						items[eventIds[item.get("event_id")]] = [];
+					}
+	                // Group menu items per day
+					items[eventIds[item.get("event_id")]].push(item);
+
+					// TODO: For each field on the vendor model.
+					[
+						"title",
+						"description"
+					].forEach(function (name) {
+						if (vendor[name]) return;
+						vendor[name] = item.get("vendor." + name);
+					});
+		        });
+
+		        var today = self.props.appContext.get('today');
+
+		        return {
+
+		        	vendor: vendor,
+
+		        	// Info for each event (multiple menus grouped by 'Mon", "Tue", ...)
+		        	day: days[today] || {},
+
+		        	// The items for each day
+		        	items: items[today] || []
+		        };
 		    }
 		});
 
@@ -16371,6 +16477,7 @@
 			self.sections = {};
 
 			self.data = null;
+<<<<<<< Updated upstream
 		}
 
 		Template.prototype.getData = function () {
@@ -16389,6 +16496,26 @@
 			self.fillProperties(element, data);
 		}
 
+=======
+		}
+
+		Template.prototype.getData = function () {
+			if (this.data === null) {
+				throw new Error("No data vailable. You must wait with calling 'getData()' until after the first 'fill'. i.e. do not use in the 'markup()' turn.");
+			}
+			return this.data;
+		}
+
+		Template.prototype.fill = function (data, element) {
+			var self = this;
+			if (!element) {
+				element = self.elm;
+			}
+			self.data = data;
+			self.fillProperties(element, data);
+		}
+
+>>>>>>> Stashed changes
 		// TODO: Make 'element' optional and default to 'this.elm'?
 		// TODO: Add support for filling 'input' fields.
 		// TODO: Move to 'Template.prototype.fill'
@@ -16520,6 +16647,45 @@
 
 /***/ },
 /* 108 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(module) {/** @jsx React.DOM */
+	__webpack_require__(109)['for'](module, {
+		getHTML: function (Context) {
+
+			var tpl = __webpack_require__(110)(Context);
+
+			return tpl;
+		}
+	});
+
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(11)(module)))
+
+/***/ },
+/* 109 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/** @jsx React.DOM */
+	var COMPONENT = __webpack_require__(13);
+
+	exports['for'] = function (module, Context) {
+
+		module.exports = COMPONENT.create(Context, {
+
+			segmentName: "Header",
+
+		    render: function () {
+		    	var self = this;
+
+		        return {};
+		    }
+		});
+
+	}
+
+
+/***/ },
+/* 110 */
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM */module.exports = function (Context) {
@@ -16539,11 +16705,11 @@
 	}
 
 /***/ },
-/* 109 */
+/* 111 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(module) {/** @jsx React.DOM */
-	__webpack_require__(110)['for'](module, {
+	__webpack_require__(112)['for'](module, {
 
 		getTemplateData: function (Context) {
 
@@ -16570,7 +16736,7 @@
 		getTemplate: function (Context) {
 
 			return new Context.Template({
-				impl: __webpack_require__(111),
+				impl: __webpack_require__(113),
 				markup: function (element) {
 					var self = this;
 
@@ -16626,7 +16792,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(11)(module)))
 
 /***/ },
-/* 110 */
+/* 112 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
@@ -16738,7 +16904,7 @@
 
 
 /***/ },
-/* 111 */
+/* 113 */
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM */module.exports = function (Context) {
@@ -16775,14 +16941,14 @@
 	}
 
 /***/ },
-/* 112 */
+/* 114 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(module) {/** @jsx React.DOM */
-	__webpack_require__(113)['for'](module, {
+	__webpack_require__(115)['for'](module, {
 		getHTML: function (Context) {
 
-			var tpl = __webpack_require__(114)(Context);
+			var tpl = __webpack_require__(116)(Context);
 
 			return tpl;
 		}
@@ -16791,7 +16957,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(11)(module)))
 
 /***/ },
-/* 113 */
+/* 115 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
@@ -16817,7 +16983,7 @@
 
 
 /***/ },
-/* 114 */
+/* 116 */
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM */module.exports = function (Context) {
@@ -16837,14 +17003,14 @@
 	}
 
 /***/ },
-/* 115 */
+/* 117 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(module) {/** @jsx React.DOM *//** @jsx React.DOM */
 	'use strict'
 
 
-	__webpack_require__(116)['for'](module, {
+	__webpack_require__(118)['for'](module, {
 		getHTML: function (Context) {
 
 			// TODO: Remove this once we can inject 'React' automatically at build time.
@@ -16859,7 +17025,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(11)(module)))
 
 /***/ },
-/* 116 */
+/* 118 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM *//** @jsx React.DOM */
@@ -17000,26 +17166,41 @@
 
 
 /***/ },
-/* 117 */
+/* 119 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(module) {/** @jsx React.DOM */
-	__webpack_require__(118)['for'](module, {
+	__webpack_require__(120)['for'](module, {
+
+		getTemplates: function (Context) {
+
+			return {
+				"landing":  new Context.Template({
+					impl: __webpack_require__(121),
+					markup: function (element) {
+					},
+					fill: function (element, data, Context) {
+					}
+				})
+			};
+		},
+
+
 		getHTML: function (Context) {
 
 			// TODO: Remove this once we can inject 'React' automatically at build time.
 			var React = Context.REACT;
 
 			return (
-				React.createElement("div", null, "Menu Email")
-	        );
+	        	React.createElement(Context.templates.landing.comp, null)
+			);
 		}
 	});
 
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(11)(module)))
 
 /***/ },
-/* 118 */
+/* 120 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
@@ -17027,70 +17208,44 @@
 
 	exports['for'] = function (module, Context) {
 
+	console.log("INTI LANDING");
+
 		module.exports = COMPONENT.create(Context, {
 
-			appContextView: "Menu_Email",
+			appContextView: "Landing",
 
 		    onMount: function () {
-				this.props.appContext.get('stores').menus.on("sync", this._trigger_forceUpdate);
-				this.props.appContext.get('stores').items.on("sync", this._trigger_forceUpdate);
+				this.props.appContext.get('stores').consumerGroups.on("sync", this._trigger_forceUpdate);
 		    },
 
 		    onUnmount: function () {
-				this.props.appContext.get('stores').menus.off("sync", this._trigger_forceUpdate);
-				this.props.appContext.get('stores').items.off("sync", this._trigger_forceUpdate);
+				this.props.appContext.get('stores').consumerGroups.off("sync", this._trigger_forceUpdate);
 		    },
 
 		    render: function () {
 		    	var self = this;
 
-		        var events = self.props.appContext.get('stores').events;
-		        var menus = self.props.appContext.get('stores').menus;
+		        var consumerGroups = self.props.appContext.get('stores').consumerGroups;
+				var consumerGroup = self.modelRecordsWithStore(consumerGroups, consumerGroups.where())[0];
 
-		        var eventIds = {};
-
-		        var days = {};
-
-		        self.modelRecordsWithStore(events, events.where()).forEach(function (item) {
-
-					var ddd = item.get("day.format.ddd");
-					days[ddd] = item;
-
-		        	eventIds[item.get("id")] = ddd;
-		        });
-
-				var items = {};
-				var vendor = {};
-
-		        self.modelRecordsWithStore(menus, menus.getForEventIds(eventIds)).forEach(function (item) {
-
-					if (!items[eventIds[item.get("event_id")]]) {
-						items[eventIds[item.get("event_id")]] = [];
-					}
-	                // Group menu items per day
-					items[eventIds[item.get("event_id")]].push(item);
-
-					// TODO: For each field on the vendor model.
-					[
-						"title",
-						"description"
-					].forEach(function (name) {
-						if (vendor[name]) return;
-						vendor[name] = item.get("vendor." + name);
-					});
-		        });
-
-		        var today = self.props.appContext.get('today');
+		        var consumerGroupSubscriptions = self.props.appContext.get('stores').consumerGroupSubscriptions;
+				var consumerGroupSubscription = self.modelRecordsWithStore(consumerGroupSubscriptions, consumerGroupSubscriptions.where())[0];
 
 		        return {
 
-		        	vendor: vendor,
+		        	config: {
+		        		doNothingOnEmptyEmailSubmit: true
+		        	},
 
-		        	// Info for each event (multiple menus grouped by 'Mon", "Tue", ...)
-		        	day: days[today] || {},
+		        	consumerGroup: consumerGroup,
+		        	consumerGroupSubscription: consumerGroupSubscription,
 
-		        	// The items for each day
-		        	items: items[today] || []
+		        	subscribeWithEmail: function (email) {
+
+						self.props.appContext.get('stores').consumerGroupSubscriptions.subscribeWithEmail(
+							consumerGroup.get("id"), email
+						);
+					}
 		        };
 		    }
 		});
@@ -17099,30 +17254,175 @@
 
 
 /***/ },
-/* 119 */
+/* 121 */
+/***/ function(module, exports) {
+
+	/** @jsx React.DOM */module.exports = function (Context) {
+	  // TODO: Remove this once we can inject 'React' automatically at build time.
+	  var React = Context.REACT;
+	  return (
+	    React.createElement("body", {className: "page"}, 
+
+	    
+	React.createElement("header", {className: "navbar navbar-transparent navbar-transparent-dark"}, 
+	  React.createElement("div", {className: "container"}, 
+	    React.createElement("a", {href: "/"}, 
+	      React.createElement("img", {src: "/lunchroom-landing~0/resources/assets/img~logo_goodybag_white-14f9e4c.png", alt: "Goodybag.com", className: "navbar-logo"})
+	    ), 
+
+	    React.createElement("ul", {className: "nav navbar-nav navbar-right"}, 
+	      React.createElement("li", null, 
+	        React.createElement("a", {href: "#", "data-toggle": "modal", "data-target": "#contact-us-modal"}, "Contact Us")
+	      )
+	    )
+	  )
+	), 
+
+	React.createElement("section", {className: "page-section hero-unit primary-section", id: "email-signup-cta"}, 
+	  React.createElement("div", {className: "container"}, 
+	    React.createElement("h1", {className: "section-header"}, "Get your lunch delivered every day."), 
+	    React.createElement("p", null, "Your choice of meal brought to you at work. Starts August 17th, 2015."), 
+	    React.createElement("form", {action: "#", className: "cta-form form", "data-component-id": "subscribe"}, 
+	      React.createElement("div", {className: "form-group"}, 
+	        React.createElement("div", {className: "email-wrapper"}, 
+	          React.createElement("input", {type: "email", name: "email"})
+	        ), 
+	        React.createElement("div", {className: "submit-wrapper"}, 
+	          React.createElement("button", {className: "btn btn-primary"}, "Get notified")
+	        )
+	      ), 
+	      React.createElement("p", {className: "form-explanation"}, "Enter your email to receive daily menus when we launch!")
+	    ), 
+	    React.createElement("h2", {className: "outro-header"}, "Share the love! Send this page to your coworkers.")
+	  )
+	), 
+
+	React.createElement("section", {className: "page-section", id: "how-it-works"}, 
+	  React.createElement("div", {className: "container"}, 
+	    React.createElement("h1", {className: "section-title"}, "How it'll work"), 
+	    React.createElement("div", {className: "marketing-points"}, 
+	      React.createElement("div", {className: "point"}, 
+	        React.createElement("img", {src: "/lunchroom-landing~0/resources/assets/img~icons_step1-7706235.png", alt: "Restaurant rotation"}), 
+	        React.createElement("p", null, "One restaurant featured each day.")
+	      ), 
+	      React.createElement("div", {className: "point"}, 
+	        React.createElement("img", {src: "/lunchroom-landing~0/resources/assets/img~icons_step2-c733bfa.png", alt: "Order deadline"}), 
+	        React.createElement("p", null, "Order by 10 AM.")
+	      ), 
+	      React.createElement("div", {className: "point"}, 
+	        React.createElement("img", {src: "/lunchroom-landing~0/resources/assets/img~icons_step3-e7ec2cb.png", alt: "Delivery notification"}), 
+	        React.createElement("p", null, "We'll deliver your food at 12 and text you when it arrives!")
+	      )
+	    )
+	  )
+	), 
+
+	React.createElement("section", {className: "page-section section-dark", id: "new-menu-everyday"}, 
+	  React.createElement("div", {className: "container"}, 
+	    React.createElement("h1", {className: "section-title"}, "A new menu every day"), 
+	    React.createElement("img", {src: "/lunchroom-landing~0/resources/assets/img~browsers_3mockups-de6a12d.png", className: "section-screenshot", alt: "Menu screenshot"})
+	  )
+	), 
+
+	React.createElement("section", {className: "page-section", id: "restaurants"}, 
+	  React.createElement("div", {className: "container"}, 
+	    React.createElement("h1", {className: "section-title"}, "A few restaurants you can expect"), 
+	    React.createElement("ul", {className: "logo-list"}, 
+	      React.createElement("li", null, React.createElement("img", {src: "/lunchroom-landing~0/resources/assets/img~logo_trudys-d2b99e0.png", alt: "Trudy's"})), 
+	      React.createElement("li", null, React.createElement("img", {src: "/lunchroom-landing~0/resources/assets/img~logo_micklethwait-b31ccde.png", alt: "Micklethwait"})), 
+	      React.createElement("li", null, React.createElement("img", {src: "/lunchroom-landing~0/resources/assets/img~logo_torchys-9bde0e3.png", alt: "Torchy's Tacos"})), 
+	      React.createElement("li", null, React.createElement("img", {src: "/lunchroom-landing~0/resources/assets/img~logo_zoes-9a626ef.png", alt: "Zoe's Kitchen"})), 
+	      React.createElement("li", null, React.createElement("img", {src: "/lunchroom-landing~0/resources/assets/img~logo_madammams-addef91.png", alt: "Madam Mam's"}))
+	    )
+	  )
+	), 
+
+	React.createElement("div", {className: "modal fade", id: "contact-us-modal"}, 
+	  React.createElement("div", {className: "modal-dialog"}, 
+	    React.createElement("div", {className: "modal-content"}, 
+	      React.createElement("div", {className: "modal-header"}, 
+	        React.createElement("h3", {className: "modal-title"}, "Contact Us")
+	      ), 
+	      React.createElement("form", {action: "#", className: "form form-vertical contact-us-form"}, 
+	        React.createElement("div", {className: "modal-body"}, 
+	          React.createElement("div", {className: "form-group"}, 
+	            React.createElement("label", {for: "name-input"}, "Name"), 
+	            React.createElement("input", {type: "text", name: "name"})
+	          ), 
+	          React.createElement("div", {className: "form-group"}, 
+	            React.createElement("label", {for: "name-input"}, "Email"), 
+	            React.createElement("input", {type: "email", name: "email"})
+	          ), 
+	          React.createElement("div", {className: "form-group"}, 
+	            React.createElement("label", {for: "message-input"}, "Message"), 
+	            React.createElement("textarea", {rows: "6", type: "text", name: "message"})
+	          )
+	        ), 
+	        React.createElement("div", {className: "modal-footer"}, 
+	          React.createElement("button", {type: "button", className: "btn btn-default", "data-dismiss": "modal"}, "Close"), 
+	          React.createElement("button", {type: "submit", className: "btn btn-primary"}, "Submit")
+	        )
+	      )
+	    )
+	  )
+	), 
+
+	React.createElement("footer", {className: "footer"}, 
+	  React.createElement("ul", {className: "nav footer-nav"}, 
+	    React.createElement("li", null, React.createElement("a", {href: "#", "data-toggle": "modal", "data-target": "#contact-us-modal"}, "Contact Us")), 
+	    React.createElement("li", null, React.createElement("a", {href: "https://www.goodybag.com/legal"}, "Terms of service")), 
+	    React.createElement("li", null, React.createElement("a", {href: "https://www.goodybag.com/privacy"}, "Privacy policy"))
+	  )
+	)
+
+	    
+	    
+	    
+	  
+
+	    )
+	  );
+	}
+
+/***/ },
+/* 122 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(module) {/** @jsx React.DOM */
-	__webpack_require__(120)['for'](module, {
+	__webpack_require__(123)['for'](module, {
 
 		getTemplates: function (Context) {
 			return {
 				"menu_not_created": new Context.Template({
+<<<<<<< Updated upstream
 					impl: __webpack_require__(121),
+=======
+					impl: __webpack_require__(124),
+>>>>>>> Stashed changes
 					markup: function (element) {
 					},
 					fill: function (element, data, Context) {
 					}
 				}),
 				"popup": new Context.Template({
+<<<<<<< Updated upstream
 					impl: __webpack_require__(122),
+=======
+					impl: __webpack_require__(125),
+>>>>>>> Stashed changes
 					markup: function (element) {
 						var self = this;
 
 						self.liftSections(element);
+<<<<<<< Updated upstream
 
 						$('[data-component-elm="addButton"]', element).click(function () {
 
+=======
+
+						$('[data-component-elm="addButton"]', element).click(function () {
+
+>>>>>>> Stashed changes
 							Context.appContext.get('stores').cart.addItem(self.getData().item_id, {});
 							return false;
 						});
@@ -17142,7 +17442,11 @@
 					}
 				}),
 				"menu": new Context.Template({
+<<<<<<< Updated upstream
 					impl: __webpack_require__(123),
+=======
+					impl: __webpack_require__(126),
+>>>>>>> Stashed changes
 					markup: function (element) {
 						this.liftSections(element);
 					},
@@ -17278,7 +17582,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(11)(module)))
 
 /***/ },
-/* 120 */
+/* 123 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
@@ -17348,7 +17652,66 @@
 
 
 /***/ },
-/* 121 */
+/* 124 */
+/***/ function(module, exports) {
+
+	/** @jsx React.DOM */module.exports = function (Context) {
+	  // TODO: Remove this once we can inject 'React' automatically at build time.
+	  var React = Context.REACT;
+	  return (
+	    React.createElement("section", {className: "page-section", id: "section-warning-section"}, 
+
+	  React.createElement("div", {className: "container"}, 
+	    React.createElement("div", {className: "warning-section", "data-component-id": "warning-section"}, 
+	      React.createElement("img", {src: "/lunchroom-landing~0/resources/assets/img~cupcake-shocked-9c195d3.png", alt: "", className: "warning-section-supporting-graphic"}), 
+	      React.createElement("h2", {className: "warning-section-header"}, "This menu has not been created yet!"), 
+	      React.createElement("p", null, "Either this is an error with Goodybag, or the menu hasn't been created yet. Please check again later.")
+	    )
+	  )
+
+	    )
+	  );
+	}
+
+/***/ },
+/* 125 */
+/***/ function(module, exports) {
+
+	/** @jsx React.DOM */module.exports = function (Context) {
+	  // TODO: Remove this once we can inject 'React' automatically at build time.
+	  var React = Context.REACT;
+	  return (
+	    React.createElement("div", {className: "modal item-modal fade", id: "item-modal"}, 
+
+	  React.createElement("div", {className: "modal-dialog"}, 
+	    React.createElement("div", {className: "modal-content"}, 
+	      React.createElement("div", {className: "modal-photo-wrapper"}, 
+	        React.createElement("img", {className: "modal-photo", src: "https://www.filepicker.io/api/file/SZoK9zUvTPWXzmK81aGg/convert?w=430&h=400&fit=crop", "data-component-prop": "photoUrl", "data-component-prop-target": "src"})
+	      ), 
+	      React.createElement("div", {className: "modal-main-content"}, 
+	        React.createElement("div", {className: "modal-main-content-body"}, 
+	          React.createElement("h3", {className: "item-modal-title", "data-component-prop": "title"}, "Fajita Torta", 
+	            React.createElement("span", {className: "item-modal-price", "data-component-prop": "price"}, "$12.00")
+	          ), 
+	          React.createElement("p", {className: "item-modal-description", "data-component-prop": "description"}, "Mexican sandwich with top sirloin steak, bell peppers, mushrooms, and onions. Topped with queso, avocado, tomatoes, and Mexican mayo dressing."), 
+	          React.createElement("ul", {className: "diet-tags", "data-component-section": "diet-tags"}, 
+	            React.createElement("li", {className: "diet-tag diet-tag-spicy", "data-component-section": "diet-tags", "data-component-view": "default"})
+	          )
+	        ), 
+	        React.createElement("div", {className: "item-modal-actions"}, 
+	          React.createElement("button", {className: "btn btn-primary" + " " +
+	            "item-modal-save-btn", "data-component-elm": "addButton", "data-component-view": "orderable"}, "Add to Order")
+	        )
+	      )
+	    )
+	  )
+
+	    )
+	  );
+	}
+
+/***/ },
+/* 126 */
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM */module.exports = function (Context) {
@@ -17539,11 +17902,19 @@
 	}
 
 /***/ },
+<<<<<<< Updated upstream
 /* 124 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(module) {/** @jsx React.DOM */
 	__webpack_require__(126)['for'](module, {
+=======
+/* 127 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(module) {/** @jsx React.DOM */
+	__webpack_require__(129)['for'](module, {
+>>>>>>> Stashed changes
 
 		singleton: function (Context) {
 
@@ -17563,7 +17934,11 @@
 
 			return {
 				"no_items":  new Context.Template({
+<<<<<<< Updated upstream
 					impl: __webpack_require__(127),
+=======
+					impl: __webpack_require__(130),
+>>>>>>> Stashed changes
 					markup: function (element) {
 
 						$('[data-component-elm="addItemsLink"]', element).click(function () {
@@ -17575,7 +17950,11 @@
 					}
 				}),
 				"navbar": new Context.Template({
+<<<<<<< Updated upstream
 					impl: __webpack_require__(128),
+=======
+					impl: __webpack_require__(131),
+>>>>>>> Stashed changes
 					markup: function (element) {
 
 						$('[data-component-elm="addItemsLink"]', element).click(function () {
@@ -17587,7 +17966,11 @@
 					}
 				}),
 				"form": new Context.Template({
+<<<<<<< Updated upstream
 					impl: __webpack_require__(125),
+=======
+					impl: __webpack_require__(128),
+>>>>>>> Stashed changes
 					markup: function (element) {
 
 					    // Save form on change to any order field.
@@ -17628,7 +18011,11 @@
 					}
 				}),
 				"items": new Context.Template({
+<<<<<<< Updated upstream
 					impl: __webpack_require__(129),
+=======
+					impl: __webpack_require__(132),
+>>>>>>> Stashed changes
 					markup: function (element) {
 
 						this.liftSections(element);
@@ -17665,7 +18052,11 @@
 					}
 				}),
 				"summary": new Context.Template({
+<<<<<<< Updated upstream
 					impl: __webpack_require__(130),
+=======
+					impl: __webpack_require__(133),
+>>>>>>> Stashed changes
 					markup: function (element) {
 
 						$('[data-component-elm="placeOrderButton"]', element).click(function () {
@@ -17845,7 +18236,11 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(11)(module)))
 
 /***/ },
+<<<<<<< Updated upstream
 /* 125 */
+=======
+/* 128 */
+>>>>>>> Stashed changes
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM */module.exports = function (Context) {
@@ -17901,7 +18296,11 @@
 	}
 
 /***/ },
+<<<<<<< Updated upstream
 /* 126 */
+=======
+/* 129 */
+>>>>>>> Stashed changes
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
@@ -17964,7 +18363,11 @@
 
 
 /***/ },
+<<<<<<< Updated upstream
 /* 127 */
+=======
+/* 130 */
+>>>>>>> Stashed changes
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM */module.exports = function (Context) {
@@ -17986,7 +18389,11 @@
 	}
 
 /***/ },
+<<<<<<< Updated upstream
 /* 128 */
+=======
+/* 131 */
+>>>>>>> Stashed changes
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM */module.exports = function (Context) {
@@ -18006,7 +18413,11 @@
 	}
 
 /***/ },
+<<<<<<< Updated upstream
 /* 129 */
+=======
+/* 132 */
+>>>>>>> Stashed changes
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM */module.exports = function (Context) {
@@ -18071,7 +18482,11 @@
 	}
 
 /***/ },
+<<<<<<< Updated upstream
 /* 130 */
+=======
+/* 133 */
+>>>>>>> Stashed changes
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM */module.exports = function (Context) {
@@ -18107,17 +18522,29 @@
 	}
 
 /***/ },
+<<<<<<< Updated upstream
 /* 131 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(module) {/** @jsx React.DOM */
 	__webpack_require__(132)['for'](module, {
+=======
+/* 134 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(module) {/** @jsx React.DOM */
+	__webpack_require__(135)['for'](module, {
+>>>>>>> Stashed changes
 
 		getTemplates: function (Context) {
 
 			return {
 				"orderPlaced": new Context.Template({
+<<<<<<< Updated upstream
 					impl: __webpack_require__(133),
+=======
+					impl: __webpack_require__(136),
+>>>>>>> Stashed changes
 					markup: function (element) {
 
 					},
@@ -18158,7 +18585,11 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(11)(module)))
 
 /***/ },
+<<<<<<< Updated upstream
 /* 132 */
+=======
+/* 135 */
+>>>>>>> Stashed changes
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
@@ -18209,7 +18640,11 @@
 
 
 /***/ },
+<<<<<<< Updated upstream
 /* 133 */
+=======
+/* 136 */
+>>>>>>> Stashed changes
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM */module.exports = function (Context) {
@@ -18237,11 +18672,19 @@
 	}
 
 /***/ },
+<<<<<<< Updated upstream
 /* 134 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(module) {/** @jsx React.DOM */
 	__webpack_require__(135)['for'](module, {
+=======
+/* 137 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(module) {/** @jsx React.DOM */
+	__webpack_require__(138)['for'](module, {
+>>>>>>> Stashed changes
 		getHTML: function (Context) {
 
 			// TODO: Remove this once we can inject 'React' automatically at build time.
@@ -18256,7 +18699,11 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(11)(module)))
 
 /***/ },
+<<<<<<< Updated upstream
 /* 135 */
+=======
+/* 138 */
+>>>>>>> Stashed changes
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
@@ -18314,28 +18761,48 @@
 
 
 /***/ },
+<<<<<<< Updated upstream
 /* 136 */
+=======
+/* 139 */
+>>>>>>> Stashed changes
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
 	var WEB_COMPONENTS = {
+<<<<<<< Updated upstream
 		"Header": __webpack_require__(139),
 		"Menu": __webpack_require__(140),
 		"Footer": __webpack_require__(141)
+=======
+		"Header": __webpack_require__(142),
+		"Menu": __webpack_require__(143),
+		"Footer": __webpack_require__(144)
+>>>>>>> Stashed changes
 	};
 
 	var EMAIL_COMPONENTS = {
 		CORRESPONDENCE: {
+<<<<<<< Updated upstream
 			"Header": __webpack_require__(142),
 			"Footer": __webpack_require__(145)
 		},
 		LIST: {
 			"Header": __webpack_require__(146),
 			"Footer": __webpack_require__(149)
+=======
+			"Header": __webpack_require__(145),
+			"Footer": __webpack_require__(148)
+		},
+		LIST: {
+			"Header": __webpack_require__(149),
+			"Footer": __webpack_require__(152)
+>>>>>>> Stashed changes
 		}
 	};
 
 
+<<<<<<< Updated upstream
 	exports.RootView = __webpack_require__(150);
 
 	exports.views = {
@@ -18345,131 +18812,238 @@
 		},
 		"Menu_Email": {
 			"component": __webpack_require__(153),
+=======
+	exports.RootView = __webpack_require__(153);
+
+	exports.views = {
+		"Landing": {
+			"component": __webpack_require__(154),
+			"config": {}
+		},
+		"Menu_Email": {
+			"component": __webpack_require__(155),
+>>>>>>> Stashed changes
 			"config": {},
 			"components": EMAIL_COMPONENTS.LIST
 		},
 		"Menu_Web": {
+<<<<<<< Updated upstream
 			"component": __webpack_require__(154),
+=======
+			"component": __webpack_require__(156),
+>>>>>>> Stashed changes
 			"config": {},
 			"components": WEB_COMPONENTS
 		},
 		"Checkout": {
+<<<<<<< Updated upstream
 			"component": __webpack_require__(155),
+=======
+			"component": __webpack_require__(157),
+>>>>>>> Stashed changes
 			"config": {},
 			"components": WEB_COMPONENTS
 		},
 		"Order_Placed": {
+<<<<<<< Updated upstream
 			"component": __webpack_require__(156),
+=======
+			"component": __webpack_require__(158),
+>>>>>>> Stashed changes
 			"config": {},
 			"components": WEB_COMPONENTS
 		},
 		"Receipt": {
+<<<<<<< Updated upstream
 			"component": __webpack_require__(157),
+=======
+			"component": __webpack_require__(159),
+>>>>>>> Stashed changes
 			"config": {},
 			"components": EMAIL_COMPONENTS.CORRESPONDENCE
 		},
 		"Order_Arrived": {
+<<<<<<< Updated upstream
 			"component": __webpack_require__(158),
+=======
+			"component": __webpack_require__(160),
+>>>>>>> Stashed changes
 			"config": {},
 			"components": WEB_COMPONENTS.CORRESPONDENCE
 		},
 		"ContactUs": {
+<<<<<<< Updated upstream
 			"component": __webpack_require__(160),
+=======
+			"component": __webpack_require__(162),
+>>>>>>> Stashed changes
 			"config": {},
 			"components": WEB_COMPONENTS
 		},
 		"PrivacyPolicy": {
+<<<<<<< Updated upstream
 			"component": __webpack_require__(137),
+=======
+			"component": __webpack_require__(140),
+>>>>>>> Stashed changes
 			"config": {},
 			"components": WEB_COMPONENTS
 		},
 		"TermsOfService": {
+<<<<<<< Updated upstream
 			"component": __webpack_require__(162),
+=======
+			"component": __webpack_require__(164),
+>>>>>>> Stashed changes
 			"config": {},
 			"components": WEB_COMPONENTS
 		},
 		"Admin_Events": {
 			"group": "admin",
 			"container": "iframe",
+<<<<<<< Updated upstream
 			"component": __webpack_require__(164),
+=======
+			"component": __webpack_require__(166),
+>>>>>>> Stashed changes
 			"config": {}
 		},
 		"Admin_Orders": {
 			"group": "admin",
 			"container": "iframe",
+<<<<<<< Updated upstream
 			"component": __webpack_require__(165),
+=======
+			"component": __webpack_require__(167),
+>>>>>>> Stashed changes
 			"config": {}
 		},
 		"Admin_Restaurant": {
 			"group": "admin",
 			"container": "iframe",
+<<<<<<< Updated upstream
 			"component": __webpack_require__(166),
+=======
+			"component": __webpack_require__(168),
+>>>>>>> Stashed changes
 			"config": {}
 		},	
 		"Model_Days": {
 			"group": "model",
+<<<<<<< Updated upstream
 			"component": __webpack_require__(167),
+=======
+			"component": __webpack_require__(169),
+>>>>>>> Stashed changes
 			"config": {}
 		},
 		"Model_Events": {
 			"group": "model",
+<<<<<<< Updated upstream
 			"component": __webpack_require__(168),
+=======
+			"component": __webpack_require__(170),
+>>>>>>> Stashed changes
 			"config": {}
 		},
 		"Model_Vendors": {
 			"group": "model",
+<<<<<<< Updated upstream
 			"component": __webpack_require__(169),
+=======
+			"component": __webpack_require__(171),
+>>>>>>> Stashed changes
 			"config": {}
 		},
 		"Model_Items": {
 			"group": "model",
+<<<<<<< Updated upstream
 			"component": __webpack_require__(170),
+=======
+			"component": __webpack_require__(172),
+>>>>>>> Stashed changes
 			"config": {}
 		},
 		"Model_Menus": {
 			"group": "model",
+<<<<<<< Updated upstream
 			"component": __webpack_require__(171),
+=======
+			"component": __webpack_require__(173),
+>>>>>>> Stashed changes
 			"config": {}
 		},
 		"Model_ConsumerGroups": {
 			"group": "model",
+<<<<<<< Updated upstream
 			"component": __webpack_require__(172),
+=======
+			"component": __webpack_require__(174),
+>>>>>>> Stashed changes
 			"config": {}
 		},
 		"Model_Consumers": {
 			"group": "model",
+<<<<<<< Updated upstream
 			"component": __webpack_require__(173),
+=======
+			"component": __webpack_require__(175),
+>>>>>>> Stashed changes
 			"config": {}
 		},
 		"Model_ConsumerGroupSubscriptions": {
 			"group": "model",
+<<<<<<< Updated upstream
 			"component": __webpack_require__(174),
+=======
+			"component": __webpack_require__(176),
+>>>>>>> Stashed changes
 			"config": {}
 		},
 		"Model_Cart": {
 			"group": "model",
+<<<<<<< Updated upstream
 			"component": __webpack_require__(175),
+=======
+			"component": __webpack_require__(177),
+>>>>>>> Stashed changes
 			"config": {}
 		},
 		"Model_Orders": {
 			"group": "model",
+<<<<<<< Updated upstream
 			"component": __webpack_require__(176),
+=======
+			"component": __webpack_require__(178),
+>>>>>>> Stashed changes
 			"config": {}
 		},
 		"Model_OrderStatus": {
 			"group": "model",
+<<<<<<< Updated upstream
 			"component": __webpack_require__(177),
+=======
+			"component": __webpack_require__(179),
+>>>>>>> Stashed changes
 			"config": {}
 		}
 	};
 
 
 /***/ },
+<<<<<<< Updated upstream
 /* 137 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(module) {/** @jsx React.DOM */
 	__webpack_require__(138)['for'](module, {
+=======
+/* 140 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(module) {/** @jsx React.DOM */
+	__webpack_require__(141)['for'](module, {
+>>>>>>> Stashed changes
 
 		getHTML: function (Context) {
 
@@ -18536,7 +19110,11 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(11)(module)))
 
 /***/ },
+<<<<<<< Updated upstream
 /* 138 */
+=======
+/* 141 */
+>>>>>>> Stashed changes
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
@@ -18560,11 +19138,15 @@
 
 
 /***/ },
+<<<<<<< Updated upstream
 /* 139 */
+=======
+/* 142 */
+>>>>>>> Stashed changes
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(module) {/** @jsx React.DOM */
-	__webpack_require__(12)['for'](module, {
+	__webpack_require__(109)['for'](module, {
 		getHTML: function (Context) {
 
 			// TODO: Remove this once we can inject 'React' automatically at build time.
@@ -18583,11 +19165,15 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(11)(module)))
 
 /***/ },
+<<<<<<< Updated upstream
 /* 140 */
+=======
+/* 143 */
+>>>>>>> Stashed changes
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(module) {/** @jsx React.DOM */
-	__webpack_require__(110)['for'](module, {
+	__webpack_require__(112)['for'](module, {
 		getHTML: function (Context) {
 
 			// TODO: Remove this once we can inject 'React' automatically at build time.
@@ -18676,11 +19262,15 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(11)(module)))
 
 /***/ },
+<<<<<<< Updated upstream
 /* 141 */
+=======
+/* 144 */
+>>>>>>> Stashed changes
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(module) {/** @jsx React.DOM */
-	__webpack_require__(113)['for'](module, {
+	__webpack_require__(115)['for'](module, {
 		getHTML: function (Context) {
 
 			// TODO: Remove this once we can inject 'React' automatically at build time.
@@ -18701,18 +19291,30 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(11)(module)))
 
 /***/ },
+<<<<<<< Updated upstream
 /* 142 */
 [269, 143],
 /* 143 */
 [270, 144],
 /* 144 */
+=======
+/* 145 */
+[271, 146],
+/* 146 */
+[272, 147],
+/* 147 */
+>>>>>>> Stashed changes
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(4)();
 	exports.push([module.id, "", ""]);
 
 /***/ },
+<<<<<<< Updated upstream
 /* 145 */
+=======
+/* 148 */
+>>>>>>> Stashed changes
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
@@ -18733,18 +19335,30 @@
 
 
 /***/ },
+<<<<<<< Updated upstream
 /* 146 */
 [269, 147],
 /* 147 */
 [270, 148],
 /* 148 */
+=======
+/* 149 */
+[271, 150],
+/* 150 */
+[272, 151],
+/* 151 */
+>>>>>>> Stashed changes
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(4)();
 	exports.push([module.id, "\n.ui.basic.table.GBL_Skin_invisibleTable td {\n\tborder-top: 0px !important;\n}\n.ui.basic.table.GBL_Skin_lessPadding td {\n\tpadding-top: 3px;\n\tpadding-bottom: 3px;\n}\n\n.ui.table tr.GBL_Skin_invisibleRowBorder td {\n\tborder-top: 0px !important;\n}\n.ui.table tr.GBL_Skin_lessPadding td {\n\tpadding-top: 3px !important;\n\tpadding-bottom: 3px !important;\n}\n", ""]);
 
 /***/ },
+<<<<<<< Updated upstream
 /* 149 */
+=======
+/* 152 */
+>>>>>>> Stashed changes
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
@@ -18771,14 +19385,18 @@
 
 
 /***/ },
+<<<<<<< Updated upstream
 /* 150 */
+=======
+/* 153 */
+>>>>>>> Stashed changes
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(module) {/** @jsx React.DOM *//** @jsx React.DOM */
 	'use strict'
 
 
-	__webpack_require__(116)['for'](module, {
+	__webpack_require__(118)['for'](module, {
 		getViewTabHTML: function (Context) {
 			return (
 			  React.createElement("div", {className: "item", onClick: Context.onClick}, 
@@ -18916,11 +19534,19 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(11)(module)))
 
 /***/ },
+<<<<<<< Updated upstream
 /* 151 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(module) {/** @jsx React.DOM */
 	__webpack_require__(152)['for'](module, {
+=======
+/* 154 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(module) {/** @jsx React.DOM */
+	__webpack_require__(120)['for'](module, {
+>>>>>>> Stashed changes
 
 		afterRender: function (Context, element) {
 			var self = this;
@@ -19253,6 +19879,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(11)(module)))
 
 /***/ },
+<<<<<<< Updated upstream
 /* 152 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -19306,10 +19933,13 @@
 
 /***/ },
 /* 153 */
+=======
+/* 155 */
+>>>>>>> Stashed changes
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(module) {/** @jsx React.DOM */
-	__webpack_require__(118)['for'](module, {
+	__webpack_require__(12)['for'](module, {
 		getHTML: function (Context) {
 
 
@@ -19425,11 +20055,15 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(11)(module)))
 
 /***/ },
+<<<<<<< Updated upstream
 /* 154 */
+=======
+/* 156 */
+>>>>>>> Stashed changes
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(module) {/** @jsx React.DOM */
-	__webpack_require__(120)['for'](module, {
+	__webpack_require__(123)['for'](module, {
 		afterRender: function (Context, element) {
 
 			$('.tab', element).removeClass('active');
@@ -19666,11 +20300,19 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(11)(module)))
 
 /***/ },
+<<<<<<< Updated upstream
 /* 155 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(module) {/** @jsx React.DOM */
 	__webpack_require__(126)['for'](module, {
+=======
+/* 157 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(module) {/** @jsx React.DOM */
+	__webpack_require__(129)['for'](module, {
+>>>>>>> Stashed changes
 
 		afterRender: function (Context, element) {
 
@@ -20006,11 +20648,19 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(11)(module)))
 
 /***/ },
+<<<<<<< Updated upstream
 /* 156 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(module) {/** @jsx React.DOM */
 	__webpack_require__(132)['for'](module, {
+=======
+/* 158 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(module) {/** @jsx React.DOM */
+	__webpack_require__(135)['for'](module, {
+>>>>>>> Stashed changes
 
 		afterRender: function (Context, element) {
 		},
@@ -20086,11 +20736,19 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(11)(module)))
 
 /***/ },
+<<<<<<< Updated upstream
 /* 157 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(module) {/** @jsx React.DOM */
 	__webpack_require__(135)['for'](module, {
+=======
+/* 159 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(module) {/** @jsx React.DOM */
+	__webpack_require__(138)['for'](module, {
+>>>>>>> Stashed changes
 
 		afterRender: function (Context, element) {
 		},
@@ -20238,11 +20896,19 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(11)(module)))
 
 /***/ },
+<<<<<<< Updated upstream
 /* 158 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(module) {/** @jsx React.DOM */
 	__webpack_require__(159)['for'](module, {
+=======
+/* 160 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(module) {/** @jsx React.DOM */
+	__webpack_require__(161)['for'](module, {
+>>>>>>> Stashed changes
 
 		afterRender: function (Context, element) {
 		},
@@ -20299,7 +20965,11 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(11)(module)))
 
 /***/ },
+<<<<<<< Updated upstream
 /* 159 */
+=======
+/* 161 */
+>>>>>>> Stashed changes
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
@@ -20343,11 +21013,19 @@
 
 
 /***/ },
+<<<<<<< Updated upstream
 /* 160 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(module) {/** @jsx React.DOM */
 	__webpack_require__(161)['for'](module, {
+=======
+/* 162 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(module) {/** @jsx React.DOM */
+	__webpack_require__(163)['for'](module, {
+>>>>>>> Stashed changes
 
 		afterRender: function (Context, element) {
 			var self = this;
@@ -20479,7 +21157,11 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(11)(module)))
 
 /***/ },
+<<<<<<< Updated upstream
 /* 161 */
+=======
+/* 163 */
+>>>>>>> Stashed changes
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
@@ -20503,11 +21185,19 @@
 
 
 /***/ },
+<<<<<<< Updated upstream
 /* 162 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(module) {/** @jsx React.DOM */
 	__webpack_require__(163)['for'](module, {
+=======
+/* 164 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(module) {/** @jsx React.DOM */
+	__webpack_require__(165)['for'](module, {
+>>>>>>> Stashed changes
 
 		getHTML: function (Context) {
 
@@ -20581,7 +21271,11 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(11)(module)))
 
 /***/ },
+<<<<<<< Updated upstream
 /* 163 */
+=======
+/* 165 */
+>>>>>>> Stashed changes
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
@@ -20605,7 +21299,11 @@
 
 
 /***/ },
+<<<<<<< Updated upstream
 /* 164 */
+=======
+/* 166 */
+>>>>>>> Stashed changes
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM *//** @jsx React.DOM */
@@ -21227,7 +21925,11 @@
 
 
 /***/ },
+<<<<<<< Updated upstream
 /* 165 */
+=======
+/* 167 */
+>>>>>>> Stashed changes
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM *//** @jsx React.DOM */
@@ -21353,7 +22055,11 @@
 
 
 /***/ },
+<<<<<<< Updated upstream
 /* 166 */
+=======
+/* 168 */
+>>>>>>> Stashed changes
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM *//** @jsx React.DOM */
@@ -21603,7 +22309,11 @@
 
 
 /***/ },
+<<<<<<< Updated upstream
 /* 167 */
+=======
+/* 169 */
+>>>>>>> Stashed changes
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM *//** @jsx React.DOM */
@@ -21649,7 +22359,11 @@
 
 
 /***/ },
+<<<<<<< Updated upstream
 /* 168 */
+=======
+/* 170 */
+>>>>>>> Stashed changes
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM *//** @jsx React.DOM */
@@ -21704,7 +22418,11 @@
 
 
 /***/ },
+<<<<<<< Updated upstream
 /* 169 */
+=======
+/* 171 */
+>>>>>>> Stashed changes
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM *//** @jsx React.DOM */
@@ -21747,7 +22465,11 @@
 
 
 /***/ },
+<<<<<<< Updated upstream
 /* 170 */
+=======
+/* 172 */
+>>>>>>> Stashed changes
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
@@ -21816,7 +22538,11 @@
 
 
 /***/ },
+<<<<<<< Updated upstream
 /* 171 */
+=======
+/* 173 */
+>>>>>>> Stashed changes
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM *//** @jsx React.DOM */
@@ -21983,7 +22709,11 @@
 
 
 /***/ },
+<<<<<<< Updated upstream
 /* 172 */
+=======
+/* 174 */
+>>>>>>> Stashed changes
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM *//** @jsx React.DOM */
@@ -22026,7 +22756,11 @@
 
 
 /***/ },
+<<<<<<< Updated upstream
 /* 173 */
+=======
+/* 175 */
+>>>>>>> Stashed changes
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM *//** @jsx React.DOM */
@@ -22069,7 +22803,11 @@
 
 
 /***/ },
+<<<<<<< Updated upstream
 /* 174 */
+=======
+/* 176 */
+>>>>>>> Stashed changes
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
@@ -22142,7 +22880,11 @@
 
 
 /***/ },
+<<<<<<< Updated upstream
 /* 175 */
+=======
+/* 177 */
+>>>>>>> Stashed changes
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM *//** @jsx React.DOM */
@@ -22200,7 +22942,11 @@
 
 
 /***/ },
+<<<<<<< Updated upstream
 /* 176 */
+=======
+/* 178 */
+>>>>>>> Stashed changes
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM *//** @jsx React.DOM */
@@ -22249,7 +22995,11 @@
 
 
 /***/ },
+<<<<<<< Updated upstream
 /* 177 */
+=======
+/* 179 */
+>>>>>>> Stashed changes
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM *//** @jsx React.DOM */
@@ -22292,7 +23042,11 @@
 
 
 /***/ },
+<<<<<<< Updated upstream
 /* 178 */
+=======
+/* 180 */
+>>>>>>> Stashed changes
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM */ /*
@@ -43198,7 +43952,11 @@
 	})( jQuery, window , document );
 
 /***/ },
+<<<<<<< Updated upstream
 /* 179 */
+=======
+/* 181 */
+>>>>>>> Stashed changes
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/* WEBPACK VAR INJECTION */(function(global) {/** @jsx React.DOM *///     Backbone.js 1.2.1
@@ -43217,7 +43975,11 @@
 
 	  // Set up Backbone appropriately for the environment. Start with AMD.
 	  if (true) {
+<<<<<<< Updated upstream
 	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(101), __webpack_require__(180), exports], __WEBPACK_AMD_DEFINE_RESULT__ = function(_, $, exports) {
+=======
+	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(101), __webpack_require__(182), exports], __WEBPACK_AMD_DEFINE_RESULT__ = function(_, $, exports) {
+>>>>>>> Stashed changes
 	      // Export global even in AMD case in case this script is loaded with
 	      // others that may still expect a global Backbone.
 	      root.Backbone = factory(root, exports, _, $);
@@ -45078,13 +45840,21 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
+<<<<<<< Updated upstream
 /* 180 */
+=======
+/* 182 */
+>>>>>>> Stashed changes
 /***/ function(module, exports) {
 
 	module.exports = $;
 
 /***/ },
+<<<<<<< Updated upstream
 /* 181 */
+=======
+/* 183 */
+>>>>>>> Stashed changes
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/** @jsx React.DOM *//*!
@@ -45113,7 +45883,11 @@
 	 */
 	(function(main) {
 	    if (true) {
+<<<<<<< Updated upstream
 	        !(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(182), __webpack_require__(184), __webpack_require__(102), __webpack_require__(179), __webpack_require__(101), __webpack_require__(186)], __WEBPACK_AMD_DEFINE_RESULT__ = function(ReactMixinManager, ReactEvents, React, Backbone, _) {
+=======
+	        !(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(184), __webpack_require__(186), __webpack_require__(102), __webpack_require__(181), __webpack_require__(101), __webpack_require__(188)], __WEBPACK_AMD_DEFINE_RESULT__ = function(ReactMixinManager, ReactEvents, React, Backbone, _) {
+>>>>>>> Stashed changes
 	            // AMD
 	            return main(ReactMixinManager, ReactEvents, React, Backbone, _);
 	        }.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
@@ -46126,6 +46900,7 @@
 
 
 /***/ },
+<<<<<<< Updated upstream
 /* 182 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -46133,6 +46908,15 @@
 
 /***/ },
 /* 183 */
+=======
+/* 184 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/** @jsx React.DOM */module.exports = __webpack_require__(185);
+
+/***/ },
+/* 185 */
+>>>>>>> Stashed changes
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/** @jsx React.DOM *//*!
@@ -46563,6 +47347,7 @@
 
 
 /***/ },
+<<<<<<< Updated upstream
 /* 184 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -46570,6 +47355,15 @@
 
 /***/ },
 /* 185 */
+=======
+/* 186 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/** @jsx React.DOM */module.exports = __webpack_require__(187);
+
+/***/ },
+/* 187 */
+>>>>>>> Stashed changes
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/** @jsx React.DOM *//*!
@@ -46599,7 +47393,11 @@
 	 */
 	(function(main) {
 	    if (true) {
+<<<<<<< Updated upstream
 	        !(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(182)], __WEBPACK_AMD_DEFINE_RESULT__ = function(ReactMixinManager) {
+=======
+	        !(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(184)], __WEBPACK_AMD_DEFINE_RESULT__ = function(ReactMixinManager) {
+>>>>>>> Stashed changes
 	            // AMD
 	            return main(ReactMixinManager);
 	        }.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
@@ -47179,6 +47977,7 @@
 
 
 /***/ },
+<<<<<<< Updated upstream
 /* 186 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -47187,6 +47986,16 @@
 
 /***/ },
 /* 187 */
+=======
+/* 188 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/** @jsx React.DOM */module.exports = __webpack_require__(189);
+
+
+/***/ },
+/* 189 */
+>>>>>>> Stashed changes
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/** @jsx React.DOM *//*!
@@ -47215,7 +48024,11 @@
 	 */
 	(function(main) {
 	    if (true) {
+<<<<<<< Updated upstream
 	        !(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(179), __webpack_require__(101)], __WEBPACK_AMD_DEFINE_RESULT__ = function(Backbone, _) {
+=======
+	        !(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(181), __webpack_require__(101)], __WEBPACK_AMD_DEFINE_RESULT__ = function(Backbone, _) {
+>>>>>>> Stashed changes
 	            // AMD
 	            return main(Backbone, _);
 	        }.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
@@ -47558,6 +48371,7 @@
 
 
 /***/ },
+<<<<<<< Updated upstream
 /* 188 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -47565,11 +48379,24 @@
 	var COMMON = __webpack_require__(189);
 	var UNDERSCORE = __webpack_require__(101);
 	var PAGE = __webpack_require__(200);
+=======
+/* 190 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/** @jsx React.DOM */
+	var COMMON = __webpack_require__(191);
+	var UNDERSCORE = __webpack_require__(101);
+	var PAGE = __webpack_require__(202);
+>>>>>>> Stashed changes
 	var MOMENT = __webpack_require__(14);
 	var Q = __webpack_require__(104);
 	var HEAD = head;
 
+<<<<<<< Updated upstream
 	var Model = __webpack_require__(203);
+=======
+	var Model = __webpack_require__(205);
+>>>>>>> Stashed changes
 
 
 	exports['for'] = function (overrides) {
@@ -47743,7 +48570,11 @@
 		function initLiveNotify () {
 			try {
 
+<<<<<<< Updated upstream
 				var client = __webpack_require__(204);
+=======
+				var client = __webpack_require__(206);
+>>>>>>> Stashed changes
 				var socket = client.connect(appContext.get("windowOrigin"));
 
 				// TODO: Handle re-connects by re-sending init.
@@ -47945,16 +48776,26 @@
 
 
 /***/ },
+<<<<<<< Updated upstream
 /* 189 */
+=======
+/* 191 */
+>>>>>>> Stashed changes
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
 
 	// The API for the data stores running in the UI.
 	// Running all API access through here allows for easy porting later.
+<<<<<<< Updated upstream
 	var API = exports.API = Object.create(__webpack_require__(190).API);
 	API.BACKBONE = __webpack_require__(179);
 	API.FIRENODE = __webpack_require__(198);
+=======
+	var API = exports.API = Object.create(__webpack_require__(192).API);
+	API.BACKBONE = __webpack_require__(181);
+	API.FIRENODE = __webpack_require__(200);
+>>>>>>> Stashed changes
 
 
 	exports.makeEndpointUrl = function (name) {
@@ -48161,7 +49002,11 @@
 
 
 /***/ },
+<<<<<<< Updated upstream
 /* 190 */
+=======
+/* 192 */
+>>>>>>> Stashed changes
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
@@ -48171,12 +49016,21 @@
 	var API = exports.API = {
 		Q: __webpack_require__(104),
 		UNDERSCORE: __webpack_require__(101),
+<<<<<<< Updated upstream
 		AMPERSAND_STATE: __webpack_require__(192),
 		MOMENT: __webpack_require__(14),
 		NUMERAL: __webpack_require__(191),
 		UUID: __webpack_require__(194),
 		JSSHA: __webpack_require__(196),
 		CJSON: __webpack_require__(197)
+=======
+		AMPERSAND_STATE: __webpack_require__(194),
+		MOMENT: __webpack_require__(14),
+		NUMERAL: __webpack_require__(193),
+		UUID: __webpack_require__(196),
+		JSSHA: __webpack_require__(198),
+		CJSON: __webpack_require__(199)
+>>>>>>> Stashed changes
 	};
 
 
@@ -48219,7 +49073,11 @@
 
 
 /***/ },
+<<<<<<< Updated upstream
 /* 191 */
+=======
+/* 193 */
+>>>>>>> Stashed changes
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/** @jsx React.DOM *//*!
@@ -48904,7 +49762,11 @@
 
 
 /***/ },
+<<<<<<< Updated upstream
 /* 192 */
+=======
+/* 194 */
+>>>>>>> Stashed changes
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
@@ -48946,7 +49808,11 @@
 	    }
 	*/
 
+<<<<<<< Updated upstream
 	var EVENTS = __webpack_require__(193);
+=======
+	var EVENTS = __webpack_require__(195);
+>>>>>>> Stashed changes
 	// Below only works on server while above only works in browser.
 	if (EVENTS.EventEmitter2) EVENTS = EVENTS.EventEmitter2;
 
@@ -49020,7 +49886,11 @@
 
 
 /***/ },
+<<<<<<< Updated upstream
 /* 193 */
+=======
+/* 195 */
+>>>>>>> Stashed changes
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_RESULT__;/** @jsx React.DOM *//*!
@@ -49599,7 +50469,11 @@
 
 
 /***/ },
+<<<<<<< Updated upstream
 /* 194 */
+=======
+/* 196 */
+>>>>>>> Stashed changes
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM *///     uuid.js
@@ -49610,7 +50484,11 @@
 	// Unique ID creation requires a high quality random # generator.  We feature
 	// detect to determine the best RNG source, normalizing to a function that
 	// returns 128-bits of randomness, since that's what's usually required
+<<<<<<< Updated upstream
 	var _rng = __webpack_require__(195);
+=======
+	var _rng = __webpack_require__(197);
+>>>>>>> Stashed changes
 
 	// Maps for number <-> hex string conversion
 	var _byteToHex = [];
@@ -49788,7 +50666,11 @@
 
 
 /***/ },
+<<<<<<< Updated upstream
 /* 195 */
+=======
+/* 197 */
+>>>>>>> Stashed changes
 /***/ function(module, exports) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {/** @jsx React.DOM */
@@ -49826,7 +50708,11 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
+<<<<<<< Updated upstream
 /* 196 */
+=======
+/* 198 */
+>>>>>>> Stashed changes
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_RESULT__;/** @jsx React.DOM *//*
@@ -49869,7 +50755,11 @@
 
 
 /***/ },
+<<<<<<< Updated upstream
 /* 197 */
+=======
+/* 199 */
+>>>>>>> Stashed changes
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM */
@@ -50094,11 +50984,19 @@
 
 
 /***/ },
+<<<<<<< Updated upstream
 /* 198 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
 	const COOKIES = __webpack_require__(199);
+=======
+/* 200 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/** @jsx React.DOM */
+	const COOKIES = __webpack_require__(201);
+>>>>>>> Stashed changes
 
 
 	var Client = exports.Client = function (sessionToken, context) {
@@ -50113,7 +51011,11 @@
 
 
 /***/ },
+<<<<<<< Updated upstream
 /* 199 */
+=======
+/* 201 */
+>>>>>>> Stashed changes
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;/** @jsx React.DOM *//*!
@@ -50258,7 +51160,11 @@
 
 
 /***/ },
+<<<<<<< Updated upstream
 /* 200 */
+=======
+/* 202 */
+>>>>>>> Stashed changes
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/** @jsx React.DOM */  /* globals require, module */
@@ -50269,7 +51175,11 @@
 	   * Module dependencies.
 	   */
 
+<<<<<<< Updated upstream
 	  var pathtoRegexp = __webpack_require__(201);
+=======
+	  var pathtoRegexp = __webpack_require__(203);
+>>>>>>> Stashed changes
 
 	  /**
 	   * Module exports.
@@ -50887,10 +51797,17 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(105)))
 
 /***/ },
+<<<<<<< Updated upstream
 /* 201 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */var isArray = __webpack_require__(202);
+=======
+/* 203 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/** @jsx React.DOM */var isArray = __webpack_require__(204);
+>>>>>>> Stashed changes
 
 	/**
 	 * Expose `pathToRegexp`.
@@ -51095,7 +52012,11 @@
 
 
 /***/ },
+<<<<<<< Updated upstream
 /* 202 */
+=======
+/* 204 */
+>>>>>>> Stashed changes
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM */module.exports = Array.isArray || function (arr) {
@@ -51104,11 +52025,19 @@
 
 
 /***/ },
+<<<<<<< Updated upstream
 /* 203 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
 	var COMMON = __webpack_require__(190);
+=======
+/* 205 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/** @jsx React.DOM */
+	var COMMON = __webpack_require__(192);
+>>>>>>> Stashed changes
 
 
 	exports.makeContextForClient = function (overrides) {
@@ -51241,7 +52170,11 @@
 
 
 /***/ },
+<<<<<<< Updated upstream
 /* 204 */
+=======
+/* 206 */
+>>>>>>> Stashed changes
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
@@ -51249,10 +52182,17 @@
 	 * Module dependencies.
 	 */
 
+<<<<<<< Updated upstream
 	var url = __webpack_require__(206);
 	var parser = __webpack_require__(208);
 	var Manager = __webpack_require__(216);
 	var debug = __webpack_require__(205)('socket.io-client');
+=======
+	var url = __webpack_require__(208);
+	var parser = __webpack_require__(210);
+	var Manager = __webpack_require__(218);
+	var debug = __webpack_require__(207)('socket.io-client');
+>>>>>>> Stashed changes
 
 	/**
 	 * Module exports.
@@ -51329,12 +52269,21 @@
 	 * @api public
 	 */
 
+<<<<<<< Updated upstream
 	exports.Manager = __webpack_require__(216);
 	exports.Socket = __webpack_require__(248);
 
 
 /***/ },
 /* 205 */
+=======
+	exports.Manager = __webpack_require__(218);
+	exports.Socket = __webpack_require__(250);
+
+
+/***/ },
+/* 207 */
+>>>>>>> Stashed changes
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM */
@@ -51477,7 +52426,11 @@
 
 
 /***/ },
+<<<<<<< Updated upstream
 /* 206 */
+=======
+/* 208 */
+>>>>>>> Stashed changes
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {/** @jsx React.DOM */
@@ -51485,8 +52438,13 @@
 	 * Module dependencies.
 	 */
 
+<<<<<<< Updated upstream
 	var parseuri = __webpack_require__(207);
 	var debug = __webpack_require__(205)('socket.io-client:url');
+=======
+	var parseuri = __webpack_require__(209);
+	var debug = __webpack_require__(207)('socket.io-client:url');
+>>>>>>> Stashed changes
 
 	/**
 	 * Module exports.
@@ -51557,7 +52515,11 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
+<<<<<<< Updated upstream
 /* 207 */
+=======
+/* 209 */
+>>>>>>> Stashed changes
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM *//**
@@ -51588,7 +52550,11 @@
 
 
 /***/ },
+<<<<<<< Updated upstream
 /* 208 */
+=======
+/* 210 */
+>>>>>>> Stashed changes
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
@@ -51596,12 +52562,21 @@
 	 * Module dependencies.
 	 */
 
+<<<<<<< Updated upstream
 	var debug = __webpack_require__(210)('socket.io-parser');
 	var json = __webpack_require__(211);
 	var isArray = __webpack_require__(213);
 	var Emitter = __webpack_require__(209);
 	var binary = __webpack_require__(214);
 	var isBuf = __webpack_require__(215);
+=======
+	var debug = __webpack_require__(212)('socket.io-parser');
+	var json = __webpack_require__(213);
+	var isArray = __webpack_require__(215);
+	var Emitter = __webpack_require__(211);
+	var binary = __webpack_require__(216);
+	var isBuf = __webpack_require__(217);
+>>>>>>> Stashed changes
 
 	/**
 	 * Protocol version.
@@ -51994,7 +52969,11 @@
 
 
 /***/ },
+<<<<<<< Updated upstream
 /* 209 */
+=======
+/* 211 */
+>>>>>>> Stashed changes
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM */
@@ -52164,9 +53143,15 @@
 
 
 /***/ },
+<<<<<<< Updated upstream
 /* 210 */
 205,
 /* 211 */
+=======
+/* 212 */
+207,
+/* 213 */
+>>>>>>> Stashed changes
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_RESULT__;/** @jsx React.DOM *//*! JSON v3.2.6 | http://bestiejs.github.io/json3 | Copyright 2012-2013, Kit Cambridge | http://kit.mit-license.org */
@@ -52176,7 +53161,11 @@
 
 	  // Detect the `define` function exposed by asynchronous module loaders. The
 	  // strict `define` check is necessary for compatibility with `r.js`.
+<<<<<<< Updated upstream
 	  var isLoader = "function" === "function" && __webpack_require__(212);
+=======
+	  var isLoader = "function" === "function" && __webpack_require__(214);
+>>>>>>> Stashed changes
 
 	  // Detect native implementations.
 	  var nativeJSON = typeof JSON == "object" && JSON;
@@ -53033,7 +54022,11 @@
 
 
 /***/ },
+<<<<<<< Updated upstream
 /* 212 */
+=======
+/* 214 */
+>>>>>>> Stashed changes
 /***/ function(module, exports) {
 
 	/* WEBPACK VAR INJECTION */(function(__webpack_amd_options__) {module.exports = __webpack_amd_options__;
@@ -53041,9 +54034,15 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, {}))
 
 /***/ },
+<<<<<<< Updated upstream
 /* 213 */
 202,
 /* 214 */
+=======
+/* 215 */
+204,
+/* 216 */
+>>>>>>> Stashed changes
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {/** @jsx React.DOM *//*global Blob,File*/
@@ -53052,8 +54051,13 @@
 	 * Module requirements
 	 */
 
+<<<<<<< Updated upstream
 	var isArray = __webpack_require__(213);
 	var isBuf = __webpack_require__(215);
+=======
+	var isArray = __webpack_require__(215);
+	var isBuf = __webpack_require__(217);
+>>>>>>> Stashed changes
 
 	/**
 	 * Replaces every Buffer | ArrayBuffer in packet with a numbered placeholder.
@@ -53191,7 +54195,11 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
+<<<<<<< Updated upstream
 /* 215 */
+=======
+/* 217 */
+>>>>>>> Stashed changes
 /***/ function(module, exports) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {/** @jsx React.DOM */
@@ -53211,7 +54219,11 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
+<<<<<<< Updated upstream
 /* 216 */
+=======
+/* 218 */
+>>>>>>> Stashed changes
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
@@ -53219,6 +54231,7 @@
 	 * Module dependencies.
 	 */
 
+<<<<<<< Updated upstream
 	var url = __webpack_require__(206);
 	var eio = __webpack_require__(217);
 	var Socket = __webpack_require__(248);
@@ -53230,6 +54243,19 @@
 	var debug = __webpack_require__(205)('socket.io-client:manager');
 	var indexOf = __webpack_require__(245);
 	var Backoff = __webpack_require__(255);
+=======
+	var url = __webpack_require__(208);
+	var eio = __webpack_require__(219);
+	var Socket = __webpack_require__(250);
+	var Emitter = __webpack_require__(239);
+	var parser = __webpack_require__(210);
+	var on = __webpack_require__(252);
+	var bind = __webpack_require__(253);
+	var object = __webpack_require__(256);
+	var debug = __webpack_require__(207)('socket.io-client:manager');
+	var indexOf = __webpack_require__(247);
+	var Backoff = __webpack_require__(257);
+>>>>>>> Stashed changes
 
 	/**
 	 * Module exports
@@ -53720,6 +54746,7 @@
 
 
 /***/ },
+<<<<<<< Updated upstream
 /* 217 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -53733,6 +54760,21 @@
 
 	/** @jsx React.DOM */
 	module.exports = __webpack_require__(219);
+=======
+/* 219 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/** @jsx React.DOM */
+	module.exports =  __webpack_require__(220);
+
+
+/***/ },
+/* 220 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/** @jsx React.DOM */
+	module.exports = __webpack_require__(221);
+>>>>>>> Stashed changes
 
 	/**
 	 * Exports parser
@@ -53740,17 +54782,26 @@
 	 * @api public
 	 *
 	 */
+<<<<<<< Updated upstream
 	module.exports.parser = __webpack_require__(228);
 
 
 /***/ },
 /* 219 */
+=======
+	module.exports.parser = __webpack_require__(230);
+
+
+/***/ },
+/* 221 */
+>>>>>>> Stashed changes
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {/** @jsx React.DOM *//**
 	 * Module dependencies.
 	 */
 
+<<<<<<< Updated upstream
 	var transports = __webpack_require__(220);
 	var Emitter = __webpack_require__(237);
 	var debug = __webpack_require__(239)('engine.io-client:socket');
@@ -53759,6 +54810,16 @@
 	var parseuri = __webpack_require__(246);
 	var parsejson = __webpack_require__(247);
 	var parseqs = __webpack_require__(238);
+=======
+	var transports = __webpack_require__(222);
+	var Emitter = __webpack_require__(239);
+	var debug = __webpack_require__(241)('engine.io-client:socket');
+	var index = __webpack_require__(247);
+	var parser = __webpack_require__(230);
+	var parseuri = __webpack_require__(248);
+	var parsejson = __webpack_require__(249);
+	var parseqs = __webpack_require__(240);
+>>>>>>> Stashed changes
 
 	/**
 	 * Module exports.
@@ -53873,9 +54934,15 @@
 	 */
 
 	Socket.Socket = Socket;
+<<<<<<< Updated upstream
 	Socket.Transport = __webpack_require__(227);
 	Socket.transports = __webpack_require__(220);
 	Socket.parser = __webpack_require__(228);
+=======
+	Socket.Transport = __webpack_require__(229);
+	Socket.transports = __webpack_require__(222);
+	Socket.parser = __webpack_require__(230);
+>>>>>>> Stashed changes
 
 	/**
 	 * Creates transport of the given type.
@@ -54456,17 +55523,28 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
+<<<<<<< Updated upstream
 /* 220 */
+=======
+/* 222 */
+>>>>>>> Stashed changes
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {/** @jsx React.DOM *//**
 	 * Module dependencies
 	 */
 
+<<<<<<< Updated upstream
 	var XMLHttpRequest = __webpack_require__(221);
 	var XHR = __webpack_require__(224);
 	var JSONP = __webpack_require__(242);
 	var websocket = __webpack_require__(243);
+=======
+	var XMLHttpRequest = __webpack_require__(223);
+	var XHR = __webpack_require__(226);
+	var JSONP = __webpack_require__(244);
+	var websocket = __webpack_require__(245);
+>>>>>>> Stashed changes
 
 	/**
 	 * Export transports.
@@ -54516,11 +55594,19 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
+<<<<<<< Updated upstream
 /* 221 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */// browser shim for xmlhttprequest module
 	var hasCORS = __webpack_require__(222);
+=======
+/* 223 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/** @jsx React.DOM */// browser shim for xmlhttprequest module
+	var hasCORS = __webpack_require__(224);
+>>>>>>> Stashed changes
 
 	module.exports = function(opts) {
 	  var xdomain = opts.xdomain;
@@ -54558,7 +55644,11 @@
 
 
 /***/ },
+<<<<<<< Updated upstream
 /* 222 */
+=======
+/* 224 */
+>>>>>>> Stashed changes
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
@@ -54566,7 +55656,11 @@
 	 * Module dependencies.
 	 */
 
+<<<<<<< Updated upstream
 	var global = __webpack_require__(223);
+=======
+	var global = __webpack_require__(225);
+>>>>>>> Stashed changes
 
 	/**
 	 * Module exports.
@@ -54587,7 +55681,11 @@
 
 
 /***/ },
+<<<<<<< Updated upstream
 /* 223 */
+=======
+/* 225 */
+>>>>>>> Stashed changes
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM */
@@ -54601,18 +55699,30 @@
 
 
 /***/ },
+<<<<<<< Updated upstream
 /* 224 */
+=======
+/* 226 */
+>>>>>>> Stashed changes
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {/** @jsx React.DOM *//**
 	 * Module requirements.
 	 */
 
+<<<<<<< Updated upstream
 	var XMLHttpRequest = __webpack_require__(221);
 	var Polling = __webpack_require__(225);
 	var Emitter = __webpack_require__(237);
 	var inherit = __webpack_require__(226);
 	var debug = __webpack_require__(239)('engine.io-client:polling-xhr');
+=======
+	var XMLHttpRequest = __webpack_require__(223);
+	var Polling = __webpack_require__(227);
+	var Emitter = __webpack_require__(239);
+	var inherit = __webpack_require__(228);
+	var debug = __webpack_require__(241)('engine.io-client:polling-xhr');
+>>>>>>> Stashed changes
 
 	/**
 	 * Module exports.
@@ -54992,18 +56102,30 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
+<<<<<<< Updated upstream
 /* 225 */
+=======
+/* 227 */
+>>>>>>> Stashed changes
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM *//**
 	 * Module dependencies.
 	 */
 
+<<<<<<< Updated upstream
 	var Transport = __webpack_require__(227);
 	var parseqs = __webpack_require__(238);
 	var parser = __webpack_require__(228);
 	var inherit = __webpack_require__(226);
 	var debug = __webpack_require__(239)('engine.io-client:polling');
+=======
+	var Transport = __webpack_require__(229);
+	var parseqs = __webpack_require__(240);
+	var parser = __webpack_require__(230);
+	var inherit = __webpack_require__(228);
+	var debug = __webpack_require__(241)('engine.io-client:polling');
+>>>>>>> Stashed changes
 
 	/**
 	 * Module exports.
@@ -55016,7 +56138,11 @@
 	 */
 
 	var hasXHR2 = (function() {
+<<<<<<< Updated upstream
 	  var XMLHttpRequest = __webpack_require__(221);
+=======
+	  var XMLHttpRequest = __webpack_require__(223);
+>>>>>>> Stashed changes
 	  var xhr = new XMLHttpRequest({ xdomain: false });
 	  return null != xhr.responseType;
 	})();
@@ -55243,7 +56369,11 @@
 
 
 /***/ },
+<<<<<<< Updated upstream
 /* 226 */
+=======
+/* 228 */
+>>>>>>> Stashed changes
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM */
@@ -55255,15 +56385,24 @@
 	};
 
 /***/ },
+<<<<<<< Updated upstream
 /* 227 */
+=======
+/* 229 */
+>>>>>>> Stashed changes
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM *//**
 	 * Module dependencies.
 	 */
 
+<<<<<<< Updated upstream
 	var parser = __webpack_require__(228);
 	var Emitter = __webpack_require__(237);
+=======
+	var parser = __webpack_require__(230);
+	var Emitter = __webpack_require__(239);
+>>>>>>> Stashed changes
 
 	/**
 	 * Module exports.
@@ -55420,19 +56559,32 @@
 
 
 /***/ },
+<<<<<<< Updated upstream
 /* 228 */
+=======
+/* 230 */
+>>>>>>> Stashed changes
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {/** @jsx React.DOM *//**
 	 * Module dependencies.
 	 */
 
+<<<<<<< Updated upstream
 	var keys = __webpack_require__(229);
 	var hasBinary = __webpack_require__(230);
 	var sliceBuffer = __webpack_require__(232);
 	var base64encoder = __webpack_require__(233);
 	var after = __webpack_require__(234);
 	var utf8 = __webpack_require__(235);
+=======
+	var keys = __webpack_require__(231);
+	var hasBinary = __webpack_require__(232);
+	var sliceBuffer = __webpack_require__(234);
+	var base64encoder = __webpack_require__(235);
+	var after = __webpack_require__(236);
+	var utf8 = __webpack_require__(237);
+>>>>>>> Stashed changes
 
 	/**
 	 * Check if we are running an android browser. That requires us to use
@@ -55489,7 +56641,11 @@
 	 * Create a blob api even for blob builder when vendor prefixes exist
 	 */
 
+<<<<<<< Updated upstream
 	var Blob = __webpack_require__(236);
+=======
+	var Blob = __webpack_require__(238);
+>>>>>>> Stashed changes
 
 	/**
 	 * Encodes a packet.
@@ -56021,7 +57177,11 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
+<<<<<<< Updated upstream
 /* 229 */
+=======
+/* 231 */
+>>>>>>> Stashed changes
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM */
@@ -56046,7 +57206,11 @@
 
 
 /***/ },
+<<<<<<< Updated upstream
 /* 230 */
+=======
+/* 232 */
+>>>>>>> Stashed changes
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {/** @jsx React.DOM */
@@ -56054,7 +57218,11 @@
 	 * Module requirements.
 	 */
 
+<<<<<<< Updated upstream
 	var isArray = __webpack_require__(231);
+=======
+	var isArray = __webpack_require__(233);
+>>>>>>> Stashed changes
 
 	/**
 	 * Module exports.
@@ -56111,9 +57279,15 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
+<<<<<<< Updated upstream
 /* 231 */
 202,
 /* 232 */
+=======
+/* 233 */
+204,
+/* 234 */
+>>>>>>> Stashed changes
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM *//**
@@ -56148,7 +57322,11 @@
 
 
 /***/ },
+<<<<<<< Updated upstream
 /* 233 */
+=======
+/* 235 */
+>>>>>>> Stashed changes
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM *//*
@@ -56213,7 +57391,11 @@
 
 
 /***/ },
+<<<<<<< Updated upstream
 /* 234 */
+=======
+/* 236 */
+>>>>>>> Stashed changes
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM */module.exports = after
@@ -56247,7 +57429,11 @@
 
 
 /***/ },
+<<<<<<< Updated upstream
 /* 235 */
+=======
+/* 237 */
+>>>>>>> Stashed changes
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_RESULT__;/* WEBPACK VAR INJECTION */(function(module, global) {/** @jsx React.DOM *//*! http://mths.be/utf8js v2.0.0 by @mathias */
@@ -56491,7 +57677,11 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(11)(module), (function() { return this; }())))
 
 /***/ },
+<<<<<<< Updated upstream
 /* 236 */
+=======
+/* 238 */
+>>>>>>> Stashed changes
 /***/ function(module, exports) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {/** @jsx React.DOM *//**
@@ -56547,9 +57737,15 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
+<<<<<<< Updated upstream
 /* 237 */
 209,
 /* 238 */
+=======
+/* 239 */
+211,
+/* 240 */
+>>>>>>> Stashed changes
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM *//**
@@ -56592,7 +57788,11 @@
 
 
 /***/ },
+<<<<<<< Updated upstream
 /* 239 */
+=======
+/* 241 */
+>>>>>>> Stashed changes
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
@@ -56602,7 +57802,11 @@
 	 * Expose `debug()` as the module.
 	 */
 
+<<<<<<< Updated upstream
 	exports = module.exports = __webpack_require__(240);
+=======
+	exports = module.exports = __webpack_require__(242);
+>>>>>>> Stashed changes
 	exports.log = log;
 	exports.formatArgs = formatArgs;
 	exports.save = save;
@@ -56745,7 +57949,11 @@
 
 
 /***/ },
+<<<<<<< Updated upstream
 /* 240 */
+=======
+/* 242 */
+>>>>>>> Stashed changes
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
@@ -56761,7 +57969,11 @@
 	exports.disable = disable;
 	exports.enable = enable;
 	exports.enabled = enabled;
+<<<<<<< Updated upstream
 	exports.humanize = __webpack_require__(241);
+=======
+	exports.humanize = __webpack_require__(243);
+>>>>>>> Stashed changes
 
 	/**
 	 * The currently active debug mode names, and names to skip.
@@ -56948,7 +58160,11 @@
 
 
 /***/ },
+<<<<<<< Updated upstream
 /* 241 */
+=======
+/* 243 */
+>>>>>>> Stashed changes
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM *//**
@@ -57065,7 +58281,11 @@
 
 
 /***/ },
+<<<<<<< Updated upstream
 /* 242 */
+=======
+/* 244 */
+>>>>>>> Stashed changes
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {/** @jsx React.DOM */
@@ -57073,8 +58293,13 @@
 	 * Module requirements.
 	 */
 
+<<<<<<< Updated upstream
 	var Polling = __webpack_require__(225);
 	var inherit = __webpack_require__(226);
+=======
+	var Polling = __webpack_require__(227);
+	var inherit = __webpack_require__(228);
+>>>>>>> Stashed changes
 
 	/**
 	 * Module exports.
@@ -57305,18 +58530,30 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
+<<<<<<< Updated upstream
 /* 243 */
+=======
+/* 245 */
+>>>>>>> Stashed changes
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM *//**
 	 * Module dependencies.
 	 */
 
+<<<<<<< Updated upstream
 	var Transport = __webpack_require__(227);
 	var parser = __webpack_require__(228);
 	var parseqs = __webpack_require__(238);
 	var inherit = __webpack_require__(226);
 	var debug = __webpack_require__(239)('engine.io-client:websocket');
+=======
+	var Transport = __webpack_require__(229);
+	var parser = __webpack_require__(230);
+	var parseqs = __webpack_require__(240);
+	var inherit = __webpack_require__(228);
+	var debug = __webpack_require__(241)('engine.io-client:websocket');
+>>>>>>> Stashed changes
 
 	/**
 	 * `ws` exposes a WebSocket-compatible interface in
@@ -57324,7 +58561,11 @@
 	 * in the browser.
 	 */
 
+<<<<<<< Updated upstream
 	var WebSocket = __webpack_require__(244);
+=======
+	var WebSocket = __webpack_require__(246);
+>>>>>>> Stashed changes
 
 	/**
 	 * Module exports.
@@ -57549,7 +58790,11 @@
 
 
 /***/ },
+<<<<<<< Updated upstream
 /* 244 */
+=======
+/* 246 */
+>>>>>>> Stashed changes
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM */
@@ -57598,7 +58843,11 @@
 
 
 /***/ },
+<<<<<<< Updated upstream
 /* 245 */
+=======
+/* 247 */
+>>>>>>> Stashed changes
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM */
@@ -57613,7 +58862,11 @@
 	};
 
 /***/ },
+<<<<<<< Updated upstream
 /* 246 */
+=======
+/* 248 */
+>>>>>>> Stashed changes
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM *//**
@@ -57658,7 +58911,11 @@
 
 
 /***/ },
+<<<<<<< Updated upstream
 /* 247 */
+=======
+/* 249 */
+>>>>>>> Stashed changes
 /***/ function(module, exports) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {/** @jsx React.DOM *//**
@@ -57696,7 +58953,11 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
+<<<<<<< Updated upstream
 /* 248 */
+=======
+/* 250 */
+>>>>>>> Stashed changes
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
@@ -57704,6 +58965,7 @@
 	 * Module dependencies.
 	 */
 
+<<<<<<< Updated upstream
 	var parser = __webpack_require__(208);
 	var Emitter = __webpack_require__(237);
 	var toArray = __webpack_require__(249);
@@ -57711,6 +58973,15 @@
 	var bind = __webpack_require__(251);
 	var debug = __webpack_require__(205)('socket.io-client:socket');
 	var hasBin = __webpack_require__(252);
+=======
+	var parser = __webpack_require__(210);
+	var Emitter = __webpack_require__(239);
+	var toArray = __webpack_require__(251);
+	var on = __webpack_require__(252);
+	var bind = __webpack_require__(253);
+	var debug = __webpack_require__(207)('socket.io-client:socket');
+	var hasBin = __webpack_require__(254);
+>>>>>>> Stashed changes
 
 	/**
 	 * Module exports.
@@ -58087,7 +59358,11 @@
 
 
 /***/ },
+<<<<<<< Updated upstream
 /* 249 */
+=======
+/* 251 */
+>>>>>>> Stashed changes
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM */module.exports = toArray
@@ -58106,7 +59381,11 @@
 
 
 /***/ },
+<<<<<<< Updated upstream
 /* 250 */
+=======
+/* 252 */
+>>>>>>> Stashed changes
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM */
@@ -58136,7 +59415,11 @@
 
 
 /***/ },
+<<<<<<< Updated upstream
 /* 251 */
+=======
+/* 253 */
+>>>>>>> Stashed changes
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM *//**
@@ -58165,7 +59448,11 @@
 
 
 /***/ },
+<<<<<<< Updated upstream
 /* 252 */
+=======
+/* 254 */
+>>>>>>> Stashed changes
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {/** @jsx React.DOM */
@@ -58173,7 +59460,11 @@
 	 * Module requirements.
 	 */
 
+<<<<<<< Updated upstream
 	var isArray = __webpack_require__(253);
+=======
+	var isArray = __webpack_require__(255);
+>>>>>>> Stashed changes
 
 	/**
 	 * Module exports.
@@ -58230,9 +59521,15 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
+<<<<<<< Updated upstream
 /* 253 */
 202,
 /* 254 */
+=======
+/* 255 */
+204,
+/* 256 */
+>>>>>>> Stashed changes
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM */
@@ -58321,7 +59618,11 @@
 	};
 
 /***/ },
+<<<<<<< Updated upstream
 /* 255 */
+=======
+/* 257 */
+>>>>>>> Stashed changes
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM */
@@ -58412,11 +59713,19 @@
 
 
 /***/ },
+<<<<<<< Updated upstream
 /* 256 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
 	var COMMON = __webpack_require__(189);
+=======
+/* 258 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/** @jsx React.DOM */
+	var COMMON = __webpack_require__(191);
+>>>>>>> Stashed changes
 
 
 
@@ -58501,11 +59810,19 @@
 
 
 /***/ },
+<<<<<<< Updated upstream
 /* 257 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
 	var COMMON = __webpack_require__(189);
+=======
+/* 259 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/** @jsx React.DOM */
+	var COMMON = __webpack_require__(191);
+>>>>>>> Stashed changes
 
 
 	var ENDPOINT = COMMON.makeEndpointUrl("events");
@@ -58702,7 +60019,11 @@
 		var store = new Store();
 
 
+<<<<<<< Updated upstream
 		store.Model = __webpack_require__(258).forContext(context);
+=======
+		store.Model = __webpack_require__(260).forContext(context);
+>>>>>>> Stashed changes
 
 
 		store.getToday = function () {
@@ -58760,7 +60081,11 @@
 		store.modelRecords = function (records) {
 			return COMMON.resolveForeignKeys(store, records, {
 				"consumer_group_id": {
+<<<<<<< Updated upstream
 					store: __webpack_require__(259),
+=======
+					store: __webpack_require__(261),
+>>>>>>> Stashed changes
 					model: context.appContext.get('stores').consumerGroups.Model,
 					localFieldPrefix: "consumerGroup"
 				}
@@ -58792,7 +60117,11 @@
 			}
 			return COMMON.resolveForeignKeys(store, record, {
 				"consumer_group_id": {
+<<<<<<< Updated upstream
 					store: __webpack_require__(259),
+=======
+					store: __webpack_require__(261),
+>>>>>>> Stashed changes
 					model: context.appContext.get('stores').consumerGroups.Model,
 					localFieldPrefix: "consumerGroup"
 				}
@@ -58823,12 +60152,20 @@
 
 
 /***/ },
+<<<<<<< Updated upstream
 /* 258 */
+=======
+/* 260 */
+>>>>>>> Stashed changes
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
 
+<<<<<<< Updated upstream
 	var COMMON = __webpack_require__(190);
+=======
+	var COMMON = __webpack_require__(192);
+>>>>>>> Stashed changes
 
 
 	exports.forContext = function (context) {
@@ -58996,11 +60333,19 @@
 
 
 /***/ },
+<<<<<<< Updated upstream
 /* 259 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
 	var COMMON = __webpack_require__(189);
+=======
+/* 261 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/** @jsx React.DOM */
+	var COMMON = __webpack_require__(191);
+>>>>>>> Stashed changes
 
 	var ENDPOINT = COMMON.makeEndpointUrl("consumer-groups");
 
@@ -59123,11 +60468,19 @@
 
 
 /***/ },
+<<<<<<< Updated upstream
 /* 260 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
 	var COMMON = __webpack_require__(189);
+=======
+/* 262 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/** @jsx React.DOM */
+	var COMMON = __webpack_require__(191);
+>>>>>>> Stashed changes
 
 	var ENDPOINT = COMMON.makeEndpointUrl("items");
 
@@ -59228,7 +60581,11 @@
 		store.modelRecords = function (records) {
 			return COMMON.resolveForeignKeys(store, records, {
 				"vendor_id": {
+<<<<<<< Updated upstream
 					store: __webpack_require__(261),
+=======
+					store: __webpack_require__(263),
+>>>>>>> Stashed changes
 					model: context.appContext.get('stores').vendors.Model,
 					localFieldPrefix: "vendor"
 				}
@@ -59266,7 +60623,11 @@
 
 			return COMMON.resolveForeignKeys(store, records, {
 				"vendor_id": {
+<<<<<<< Updated upstream
 					store: __webpack_require__(261),
+=======
+					store: __webpack_require__(263),
+>>>>>>> Stashed changes
 					model: context.appContext.get('stores').vendors.Model,
 					localFieldPrefix: "vendor"
 				}
@@ -59296,12 +60657,21 @@
 
 
 /***/ },
+<<<<<<< Updated upstream
 /* 261 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
 	var COMMON = __webpack_require__(189);
 	var NUMERAL = __webpack_require__(191);
+=======
+/* 263 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/** @jsx React.DOM */
+	var COMMON = __webpack_require__(191);
+	var NUMERAL = __webpack_require__(193);
+>>>>>>> Stashed changes
 
 	var ENDPOINT = COMMON.makeEndpointUrl("vendors");
 
@@ -59407,11 +60777,19 @@
 
 
 /***/ },
+<<<<<<< Updated upstream
 /* 262 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
 	var COMMON = __webpack_require__(189);
+=======
+/* 264 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/** @jsx React.DOM */
+	var COMMON = __webpack_require__(191);
+>>>>>>> Stashed changes
 
 
 	var ENDPOINT = COMMON.makeEndpointUrl("menus");
@@ -59558,12 +60936,20 @@
 		store.modelRecords = function (records) {
 			return COMMON.resolveForeignKeys(store, records, {
 				"vendor_id": {
+<<<<<<< Updated upstream
 					store: __webpack_require__(261),
+=======
+					store: __webpack_require__(263),
+>>>>>>> Stashed changes
 					model: context.appContext.get('stores').vendors.Model,
 					localFieldPrefix: "vendor"
 				},
 				"item_id": {
+<<<<<<< Updated upstream
 					store: __webpack_require__(260),
+=======
+					store: __webpack_require__(262),
+>>>>>>> Stashed changes
 					model: context.appContext.get('stores').items.Model,
 					localFieldPrefix: "item"
 				}
@@ -59591,6 +60977,7 @@
 
 
 /***/ },
+<<<<<<< Updated upstream
 /* 263 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -59598,6 +60985,15 @@
 	var COMMON = __webpack_require__(189);
 
 	var BACKBONE = __webpack_require__(179);
+=======
+/* 265 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/** @jsx React.DOM */
+	var COMMON = __webpack_require__(191);
+
+	var BACKBONE = __webpack_require__(181);
+>>>>>>> Stashed changes
 	var UNDERSCORE = __webpack_require__(101);
 
 
@@ -59647,11 +61043,19 @@
 
 
 /***/ },
+<<<<<<< Updated upstream
 /* 264 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
 	var COMMON = __webpack_require__(189);
+=======
+/* 266 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/** @jsx React.DOM */
+	var COMMON = __webpack_require__(191);
+>>>>>>> Stashed changes
 
 	var ENDPOINT = COMMON.makeEndpointUrl("consumer-group-subscriptions");
 
@@ -59778,7 +61182,11 @@
 		store.modelRecords = function (records) {
 			return COMMON.resolveForeignKeys(store, records, {
 				"consumer_group_id": {
+<<<<<<< Updated upstream
 					store: __webpack_require__(259),
+=======
+					store: __webpack_require__(261),
+>>>>>>> Stashed changes
 					model: context.appContext.get('stores').consumerGroups.Model,
 					localFieldPrefix: "consumerGroup"
 				}
@@ -59804,11 +61212,19 @@
 
 
 /***/ },
+<<<<<<< Updated upstream
 /* 265 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
 	var COMMON = __webpack_require__(189);
+=======
+/* 267 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/** @jsx React.DOM */
+	var COMMON = __webpack_require__(191);
+>>>>>>> Stashed changes
 
 
 	//var ENDPOINT = COMMON.makeEndpointUrl("items");
@@ -59976,7 +61392,11 @@
 				if (self.get(cartItemId)) {
 					return COMMON.API.Q.resolve(self.get(cartItemId));
 				}
+<<<<<<< Updated upstream
 				return __webpack_require__(260)['for']({
+=======
+				return __webpack_require__(262)['for']({
+>>>>>>> Stashed changes
 					appContext: context.appContext,
 					ids: [
 						itemId
@@ -60039,11 +61459,19 @@
 
 
 /***/ },
+<<<<<<< Updated upstream
 /* 266 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
 	var COMMON = __webpack_require__(189);
+=======
+/* 268 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/** @jsx React.DOM */
+	var COMMON = __webpack_require__(191);
+>>>>>>> Stashed changes
 
 
 	var ENDPOINT = COMMON.makeEndpointUrl("orders");
@@ -60422,11 +61850,19 @@
 
 
 /***/ },
+<<<<<<< Updated upstream
 /* 267 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
 	var COMMON = __webpack_require__(189);
+=======
+/* 269 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/** @jsx React.DOM */
+	var COMMON = __webpack_require__(191);
+>>>>>>> Stashed changes
 
 
 	var ENDPOINT = COMMON.makeEndpointUrl("order-status");
@@ -60454,7 +61890,11 @@
 		var store = new Store();
 
 
+<<<<<<< Updated upstream
 		store.Model = __webpack_require__(268).forContext(context);
+=======
+		store.Model = __webpack_require__(270).forContext(context);
+>>>>>>> Stashed changes
 
 
 		store.fetchStatusInfoForOrderHashId = function (orderHashId) {
@@ -60536,12 +61976,20 @@
 
 
 /***/ },
+<<<<<<< Updated upstream
 /* 268 */
+=======
+/* 270 */
+>>>>>>> Stashed changes
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
 
+<<<<<<< Updated upstream
 	var COMMON = __webpack_require__(190);
+=======
+	var COMMON = __webpack_require__(192);
+>>>>>>> Stashed changes
 
 
 	exports.forContext = function (context) {
@@ -60589,7 +62037,11 @@
 
 
 /***/ },
+<<<<<<< Updated upstream
 /* 269 */
+=======
+/* 271 */
+>>>>>>> Stashed changes
 /***/ function(module, exports, __webpack_require__, __webpack_module_template_argument_0__) {
 
 	/** @jsx React.DOM */
@@ -60607,7 +62059,11 @@
 
 
 /***/ },
+<<<<<<< Updated upstream
 /* 270 */
+=======
+/* 272 */
+>>>>>>> Stashed changes
 /***/ function(module, exports, __webpack_require__, __webpack_module_template_argument_0__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag

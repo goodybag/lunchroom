@@ -4,7 +4,7 @@ module.exports = function (Context) {
   return (
     <body className="page">
 
-    <!--<Navbar>-->
+    
 <header className="navbar navbar-transparent navbar-transparent-dark">
   <div className="container">
     <a href="/">
@@ -18,7 +18,6 @@ module.exports = function (Context) {
     </ul>
   </div>
 </header>
-<!--</Navbar>-->
 
 <section className="page-section hero-unit primary-section" id="email-signup-cta">
   <div className="container">

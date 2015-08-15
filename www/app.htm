@@ -1,15 +1,17 @@
 <!DOCTYPE HTML>
-<html>
+<html lang="en">
   <head>
-    <link rel="stylesheet" href="{{skinCssUrl}}">
+    <meta charset="UTF-8">
     <meta name="session.token" value="{{sessionToken}}"/>
     <meta name="app.context" value="{{encodedContext}}"/>
+    <link rel="stylesheet" href="{{landingSkinCssUrl}}">
+    <title>Goodybag Lunchroom</title>
   </head>
-    <body class="page" id="GBL_DEV_Views" skin="app">
-    </body>
-    <script src="/polyfills.build.js"></script>
-    <script src="{{skinLibJsUrl}}"></script>
-    <script src="{{skinAppJsUrl}}"></script>
-    <script src="{{assetsUrl}}"></script>
-    <script src="{{bundleUrl}}"></script>
+  <body class="page" id="GBL_DEV_Views" skin="app">
+  </body>
+  <script src="/polyfills.build.js"></script>
+  <script src="{{skinLibJsUrl}}"></script>
+  <script src="{{skinAppJsUrl}}"></script>
+  <script src="{{assetsJsUrl}}"></script>
+  <script src="{{bundleJsUrl}}"></script>
 </html>

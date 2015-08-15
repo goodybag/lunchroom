@@ -1,78 +1,17 @@
-<!DOCTYPE html>
+<!DOCTYPE HTML>
 <html lang="en">
-<head>
-	<meta charset="UTF-8">
-	<title>Goodybag Lunchroom</title>
-    <script>
-
-		var el = document.createElement("link");
-        el.setAttribute("rel", "stylesheet");
-        el.setAttribute("type", "text/css");
-        el.setAttribute("media", "all");
-        el.setAttribute("href", '{{landingCssUrl}}');
-        document.getElementsByTagName("head")[0].appendChild(el);
-
-		function loadScript(url, callback) {
-		    var script = document.createElement("script")
-		    script.type = "text/javascript";
-		    if (script.readyState) {  //IE
-		        script.onreadystatechange = function() {
-		            if (
-		            	script.readyState == "loaded" ||
-	                    script.readyState == "complete"
-	                ) {
-		                script.onreadystatechange = null;
-		                callback();
-		            }
-		        };
-		    } else {  // Others
-		        script.onload = function(){
-		            callback();
-		        };
-		    }
-		    script.src = url;
-		    document.getElementsByTagName("head")[0].appendChild(script);
-		}
-
-		loadScript('/polyfills.build.js', function () {
-
-			loadScript('{{landingJsUrl}}', function () {
-
-				loadScript('{{assetsUrl}}', function () {
-//			loadScript('//' + window.location.hostname + ':8084/lunchroom/assets/react/react-with-addons.js', function () {
-
-			        head.load([
-			        	'{{bundleUrl}}'
-					]);
-//			});
-				});
-			});
-		});
-    </script>
-	<style>
-
-	.hidden {
-		display: none !important;
-	}
-
-	DIV.ui.message {
-		margin-bottom: 10px;
-		background-color:rgba(0, 0, 0, 0.5);
-	}
-
-	DIV.ui.success.message {
-		border: 2px solid #00FF00;
-	}
-
-	DIV.ui.negative.message {
-		border: 2px solid #FF0000;
-	}
-
-	</style>
+  <head>
+    <meta charset="UTF-8">
     <meta name="session.token" value="{{sessionToken}}"/>
     <meta name="app.context" value="{{encodedContext}}"/>
-</head>
-<body class="page" id="GBL_DEV_Views">
-
-</body>
+    <link rel="stylesheet" href="{{landingSkinCssUrl}}">
+    <title>Goodybag Lunchroom - Admin</title>
+  </head>
+  <body class="page" id="GBL_DEV_Views">
+  </body>
+  <script src="/polyfills.build.js"></script>
+  <script src="{{landingSkinLibJsUrl}}"></script>
+  <script src="{{landingSkinAppJsUrl}}"></script>
+  <script src="{{assetsJsUrl}}"></script>
+  <script src="{{bundleJsUrl}}"></script>
 </html>

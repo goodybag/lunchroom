@@ -208,12 +208,14 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
 			if (/\.html?/.test(path)) {
 				var content = FS.readFileSync(PATH.join(__dirname, "www", path), "utf8");
 
-				content = content.replace(/\{\{skinUrl\}\}/g, req._FireNodeContext.config.skinUrl || "");
-				content = content.replace(/\{\{assetsUrl\}\}/g, req._FireNodeContext.config.assetsUrl || "");
-				content = content.replace(/\{\{bundleUrl\}\}/g, req._FireNodeContext.config.bundleUrl || "");
+				content = content.replace(/\{\{adminSkinCssUrl\}\}/g, req._FireNodeContext.config.adminSkinCssUrl || "");
+				content = content.replace(/\{\{assetsCssUrl\}\}/g, req._FireNodeContext.config.assetsCssUrl || "");
+				content = content.replace(/\{\{assetsJsUrl\}\}/g, req._FireNodeContext.config.assetsJsUrl || "");
+				content = content.replace(/\{\{bundleJsUrl\}\}/g, req._FireNodeContext.config.bundleJsUrl || "");
 
-				content = content.replace(/\{\{landingCssUrl\}\}/g, landingResources.css);
-				content = content.replace(/\{\{landingJsUrl\}\}/g, landingResources.js);
+				content = content.replace(/\{\{landingSkinCssUrl\}\}/g, landingResources.css);
+				content = content.replace(/\{\{landingSkinLibJsUrl\}\}/g, landingResources.js.lib);
+				content = content.replace(/\{\{landingSkinAppJsUrl\}\}/g, landingResources.js.app);
 
 				content = content.replace(/\{\{skinCssUrl\}\}/g, appResources.css);
 				content = content.replace(/\{\{skinLibJsUrl\}\}/g, appResources.js.lib);

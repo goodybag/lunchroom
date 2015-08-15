@@ -1,67 +1,21 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
+  <head>
 	<meta charset="UTF-8">
-	<title>Goodybag Lunchroom</title>
-    <script>
-
-		var el = document.createElement("link");
-        el.setAttribute("rel", "stylesheet");
-        el.setAttribute("type", "text/css");
-        el.setAttribute("media", "all");
-        el.setAttribute("href", '{{assetsUrl}}'.replace(/(\.min)?\.js$/, ".css"));
-        document.getElementsByTagName("head")[0].appendChild(el);
-
-		var el = document.createElement("link");
-        el.setAttribute("rel", "stylesheet");
-        el.setAttribute("type", "text/css");
-        el.setAttribute("media", "all");
-        el.setAttribute("href", '{{skinUrl}}');
-        document.getElementsByTagName("head")[0].appendChild(el);
-
-		function loadScript(url, callback) {
-		    var script = document.createElement("script")
-		    script.type = "text/javascript";
-		    if (script.readyState) {  //IE
-		        script.onreadystatechange = function() {
-		            if (
-		            	script.readyState == "loaded" ||
-	                    script.readyState == "complete"
-	                ) {
-		                script.onreadystatechange = null;
-		                callback();
-		            }
-		        };
-		    } else {  // Others
-		        script.onload = function(){
-		            callback();
-		        };
-		    }
-		    script.src = url;
-		    document.getElementsByTagName("head")[0].appendChild(script);
-		}
-
-		loadScript('/polyfills.build.js', function () {
-			loadScript('{{appJsUrl}}', function () {
-
-				loadScript('{{assetsUrl}}', function () {			
-//			loadScript('//' + window.location.hostname + ':8084/lunchroom/assets/react/react-with-addons.js', function () {
-
-			        head.load([
-			        	'{{bundleUrl}}'
-					]);
-//			});
-				});
-			});
-		});
-    </script>
     <meta name="session.token" value="{{sessionToken}}"/>
     <meta name="app.context" value="{{encodedContext}}"/>
-</head>
-<body skin="semantic-ui" class="site">
+    <link rel="stylesheet" href="{{assetsCssUrl}}">
+    <link rel="stylesheet" href="{{adminSkinCssUrl}}">
+	<title>Goodybag Lunchroom - Admin</title>
+  </head>
+  <body skin="semantic-ui" class="site">
 
     <div class="ui basic segment" id="GBL_DEV_Views">
     </div>
 
-</body>
+  </body>
+  <script src="/polyfills.build.js"></script>
+  <script src="{{skinLibJsUrl}}"></script>
+  <script src="{{assetsJsUrl}}"></script>
+  <script src="{{bundleJsUrl}}"></script>
 </html>
