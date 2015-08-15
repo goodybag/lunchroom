@@ -7,7 +7,7 @@ module.exports = function (Context) {
   <div className="container">
     <div className="tiles item-tiles" data-component-section="items">
         <div className="tile item-tile" data-component-section="items" data-component-view="default">
-          <div className="tile-cover" style={{"backgroundImage":"url('https://www.filepicker.io/api/file/SZoK9zUvTPWXzmK81aGg/convert?w=400&amp"}} data-component-prop="photoUrl" data-component-prop-target="style/background-image">
+          <div className="tile-cover" style={{"backgroundImage":"url('https://www.filepicker.io/api/file/SZoK9zUvTPWXzmK81aGg/convert?w=400&amp"}} data-component-prop="photoUrl" data-component-prop-target="style/background-image" data-toggle="modal" data-target="#item-modal">
           </div>
           <div className="tile-info">
             <h3 className="tile-title" data-component-prop="title">Pirata Dos Tacos</h3>
@@ -20,7 +20,7 @@ module.exports = function (Context) {
           </div>
         </div>
         <div className="tile item-tile" data-component-section="items" data-component-view="default">
-          <div className="tile-cover" style={{"backgroundImage":"url('https://www.filepicker.io/api/file/SZoK9zUvTPWXzmK81aGg/convert?w=400&amp"}} data-component-prop="photoUrl" data-component-prop-target="style/background-image">
+          <div className="tile-cover" style={{"backgroundImage":"url('https://www.filepicker.io/api/file/SZoK9zUvTPWXzmK81aGg/convert?w=400&amp"}} data-component-prop="photoUrl" data-component-prop-target="style/background-image" data-toggle="modal" data-target="#item-modal">
           </div>
           <div className="tile-info">
             <h3 className="tile-title" data-component-prop="title">Poop Taco Box</h3>
@@ -33,7 +33,7 @@ module.exports = function (Context) {
           </div>
         </div>
         <div className="tile item-tile" data-component-section="items" data-component-view="default">
-          <div className="tile-cover" style={{"backgroundImage":"url('https://www.filepicker.io/api/file/SZoK9zUvTPWXzmK81aGg/convert?w=400&amp"}} data-component-prop="photoUrl" data-component-prop-target="style/background-image">
+          <div className="tile-cover" style={{"backgroundImage":"url('https://www.filepicker.io/api/file/SZoK9zUvTPWXzmK81aGg/convert?w=400&amp"}} data-component-prop="photoUrl" data-component-prop-target="style/background-image" data-toggle="modal" data-target="#item-modal">
           </div>
           <div className="tile-info">
             <h3 className="tile-title" data-component-prop="title">Pirata Dos Tacos</h3>
@@ -44,7 +44,7 @@ module.exports = function (Context) {
           </div>
         </div>
         <div className="tile item-tile" data-component-section="items" data-component-view="default">
-          <div className="tile-cover" style={{"backgroundImage":"url('https://www.filepicker.io/api/file/SZoK9zUvTPWXzmK81aGg/convert?w=400&amp"}} data-component-prop="photoUrl" data-component-prop-target="style/background-image">
+          <div className="tile-cover" style={{"backgroundImage":"url('https://www.filepicker.io/api/file/SZoK9zUvTPWXzmK81aGg/convert?w=400&amp"}} data-component-prop="photoUrl" data-component-prop-target="style/background-image" data-toggle="modal" data-target="#item-modal">
           </div>
           <div className="tile-info">
             <h3 className="tile-title" data-component-prop="title">Poop Taco Box but this one is a really long title</h3>
@@ -57,7 +57,7 @@ module.exports = function (Context) {
           </div>
         </div>
         <div className="tile item-tile" data-component-section="items" data-component-view="default">
-          <div className="tile-cover" style={{"backgroundImage":"url('https://www.filepicker.io/api/file/SZoK9zUvTPWXzmK81aGg/convert?w=400&amp"}} data-component-prop="photoUrl" data-component-prop-target="style/background-image">
+          <div className="tile-cover" style={{"backgroundImage":"url('https://www.filepicker.io/api/file/SZoK9zUvTPWXzmK81aGg/convert?w=400&amp"}} data-component-prop="photoUrl" data-component-prop-target="style/background-image" data-toggle="modal" data-target="#item-modal">
           </div>
           <div className="tile-info">
             <h3 className="tile-title" data-component-prop="title">Poop Taco Box</h3>
@@ -70,7 +70,7 @@ module.exports = function (Context) {
           </div>
         </div>
         <div className="tile item-tile" data-component-section="items" data-component-view="default">
-          <div className="tile-cover" style={{"backgroundImage":"url('https://www.filepicker.io/api/file/SZoK9zUvTPWXzmK81aGg/convert?w=400&amp"}} data-component-prop="photoUrl" data-component-prop-target="style/background-image">
+          <div className="tile-cover" style={{"backgroundImage":"url('https://www.filepicker.io/api/file/SZoK9zUvTPWXzmK81aGg/convert?w=400&amp"}} data-component-prop="photoUrl" data-component-prop-target="style/background-image" data-toggle="modal" data-target="#item-modal">
           </div>
           <div className="tile-info">
             <h3 className="tile-title" data-component-prop="title">Pirata Dos Tacos</h3>
@@ -83,7 +83,7 @@ module.exports = function (Context) {
           </div>
         </div>
         <div className="tile item-tile" data-component-section="items" data-component-view="default">
-          <div className="tile-cover" style={{"backgroundImage":"url('https://www.filepicker.io/api/file/SZoK9zUvTPWXzmK81aGg/convert?w=400&amp"}} data-component-prop="photoUrl" data-component-prop-target="style/background-image">
+          <div className="tile-cover" style={{"backgroundImage":"url('https://www.filepicker.io/api/file/SZoK9zUvTPWXzmK81aGg/convert?w=400&amp"}} data-component-prop="photoUrl" data-component-prop-target="style/background-image" data-toggle="modal" data-target="#item-modal">
           </div>
           <div className="tile-info">
             <h3 className="tile-title" data-component-prop="title">Poop Taco Box</h3>
@@ -96,7 +96,7 @@ module.exports = function (Context) {
           </div>
         </div>
         <div className="tile item-tile" data-component-section="items" data-component-view="default">
-          <div className="tile-cover" style={{"backgroundImage":"url('https://www.filepicker.io/api/file/SZoK9zUvTPWXzmK81aGg/convert?w=400&amp"}} data-component-prop="photoUrl" data-component-prop-target="style/background-image">
+          <div className="tile-cover" style={{"backgroundImage":"url('https://www.filepicker.io/api/file/SZoK9zUvTPWXzmK81aGg/convert?w=400&amp"}} data-component-prop="photoUrl" data-component-prop-target="style/background-image" data-toggle="modal" data-target="#item-modal">
           </div>
           <div className="tile-info">
             <h3 className="tile-title" data-component-prop="title">Poop Taco Box</h3>
@@ -109,7 +109,7 @@ module.exports = function (Context) {
           </div>
         </div>
         <div className="tile item-tile" data-component-section="items" data-component-view="default">
-          <div className="tile-cover" style={{"backgroundImage":"url('https://www.filepicker.io/api/file/SZoK9zUvTPWXzmK81aGg/convert?w=400&amp"}} data-component-prop="photoUrl" data-component-prop-target="style/background-image">
+          <div className="tile-cover" style={{"backgroundImage":"url('https://www.filepicker.io/api/file/SZoK9zUvTPWXzmK81aGg/convert?w=400&amp"}} data-component-prop="photoUrl" data-component-prop-target="style/background-image" data-toggle="modal" data-target="#item-modal">
           </div>
           <div className="tile-info">
             <h3 className="tile-title" data-component-prop="title">Pirata Dos Tacos</h3>

@@ -6,7 +6,7 @@ module.exports = function (Context) {
 
   <ul className="page-nav">
     <li className="page-nav-item">
-      <a href="/pages/menu" className="page-nav-item-link">&lt; Back to menu</a>
+      <a href="/pages/menu" className="page-nav-item-link" data-component-elm="addItemsLink">&lt; Back to menu</a>
     </li>
   </ul>
 

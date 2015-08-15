@@ -4,28 +4,34 @@
     <link rel="stylesheet" href="/lunchroom-landing~0/resources/c2c33c6a5ddf146804e1d148753890edf9a87e2f.css">
   </head>
   <body>
-    <section class="page-section" id="section-checkout-info">
+    <fieldset class="checkout-info form-vertical" copmonent:view="existing-user">
 
-  <div class="container">
-    <fieldset class="checkout-info form-vertical">
       <div class="user-info">
         <h3 class="section-title">Your Info</h3>
         <div class="form-group">
           <label for="">Name</label>
-          <input type="text" class="form-control" component:elm="info[name]">
+          <input value="Jane Doe" type="text" class="form-control" component:elm="info[name]">
         </div>
         <div class="form-group">
           <label for="">Email</label>
-          <input type="email" class="form-control" component:elm="info[email]">
+          <input value="jane.doe@missingpeeps.com" type="email" class="form-control" component:elm="info[email]">
         </div>
         <div class="form-group">
           <label for="">Phone Number</label>
-          <input type="tel" class="form-control" component:elm="info[phone]">
+          <input value="(123) 456-7890" type="tel" class="form-control" component:elm="info[phone]">
         </div>
         <p class="checkout-info-note">We'll email/text you when your meal has arrived!</p>
       </div>
       <div class="payment-info">
         <h3 class="section-title">Payment Info</h3>
+          <div class="form-group form-group-cc-selction">
+            <label for="">Select a card</label>
+            <select name="payment_method_id" class="form-control">
+              <option value="1">* 1234 Exp. 07/17</option>
+               <option value="2">* 5678 Exp. 11/19</option> 
+            </select>
+          </div>
+          <h4 class="form-group-header">Or, add a new card</h4>
           <div class="form-group form-group-member-name">
             <label for="">Name on card</label>
             <input type="text" class="form-control" name="card_member_name" component:elm="card[name]">
@@ -33,24 +39,29 @@
           <div class="inline-form-group-list">
             <div class="form-group form-group-card-number">
               <label for="">Card number</label>
-              <input type="text" class="form-control" name="card_number" component:elm="card[number]">
+              <input type="tel" class="form-control" name="card_number" component:elm="card[number]">
             </div>
             <div class="form-group form-group-card-cvv">
               <label for="">CVV</label>
-              <input type="text" class="form-control" name="card_cvv" component:elm="card[cvc]">
+              <input type="tel" class="form-control" name="card_cvv" component:elm="card[cvc]">
             </div>
             <div class="form-group form-group-expiration">
               <label for="">Expiration date</label>
-              <input type="text" class="form-control" placeholder="MM" name="card_expiration_month" component:elm="card[expire-month]">
+              <input type="tel" class="form-control" placeholder="MM" name="card_expiration_month" component:elm="card[expire-month]">
               /
-              <input type="text" class="form-control" placeholder="YY" name="card_expiration_year" component:elm="card[expire-year]">
+              <input type="tel" class="form-control" placeholder="YY" name="card_expiration_year" component:elm="card[expire-year]">
+            </div>
+            <div class="form-group form-group">
+              <label>
+                <input type="checkbox" name="save_card" checked="">
+                Save card?
+              </label>
             </div>
           </div>
       </div>
+    
     </fieldset>
-  </div>
-
-    </section>
   </body>
-    <script src="/lunchroom-landing~0/resources/dist~app-4836539.js"></script>
+    <script src="/lunchroom-landing~0/resources/dist~lib-f7dff85.js"></script>
+    <script src="/lunchroom-landing~0/resources/dist~app-c742899.js"></script>
 </html>

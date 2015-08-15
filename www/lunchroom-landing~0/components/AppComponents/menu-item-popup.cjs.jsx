@@ -20,10 +20,6 @@ module.exports = function (Context) {
           </ul>
         </div>
         <div className="item-modal-actions">
-          <div className="form-group item-modal-quantity-form-group">
-            <label className="item-modal-quantity-label">Quantity:</label>
-            <input type="number" value="1" className="item-modal-quantity-input"/>
-          </div>
           <button className="btn btn-primary item-modal-save-btn">Add to Order</button>
         </div>
       </div>
