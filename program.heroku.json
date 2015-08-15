@@ -115,7 +115,7 @@
                                 "sessionCookieName": "gblosid",
                                 "selectedView": "Order_Placed",
                                 "lockedView": "Order_Placed",
-                                "type": "order",
+                                "type": "order"
                             }
                         }
                     },
