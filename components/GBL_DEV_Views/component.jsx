@@ -104,6 +104,9 @@ exports['for'] = function (module, context) {
 	    	var ViewComponent = (viewInfo && viewInfo.component) || null;
 
 	    	var isTopFrame = (window.self === window.top);
+	    	if (/\?iframe=true/.test(window.location.hash)) {
+	    		isTopFrame = false;
+	    	}
 
 	    	if (
 	    		viewInfo &&

@@ -112,9 +112,9 @@ try {
 
 		try {
 
-			require('react').render(
+			React.render(
 				<skin.RootView appContext={appContext}/>,
-				document.getElementById('GBL_DEV_Views')
+				$("#GBL_DEV_Views").get(0)
 			);
 
 		} catch (err) {
