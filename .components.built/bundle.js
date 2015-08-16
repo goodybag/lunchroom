@@ -510,9 +510,9 @@
 
 			try {
 
-				__webpack_require__(10).render(
+				React.render(
 					React.createElement(skin.RootView, {appContext: appContext}),
-					document.getElementById('GBL_DEV_Views')
+					$("#GBL_DEV_Views").get(0)
 				);
 
 			} catch (err) {
@@ -42329,6 +42329,9 @@
 		    	var ViewComponent = (viewInfo && viewInfo.component) || null;
 
 		    	var isTopFrame = (window.self === window.top);
+		    	if (/\?iframe=true/.test(window.location.hash)) {
+		    		isTopFrame = false;
+		    	}
 
 		    	if (
 		    		viewInfo &&
@@ -48208,6 +48211,10 @@
 
 
 		var PATHNAME = window.location.pathname;
+	//console.log("PATHNAME1: " + PATHNAME);
+	//for (var name in window.location) {
+	//	console.log("  "+name+": " + window.location[name]);
+	//}
 
 		function handleSelectedViewInit () {
 
@@ -48269,10 +48276,20 @@
 		//debugger;
 		//console.log("ON PAGE CHANGE ctx", ctx);
 
+					// IE Fix
+					if (
+						pathname !== PATHNAME &&
+						pathname.indexOf("#") === -1
+					) {
+						pathname = PATHNAME + "#" + pathname.substring(1);
+					}
+
+	//console.log("pathname1: " + pathname);
+
 					var view = pathname.replace(PATHNAME, "").replace(/^#/, "");
 
-		//console.log("view", view);
-		//console.log("pathname", pathname);
+	//console.log("view: " + view);
+	//console.log("pathname2: " + pathname);
 					if (
 						/^\//.test(view) &&
 						appContext.get('lockedView') &&
@@ -48287,7 +48304,7 @@
 						//       In those cases you need to redirect to a new URL.
 						window.location.href = appContext.get("windowOrigin") + view;
 					} else {
-		//console.log("SET VIEW", view);
+	//console.log("SET VIEW", view);
 
 						// We are selecting a new view and updating the URL using PUSH-STATE
 						// without reloading the page.
