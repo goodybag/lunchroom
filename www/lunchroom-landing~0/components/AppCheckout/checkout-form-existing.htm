@@ -4,18 +4,17 @@
     <link rel="stylesheet" href="/lunchroom-landing~0/resources/ad9f552fd255c5d348748ac8ad8600cdf91e3413.css">
   </head>
   <body>
-    <div class="container checkout-info-container" id="section-checkout-info-existing-user">
+    <fieldset class="checkout-info form-vertical" component:view="existing-user">
 
-  <fieldset class="checkout-info form-vertical" component:id="checkout-form" component:view="existing-user">
     <div class="user-info">
       <h3 class="section-title">Your Info</h3>
       <div class="form-group">
         <label for="">Name</label>
-        <input value="Jane Doe" type="text" class="form-control" component:elm="info[name]">
+        <input value="Jane Doe" type="text" name="name" class="form-control" component:elm="info[name]">
       </div>
       <div class="form-group">
         <label for="">Email</label>
-        <input value="jane.doe@missingpeeps.com" type="email" class="form-control" component:elm="info[email]">
+        <input value="jane.doe@missingpeeps.com" type="email" name="email" class="form-control" component:elm="info[email]">
       </div>
       <div class="form-group">
         <label for="">Phone Number</label>
@@ -66,9 +65,8 @@
         </div>
       </div>
     </div>
-  </fieldset>
-
-    </div>
+  
+    </fieldset>
   </body>
     <script src="/lunchroom-landing~0/resources/dist~lib-71d7b1f.js"></script>
     <script src="/lunchroom-landing~0/resources/dist~app-d2972d4.js"></script>

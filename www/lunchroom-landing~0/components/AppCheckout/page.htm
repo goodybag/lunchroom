@@ -72,16 +72,16 @@
 </div>
 
 <div class="container checkout-info-container" id="section-checkout-info" component:id="checkout-form-new">
-  <fieldset class="checkout-info form-vertical" component:id="checkout-form" component:view="default">
+  <fieldset class="checkout-info form-vertical" component:id="checkout-form-new" component:view="default">
     <div class="user-info">
       <h3 class="section-title">Your Info</h3>
       <div class="form-group">
         <label for="">Name</label>
-        <input type="text" class="form-control" component:elm="info[name]">
+        <input type="text" class="form-control" name="name" component:elm="info[name]">
       </div>
       <div class="form-group">
         <label for="">Email</label>
-        <input type="email" class="form-control" component:elm="info[email]">
+        <input type="email" class="form-control" name="email" component:elm="info[email]">
       </div>
       <div class="form-group">
         <label for="">Phone Number</label>
@@ -115,7 +115,7 @@
         </div>
         <div class="form-group form-group" component:view="show-save-option">
           <label>
-            <input type="checkbox" name="save_card" checked="">
+            <input type="checkbox" name="will_add_new_card" checked="">
             Save card?
           </label>
         </div>
@@ -128,16 +128,16 @@
 </div>
 
 <div class="container checkout-info-container" id="section-checkout-info-existing-user" component:id="checkout-form-existing">
-  <fieldset class="checkout-info form-vertical" component:id="checkout-form" component:view="existing-user">
+  <fieldset class="checkout-info form-vertical" component:id="checkout-form-existing" component:view="existing-user">
     <div class="user-info">
       <h3 class="section-title">Your Info</h3>
       <div class="form-group">
         <label for="">Name</label>
-        <input value="Jane Doe" type="text" class="form-control" component:elm="info[name]">
+        <input value="Jane Doe" type="text" name="name" class="form-control" component:elm="info[name]">
       </div>
       <div class="form-group">
         <label for="">Email</label>
-        <input value="jane.doe@missingpeeps.com" type="email" class="form-control" component:elm="info[email]">
+        <input value="jane.doe@missingpeeps.com" type="email" name="email" class="form-control" component:elm="info[email]">
       </div>
       <div class="form-group">
         <label for="">Phone Number</label>
@@ -198,7 +198,7 @@
 </div>
 
 <div class="container checkout-info-container" id="section-checkout-info-validation-test">
-  <fieldset class="checkout-info form-vertical" component:id="checkout-form" component:view="existing-user">
+  <fieldset class="checkout-info form-vertical">
     <div class="user-info">
       <h3 class="section-title">Your Info</h3>
       <div class="form-group">

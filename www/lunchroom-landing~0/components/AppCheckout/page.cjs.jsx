@@ -70,16 +70,16 @@ module.exports = function (Context) {
 </div>
 
 <div className="container checkout-info-container" id="section-checkout-info" data-component-id="checkout-form-new">
-  <fieldset className="checkout-info form-vertical" data-component-id="checkout-form" data-component-view="default">
+  <fieldset className="checkout-info form-vertical" data-component-id="checkout-form-new" data-component-view="default">
     <div className="user-info">
       <h3 className="section-title">Your Info</h3>
       <div className="form-group">
         <label for="">Name</label>
-        <input type="text" className="form-control" data-component-elm="info[name]"/>
+        <input type="text" className="form-control" name="name" data-component-elm="info[name]"/>
       </div>
       <div className="form-group">
         <label for="">Email</label>
-        <input type="email" className="form-control" data-component-elm="info[email]"/>
+        <input type="email" className="form-control" name="email" data-component-elm="info[email]"/>
       </div>
       <div className="form-group">
         <label for="">Phone Number</label>
@@ -113,7 +113,7 @@ module.exports = function (Context) {
         </div>
         <div className="form-group form-group" data-component-view="show-save-option">
           <label>
-            <input type="checkbox" name="save_card" checked=""/>
+            <input type="checkbox" name="will_add_new_card" checked=""/>
             Save card?
           </label>
         </div>
@@ -126,16 +126,16 @@ module.exports = function (Context) {
 </div>
 
 <div className="container checkout-info-container" id="section-checkout-info-existing-user" data-component-id="checkout-form-existing">
-  <fieldset className="checkout-info form-vertical" data-component-id="checkout-form" data-component-view="existing-user">
+  <fieldset className="checkout-info form-vertical" data-component-id="checkout-form-existing" data-component-view="existing-user">
     <div className="user-info">
       <h3 className="section-title">Your Info</h3>
       <div className="form-group">
         <label for="">Name</label>
-        <input value="Jane Doe" type="text" className="form-control" data-component-elm="info[name]"/>
+        <input value="Jane Doe" type="text" name="name" className="form-control" data-component-elm="info[name]"/>
       </div>
       <div className="form-group">
         <label for="">Email</label>
-        <input value="jane.doe@missingpeeps.com" type="email" className="form-control" data-component-elm="info[email]"/>
+        <input value="jane.doe@missingpeeps.com" type="email" name="email" className="form-control" data-component-elm="info[email]"/>
       </div>
       <div className="form-group">
         <label for="">Phone Number</label>
@@ -196,7 +196,7 @@ module.exports = function (Context) {
 </div>
 
 <div className="container checkout-info-container" id="section-checkout-info-validation-test">
-  <fieldset className="checkout-info form-vertical" data-component-id="checkout-form" data-component-view="existing-user">
+  <fieldset className="checkout-info form-vertical">
     <div className="user-info">
       <h3 className="section-title">Your Info</h3>
       <div className="form-group">

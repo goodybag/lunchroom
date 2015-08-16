@@ -4,18 +4,17 @@
     <link rel="stylesheet" href="/lunchroom-landing~0/resources/ad9f552fd255c5d348748ac8ad8600cdf91e3413.css">
   </head>
   <body>
-    <div class="container checkout-info-container" id="section-checkout-info">
+    <fieldset class="checkout-info form-vertical" component:view="default">
 
-  <fieldset class="checkout-info form-vertical" component:id="checkout-form" component:view="default">
     <div class="user-info">
       <h3 class="section-title">Your Info</h3>
       <div class="form-group">
         <label for="">Name</label>
-        <input type="text" class="form-control" component:elm="info[name]">
+        <input type="text" class="form-control" name="name" component:elm="info[name]">
       </div>
       <div class="form-group">
         <label for="">Email</label>
-        <input type="email" class="form-control" component:elm="info[email]">
+        <input type="email" class="form-control" name="email" component:elm="info[email]">
       </div>
       <div class="form-group">
         <label for="">Phone Number</label>
@@ -49,14 +48,13 @@
         </div>
         <div class="form-group form-group" component:view="show-save-option">
           <label>
-            <input type="checkbox" name="save_card" checked="">
+            <input type="checkbox" name="will_add_new_card" checked="">
             Save card?
           </label>
         </div>
     </div>
-  </div></fieldset>
-
-    </div>
+  </div>
+    </fieldset>
   </body>
     <script src="/lunchroom-landing~0/resources/dist~lib-71d7b1f.js"></script>
     <script src="/lunchroom-landing~0/resources/dist~app-d2972d4.js"></script>

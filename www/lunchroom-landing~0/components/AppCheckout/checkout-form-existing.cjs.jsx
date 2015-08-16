@@ -2,18 +2,17 @@ module.exports = function (Context) {
   // TODO: Remove this once we can inject 'React' automatically at build time.
   var React = Context.REACT;
   return (
-    <div className="container checkout-info-container" id="section-checkout-info-existing-user">
+    <fieldset className="checkout-info form-vertical" data-component-view="existing-user">
 
-  <fieldset className="checkout-info form-vertical" data-component-id="checkout-form" data-component-view="existing-user">
     <div className="user-info">
       <h3 className="section-title">Your Info</h3>
       <div className="form-group">
         <label for="">Name</label>
-        <input value="Jane Doe" type="text" className="form-control" data-component-elm="info[name]"/>
+        <input value="Jane Doe" type="text" name="name" className="form-control" data-component-elm="info[name]"/>
       </div>
       <div className="form-group">
         <label for="">Email</label>
-        <input value="jane.doe@missingpeeps.com" type="email" className="form-control" data-component-elm="info[email]"/>
+        <input value="jane.doe@missingpeeps.com" type="email" name="email" className="form-control" data-component-elm="info[email]"/>
       </div>
       <div className="form-group">
         <label for="">Phone Number</label>
@@ -64,8 +63,7 @@ module.exports = function (Context) {
         </div>
       </div>
     </div>
-  </fieldset>
-
-    </div>
+  
+    </fieldset>
   );
 }

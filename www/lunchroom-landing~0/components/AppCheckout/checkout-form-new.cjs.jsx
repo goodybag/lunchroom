@@ -2,18 +2,17 @@ module.exports = function (Context) {
   // TODO: Remove this once we can inject 'React' automatically at build time.
   var React = Context.REACT;
   return (
-    <div className="container checkout-info-container" id="section-checkout-info">
+    <fieldset className="checkout-info form-vertical" data-component-view="default">
 
-  <fieldset className="checkout-info form-vertical" data-component-id="checkout-form" data-component-view="default">
     <div className="user-info">
       <h3 className="section-title">Your Info</h3>
       <div className="form-group">
         <label for="">Name</label>
-        <input type="text" className="form-control" data-component-elm="info[name]"/>
+        <input type="text" className="form-control" name="name" data-component-elm="info[name]"/>
       </div>
       <div className="form-group">
         <label for="">Email</label>
-        <input type="email" className="form-control" data-component-elm="info[email]"/>
+        <input type="email" className="form-control" name="email" data-component-elm="info[email]"/>
       </div>
       <div className="form-group">
         <label for="">Phone Number</label>
@@ -47,13 +46,12 @@ module.exports = function (Context) {
         </div>
         <div className="form-group form-group" data-component-view="show-save-option">
           <label>
-            <input type="checkbox" name="save_card" checked=""/>
+            <input type="checkbox" name="will_add_new_card" checked=""/>
             Save card?
           </label>
         </div>
     </div>
-  </div></fieldset>
-
-    </div>
+  </div>
+    </fieldset>
   );
 }
