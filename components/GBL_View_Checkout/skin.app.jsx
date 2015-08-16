@@ -143,24 +143,56 @@ require("./component.jsx")['for'](module, {
 
 					$('[data-component-elm="placeOrderButton"]', element).click(function () {
 
+						var orderInfoElm = $('.checkout-info');
+						$('[name="will_add_new_card"]', orderInfoElm).prop('checked', true);
+						var checkoutValidator = validators.createCheckoutValidator(orderInfoElm);
+						function showError (error) {
+// TODO: Don't highlight card field by default?
+//       We need to set field right now or message does not show up.
+							error.field = error.field || 'card_number';
+							checkoutValidator.displayError(error);
+						}
+
 						function validateOrder (order) {
+
 							return Context.Q.fcall(function () {
+
+								checkoutValidator.validate();
+								if (checkoutValidator.getErrors().length > 0) {
+									window.scrollTo(0, 0);
+									return false;
+								}
 
 								var form = JSON.parse(order.get("form"));
 
 								if (!Stripe.card.validateCardNumber(form["card[number]"])) {
+									showError({
+										field: "card_number",
+										message: "Card number format not valid!"
+									});
 									throw new Error("Card number format not valid!");
 								}
 								if (!Stripe.card.validateExpiry(form["card[expire-month]"], form["card[expire-year]"])) {
-									throw new Error("Card expiry not valid!");
+									showError({
+										field: "card_expiration_year",
+// TODO: Add second field to highlight
+//										field: "card_expiration_month",
+										message: "Card expiry format not valid!"
+									});
+									throw new Error("Card expiry format not valid!");
 								}
 								if (!Stripe.card.validateCVC(form["card[cvc]"])) {
+									showError({
+										field: "card_cvv",
+										message: "Card CVC not valid!"
+									});
 									throw new Error("Card CVC not valid!");
 								}
 
+								return true;
 							}).fail(function (err) {
 								console.error("Error validating order:", err.message);
-								throw err;
+								return false;
 							});
 						}
 
@@ -227,7 +259,13 @@ require("./component.jsx")['for'](module, {
 						}
 
 						Context.Q.fcall(function () {
-							return validateOrder(Context.order).then(function () {
+							return validateOrder(Context.order).then(function (valid) {
+
+								if (!valid) {
+									// User must fix form.
+									return;
+								}
+
 								return prepareOrder(Context.order).then(function (order) {
 									return chargeCard(order).then(function (paymentConfirmation) {
 										return finalizeOrder(order, paymentConfirmation);
@@ -237,9 +275,12 @@ require("./component.jsx")['for'](module, {
 								});
 							});
 						}).fail(function (err) {
-// TODO: Show error message
+
 							console.error("Error submitting order:", err.message);
-							alert("ERROR: " + err.message);
+
+							showError({
+								message: err.message
+							});
 						});
 
 						return false;

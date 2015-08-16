@@ -3,6 +3,17 @@ require("./component.jsx")['for'](module, {
 
 	getTemplates: function (Context) {
 		return {
+			"too_late": new Context.Template({
+				impl: require("../../www/lunchroom-landing~0/components/AppMenu/too-late.cjs.jsx"),
+				markup: function (element) {
+				},
+				fill: function (element, data, Context) {
+
+					this.fillProperties(element, {
+						"orderBy": Context.eventToday.get('format.orderByTime')
+					});
+				}
+			}),
 			"menu_not_created": new Context.Template({
 				impl: require("../../www/lunchroom-landing~0/components/AppComponents/menu-not-created.cjs.jsx"),
 				markup: function (element) {
@@ -147,16 +158,35 @@ require("./component.jsx")['for'](module, {
 		var Panel = "";
 
 		var items = Context.items[Context.appContext.get('selectedDay')] || [];
+		
 		if (
 			Context.eventToday &&
 			items.length > 0
 		) {
-			Panel = (
-				<div>
-					<Context.templates.popup.comp />
-					<Context.templates.menu.comp />
-				</div>
-			);
+
+			if (
+				Context.eventToday &&
+				parseInt(Context.eventToday.get("format.orderTimerSeconds") || 0) <= 0
+			) {
+
+				Panel = (
+					<div>
+						<Context.templates.too_late.comp />
+						<Context.templates.popup.comp />
+						<Context.templates.menu.comp />
+					</div>
+				);
+
+			} else {
+
+				Panel = (
+					<div>
+						<Context.templates.popup.comp />
+						<Context.templates.menu.comp />
+					</div>
+				);
+			}
+
 		} else {
 			Panel = <Context.templates.menu_not_created.comp />
 		}
