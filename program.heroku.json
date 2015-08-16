@@ -184,6 +184,9 @@
 			                "email": {
 			                    "actionBaseUrl": "http://goodybag-lunchroom-staging.herokuapp.com/a"
 			                },
+                            "cater": {
+                                "host": "staging.goodybag.com"
+                            },
                             "clientContext": {
                                 "stripePublishableKey": "pk_test_9N1srz1fVmWGyRAAhmzAA7aP"                                
                             }
@@ -194,6 +197,9 @@
 			                "email": {
 			                    "actionBaseUrl": "http://staging.lunchroom.goodybag.com/a"
 			                },
+                            "cater": {
+                                "host": "staging.goodybag.com"
+                            },
                             "clientContext": {
                                 "stripePublishableKey": "pk_test_9N1srz1fVmWGyRAAhmzAA7aP"                                
                             }
@@ -204,6 +210,9 @@
 			                "email": {
 			                    "actionBaseUrl": "http://goodybag-lunchroom.herokuapp.com/a"
 			                },
+                            "cater": {
+                                "host": "goodybag.com"
+                            },
                             "clientContext": {
                                 "stripePublishableKey": "pk_live_kShOkv0NSx9Lj1qWGqxAXotN"                                
                             }
@@ -214,6 +223,9 @@
 			                "email": {
 			                    "actionBaseUrl": "http://lunchroom.goodybag.com/a"
 			                },
+                            "cater": {
+                                "host": "goodybag.com"
+                            },
                             "clientContext": {
                                 "stripePublishableKey": "pk_live_kShOkv0NSx9Lj1qWGqxAXotN"                                
                             }

@@ -84,6 +84,8 @@ exports['for'] = function (context) {
 			return {};
 		}
 
+		amount = Math.round(amount);
+
 		var summary = {
 			"amount": amount,
 			"format.amount": COMMON.API.NUMERAL(amount/100).format('$0.00'),
@@ -101,17 +103,18 @@ exports['for'] = function (context) {
 			summary.amount &&
 			summary.tax
 		) {
-			summary["taxAmount"] = summary.amount * summary.tax / 100;
+			summary["taxAmount"] = Math.round(summary.amount * summary.tax / 100);
 			summary["format.tax"] = summary.tax + "%";
 			summary["format.taxAmount"] = COMMON.API.NUMERAL(summary["taxAmount"] / 100).format('$0.00');
 		}
 
 		if (summary.amount) {
-			summary.total =
+			summary.total = Math.round(
 				summary.amount
 				+ summary.taxAmount
-				+ summary.goodybagFee;
-//				+ parseInt(options.tip);
+				+ summary.goodybagFee
+//				+ parseInt(options.tip)
+			);
 			summary["format.total"] = COMMON.API.NUMERAL(summary.total / 100).format('$0.00');
 		}
 

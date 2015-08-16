@@ -144,4 +144,60 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
         }
     }
 
+    exports.cater = {
+        sendPayment: function (info, request) {
+
+            /*
+                @see https://github.com/goodybag/cater-api-server/pull/1889
+
+                POST '/api/payments' {
+                  // Goodybag Restaurant ID whose account will be credited
+                  restaurant_id:          Number
+                  // Stripe Customer Object/Identifier
+                , customer:               String
+                  // Stripe Credit Card Object/Identifier
+                , source:                 String
+                  // Amount to be charged in cents before Tax and optional service_fee
+                , amount:                 Number
+                  // Amount in cents on top of base `amount` - all funds go to Goodybag account
+                , service_fee:            Number
+                  // Arbitrary object to attach to transaction
+                , metadata:               {...}
+                  // What will show up on bank statement
+                , statement_descriptor:  String
+                }
+            */
+
+            API.ASSERT.equal(typeof info.restaurant_id, "number");
+            API.ASSERT.equal(typeof info.customer, "string");
+            API.ASSERT.equal(typeof info.source, "string");
+            API.ASSERT.equal(typeof info.amount, "number");
+            API.ASSERT.equal(typeof info.service_fee, "number");
+            API.ASSERT.equal(typeof info.metadata, "string");
+            API.ASSERT.equal(typeof info.statement_descriptor, "string");
+
+            return API.Q.denodeify(function (callback) {
+
+                var url = "http://" + request._FireNodeContext.config.cater.host + "/api/payments";
+
+                console.log("Posting payment payload to url '", url, "':", JSON.stringify(info, null, 4));
+
+                return API.REQUEST({
+                    uri: url,
+                    method: 'POST',
+                    json: info
+                }, function (err, res, body) {
+                    if (err) return callback(err);
+                    if (res.statusCode !== 200) {
+                        var err = new Error("Got status '" + res.statusCode + "' while calling '" + url + "'");
+                        err.code = res.statusCode;
+                        return callback(err);
+                    }
+                    console.log("Cater payment POST response:". body);
+                    return callback(null);
+                });
+            })();
+        }
+    }
+
 });
