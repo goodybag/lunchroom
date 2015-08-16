@@ -75,7 +75,7 @@ exports['for'] = function (context) {
 		return COMMON.API.Q.denodeify(function (callback) {
 	        self.fetch({
 	            data: $.param({
-	                "filter[event_id]": event_ids
+	                "filter[event_id]": event_ids.join(",")
 	            }),
 	            success: function () {
 	            	return callback(null);

@@ -250,7 +250,7 @@ exports['for'] = function (context) {
 	        self.fetch({
 	            data: $.param({
 	                "filter[consumer_group_id]": id,
-	                "filter[day_id]": dayIds
+	                "filter[day_id]": dayIds.join(",")
 	            }),
 	            success: function () {
 	            	return callback(null, store.where({

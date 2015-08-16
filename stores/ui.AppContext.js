@@ -277,20 +277,25 @@ exports['for'] = function (overrides) {
 						function monitorOrderDeadline (today) {
 							var ordersLocked = null;
 							var interval = setInterval(function () {
-								if (ordersLocked === null) {
-									ordersLocked = today.get("ordersLocked");
-								} else
-								if (today.get("ordersLocked") !== ordersLocked) {
-									ordersLocked = today.get("ordersLocked");
-									// Status has changed so we reload to lock the UI.
-									console.log("Lock event due to ordersLocked");
-									appContext.get('stores').events.loadForId(context.dbfilter.event_id).fail(function (err) {
-										console.error("Error loading event", err.stack);
-									});
-								}
-								if (ordersLocked && interval) {
-									clearInterval(interval);
-									interval = null;
+								try {
+									if (!today) return;
+									if (ordersLocked === null) {
+										ordersLocked = today.get("ordersLocked");
+									} else
+									if (today.get("ordersLocked") !== ordersLocked) {
+										ordersLocked = today.get("ordersLocked");
+										// Status has changed so we reload to lock the UI.
+										console.log("Lock event due to ordersLocked");
+										appContext.get('stores').events.loadForId(context.dbfilter.event_id).fail(function (err) {
+											console.error("Error loading event", err.stack);
+										});
+									}
+									if (ordersLocked && interval) {
+										clearInterval(interval);
+										interval = null;
+									}
+								} catch (err) {
+									console.error("Error monitoring order deadline:", err.stack);
 								}
 							}, 5 * 1000);
 						}

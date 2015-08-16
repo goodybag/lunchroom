@@ -21,8 +21,8 @@ function makeStartOfWeek () {
 	var startOfWeek = COMMON.API.MOMENT().startOf('week');
 	// If Saturday or Sunday, jump to next week.
 	if (
-		COMMON.API.MOMENT().day() === 6 ||
-		COMMON.API.MOMENT().day() === 0
+		COMMON.API.MOMENT().day() === 6// ||
+//		COMMON.API.MOMENT().day() === 0
 	) {
 		startOfWeek.add(7, 'days');
 	}
