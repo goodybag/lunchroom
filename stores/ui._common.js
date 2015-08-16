@@ -143,37 +143,6 @@ exports.resolveForeignKeys = function (store, records, keys, wait, options) {
 
 
 
-exports.makeFormatter = function (type) {
-
-	if (type === "deliveryTime") {
-		return {
-			deps: [
-				"deliveryStartTime",
-				"pickupEndTime"
-			],
-            fn: function () {
-            	var deliveryStartTime = API.MOMENT(this.deliveryStartTime);
-            	var pickupEndTime = API.MOMENT(this.pickupEndTime);
-            	return deliveryStartTime.format("hh:mm") + "-" + pickupEndTime.format("hh:mm A");
-            }
-	    };
-	} else
-	if (type === "deliveryDate") {
-		return {
-			deps: [
-				"deliveryStartTime"
-			],
-            fn: function () {
-            	var deliveryStartTime = API.MOMENT(this.deliveryStartTime);
-            	return deliveryStartTime.format("dddd, MMM Do YYYY");
-            }
-	    };
-	}
-
-	throw new Error("Formatter of type '" + type + "' not supported!");
-}
-
-
 
 function initLocalStorage () {
 

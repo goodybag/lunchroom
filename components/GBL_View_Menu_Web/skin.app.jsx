@@ -29,7 +29,8 @@ require("./component.jsx")['for'](module, {
 
 					if (
 						Context.selectedEvent &&
-						Context.selectedEvent.get("day_id") === Context.appContext.get('todayId')
+						Context.selectedEvent.get("day_id") === Context.appContext.get('todayId') &&
+						parseInt(Context.selectedEvent.get("format.orderTimerSeconds") || 0)
 					) {
 						this.showViews(element, [
 							"orderable"
@@ -97,7 +98,8 @@ require("./component.jsx")['for'](module, {
 
 						if (
 							Context.selectedEvent &&
-							Context.selectedEvent.get("day_id") === Context.appContext.get('todayId')
+							Context.selectedEvent.get("day_id") === Context.appContext.get('todayId') &&
+							parseInt(Context.selectedEvent.get("format.orderTimerSeconds") || 0)
 						) {
 							self.showViews(elm, [
 								"orderable"

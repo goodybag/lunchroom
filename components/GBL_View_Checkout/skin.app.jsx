@@ -18,7 +18,18 @@ require("./component.jsx")['for'](module, {
 		var copyName = {};
 
 		return {
-			"no_items":  new Context.Template({
+			"too_late": new Context.Template({
+				impl: require("../../www/lunchroom-landing~0/components/AppCheckout/too-late.cjs.jsx"),
+				markup: function (element) {
+				},
+				fill: function (element, data, Context) {
+
+					this.fillProperties(element, {
+						"orderBy": Context.eventToday.get('format.orderByTime')
+					});
+				}
+			}),
+			"no_items": new Context.Template({
 				impl: require("../../www/lunchroom-landing~0/components/AppCheckout/no-items.cjs.jsx"),
 				markup: function (element) {
 
@@ -43,8 +54,10 @@ require("./component.jsx")['for'](module, {
 				}
 			}),
 			"form": new Context.Template({
-				impl: require("../../www/lunchroom-landing~0/components/AppCheckout/checkout-form.cjs.jsx"),
+				impl: require("../../www/lunchroom-landing~0/components/AppCheckout/checkout-form-new.cjs.jsx"),
 				markup: function (element) {
+
+					this.liftSections(element);
 
 				    // Save form on change to any order field.
 			    	$('input', element).on('keyup', function () {
@@ -81,6 +94,10 @@ require("./component.jsx")['for'](module, {
 						this.fillProperties(element, values);
 						this.fillElements(element, values);
 					}
+
+					this.showViews(element, [
+						"default"
+					]);
 				}
 			}),
 			"items": new Context.Template({
@@ -253,6 +270,13 @@ require("./component.jsx")['for'](module, {
 
 		var Panel = null;
 
+		if (parseInt(Context.eventToday.get("format.orderTimerSeconds") || 0) <= 0) {
+
+			Panel = (
+				<Context.templates.too_late.comp />
+			);
+
+		} else
 		if (
 			!Context.eventToday ||
 			Context.items.length === 0

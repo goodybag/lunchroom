@@ -29,7 +29,7 @@ exports.forAppContext = function (appContext) {
 	            fn: function () {
 	            	var deliveryStartTime = API.MOMENT(this.deliveryStartTime);
 	            	var pickupEndTime = API.MOMENT(this.pickupEndTime);
-	            	return deliveryStartTime.format("hh:mm") + "-" + pickupEndTime.format("hh:mm A");
+	            	return deliveryStartTime.format("h:mm") + "-" + pickupEndTime.format("h:mm A");
 	            }
 		    };
 		} else
@@ -41,6 +41,17 @@ exports.forAppContext = function (appContext) {
 	            fn: function () {
 	            	var deliveryStartTime = API.MOMENT(this.deliveryStartTime);
 	            	return deliveryStartTime.format("dddd, MMM Do YYYY");
+	            }
+		    };
+		} else
+		if (type === "orderByTime") {
+			return {
+				deps: [
+					"orderByTime"
+				],
+	            fn: function () {
+	            	var orderByTime = API.MOMENT(this.orderByTime);
+	            	return orderByTime.format("h:mm A");
 	            }
 		    };
 		}

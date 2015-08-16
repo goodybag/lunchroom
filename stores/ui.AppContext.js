@@ -272,6 +272,32 @@ exports['for'] = function (overrides) {
 						}));
 					}).then(function () {
 
+						var today = appContext.get('stores').events.modelRecords(appContext.get('stores').events.getToday())[0];
+
+						function monitorOrderDeadline (today) {
+							var ordersLocked = null;
+							var interval = setInterval(function () {
+								if (ordersLocked === null) {
+									ordersLocked = today.get("ordersLocked");
+								} else
+								if (today.get("ordersLocked") !== ordersLocked) {
+									ordersLocked = today.get("ordersLocked");
+									// Status has changed so we reload to lock the UI.
+									console.log("Lock event due to ordersLocked");
+									appContext.get('stores').events.loadForId(context.dbfilter.event_id).fail(function (err) {
+										console.error("Error loading event", err.stack);
+									});
+								}
+								if (ordersLocked && interval) {
+									clearInterval(interval);
+									interval = null;
+								}
+							}, 5 * 1000);
+						}
+
+						monitorOrderDeadline(today);
+
+
 						finalizeInit();
 
 					}).fail(function (err) {

@@ -101,6 +101,7 @@ exports.forContext = function (context) {
 		    },
 		    "format.deliveryDate": common.makeFormatter("deliveryDate"),
 		    "format.deliveryTime": common.makeFormatter("deliveryTime"),
+		    "format.orderByTime": common.makeFormatter("orderByTime"),
 		    "format.orderTimer": {
 				deps: [
 					"orderByTime"

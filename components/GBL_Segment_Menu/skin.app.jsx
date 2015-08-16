@@ -1,4 +1,40 @@
 
+
+
+function startTimer (duration, display) {
+    var start = Date.now(),
+        diff,
+        minutes,
+        seconds;
+    function timer() {
+        // get the number of seconds that have elapsed since 
+        // startTimer() was called
+        diff = duration - (((Date.now() - start) / 1000) | 0);
+
+        // does the same job as parseInt truncates the float
+        minutes = (diff / 60) | 0;
+        seconds = (diff % 60) | 0;
+
+        minutes = minutes < 10 ? "0" + minutes : minutes;
+        seconds = seconds < 10 ? "0" + seconds : seconds;
+
+        display.html(minutes + ":" + seconds);
+
+        if (diff <= 0) {
+        	clearInterval(startTimer.previousInterval);
+        	startTimer.previousInterval = null;
+        }
+    };
+    // we don't want to wait a full second before the timer starts
+    timer();
+    if (startTimer.previousInterval) {
+    	clearInterval(startTimer.previousInterval);
+    	startTimer.previousInterval = null;
+    }
+    startTimer.previousInterval = setInterval(timer, 1000);
+}
+
+
 require("./component.jsx")['for'](module, {
 
 	getTemplateData: function (Context) {
@@ -100,12 +136,7 @@ require("./component.jsx")['for'](module, {
 			    	data['secondsLeftToOrder'] > 0 &&
 			    	data['secondsLeftToOrder'] < 60 * 60
 			    ) {
-					var clock = $('[data-component-prop="timeLeftToOrder"]', element).FlipClock({
-						clockFace: 'MinuteCounter'
-					});
-					clock.setTime(data['secondsLeftToOrder']);
-					clock.setCountdown(true);
-					clock.start();
+				    startTimer(data['secondsLeftToOrder'], $('[data-component-prop="timeLeftToOrder"]', element));
 				}
 			}
 		});

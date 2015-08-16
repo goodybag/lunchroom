@@ -1,6 +1,6 @@
 
 var COMMON = require("./ui._common");
-
+var COMMON_MODEL = require("./ui._common.model");
 
 var ENDPOINT = COMMON.makeEndpointUrl("orders");
 
@@ -84,6 +84,8 @@ var orderIndex = 0;
 
 exports['for'] = function (context) {
 
+	var common = COMMON_MODEL.forAppContext(context.appContext);
+
 
 	function loadStatusInfoForOrder (orderHashId) {
 		return context.appContext.get('stores').orderStatus.fetchStatusInfoForOrderHashId(orderHashId);
@@ -109,8 +111,8 @@ exports['for'] = function (context) {
 	        "statusInfo": "object"
 	    },
 	    derived: {
-	    	"format.deliveryTime": COMMON.makeFormatter("deliveryTime"),
-	    	"format.deliveryDate": COMMON.makeFormatter("deliveryDate"),
+	    	"format.deliveryTime": common.makeFormatter("deliveryTime"),
+	    	"format.deliveryDate": common.makeFormatter("deliveryDate"),
 	    	"event.consumerGroup.contact": {
 	    		deps: [
 					"event"
