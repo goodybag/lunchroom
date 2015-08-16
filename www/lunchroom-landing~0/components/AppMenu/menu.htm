@@ -6,120 +6,179 @@
   <body>
     <div class="container items-container">
 
-  <div class="tiles item-tiles" component:section="items">
-      <div class="tile item-tile" component:section="items" component:view="default">
-        <div class="tile-cover" style="background-image: url('https://www.filepicker.io/api/file/SZoK9zUvTPWXzmK81aGg/convert?w=400&amp;h=195&amp;fit=crop');" component:prop="photoUrl" component:prop-target="style/background-image" component:elm="showDetailsLink" data-toggle="modal" data-target="#item-modal">
+  <h1 class="menu-provider-name">Dos Batos Wood Fired Tacos
+    <span class="no-tip-note">No tips. Just a flat $2.99 fee</span>
+  </h1>
+  <div class="tiles item-tiles" data-component-section="items">
+      <div class="tile item-tile" data-component-section="items" data-component-view="default">
+        <div class="tile-cover" style="background-image: url('https://www.filepicker.io/api/file/SZoK9zUvTPWXzmK81aGg/convert?w=400&amp;h=195&amp;fit=crop');" data-component-prop="photoUrl" data-component-prop-target="style/background-image" data-component-elm="showDetailsLink" data-toggle="modal" data-target="#item-modal">
+          <div class="item-tile-quantity-wrapper">
+            <div class="item-tile-quantity"></div>
+            in your cart
+          </div>
         </div>
         <div class="tile-info">
-          <h3 class="tile-title" component:prop="title">Pirata Dos Tacos</h3>
-          <ul class="diet-tags" component:section="diet-tags">
-              <li class="diet-tag diet-tag-gluten-free" component:section="diet-tags" component:view="default"></li>
-              <li class="diet-tag diet-tag-spicy" component:section="diet-tags" component:view="default"></li>
+          <h3 class="tile-title" data-component-prop="title">Pirata Dos Tacos</h3>
+          <ul class="diet-tags" data-component-section="diet-tags">
+              <li class="diet-tag diet-tag-gluten-free" data-component-section="diet-tags" data-component-view="default"></li>
+              <li class="diet-tag diet-tag-spicy" data-component-section="diet-tags" data-component-view="default"></li>
           </ul>
-          <div class="item-price" component:prop="price">$10.90</div>
-          <button class="btn btn-default btn-add" data-toggle="modal" data-target="#item-modal" component:elm="addButton" component:view="orderable">Add</button>
+          <div class="item-price" data-component-prop="price">$10.90</div>
+          <div class="item-tile-actions">
+            <button class="btn btn-default btn-add" data-component-elm="addButton" data-component-view="orderable">Add</button>
+          </div>
         </div>
       </div>
-      <div class="tile item-tile" component:section="items" component:view="default">
-        <div class="tile-cover" style="background-image: url('https://www.filepicker.io/api/file/SZoK9zUvTPWXzmK81aGg/convert?w=400&amp;h=195&amp;fit=crop');" component:prop="photoUrl" component:prop-target="style/background-image" component:elm="showDetailsLink" data-toggle="modal" data-target="#item-modal">
+      <div class="tile item-tile is-in-cart" data-component-section="items" data-component-view="default">
+        <div class="tile-cover" style="background-image: url('https://www.filepicker.io/api/file/SZoK9zUvTPWXzmK81aGg/convert?w=400&amp;h=195&amp;fit=crop');" data-component-prop="photoUrl" data-component-prop-target="style/background-image" data-component-elm="showDetailsLink" data-toggle="modal" data-target="#item-modal">
+          <div class="item-tile-quantity-wrapper">
+            <div class="item-tile-quantity">2</div>
+            in your cart
+          </div>
         </div>
         <div class="tile-info">
-          <h3 class="tile-title" component:prop="title">Poop Taco Box</h3>
-          <ul class="diet-tags" component:section="diet-tags">
-              <li class="diet-tag diet-tag-vegan" component:section="diet-tags" component:view="default"></li>
-              <li class="diet-tag diet-tag-vegetarian" component:section="diet-tags" component:view="default"></li>
+          <h3 class="tile-title" data-component-prop="title">Poop Taco Box</h3>
+          <ul class="diet-tags" data-component-section="diet-tags">
+              <li class="diet-tag diet-tag-vegan" data-component-section="diet-tags" data-component-view="default"></li>
+              <li class="diet-tag diet-tag-vegetarian" data-component-section="diet-tags" data-component-view="default"></li>
           </ul>
-          <div class="item-price" component:prop="price">$12.00</div>
-          <button class="btn btn-default btn-add" data-toggle="modal" data-target="#item-modal" component:elm="addButton" component:view="orderable">Add</button>
+          <div class="item-price" data-component-prop="price">$12.00</div>
+          <div class="item-tile-actions">
+            <button class="btn btn-default btn-remove">-</button>
+            <button class="btn btn-default btn-add" data-component-elm="addButton" data-component-view="orderable">Add</button>
+          </div>
         </div>
       </div>
-      <div class="tile item-tile" component:section="items" component:view="default">
-        <div class="tile-cover" style="background-image: url('https://www.filepicker.io/api/file/SZoK9zUvTPWXzmK81aGg/convert?w=400&amp;h=195&amp;fit=crop');" component:prop="photoUrl" component:prop-target="style/background-image" component:elm="showDetailsLink" data-toggle="modal" data-target="#item-modal">
+      <div class="tile item-tile is-in-cart" data-component-section="items" data-component-view="default">
+        <div class="tile-cover" style="background-image: url('https://www.filepicker.io/api/file/SZoK9zUvTPWXzmK81aGg/convert?w=400&amp;h=195&amp;fit=crop');" data-component-prop="photoUrl" data-component-prop-target="style/background-image" data-component-elm="showDetailsLink" data-toggle="modal" data-target="#item-modal">
+          <div class="item-tile-quantity-wrapper">
+            <div class="item-tile-quantity">1</div>
+            in your cart
+          </div>
         </div>
         <div class="tile-info">
-          <h3 class="tile-title" component:prop="title">Pirata Dos Tacos</h3>
-          <ul class="diet-tags" component:section="diet-tags">
+          <h3 class="tile-title" data-component-prop="title">Pirata Dos Tacos</h3>
+          <ul class="diet-tags" data-component-section="diet-tags">
           </ul>
-          <div class="item-price" component:prop="price">$10.90</div>
-          <button class="btn btn-default btn-add" data-toggle="modal" data-target="#item-modal" component:elm="addButton" component:view="orderable">Add</button>
+          <div class="item-price" data-component-prop="price">$10.90</div>
+          <div class="item-tile-actions">
+            <button class="btn btn-default btn-remove">-</button>
+            <button class="btn btn-default btn-add" data-component-elm="addButton" data-component-view="orderable">Add</button>
+          </div>
         </div>
       </div>
-      <div class="tile item-tile" component:section="items" component:view="default">
-        <div class="tile-cover" style="background-image: url('https://www.filepicker.io/api/file/SZoK9zUvTPWXzmK81aGg/convert?w=400&amp;h=195&amp;fit=crop');" component:prop="photoUrl" component:prop-target="style/background-image" component:elm="showDetailsLink" data-toggle="modal" data-target="#item-modal">
+      <div class="tile item-tile" data-component-section="items" data-component-view="default">
+        <div class="tile-cover" style="background-image: url('https://www.filepicker.io/api/file/SZoK9zUvTPWXzmK81aGg/convert?w=400&amp;h=195&amp;fit=crop');" data-component-prop="photoUrl" data-component-prop-target="style/background-image" data-component-elm="showDetailsLink" data-toggle="modal" data-target="#item-modal">
+          <div class="item-tile-quantity-wrapper">
+            <div class="item-tile-quantity"></div>
+            in your cart
+          </div>
         </div>
         <div class="tile-info">
-          <h3 class="tile-title" component:prop="title">Poop Taco Box but this one is a really long title</h3>
-          <ul class="diet-tags" component:section="diet-tags">
-              <li class="diet-tag diet-tag-gluten-free" component:section="diet-tags" component:view="default"></li>
-              <li class="diet-tag diet-tag-spicy" component:section="diet-tags" component:view="default"></li>
+          <h3 class="tile-title" data-component-prop="title">Poop Taco Box but this one is a really long title</h3>
+          <ul class="diet-tags" data-component-section="diet-tags">
+              <li class="diet-tag diet-tag-gluten-free" data-component-section="diet-tags" data-component-view="default"></li>
+              <li class="diet-tag diet-tag-spicy" data-component-section="diet-tags" data-component-view="default"></li>
           </ul>
-          <div class="item-price" component:prop="price">$12.00</div>
-          <button class="btn btn-default btn-add" data-toggle="modal" data-target="#item-modal" component:elm="addButton" component:view="orderable">Add</button>
+          <div class="item-price" data-component-prop="price">$12.00</div>
+          <div class="item-tile-actions">
+            <button class="btn btn-default btn-add" data-component-elm="addButton" data-component-view="orderable">Add</button>
+          </div>
         </div>
       </div>
-      <div class="tile item-tile" component:section="items" component:view="default">
-        <div class="tile-cover" style="background-image: url('https://www.filepicker.io/api/file/SZoK9zUvTPWXzmK81aGg/convert?w=400&amp;h=195&amp;fit=crop');" component:prop="photoUrl" component:prop-target="style/background-image" component:elm="showDetailsLink" data-toggle="modal" data-target="#item-modal">
+      <div class="tile item-tile" data-component-section="items" data-component-view="default">
+        <div class="tile-cover" style="background-image: url('https://www.filepicker.io/api/file/SZoK9zUvTPWXzmK81aGg/convert?w=400&amp;h=195&amp;fit=crop');" data-component-prop="photoUrl" data-component-prop-target="style/background-image" data-component-elm="showDetailsLink" data-toggle="modal" data-target="#item-modal">
+          <div class="item-tile-quantity-wrapper">
+            <div class="item-tile-quantity"></div>
+            in your cart
+          </div>
         </div>
         <div class="tile-info">
-          <h3 class="tile-title" component:prop="title">Poop Taco Box</h3>
-          <ul class="diet-tags" component:section="diet-tags">
-              <li class="diet-tag diet-tag-gluten-free" component:section="diet-tags" component:view="default"></li>
-              <li class="diet-tag diet-tag-spicy" component:section="diet-tags" component:view="default"></li>
+          <h3 class="tile-title" data-component-prop="title">Poop Taco Box</h3>
+          <ul class="diet-tags" data-component-section="diet-tags">
+              <li class="diet-tag diet-tag-gluten-free" data-component-section="diet-tags" data-component-view="default"></li>
+              <li class="diet-tag diet-tag-spicy" data-component-section="diet-tags" data-component-view="default"></li>
           </ul>
-          <div class="item-price" component:prop="price">$12.00</div>
-          <button class="btn btn-default btn-add" data-toggle="modal" data-target="#item-modal" component:elm="addButton" component:view="orderable">Add</button>
+          <div class="item-price" data-component-prop="price">$12.00</div>
+          <div class="item-tile-actions">
+            <button class="btn btn-default btn-add" data-component-elm="addButton" data-component-view="orderable">Add</button>
+          </div>
         </div>
       </div>
-      <div class="tile item-tile" component:section="items" component:view="default">
-        <div class="tile-cover" style="background-image: url('https://www.filepicker.io/api/file/SZoK9zUvTPWXzmK81aGg/convert?w=400&amp;h=195&amp;fit=crop');" component:prop="photoUrl" component:prop-target="style/background-image" component:elm="showDetailsLink" data-toggle="modal" data-target="#item-modal">
+      <div class="tile item-tile" data-component-section="items" data-component-view="default">
+        <div class="tile-cover" style="background-image: url('https://www.filepicker.io/api/file/SZoK9zUvTPWXzmK81aGg/convert?w=400&amp;h=195&amp;fit=crop');" data-component-prop="photoUrl" data-component-prop-target="style/background-image" data-component-elm="showDetailsLink" data-toggle="modal" data-target="#item-modal">
+          <div class="item-tile-quantity-wrapper">
+            <div class="item-tile-quantity"></div>
+            in your cart
+          </div>
         </div>
         <div class="tile-info">
-          <h3 class="tile-title" component:prop="title">Pirata Dos Tacos</h3>
-          <ul class="diet-tags" component:section="diet-tags">
-              <li class="diet-tag diet-tag-gluten-free" component:section="diet-tags" component:view="default"></li>
-              <li class="diet-tag diet-tag-spicy" component:section="diet-tags" component:view="default"></li>
+          <h3 class="tile-title" data-component-prop="title">Pirata Dos Tacos</h3>
+          <ul class="diet-tags" data-component-section="diet-tags">
+              <li class="diet-tag diet-tag-gluten-free" data-component-section="diet-tags" data-component-view="default"></li>
+              <li class="diet-tag diet-tag-spicy" data-component-section="diet-tags" data-component-view="default"></li>
           </ul>
-          <div class="item-price" component:prop="price">$10.90</div>
-          <button class="btn btn-default btn-add" data-toggle="modal" data-target="#item-modal" component:elm="addButton" component:view="orderable">Add</button>
+          <div class="item-price" data-component-prop="price">$10.90</div>
+          <div class="item-tile-actions">
+            <button class="btn btn-default btn-add" data-component-elm="addButton" data-component-view="orderable">Add</button>
+          </div>
         </div>
       </div>
-      <div class="tile item-tile" component:section="items" component:view="default">
-        <div class="tile-cover" style="background-image: url('https://www.filepicker.io/api/file/SZoK9zUvTPWXzmK81aGg/convert?w=400&amp;h=195&amp;fit=crop');" component:prop="photoUrl" component:prop-target="style/background-image" component:elm="showDetailsLink" data-toggle="modal" data-target="#item-modal">
+      <div class="tile item-tile" data-component-section="items" data-component-view="default">
+        <div class="tile-cover" style="background-image: url('https://www.filepicker.io/api/file/SZoK9zUvTPWXzmK81aGg/convert?w=400&amp;h=195&amp;fit=crop');" data-component-prop="photoUrl" data-component-prop-target="style/background-image" data-component-elm="showDetailsLink" data-toggle="modal" data-target="#item-modal">
+          <div class="item-tile-quantity-wrapper">
+            <div class="item-tile-quantity"></div>
+            in your cart
+          </div>
         </div>
         <div class="tile-info">
-          <h3 class="tile-title" component:prop="title">Poop Taco Box</h3>
-          <ul class="diet-tags" component:section="diet-tags">
-              <li class="diet-tag diet-tag-gluten-free" component:section="diet-tags" component:view="default"></li>
-              <li class="diet-tag diet-tag-spicy" component:section="diet-tags" component:view="default"></li>
+          <h3 class="tile-title" data-component-prop="title">Poop Taco Box</h3>
+          <ul class="diet-tags" data-component-section="diet-tags">
+              <li class="diet-tag diet-tag-gluten-free" data-component-section="diet-tags" data-component-view="default"></li>
+              <li class="diet-tag diet-tag-spicy" data-component-section="diet-tags" data-component-view="default"></li>
           </ul>
-          <div class="item-price" component:prop="price">$12.00</div>
-          <button class="btn btn-default btn-add" data-toggle="modal" data-target="#item-modal" component:elm="addButton" component:view="orderable">Add</button>
+          <div class="item-price" data-component-prop="price">$12.00</div>
+          <div class="item-tile-actions">
+            <button class="btn btn-default btn-add" data-component-elm="addButton" data-component-view="orderable">Add</button>
+          </div>
         </div>
       </div>
-      <div class="tile item-tile" component:section="items" component:view="default">
-        <div class="tile-cover" style="background-image: url('https://www.filepicker.io/api/file/SZoK9zUvTPWXzmK81aGg/convert?w=400&amp;h=195&amp;fit=crop');" component:prop="photoUrl" component:prop-target="style/background-image" component:elm="showDetailsLink" data-toggle="modal" data-target="#item-modal">
+      <div class="tile item-tile" data-component-section="items" data-component-view="default">
+        <div class="tile-cover" style="background-image: url('https://www.filepicker.io/api/file/SZoK9zUvTPWXzmK81aGg/convert?w=400&amp;h=195&amp;fit=crop');" data-component-prop="photoUrl" data-component-prop-target="style/background-image" data-component-elm="showDetailsLink" data-toggle="modal" data-target="#item-modal">
+          <div class="item-tile-quantity-wrapper">
+            <div class="item-tile-quantity"></div>
+            in your cart
+          </div>
         </div>
         <div class="tile-info">
-          <h3 class="tile-title" component:prop="title">Poop Taco Box</h3>
-          <ul class="diet-tags" component:section="diet-tags">
-              <li class="diet-tag diet-tag-gluten-free" component:section="diet-tags" component:view="default"></li>
-              <li class="diet-tag diet-tag-spicy" component:section="diet-tags" component:view="default"></li>
+          <h3 class="tile-title" data-component-prop="title">Poop Taco Box</h3>
+          <ul class="diet-tags" data-component-section="diet-tags">
+              <li class="diet-tag diet-tag-gluten-free" data-component-section="diet-tags" data-component-view="default"></li>
+              <li class="diet-tag diet-tag-spicy" data-component-section="diet-tags" data-component-view="default"></li>
           </ul>
-          <div class="item-price" component:prop="price">$12.00</div>
-          <button class="btn btn-default btn-add" data-toggle="modal" data-target="#item-modal" component:elm="addButton" component:view="orderable">Add</button>
+          <div class="item-price" data-component-prop="price">$12.00</div>
+          <div class="item-tile-actions">
+            <button class="btn btn-default btn-add" data-component-elm="addButton" data-component-view="orderable">Add</button>
+          </div>
         </div>
       </div>
-      <div class="tile item-tile" component:section="items" component:view="default">
-        <div class="tile-cover" style="background-image: url('https://www.filepicker.io/api/file/SZoK9zUvTPWXzmK81aGg/convert?w=400&amp;h=195&amp;fit=crop');" component:prop="photoUrl" component:prop-target="style/background-image" component:elm="showDetailsLink" data-toggle="modal" data-target="#item-modal">
+      <div class="tile item-tile" data-component-section="items" data-component-view="default">
+        <div class="tile-cover" style="background-image: url('https://www.filepicker.io/api/file/SZoK9zUvTPWXzmK81aGg/convert?w=400&amp;h=195&amp;fit=crop');" data-component-prop="photoUrl" data-component-prop-target="style/background-image" data-component-elm="showDetailsLink" data-toggle="modal" data-target="#item-modal">
+          <div class="item-tile-quantity-wrapper">
+            <div class="item-tile-quantity"></div>
+            in your cart
+          </div>
         </div>
         <div class="tile-info">
-          <h3 class="tile-title" component:prop="title">Pirata Dos Tacos</h3>
-          <ul class="diet-tags" component:section="diet-tags">
-              <li class="diet-tag diet-tag-gluten-free" component:section="diet-tags" component:view="default"></li>
-              <li class="diet-tag diet-tag-spicy" component:section="diet-tags" component:view="default"></li>
+          <h3 class="tile-title" data-component-prop="title">Pirata Dos Tacos</h3>
+          <ul class="diet-tags" data-component-section="diet-tags">
+              <li class="diet-tag diet-tag-gluten-free" data-component-section="diet-tags" data-component-view="default"></li>
+              <li class="diet-tag diet-tag-spicy" data-component-section="diet-tags" data-component-view="default"></li>
           </ul>
-          <div class="item-price" component:prop="price">$10.90</div>
-          <button class="btn btn-default btn-add" data-toggle="modal" data-target="#item-modal" component:elm="addButton" component:view="orderable">Add</button>
+          <div class="item-price" data-component-prop="price">$10.90</div>
+          <div class="item-tile-actions">
+            <button class="btn btn-default btn-add" data-component-elm="addButton" data-component-view="orderable">Add</button>
+          </div>
         </div>
       </div>
   </div>
