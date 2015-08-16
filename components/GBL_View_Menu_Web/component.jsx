@@ -48,9 +48,21 @@ exports['for'] = function (module, Context) {
 				items[eventIds[item.get("event_id")]].push(item);
 	        });
 
+			var selectedEvent = self.props.appContext.get('stores').events.getModeledForDay(self.props.appContext.get('selectedDayId'));
+			if (selectedEvent.length > 0) {
+				if (selectedEvent.length > 1) {
+					throw new Error("Only one event should be found!");
+				}
+				selectedEvent = selectedEvent[0];
+			} else {
+				selectedEvent = null;
+			}
+
 	        return {
 
 				eventToday: self.modelRecordsWithStore(events, events.getToday()).pop(),
+
+				selectedEvent: selectedEvent,
 
 	        	// Info for each event (multiple menus grouped by 'Mon", "Tue", ...)
 	        	days: days,

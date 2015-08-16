@@ -207,6 +207,12 @@ exports['for'] = function (context) {
 		];
 	}
 
+	store.getModeledForDay = function (day_id) {
+		return store.modelRecords(store.where({
+			"day_id": day_id
+		}));
+	}
+
 	store.loadForDay = function (day_id) {
 		var self = this;
 		return COMMON.API.Q.denodeify(function (callback) {

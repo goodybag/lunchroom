@@ -15,6 +15,7 @@ exports.makeContextForClient = function (overrides) {
 	    // When navigating away from from the 'lockedView' we will do a REDIRECT instead of a PUSH-STATE
 	    lockedView: "",
 	    selectedDay: null,
+	    selectedDayId: null,
 	    todayId: COMMON.API.MOMENT().format("YYYY-MM-DD"),
 	    today: COMMON.API.MOMENT().format("ddd"),
 	    windowOrigin: null,
@@ -45,7 +46,8 @@ exports.makeContextForClient = function (overrides) {
 //		},
 //	    session: {
 	        selectedView: "string",
-	        selectedDay: "string"
+	        selectedDay: "string",
+	        selectedDayId: "string"
 	    },
 	    derived: {
 	        // The skin (config & components) for the active view.

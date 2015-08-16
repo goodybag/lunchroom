@@ -253,20 +253,10 @@ require("./component.jsx")['for'](module, {
 
 		var Panel = null;
 
-		if (!Context.eventToday) {
-
-			Panel = (
-				<div className="sixteen wide column">
-					<div className="ui message">
-					  <div className="header">
-					    No active event!
-					  </div>
-					</div>
-				</div>
-			);
-
-		} else
-		if (Context.items.length === 0) {
+		if (
+			!Context.eventToday ||
+			Context.items.length === 0
+		) {
 
 			Panel = (
 				<Context.templates.no_items.comp />
@@ -283,7 +273,7 @@ require("./component.jsx")['for'](module, {
 	    }
 
 		return (
-        	<div>
+        	<div className="page page-menu">
 
 	        	{Context.components.Header}
 

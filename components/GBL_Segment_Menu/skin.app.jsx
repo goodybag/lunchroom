@@ -5,11 +5,18 @@ require("./component.jsx")['for'](module, {
 
 		var data = {};
 
-		if (Context.eventToday) {
-			data['deliveryTime'] = Context.eventToday.get("format.deliveryTime");
-			data['timeLeftToOrder'] = Context.eventToday.get("format.orderTimer") || "Too late for today!";
-			data['deliverTo'] = Context.eventToday.get("consumerGroup.title");
+		var event = Context.appContext.get('stores').events.getModeledForDay(Context.appContext.get('selectedDayId'));
+		if (event.length > 0) {
+			if (event.length > 1) {
+				throw new Error("Only one event should be found!");
+			}
+			event = event[0];
+			data['deliveryTime'] = event.get("format.deliveryTime");
+			data['timeLeftToOrder'] = event.get("format.orderTimer") || "Too late for today!";
+			data['secondsLeftToOrder'] = parseInt(event.get("format.orderTimerSeconds") || 0);
+			data['deliverTo'] = event.get("consumerGroup.title");
 			data['cartItemCount'] = Context.cartItemCount;
+			data['day_id'] = event.get("day_id");
 		}
 
 		data["tabs"] = Context.days.map(function (item) {
@@ -39,13 +46,6 @@ require("./component.jsx")['for'](module, {
 					return false;
 				});
 
-				if (Context.appContext.get('selectedView') !== "Checkout") {
-					self.showViews(element, [
-						"not-on-checkout"
-					]);
-				} else {
-					self.showViews(element, []);						
-				}
 			},
 			fill: function (element, data, Context) {
 				var self = this;
@@ -69,11 +69,44 @@ require("./component.jsx")['for'](module, {
 					}
 			    }, function hookEvents(elm, data) {
 					elm.on("click", function () {
+						Context.appContext.set('selectedDayId', data.id);
 						Context.appContext.set('selectedDay', data.tabDay);
 						Context.appContext.set('selectedView', "Menu_Web");
 						return false;
 					});
 			    });
+
+			    if (data['day_id']) {
+			    	var views = [
+				    	"menuAvailable"
+			    	];
+			    	if (
+			    		data['day_id'] === Context.appContext.get('todayId')
+			    	) {
+			    		views.push("orderCountdown");
+						if (
+							Context.appContext.get('selectedView') !== "Checkout" &&
+			    			data['secondsLeftToOrder'] > 0
+			    		) {
+							views.push("not-on-checkout");
+						}
+			    	}
+					self.showViews(element, views);
+			    } else {
+					self.showViews(element, []);
+			    }
+
+			    if (
+			    	data['secondsLeftToOrder'] > 0 &&
+			    	data['secondsLeftToOrder'] < 60 * 60
+			    ) {
+					var clock = $('[data-component-prop="timeLeftToOrder"]', element).FlipClock({
+						clockFace: 'MinuteCounter'
+					});
+					clock.setTime(data['secondsLeftToOrder']);
+					clock.setCountdown(true);
+					clock.start();
+				}
 			}
 		});
 	}

@@ -229,6 +229,7 @@ exports.init = function (config, options) {
 						"id": item.id,
 						"vendor_id": event.record.restaurant_id,
 						"title": item.name,
+						"description": item.description || item.name,
 						"photo_url": item.photo_url,
 						"price": item.price,
 					};

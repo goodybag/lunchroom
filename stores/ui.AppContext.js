@@ -15,6 +15,7 @@ exports['for'] = function (overrides) {
 		sessionToken: JSON.parse(decodeURIComponent($('head > meta[name="session.token"]').attr("value"))),
 		context: JSON.parse(decodeURIComponent($('head > meta[name="app.context"]').attr("value"))),
 	    selectedDay: MOMENT().format("ddd"),
+	    selectedDayId: MOMENT().format("YYYY-MM-DD"),
 	    windowOrigin: window.location.origin || (window.location.protocol + "//" + window.location.host)
 	};
 

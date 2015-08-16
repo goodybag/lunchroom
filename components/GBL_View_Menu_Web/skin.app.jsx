@@ -28,12 +28,14 @@ require("./component.jsx")['for'](module, {
 					this.fillProperties(element, data)
 
 					if (
-						Context.eventToday &&
-						Context.appContext.get('selectedDay') === Context.eventToday.get("day.format.ddd")
+						Context.selectedEvent &&
+						Context.selectedEvent.get("day_id") === Context.appContext.get('todayId')
 					) {
 						this.showViews(element, [
 							"orderable"
 						]);
+					} else {
+						this.showViews(element, []);
 					}
 				}
 			}),
@@ -94,19 +96,21 @@ require("./component.jsx")['for'](module, {
 						});
 
 						if (
-							Context.eventToday &&
-							Context.appContext.get('selectedDay') === Context.eventToday.get("day.format.ddd")
+							Context.selectedEvent &&
+							Context.selectedEvent.get("day_id") === Context.appContext.get('todayId')
 						) {
 							self.showViews(elm, [
 								"orderable"
 							]);
+						} else {
+							self.showViews(elm, []);
 						}
 				    });
 				}
 			})
 		};
 	},
-
+/*
 	afterRender: function (Context, element) {
 
 		$('.tab', element).removeClass('active');
@@ -131,6 +135,7 @@ require("./component.jsx")['for'](module, {
 	    );
 
 	},
+*/
 	getHTML: function (Context) {
 
 
@@ -155,7 +160,7 @@ require("./component.jsx")['for'](module, {
 		}
 
         return (
-        	<div>
+        	<div className="page page-menu">
 
 	        	{Context.components.Header}
 

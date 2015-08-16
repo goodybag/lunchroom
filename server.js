@@ -213,9 +213,9 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
 				content = content.replace(/\{\{assetsJsUrl\}\}/g, req._FireNodeContext.config.assetsJsUrl || "");
 				content = content.replace(/\{\{bundleJsUrl\}\}/g, req._FireNodeContext.config.bundleJsUrl || "");
 
-				content = content.replace(/\{\{landingSkinCssUrl\}\}/g, landingResources.css);
-				content = content.replace(/\{\{landingSkinLibJsUrl\}\}/g, landingResources.js.lib);
-				content = content.replace(/\{\{landingSkinAppJsUrl\}\}/g, landingResources.js.app);
+//				content = content.replace(/\{\{landingSkinCssUrl\}\}/g, landingResources.css);
+//				content = content.replace(/\{\{landingSkinLibJsUrl\}\}/g, landingResources.js.lib);
+//				content = content.replace(/\{\{landingSkinAppJsUrl\}\}/g, landingResources.js.app);
 
 				content = content.replace(/\{\{skinCssUrl\}\}/g, appResources.css);
 				content = content.replace(/\{\{skinLibJsUrl\}\}/g, appResources.js.lib);

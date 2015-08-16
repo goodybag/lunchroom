@@ -12,6 +12,9 @@ var Store = COMMON.API.BACKBONE.Collection.extend({
 });
 
 
+var INCLUDE_PRIOR_WEEKEND = true;
+
+
 var store = new Store();
 
 function makeStartOfWeek () {
@@ -26,7 +29,11 @@ function makeStartOfWeek () {
 	return startOfWeek;
 }
 
-for (var day=1 ; day<=5 ; day++) {
+var day = 1;
+if (INCLUDE_PRIOR_WEEKEND) {
+	day -= 2;
+}
+for (; day<=5 ; day++) {
 	store.add({
 		"id": makeStartOfWeek().add(day, 'days').format("YYYY-MM-DD")
 	});

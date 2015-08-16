@@ -116,6 +116,18 @@ exports.forContext = function (context) {
 	            		.replace(/minutes/, "min");
 	            }
 		    },
+		    "format.orderTimerSeconds": {
+				deps: [
+					"orderByTime"
+				],
+				cache: false,
+	            fn: function () {
+	            	var orderByTime = COMMON.API.MOMENT(this.orderByTime);
+	            	var diff = orderByTime.diff(COMMON.API.MOMENT(), 'seconds');
+	            	if (diff<0) diff = 0;
+	            	return diff;
+	            }
+		    },		    
 		    "format.goodybagFee": {
 		    	deps: [
 					"goodybagFee"
