@@ -165,7 +165,7 @@ require("./component.jsx")['for'](module, {
 		) {
 
 			if (
-				Context.eventToday &&
+				Context.appContext.get('selectedDayId') === Context.appContext.get('todayId') &&
 				parseInt(Context.eventToday.get("format.orderTimerSeconds") || 0) <= 0
 			) {
 
