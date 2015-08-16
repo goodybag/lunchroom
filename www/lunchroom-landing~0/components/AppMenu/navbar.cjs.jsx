@@ -12,13 +12,13 @@ module.exports = function (Context) {
       <a href="#"><span data-component-prop="tabDay">Thurs</span><small data-component-prop="tabDate">Jan 29</small></a>
       <a href="#"><span data-component-prop="tabDay">Fri</span><small data-component-prop="tabDate">Jan 30</small></a>
     </div>
-    <div className="module">
+    <div className="module" data-component-view="menuAvailable">
       Delivery to: <small data-component-prop="deliverTo">Bazaarvoice</small>
     </div>
-    <div className="module">
+    <div className="module" data-component-view="menuAvailable">
       Delivery Time: <small data-component-prop="deliveryTime">12:00-12:30 PM</small>
     </div>
-    <div className="module">
+    <div className="module" data-component-view="orderCountdown">
       Time left to order:
       <small className="text-important" data-component-prop="timeLeftToOrder">1 hr 26min</small>
     </div>

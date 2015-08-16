@@ -2,9 +2,9 @@ module.exports = function (Context) {
   // TODO: Remove this once we can inject 'React' automatically at build time.
   var React = Context.REACT;
   return (
-    <div>
+    <div className="page page-landing">
 
-
+      
 <header className="navbar navbar-transparent navbar-transparent-dark">
   <div className="container">
     <a href="/">
@@ -117,6 +117,7 @@ module.exports = function (Context) {
 </footer>
 
 
+    
     </div>
   );
 }

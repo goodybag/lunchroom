@@ -109,7 +109,7 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(4)();
-	exports.push([module.id, "\nUL.GBL_DEV_Views__menu {\n\tmargin: 5;\n\tpadding: 0;\n\tlist-style-type: none;\n\ttext-align: center;\n\twidth: 100%;\n}\n\nUL.GBL_DEV_Views__menu > LI.menu {\n\tmargin-left: 3px;\n\tmargin-right: 3px;\n\tborder: 1px solid black;\n\tpadding: 3px;\n\tpadding-left: 10px;\n\tpadding-right: 10px;\n\tfont-weight: bold;\n\tdisplay: inline;\n}\n\nUL.GBL_DEV_Views__menu > LI.menu:hover {\n\tcolor: #fff;\n\tbackground-color: #369;\n\tcursor: pointer;\n}\n", ""]);
+	exports.push([module.id, "\nUL.GBL_DEV_Views__menu {\n\tmargin: 5;\n\tpadding: 0;\n\tlist-style-type: none;\n\ttext-align: center;\n\twidth: 100%;\n}\n\nUL.GBL_DEV_Views__menu > LI.menu {\n\tmargin-left: 3px;\n\tmargin-right: 3px;\n\tborder: 1px solid black;\n\tpadding: 3px;\n\tpadding-left: 10px;\n\tpadding-right: 10px;\n\tfont-weight: bold;\n\tdisplay: inline;\n}\n\nUL.GBL_DEV_Views__menu > LI.menu:hover {\n\tcolor: #fff;\n\tbackground-color: #369;\n\tcursor: pointer;\n}\n\n\n/* @see https://github.com/objectivehtml/FlipClock/issues/13#issuecomment-121574685 */\n\nDIV.lunchroom-header .flip-clock-wrapper ul {\n\twidth: 20px;\n\theight: 38px;\n\tmargin: 0 2px;\n\tpadding: 10px;\n}\nDIV.lunchroom-header .flip-clock-wrapper ul li {\n\tline-height: 38px;\n}\nDIV.lunchroom-header .flip-clock-wrapper span.flip-clock-divider {\n\theight: 38px;\n}\nDIV.lunchroom-header .flip-clock-wrapper ul li a div div.inn {\n\tborder-radius: 3px;\n\tfont-size: 20px;\n}\nDIV.lunchroom-header .flip-clock-wrapper ul li a div.down {\n\tborder-bottom-left-radius: 3px;\n\tborder-bottom-right-radius: 3px;\n}\nDIV.lunchroom-header .flip-clock-wrapper ul li a div.up:after {\n\ttop: 38px;\n\theight: 2px;\n}\n\n\nDIV.lunchroom-header .flip-clock-wrapper .flip-clock-label {\n\tdisplay: none;\n}\n", ""]);
 
 /***/ },
 /* 4 */
@@ -41882,12 +41882,12 @@
 	  return (
 	    React.createElement("header", {className: "navbar collapsed"}, 
 
-	      React.createElement("div", {className: "container"}, 
-	        React.createElement("a", {href: "/"}, 
-	          React.createElement("img", {src: "https://d3bqck8kwfkhx5.cloudfront.net/img/logo.png", alt: "Goodybag.com", className: "navbar-logo"})
+	        React.createElement("div", {className: "container"}, 
+	          React.createElement("a", {href: "/"}, 
+	            React.createElement("img", {src: "https://d3bqck8kwfkhx5.cloudfront.net/img/logo.png", alt: "Goodybag.com", className: "navbar-logo"})
+	          )
 	        )
-	      )
-	    
+	      
 	    )
 	  );
 	}
@@ -41903,11 +41903,18 @@
 
 			var data = {};
 
-			if (Context.eventToday) {
-				data['deliveryTime'] = Context.eventToday.get("format.deliveryTime");
-				data['timeLeftToOrder'] = Context.eventToday.get("format.orderTimer") || "Too late for today!";
-				data['deliverTo'] = Context.eventToday.get("consumerGroup.title");
+			var event = Context.appContext.get('stores').events.getModeledForDay(Context.appContext.get('selectedDayId'));
+			if (event.length > 0) {
+				if (event.length > 1) {
+					throw new Error("Only one event should be found!");
+				}
+				event = event[0];
+				data['deliveryTime'] = event.get("format.deliveryTime");
+				data['timeLeftToOrder'] = event.get("format.orderTimer") || "Too late for today!";
+				data['secondsLeftToOrder'] = parseInt(event.get("format.orderTimerSeconds") || 0);
+				data['deliverTo'] = event.get("consumerGroup.title");
 				data['cartItemCount'] = Context.cartItemCount;
+				data['day_id'] = event.get("day_id");
 			}
 
 			data["tabs"] = Context.days.map(function (item) {
@@ -41937,13 +41944,6 @@
 						return false;
 					});
 
-					if (Context.appContext.get('selectedView') !== "Checkout") {
-						self.showViews(element, [
-							"not-on-checkout"
-						]);
-					} else {
-						self.showViews(element, []);						
-					}
 				},
 				fill: function (element, data, Context) {
 					var self = this;
@@ -41967,11 +41967,44 @@
 						}
 				    }, function hookEvents(elm, data) {
 						elm.on("click", function () {
+							Context.appContext.set('selectedDayId', data.id);
 							Context.appContext.set('selectedDay', data.tabDay);
 							Context.appContext.set('selectedView', "Menu_Web");
 							return false;
 						});
 				    });
+
+				    if (data['day_id']) {
+				    	var views = [
+					    	"menuAvailable"
+				    	];
+				    	if (
+				    		data['day_id'] === Context.appContext.get('todayId')
+				    	) {
+				    		views.push("orderCountdown");
+							if (
+								Context.appContext.get('selectedView') !== "Checkout" &&
+				    			data['secondsLeftToOrder'] > 0
+				    		) {
+								views.push("not-on-checkout");
+							}
+				    	}
+						self.showViews(element, views);
+				    } else {
+						self.showViews(element, []);
+				    }
+
+				    if (
+				    	data['secondsLeftToOrder'] > 0 &&
+				    	data['secondsLeftToOrder'] < 60 * 60
+				    ) {
+						var clock = $('[data-component-prop="timeLeftToOrder"]', element).FlipClock({
+							clockFace: 'MinuteCounter'
+						});
+						clock.setTime(data['secondsLeftToOrder']);
+						clock.setCountdown(true);
+						clock.start();
+					}
 				}
 			});
 		}
@@ -42005,60 +42038,6 @@
 				this.props.appContext.get('stores').cart.off("update", this._trigger_forceUpdate);
 				this.props.appContext.get('stores').events.off("update", this._trigger_forceUpdate);
 		    },
-
-			afterRender: function (Context, element) {
-				var self = this;
-
-	// TODO: Port
-				$('.menu .item', element).tab();
-				$('.menu .item', element).on('click', function () {
-					var selectedDay = $(this).attr("data-tab");
-					Context.appContext.set('selectedDay', selectedDay);
-					Context.appContext.set('selectedView', "Menu_Web");
-				});
-				$('.menu .item', element).removeClass('active');
-			    $('.menu .item[data-tab="' + Context.appContext.get('selectedDay') + '"]', element).addClass('active');
-
-
-			    Context.ensureForNodes(
-			    	$('.button[data-link]', element),
-			    	'click',
-			    	function () {
-			    		var selectedView = $(this).attr("data-link").replace(/^#/, "");
-						Context.appContext.set('selectedView', selectedView);
-			    	}
-			    );
-
-
-			    if (Context.cartItemCount > 0) {
-			    	$('.button[data-link="#Checkout"]', element).removeClass("disabled");
-			    } else {
-			    	$('.button[data-link="#Checkout"]', element).addClass("disabled");
-			    }
-
-
-	// TODO: Port
-			    if (
-			    	Context.eventToday &&
-			    	!self.eventsCheckInterval
-			    ) {
-			    	var lastOrderTimer = null;
-			    	self.eventsCheckInterval = setInterval(function () {
-						if (lastOrderTimer === null) {
-							lastOrderTimer = Context.eventToday.get('format.orderTimer');
-						} else
-						if (Context.eventToday.get('format.orderTimer') !== lastOrderTimer) {
-							lastOrderTimer = Context.eventToday.get('format.orderTimer');
-							self._trigger_forceUpdate();
-						}
-						if (Context.eventToday.get("ordersLocked") && self.eventsCheckInterval) {
-							// Once orders are locked we can stop querying.
-							clearInterval(self.eventsCheckInterval);
-		    				self.eventsCheckInterval = null;
-						}
-					}, 1 * 1000);
-				}
-			},
 
 		    render: function () {
 		    	var self = this;
@@ -42109,13 +42088,13 @@
 	      React.createElement("a", {href: "#"}, React.createElement("span", {"data-component-prop": "tabDay"}, "Thurs"), React.createElement("small", {"data-component-prop": "tabDate"}, "Jan 29")), 
 	      React.createElement("a", {href: "#"}, React.createElement("span", {"data-component-prop": "tabDay"}, "Fri"), React.createElement("small", {"data-component-prop": "tabDate"}, "Jan 30"))
 	    ), 
-	    React.createElement("div", {className: "module"}, 
+	    React.createElement("div", {className: "module", "data-component-view": "menuAvailable"}, 
 	      "Delivery to: ", React.createElement("small", {"data-component-prop": "deliverTo"}, "Bazaarvoice")
 	    ), 
-	    React.createElement("div", {className: "module"}, 
+	    React.createElement("div", {className: "module", "data-component-view": "menuAvailable"}, 
 	      "Delivery Time: ", React.createElement("small", {"data-component-prop": "deliveryTime"}, "12:00-12:30 PM")
 	    ), 
-	    React.createElement("div", {className: "module"}, 
+	    React.createElement("div", {className: "module", "data-component-view": "orderCountdown"}, 
 	      "Time left to order:", 
 	      React.createElement("small", {className: "text-important", "data-component-prop": "timeLeftToOrder"}, "1 hr 26min")
 	    ), 
@@ -42180,12 +42159,12 @@
 	  return (
 	    React.createElement("footer", {className: "footer"}, 
 
-	      React.createElement("ul", {className: "nav footer-nav"}, 
-	        React.createElement("li", null, React.createElement("a", {href: "#", "data-toggle": "modal", "data-target": "#contact-us-modal"}, "Contact Us")), 
-	        React.createElement("li", null, React.createElement("a", {href: "https://www.goodybag.com/legal"}, "Terms of service")), 
-	        React.createElement("li", null, React.createElement("a", {href: "https://www.goodybag.com/privacy"}, "Privacy policy"))
-	      )
-	    
+	        React.createElement("ul", {className: "nav footer-nav"}, 
+	          React.createElement("li", null, React.createElement("a", {href: "#", "data-toggle": "modal", "data-target": "#contact-us-modal"}, "Contact Us")), 
+	          React.createElement("li", null, React.createElement("a", {href: "https://www.goodybag.com/legal"}, "Terms of service")), 
+	          React.createElement("li", null, React.createElement("a", {href: "https://www.goodybag.com/privacy"}, "Privacy policy"))
+	        )
+	      
 	    )
 	  );
 	}
@@ -42490,9 +42469,9 @@
 	  // TODO: Remove this once we can inject 'React' automatically at build time.
 	  var React = Context.REACT;
 	  return (
-	    React.createElement("div", null, 
+	    React.createElement("div", {className: "page page-landing"}, 
 
-
+	      
 	React.createElement("header", {className: "navbar navbar-transparent navbar-transparent-dark"}, 
 	  React.createElement("div", {className: "container"}, 
 	    React.createElement("a", {href: "/"}, 
@@ -42605,6 +42584,7 @@
 	)
 
 
+	    
 	    )
 	  );
 	}
@@ -42667,12 +42647,14 @@
 						this.fillProperties(element, data)
 
 						if (
-							Context.eventToday &&
-							Context.appContext.get('selectedDay') === Context.eventToday.get("day.format.ddd")
+							Context.selectedEvent &&
+							Context.selectedEvent.get("day_id") === Context.appContext.get('todayId')
 						) {
 							this.showViews(element, [
 								"orderable"
 							]);
+						} else {
+							this.showViews(element, []);
 						}
 					}
 				}),
@@ -42733,19 +42715,21 @@
 							});
 
 							if (
-								Context.eventToday &&
-								Context.appContext.get('selectedDay') === Context.eventToday.get("day.format.ddd")
+								Context.selectedEvent &&
+								Context.selectedEvent.get("day_id") === Context.appContext.get('todayId')
 							) {
 								self.showViews(elm, [
 									"orderable"
 								]);
+							} else {
+								self.showViews(elm, []);
 							}
 					    });
 					}
 				})
 			};
 		},
-
+	/*
 		afterRender: function (Context, element) {
 
 			$('.tab', element).removeClass('active');
@@ -42770,6 +42754,7 @@
 		    );
 
 		},
+	*/
 		getHTML: function (Context) {
 
 
@@ -42794,7 +42779,7 @@
 			}
 
 	        return (
-	        	React.createElement("div", null, 
+	        	React.createElement("div", {className: "page page-menu"}, 
 
 		        	Context.components.Header, 
 
@@ -42866,9 +42851,21 @@
 					items[eventIds[item.get("event_id")]].push(item);
 		        });
 
+				var selectedEvent = self.props.appContext.get('stores').events.getModeledForDay(self.props.appContext.get('selectedDayId'));
+				if (selectedEvent.length > 0) {
+					if (selectedEvent.length > 1) {
+						throw new Error("Only one event should be found!");
+					}
+					selectedEvent = selectedEvent[0];
+				} else {
+					selectedEvent = null;
+				}
+
 		        return {
 
 					eventToday: self.modelRecordsWithStore(events, events.getToday()).pop(),
+
+					selectedEvent: selectedEvent,
 
 		        	// Info for each event (multiple menus grouped by 'Mon", "Tue", ...)
 		        	days: days,
@@ -43332,20 +43329,10 @@
 
 			var Panel = null;
 
-			if (!Context.eventToday) {
-
-				Panel = (
-					React.createElement("div", {className: "sixteen wide column"}, 
-						React.createElement("div", {className: "ui message"}, 
-						  React.createElement("div", {className: "header"}, 
-						    "No active event!"
-						  )
-						)
-					)
-				);
-
-			} else
-			if (Context.items.length === 0) {
+			if (
+				!Context.eventToday ||
+				Context.items.length === 0
+			) {
 
 				Panel = (
 					React.createElement(Context.templates.no_items.comp, null)
@@ -43362,7 +43349,7 @@
 		    }
 
 			return (
-	        	React.createElement("div", null, 
+	        	React.createElement("div", {className: "page page-menu"}, 
 
 		        	Context.components.Header, 
 
@@ -43512,14 +43499,12 @@
 	  // TODO: Remove this once we can inject 'React' automatically at build time.
 	  var React = Context.REACT;
 	  return (
-	    React.createElement("section", {className: "page-section", id: "section-warning-section"}, 
+	    React.createElement("div", {className: "container"}, 
 
-	  React.createElement("div", {className: "container"}, 
-	    React.createElement("div", {className: "warning-section", "data-component-id": "warning-section"}, 
-	      React.createElement("img", {src: "/lunchroom-landing~0/resources/assets/img~cupcake-shocked-9c195d3.png", alt: "", className: "warning-section-supporting-graphic"}), 
-	      React.createElement("h2", {className: "warning-section-header"}, "You have nothing in your cart!"), 
-	      React.createElement("p", null, React.createElement("a", {href: "#", "data-component-elm": "addItemsLink"}, "Add items"))
-	    )
+	  React.createElement("div", {className: "warning-section", "data-component-id": "warning-section"}, 
+	    React.createElement("img", {src: "/lunchroom-landing~0/resources/assets/img~cupcake-shocked-9c195d3.png", alt: "", className: "warning-section-supporting-graphic"}), 
+	    React.createElement("h2", {className: "warning-section-header"}, "You have nothing in your cart!"), 
+	    React.createElement("p", null, React.createElement("a", {href: "#", "data-component-elm": "addItemsLink"}, "Add items"))
 	  )
 
 	    )
@@ -44129,6 +44114,63 @@
 
 	/* WEBPACK VAR INJECTION */(function(module) {/** @jsx React.DOM */
 	__webpack_require__(122)['for'](module, {
+
+
+		afterRender: function (Context, element) {
+			var self = this;
+
+
+			$('.menu .item', element).tab();
+			$('.menu .item', element).on('click', function () {
+				var selectedDay = $(this).attr("data-tab");
+				Context.appContext.set('selectedDay', selectedDay);
+				Context.appContext.set('selectedView', "Menu_Web");
+			});
+			$('.menu .item', element).removeClass('active');
+		    $('.menu .item[data-tab="' + Context.appContext.get('selectedDay') + '"]', element).addClass('active');
+
+
+		    Context.ensureForNodes(
+		    	$('.button[data-link]', element),
+		    	'click',
+		    	function () {
+		    		var selectedView = $(this).attr("data-link").replace(/^#/, "");
+					Context.appContext.set('selectedView', selectedView);
+		    	}
+		    );
+
+
+		    if (Context.cartItemCount > 0) {
+		    	$('.button[data-link="#Checkout"]', element).removeClass("disabled");
+		    } else {
+		    	$('.button[data-link="#Checkout"]', element).addClass("disabled");
+		    }
+
+
+	// TODO: Port
+		    if (
+		    	Context.eventToday &&
+		    	!self.eventsCheckInterval
+		    ) {
+		    	var lastOrderTimer = null;
+		    	self.eventsCheckInterval = setInterval(function () {
+					if (lastOrderTimer === null) {
+						lastOrderTimer = Context.eventToday.get('format.orderTimer');
+					} else
+					if (Context.eventToday.get('format.orderTimer') !== lastOrderTimer) {
+						lastOrderTimer = Context.eventToday.get('format.orderTimer');
+						self._trigger_forceUpdate();
+					}
+					if (Context.eventToday.get("ordersLocked") && self.eventsCheckInterval) {
+						// Once orders are locked we can stop querying.
+						clearInterval(self.eventsCheckInterval);
+	    				self.eventsCheckInterval = null;
+					}
+				}, 1 * 1000);
+			}
+		},
+
+
 		getHTML: function (Context) {
 
 			// TODO: Remove this once we can inject 'React' automatically at build time.
@@ -47798,6 +47840,7 @@
 			sessionToken: JSON.parse(decodeURIComponent($('head > meta[name="session.token"]').attr("value"))),
 			context: JSON.parse(decodeURIComponent($('head > meta[name="app.context"]').attr("value"))),
 		    selectedDay: MOMENT().format("ddd"),
+		    selectedDayId: MOMENT().format("YYYY-MM-DD"),
 		    windowOrigin: window.location.origin || (window.location.protocol + "//" + window.location.host)
 		};
 
@@ -51339,6 +51382,7 @@
 		    // When navigating away from from the 'lockedView' we will do a REDIRECT instead of a PUSH-STATE
 		    lockedView: "",
 		    selectedDay: null,
+		    selectedDayId: null,
 		    todayId: COMMON.API.MOMENT().format("YYYY-MM-DD"),
 		    today: COMMON.API.MOMENT().format("ddd"),
 		    windowOrigin: null,
@@ -51369,7 +51413,8 @@
 	//		},
 	//	    session: {
 		        selectedView: "string",
-		        selectedDay: "string"
+		        selectedDay: "string",
+		        selectedDayId: "string"
 		    },
 		    derived: {
 		        // The skin (config & components) for the active view.
@@ -58644,6 +58689,9 @@
 	});
 
 
+	var INCLUDE_PRIOR_WEEKEND = true;
+
+
 	var store = new Store();
 
 	function makeStartOfWeek () {
@@ -58658,7 +58706,11 @@
 		return startOfWeek;
 	}
 
-	for (var day=1 ; day<=5 ; day++) {
+	var day = 1;
+	if (INCLUDE_PRIOR_WEEKEND) {
+		day -= 2;
+	}
+	for (; day<=5 ; day++) {
 		store.add({
 			"id": makeStartOfWeek().add(day, 'days').format("YYYY-MM-DD")
 		});
@@ -58946,6 +58998,12 @@
 			];
 		}
 
+		store.getModeledForDay = function (day_id) {
+			return store.modelRecords(store.where({
+				"day_id": day_id
+			}));
+		}
+
 		store.loadForDay = function (day_id) {
 			var self = this;
 			return COMMON.API.Q.denodeify(function (callback) {
@@ -59181,6 +59239,18 @@
 		            		.replace(/minutes/, "min");
 		            }
 			    },
+			    "format.orderTimerSeconds": {
+					deps: [
+						"orderByTime"
+					],
+					cache: false,
+		            fn: function () {
+		            	var orderByTime = COMMON.API.MOMENT(this.orderByTime);
+		            	var diff = orderByTime.diff(COMMON.API.MOMENT(), 'seconds');
+		            	if (diff<0) diff = 0;
+		            	return diff;
+		            }
+			    },		    
 			    "format.goodybagFee": {
 			    	deps: [
 						"goodybagFee"

@@ -4,12 +4,12 @@ module.exports = function (Context) {
   return (
     <header className="navbar collapsed">
 
-      <div className="container">
-        <a href="/">
-          <img src="https://d3bqck8kwfkhx5.cloudfront.net/img/logo.png" alt="Goodybag.com" className="navbar-logo"/>
-        </a>
-      </div>
-    
+        <div className="container">
+          <a href="/">
+            <img src="https://d3bqck8kwfkhx5.cloudfront.net/img/logo.png" alt="Goodybag.com" className="navbar-logo"/>
+          </a>
+        </div>
+      
     </header>
   );
 }

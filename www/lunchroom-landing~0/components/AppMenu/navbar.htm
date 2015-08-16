@@ -14,13 +14,13 @@
       <a href="#"><span component:prop="tabDay">Thurs</span><small component:prop="tabDate">Jan 29</small></a>
       <a href="#"><span component:prop="tabDay">Fri</span><small component:prop="tabDate">Jan 30</small></a>
     </div>
-    <div class="module">
+    <div class="module" component:view="menuAvailable">
       Delivery to: <small component:prop="deliverTo">Bazaarvoice</small>
     </div>
-    <div class="module">
+    <div class="module" component:view="menuAvailable">
       Delivery Time: <small component:prop="deliveryTime">12:00-12:30 PM</small>
     </div>
-    <div class="module">
+    <div class="module" component:view="orderCountdown">
       Time left to order:
       <small class="text-important" component:prop="timeLeftToOrder">1 hr 26min</small>
     </div>
