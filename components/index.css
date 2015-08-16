@@ -24,35 +24,3 @@ UL.GBL_DEV_Views__menu > LI.menu:hover {
 	cursor: pointer;
 }
 
-
-/* @see https://github.com/objectivehtml/FlipClock/issues/13#issuecomment-121574685 */
-
-DIV.lunchroom-header .flip-clock-wrapper ul {
-	width: 20px;
-	height: 38px;
-	margin: 0 2px;
-	padding: 10px;
-}
-DIV.lunchroom-header .flip-clock-wrapper ul li {
-	line-height: 38px;
-}
-DIV.lunchroom-header .flip-clock-wrapper span.flip-clock-divider {
-	height: 38px;
-}
-DIV.lunchroom-header .flip-clock-wrapper ul li a div div.inn {
-	border-radius: 3px;
-	font-size: 20px;
-}
-DIV.lunchroom-header .flip-clock-wrapper ul li a div.down {
-	border-bottom-left-radius: 3px;
-	border-bottom-right-radius: 3px;
-}
-DIV.lunchroom-header .flip-clock-wrapper ul li a div.up:after {
-	top: 38px;
-	height: 2px;
-}
-
-
-DIV.lunchroom-header .flip-clock-wrapper .flip-clock-label {
-	display: none;
-}

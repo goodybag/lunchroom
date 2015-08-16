@@ -21,35 +21,35 @@ module.exports = function (Context) {
       <p className="checkout-info-note">We'll email/text you when your meal has arrived!</p>
     </div>
     <div className="payment-info">
-      <h3 className="section-title">Payment Info</h3>
-      <div className="error-group" data-error-group="payment_method"></div>
-      <div className="payment-method-wrapper">
-        <div className="form-group form-group-member-name">
-          <label for="">Name on card</label>
-          <input value="" type="text" className="form-control" name="card_member_name" data-component-elm="card[name]"/>
+    <h3 className="section-title">Payment Info</h3>
+    <div className="error-group" data-error-group="payment_method"></div>
+    <div className="payment-method-wrapper">
+      <div className="form-group form-group-member-name">
+        <label for="">Name on card</label>
+        <input value="" type="text" className="form-control" name="card_member_name" data-component-elm="card[name]"/>
+      </div>
+      <div className="inline-form-group-list">
+        <div className="form-group form-group-card-number">
+          <label for="">Card number</label>
+          <input type="tel" className="form-control" name="card_number" data-component-elm="card[number]"/>
         </div>
-        <div className="inline-form-group-list">
-          <div className="form-group form-group-card-number">
-            <label for="">Card number</label>
-            <input type="tel" className="form-control" name="card_number" data-component-elm="card[number]"/>
-          </div>
-          <div className="form-group form-group-card-cvv">
-            <label for="">CVV</label>
-            <input type="tel" className="form-control" name="card_cvv" data-component-elm="card[cvc]"/>
-          </div>
-          <div className="form-group form-group-expiration">
-            <label for="">Expiration date</label>
-            <input type="tel" className="form-control" placeholder="MM" name="card_expiration_month" data-component-elm="card[expire-month]"/>
-            /
-            <input type="tel" className="form-control" placeholder="YY" name="card_expiration_year" data-component-elm="card[expire-year]"/>
-          </div>
-          <div className="form-group form-group">
-            <label>
-              <input type="checkbox" name="save_card" checked=""/>
-              Save card?
-            </label>
-          </div>
+        <div className="form-group form-group-card-cvv">
+          <label for="">CVV</label>
+          <input type="tel" className="form-control" name="card_cvv" data-component-elm="card[cvc]"/>
         </div>
+        <div className="form-group form-group-expiration">
+          <label for="">Expiration date</label>
+          <input type="tel" className="form-control" placeholder="MM" name="card_expiration_month" data-component-elm="card[expire-month]"/>
+          /
+          <input type="tel" className="form-control" placeholder="YY" name="card_expiration_year" data-component-elm="card[expire-year]"/>
+        </div>
+      </div>
+      <div className="form-group form-group">
+        <label>
+          <input type="checkbox" name="save_card" checked=""/>
+          Save card?
+        </label>
+      </div>
     </div>
   </div>
     </fieldset>

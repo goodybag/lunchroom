@@ -109,7 +109,7 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(4)();
-	exports.push([module.id, "\nUL.GBL_DEV_Views__menu {\n\tmargin: 5;\n\tpadding: 0;\n\tlist-style-type: none;\n\ttext-align: center;\n\twidth: 100%;\n}\n\nUL.GBL_DEV_Views__menu > LI.menu {\n\tmargin-left: 3px;\n\tmargin-right: 3px;\n\tborder: 1px solid black;\n\tpadding: 3px;\n\tpadding-left: 10px;\n\tpadding-right: 10px;\n\tfont-weight: bold;\n\tdisplay: inline;\n}\n\nUL.GBL_DEV_Views__menu > LI.menu:hover {\n\tcolor: #fff;\n\tbackground-color: #369;\n\tcursor: pointer;\n}\n\n\n/* @see https://github.com/objectivehtml/FlipClock/issues/13#issuecomment-121574685 */\n\nDIV.lunchroom-header .flip-clock-wrapper ul {\n\twidth: 20px;\n\theight: 38px;\n\tmargin: 0 2px;\n\tpadding: 10px;\n}\nDIV.lunchroom-header .flip-clock-wrapper ul li {\n\tline-height: 38px;\n}\nDIV.lunchroom-header .flip-clock-wrapper span.flip-clock-divider {\n\theight: 38px;\n}\nDIV.lunchroom-header .flip-clock-wrapper ul li a div div.inn {\n\tborder-radius: 3px;\n\tfont-size: 20px;\n}\nDIV.lunchroom-header .flip-clock-wrapper ul li a div.down {\n\tborder-bottom-left-radius: 3px;\n\tborder-bottom-right-radius: 3px;\n}\nDIV.lunchroom-header .flip-clock-wrapper ul li a div.up:after {\n\ttop: 38px;\n\theight: 2px;\n}\n\n\nDIV.lunchroom-header .flip-clock-wrapper .flip-clock-label {\n\tdisplay: none;\n}\n", ""]);
+	exports.push([module.id, "\nUL.GBL_DEV_Views__menu {\n\tmargin: 5;\n\tpadding: 0;\n\tlist-style-type: none;\n\ttext-align: center;\n\twidth: 100%;\n}\n\nUL.GBL_DEV_Views__menu > LI.menu {\n\tmargin-left: 3px;\n\tmargin-right: 3px;\n\tborder: 1px solid black;\n\tpadding: 3px;\n\tpadding-left: 10px;\n\tpadding-right: 10px;\n\tfont-weight: bold;\n\tdisplay: inline;\n}\n\nUL.GBL_DEV_Views__menu > LI.menu:hover {\n\tcolor: #fff;\n\tbackground-color: #369;\n\tcursor: pointer;\n}\n\n", ""]);
 
 /***/ },
 /* 4 */
@@ -419,25 +419,25 @@
 		if (skin === "app") {
 			return __webpack_require__(21);
 		} else {
-			return __webpack_require__(150);
+			return __webpack_require__(151);
 		}
 	}
 
 	function initAppContext (skin) {
 		var storeContext = {};
-		var appContext = __webpack_require__(191)['for']({
+		var appContext = __webpack_require__(192)['for']({
 			stores: {
-				days: __webpack_require__(259)['for'](storeContext),
-				events: __webpack_require__(260)['for'](storeContext),
-				items: __webpack_require__(263)['for'](storeContext),
-				vendors: __webpack_require__(264)['for'](storeContext),
-				menus: __webpack_require__(265)['for'](storeContext),
-				consumers: __webpack_require__(266)['for'](storeContext),
-				consumerGroups: __webpack_require__(262)['for'](storeContext),
-				consumerGroupSubscriptions: __webpack_require__(267)['for'](storeContext),
-				cart: __webpack_require__(268)['for'](storeContext),
-				orders: __webpack_require__(269)['for'](storeContext),
-				orderStatus: __webpack_require__(270)['for'](storeContext)
+				days: __webpack_require__(260)['for'](storeContext),
+				events: __webpack_require__(261)['for'](storeContext),
+				items: __webpack_require__(264)['for'](storeContext),
+				vendors: __webpack_require__(265)['for'](storeContext),
+				menus: __webpack_require__(266)['for'](storeContext),
+				consumers: __webpack_require__(267)['for'](storeContext),
+				consumerGroups: __webpack_require__(263)['for'](storeContext),
+				consumerGroupSubscriptions: __webpack_require__(268)['for'](storeContext),
+				cart: __webpack_require__(269)['for'](storeContext),
+				orders: __webpack_require__(270)['for'](storeContext),
+				orderStatus: __webpack_require__(271)['for'](storeContext)
 			},
 			skin: skin
 			// TODO: Inject config
@@ -27419,12 +27419,12 @@
 			"components": WEB_COMPONENTS
 		},
 		"Order_Placed": {
-			"component": __webpack_require__(145),
+			"component": __webpack_require__(146),
 			"config": {},
 			"components": WEB_COMPONENTS
 		},
 		"Receipt": {
-			"component": __webpack_require__(148),
+			"component": __webpack_require__(149),
 			"config": {}
 		}
 	};
@@ -41897,6 +41897,42 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(module) {/** @jsx React.DOM */
+
+
+	function startTimer (duration, display) {
+	    var start = Date.now(),
+	        diff,
+	        minutes,
+	        seconds;
+	    function timer() {
+	        // get the number of seconds that have elapsed since 
+	        // startTimer() was called
+	        diff = duration - (((Date.now() - start) / 1000) | 0);
+
+	        // does the same job as parseInt truncates the float
+	        minutes = (diff / 60) | 0;
+	        seconds = (diff % 60) | 0;
+
+	        minutes = minutes < 10 ? "0" + minutes : minutes;
+	        seconds = seconds < 10 ? "0" + seconds : seconds;
+
+	        display.html(minutes + ":" + seconds);
+
+	        if (diff <= 0) {
+	        	clearInterval(startTimer.previousInterval);
+	        	startTimer.previousInterval = null;
+	        }
+	    };
+	    // we don't want to wait a full second before the timer starts
+	    timer();
+	    if (startTimer.previousInterval) {
+	    	clearInterval(startTimer.previousInterval);
+	    	startTimer.previousInterval = null;
+	    }
+	    startTimer.previousInterval = setInterval(timer, 1000);
+	}
+
+
 	__webpack_require__(122)['for'](module, {
 
 		getTemplateData: function (Context) {
@@ -41998,12 +42034,7 @@
 				    	data['secondsLeftToOrder'] > 0 &&
 				    	data['secondsLeftToOrder'] < 60 * 60
 				    ) {
-						var clock = $('[data-component-prop="timeLeftToOrder"]', element).FlipClock({
-							clockFace: 'MinuteCounter'
-						});
-						clock.setTime(data['secondsLeftToOrder']);
-						clock.setCountdown(true);
-						clock.start();
+					    startTimer(data['secondsLeftToOrder'], $('[data-component-prop="timeLeftToOrder"]', element));
 					}
 				}
 			});
@@ -42648,7 +42679,8 @@
 
 						if (
 							Context.selectedEvent &&
-							Context.selectedEvent.get("day_id") === Context.appContext.get('todayId')
+							Context.selectedEvent.get("day_id") === Context.appContext.get('todayId') &&
+							parseInt(Context.selectedEvent.get("format.orderTimerSeconds") || 0)
 						) {
 							this.showViews(element, [
 								"orderable"
@@ -42716,7 +42748,8 @@
 
 							if (
 								Context.selectedEvent &&
-								Context.selectedEvent.get("day_id") === Context.appContext.get('todayId')
+								Context.selectedEvent.get("day_id") === Context.appContext.get('todayId') &&
+								parseInt(Context.selectedEvent.get("format.orderTimerSeconds") || 0)
 							) {
 								self.showViews(elm, [
 									"orderable"
@@ -43075,7 +43108,7 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(module) {/** @jsx React.DOM */
-	__webpack_require__(140)['for'](module, {
+	__webpack_require__(139)['for'](module, {
 
 		singleton: function (Context) {
 
@@ -43094,7 +43127,18 @@
 			var copyName = {};
 
 			return {
-				"no_items":  new Context.Template({
+				"too_late": new Context.Template({
+					impl: __webpack_require__(140),
+					markup: function (element) {
+					},
+					fill: function (element, data, Context) {
+
+						this.fillProperties(element, {
+							"orderBy": Context.eventToday.get('format.orderByTime')
+						});
+					}
+				}),
+				"no_items": new Context.Template({
 					impl: __webpack_require__(141),
 					markup: function (element) {
 
@@ -43119,8 +43163,10 @@
 					}
 				}),
 				"form": new Context.Template({
-					impl: __webpack_require__(139),
+					impl: __webpack_require__(275),
 					markup: function (element) {
+
+						this.liftSections(element);
 
 					    // Save form on change to any order field.
 				    	$('input', element).on('keyup', function () {
@@ -43157,10 +43203,14 @@
 							this.fillProperties(element, values);
 							this.fillElements(element, values);
 						}
+
+						this.showViews(element, [
+							"default"
+						]);
 					}
 				}),
 				"items": new Context.Template({
-					impl: __webpack_require__(143),
+					impl: __webpack_require__(144),
 					markup: function (element) {
 
 						this.liftSections(element);
@@ -43197,7 +43247,7 @@
 					}
 				}),
 				"summary": new Context.Template({
-					impl: __webpack_require__(144),
+					impl: __webpack_require__(145),
 					markup: function (element) {
 
 						$('[data-component-elm="placeOrderButton"]', element).click(function () {
@@ -43329,6 +43379,13 @@
 
 			var Panel = null;
 
+			if (parseInt(Context.eventToday.get("format.orderTimerSeconds") || 0) <= 0) {
+
+				Panel = (
+					React.createElement(Context.templates.too_late.comp, null)
+				);
+
+			} else
 			if (
 				!Context.eventToday ||
 				Context.items.length === 0
@@ -43368,68 +43425,6 @@
 
 /***/ },
 /* 139 */
-/***/ function(module, exports) {
-
-	/** @jsx React.DOM */module.exports = function (Context) {
-	  // TODO: Remove this once we can inject 'React' automatically at build time.
-	  var React = Context.REACT;
-	  return (
-	    React.createElement("fieldset", {className: "checkout-info form-vertical", "data-component-view": "default"}, 
-
-	    React.createElement("div", {className: "user-info"}, 
-	      React.createElement("h3", {className: "section-title"}, "Your Info"), 
-	      React.createElement("div", {className: "form-group"}, 
-	        React.createElement("label", {for: ""}, "Name"), 
-	        React.createElement("input", {type: "text", className: "form-control", "data-component-elm": "info[name]"})
-	      ), 
-	      React.createElement("div", {className: "form-group"}, 
-	        React.createElement("label", {for: ""}, "Email"), 
-	        React.createElement("input", {type: "email", className: "form-control", "data-component-elm": "info[email]"})
-	      ), 
-	      React.createElement("div", {className: "form-group"}, 
-	        React.createElement("label", {for: ""}, "Phone Number"), 
-	        React.createElement("div", {className: "intl-tel-input"}, React.createElement("div", {className: "flag-dropdown"}, React.createElement("div", {tabindex: "0", className: "selected-flag", title: "United States: +1"}, React.createElement("div", {className: "iti-flag us"}), React.createElement("div", {className: "arrow"})), React.createElement("ul", {className: "country-list hide"}, React.createElement("li", {className: "country preferred active", "data-dial-code": "1", "data-country-code": "us"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag us"})), React.createElement("span", {className: "country-name"}, "United States"), React.createElement("span", {className: "dial-code"}, "+1")), React.createElement("li", {className: "country preferred", "data-dial-code": "44", "data-country-code": "gb"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag gb"})), React.createElement("span", {className: "country-name"}, "United Kingdom"), React.createElement("span", {className: "dial-code"}, "+44")), React.createElement("li", {className: "divider"}), React.createElement("li", {className: "country", "data-dial-code": "93", "data-country-code": "af"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag af"})), React.createElement("span", {className: "country-name"}, "Afghanistan (‫افغانستان‬‎)"), React.createElement("span", {className: "dial-code"}, "+93")), React.createElement("li", {className: "country", "data-dial-code": "355", "data-country-code": "al"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag al"})), React.createElement("span", {className: "country-name"}, "Albania (Shqipëri)"), React.createElement("span", {className: "dial-code"}, "+355")), React.createElement("li", {className: "country", "data-dial-code": "213", "data-country-code": "dz"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag dz"})), React.createElement("span", {className: "country-name"}, "Algeria (‫الجزائر‬‎)"), React.createElement("span", {className: "dial-code"}, "+213")), React.createElement("li", {className: "country", "data-dial-code": "1684", "data-country-code": "as"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag as"})), React.createElement("span", {className: "country-name"}, "American Samoa"), React.createElement("span", {className: "dial-code"}, "+1684")), React.createElement("li", {className: "country", "data-dial-code": "376", "data-country-code": "ad"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag ad"})), React.createElement("span", {className: "country-name"}, "Andorra"), React.createElement("span", {className: "dial-code"}, "+376")), React.createElement("li", {className: "country", "data-dial-code": "244", "data-country-code": "ao"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag ao"})), React.createElement("span", {className: "country-name"}, "Angola"), React.createElement("span", {className: "dial-code"}, "+244")), React.createElement("li", {className: "country", "data-dial-code": "1264", "data-country-code": "ai"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag ai"})), React.createElement("span", {className: "country-name"}, "Anguilla"), React.createElement("span", {className: "dial-code"}, "+1264")), React.createElement("li", {className: "country", "data-dial-code": "1268", "data-country-code": "ag"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag ag"})), React.createElement("span", {className: "country-name"}, "Antigua and Barbuda"), React.createElement("span", {className: "dial-code"}, "+1268")), React.createElement("li", {className: "country", "data-dial-code": "54", "data-country-code": "ar"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag ar"})), React.createElement("span", {className: "country-name"}, "Argentina"), React.createElement("span", {className: "dial-code"}, "+54")), React.createElement("li", {className: "country", "data-dial-code": "374", "data-country-code": "am"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag am"})), React.createElement("span", {className: "country-name"}, "Armenia (Հայաստան)"), React.createElement("span", {className: "dial-code"}, "+374")), React.createElement("li", {className: "country", "data-dial-code": "297", "data-country-code": "aw"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag aw"})), React.createElement("span", {className: "country-name"}, "Aruba"), React.createElement("span", {className: "dial-code"}, "+297")), React.createElement("li", {className: "country", "data-dial-code": "61", "data-country-code": "au"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag au"})), React.createElement("span", {className: "country-name"}, "Australia"), React.createElement("span", {className: "dial-code"}, "+61")), React.createElement("li", {className: "country", "data-dial-code": "43", "data-country-code": "at"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag at"})), React.createElement("span", {className: "country-name"}, "Austria (Österreich)"), React.createElement("span", {className: "dial-code"}, "+43")), React.createElement("li", {className: "country", "data-dial-code": "994", "data-country-code": "az"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag az"})), React.createElement("span", {className: "country-name"}, "Azerbaijan (Azərbaycan)"), React.createElement("span", {className: "dial-code"}, "+994")), React.createElement("li", {className: "country", "data-dial-code": "1242", "data-country-code": "bs"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag bs"})), React.createElement("span", {className: "country-name"}, "Bahamas"), React.createElement("span", {className: "dial-code"}, "+1242")), React.createElement("li", {className: "country", "data-dial-code": "973", "data-country-code": "bh"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag bh"})), React.createElement("span", {className: "country-name"}, "Bahrain (‫البحرين‬‎)"), React.createElement("span", {className: "dial-code"}, "+973")), React.createElement("li", {className: "country", "data-dial-code": "880", "data-country-code": "bd"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag bd"})), React.createElement("span", {className: "country-name"}, "Bangladesh (বাংলাদেশ)"), React.createElement("span", {className: "dial-code"}, "+880")), React.createElement("li", {className: "country", "data-dial-code": "1246", "data-country-code": "bb"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag bb"})), React.createElement("span", {className: "country-name"}, "Barbados"), React.createElement("span", {className: "dial-code"}, "+1246")), React.createElement("li", {className: "country", "data-dial-code": "375", "data-country-code": "by"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag by"})), React.createElement("span", {className: "country-name"}, "Belarus (Беларусь)"), React.createElement("span", {className: "dial-code"}, "+375")), React.createElement("li", {className: "country", "data-dial-code": "32", "data-country-code": "be"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag be"})), React.createElement("span", {className: "country-name"}, "Belgium (België)"), React.createElement("span", {className: "dial-code"}, "+32")), React.createElement("li", {className: "country", "data-dial-code": "501", "data-country-code": "bz"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag bz"})), React.createElement("span", {className: "country-name"}, "Belize"), React.createElement("span", {className: "dial-code"}, "+501")), React.createElement("li", {className: "country", "data-dial-code": "229", "data-country-code": "bj"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag bj"})), React.createElement("span", {className: "country-name"}, "Benin (Bénin)"), React.createElement("span", {className: "dial-code"}, "+229")), React.createElement("li", {className: "country", "data-dial-code": "1441", "data-country-code": "bm"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag bm"})), React.createElement("span", {className: "country-name"}, "Bermuda"), React.createElement("span", {className: "dial-code"}, "+1441")), React.createElement("li", {className: "country", "data-dial-code": "975", "data-country-code": "bt"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag bt"})), React.createElement("span", {className: "country-name"}, "Bhutan (འབྲུག)"), React.createElement("span", {className: "dial-code"}, "+975")), React.createElement("li", {className: "country", "data-dial-code": "591", "data-country-code": "bo"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag bo"})), React.createElement("span", {className: "country-name"}, "Bolivia"), React.createElement("span", {className: "dial-code"}, "+591")), React.createElement("li", {className: "country", "data-dial-code": "387", "data-country-code": "ba"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag ba"})), React.createElement("span", {className: "country-name"}, "Bosnia and Herzegovina (Босна и Херцеговина)"), React.createElement("span", {className: "dial-code"}, "+387")), React.createElement("li", {className: "country", "data-dial-code": "267", "data-country-code": "bw"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag bw"})), React.createElement("span", {className: "country-name"}, "Botswana"), React.createElement("span", {className: "dial-code"}, "+267")), React.createElement("li", {className: "country", "data-dial-code": "55", "data-country-code": "br"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag br"})), React.createElement("span", {className: "country-name"}, "Brazil (Brasil)"), React.createElement("span", {className: "dial-code"}, "+55")), React.createElement("li", {className: "country", "data-dial-code": "246", "data-country-code": "io"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag io"})), React.createElement("span", {className: "country-name"}, "British Indian Ocean Territory"), React.createElement("span", {className: "dial-code"}, "+246")), React.createElement("li", {className: "country", "data-dial-code": "1284", "data-country-code": "vg"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag vg"})), React.createElement("span", {className: "country-name"}, "British Virgin Islands"), React.createElement("span", {className: "dial-code"}, "+1284")), React.createElement("li", {className: "country", "data-dial-code": "673", "data-country-code": "bn"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag bn"})), React.createElement("span", {className: "country-name"}, "Brunei"), React.createElement("span", {className: "dial-code"}, "+673")), React.createElement("li", {className: "country", "data-dial-code": "359", "data-country-code": "bg"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag bg"})), React.createElement("span", {className: "country-name"}, "Bulgaria (България)"), React.createElement("span", {className: "dial-code"}, "+359")), React.createElement("li", {className: "country", "data-dial-code": "226", "data-country-code": "bf"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag bf"})), React.createElement("span", {className: "country-name"}, "Burkina Faso"), React.createElement("span", {className: "dial-code"}, "+226")), React.createElement("li", {className: "country", "data-dial-code": "257", "data-country-code": "bi"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag bi"})), React.createElement("span", {className: "country-name"}, "Burundi (Uburundi)"), React.createElement("span", {className: "dial-code"}, "+257")), React.createElement("li", {className: "country", "data-dial-code": "855", "data-country-code": "kh"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag kh"})), React.createElement("span", {className: "country-name"}, "Cambodia (កម្ពុជា)"), React.createElement("span", {className: "dial-code"}, "+855")), React.createElement("li", {className: "country", "data-dial-code": "237", "data-country-code": "cm"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag cm"})), React.createElement("span", {className: "country-name"}, "Cameroon (Cameroun)"), React.createElement("span", {className: "dial-code"}, "+237")), React.createElement("li", {className: "country", "data-dial-code": "1", "data-country-code": "ca"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag ca"})), React.createElement("span", {className: "country-name"}, "Canada"), React.createElement("span", {className: "dial-code"}, "+1")), React.createElement("li", {className: "country", "data-dial-code": "238", "data-country-code": "cv"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag cv"})), React.createElement("span", {className: "country-name"}, "Cape Verde (Kabu Verdi)"), React.createElement("span", {className: "dial-code"}, "+238")), React.createElement("li", {className: "country", "data-dial-code": "599", "data-country-code": "bq"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag bq"})), React.createElement("span", {className: "country-name"}, "Caribbean Netherlands"), React.createElement("span", {className: "dial-code"}, "+599")), React.createElement("li", {className: "country", "data-dial-code": "1345", "data-country-code": "ky"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag ky"})), React.createElement("span", {className: "country-name"}, "Cayman Islands"), React.createElement("span", {className: "dial-code"}, "+1345")), React.createElement("li", {className: "country", "data-dial-code": "236", "data-country-code": "cf"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag cf"})), React.createElement("span", {className: "country-name"}, "Central African Republic (République centrafricaine)"), React.createElement("span", {className: "dial-code"}, "+236")), React.createElement("li", {className: "country", "data-dial-code": "235", "data-country-code": "td"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag td"})), React.createElement("span", {className: "country-name"}, "Chad (Tchad)"), React.createElement("span", {className: "dial-code"}, "+235")), React.createElement("li", {className: "country", "data-dial-code": "56", "data-country-code": "cl"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag cl"})), React.createElement("span", {className: "country-name"}, "Chile"), React.createElement("span", {className: "dial-code"}, "+56")), React.createElement("li", {className: "country", "data-dial-code": "86", "data-country-code": "cn"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag cn"})), React.createElement("span", {className: "country-name"}, "China (中国)"), React.createElement("span", {className: "dial-code"}, "+86")), React.createElement("li", {className: "country", "data-dial-code": "57", "data-country-code": "co"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag co"})), React.createElement("span", {className: "country-name"}, "Colombia"), React.createElement("span", {className: "dial-code"}, "+57")), React.createElement("li", {className: "country", "data-dial-code": "269", "data-country-code": "km"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag km"})), React.createElement("span", {className: "country-name"}, "Comoros (‫جزر القمر‬‎)"), React.createElement("span", {className: "dial-code"}, "+269")), React.createElement("li", {className: "country", "data-dial-code": "243", "data-country-code": "cd"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag cd"})), React.createElement("span", {className: "country-name"}, "Congo (DRC) (Jamhuri ya Kidemokrasia ya Kongo)"), React.createElement("span", {className: "dial-code"}, "+243")), React.createElement("li", {className: "country", "data-dial-code": "242", "data-country-code": "cg"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag cg"})), React.createElement("span", {className: "country-name"}, "Congo (Republic) (Congo-Brazzaville)"), React.createElement("span", {className: "dial-code"}, "+242")), React.createElement("li", {className: "country", "data-dial-code": "682", "data-country-code": "ck"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag ck"})), React.createElement("span", {className: "country-name"}, "Cook Islands"), React.createElement("span", {className: "dial-code"}, "+682")), React.createElement("li", {className: "country", "data-dial-code": "506", "data-country-code": "cr"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag cr"})), React.createElement("span", {className: "country-name"}, "Costa Rica"), React.createElement("span", {className: "dial-code"}, "+506")), React.createElement("li", {className: "country", "data-dial-code": "225", "data-country-code": "ci"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag ci"})), React.createElement("span", {className: "country-name"}, "Côte d’Ivoire"), React.createElement("span", {className: "dial-code"}, "+225")), React.createElement("li", {className: "country", "data-dial-code": "385", "data-country-code": "hr"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag hr"})), React.createElement("span", {className: "country-name"}, "Croatia (Hrvatska)"), React.createElement("span", {className: "dial-code"}, "+385")), React.createElement("li", {className: "country", "data-dial-code": "53", "data-country-code": "cu"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag cu"})), React.createElement("span", {className: "country-name"}, "Cuba"), React.createElement("span", {className: "dial-code"}, "+53")), React.createElement("li", {className: "country", "data-dial-code": "599", "data-country-code": "cw"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag cw"})), React.createElement("span", {className: "country-name"}, "Curaçao"), React.createElement("span", {className: "dial-code"}, "+599")), React.createElement("li", {className: "country", "data-dial-code": "357", "data-country-code": "cy"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag cy"})), React.createElement("span", {className: "country-name"}, "Cyprus (Κύπρος)"), React.createElement("span", {className: "dial-code"}, "+357")), React.createElement("li", {className: "country", "data-dial-code": "420", "data-country-code": "cz"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag cz"})), React.createElement("span", {className: "country-name"}, "Czech Republic (Česká republika)"), React.createElement("span", {className: "dial-code"}, "+420")), React.createElement("li", {className: "country", "data-dial-code": "45", "data-country-code": "dk"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag dk"})), React.createElement("span", {className: "country-name"}, "Denmark (Danmark)"), React.createElement("span", {className: "dial-code"}, "+45")), React.createElement("li", {className: "country", "data-dial-code": "253", "data-country-code": "dj"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag dj"})), React.createElement("span", {className: "country-name"}, "Djibouti"), React.createElement("span", {className: "dial-code"}, "+253")), React.createElement("li", {className: "country", "data-dial-code": "1767", "data-country-code": "dm"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag dm"})), React.createElement("span", {className: "country-name"}, "Dominica"), React.createElement("span", {className: "dial-code"}, "+1767")), React.createElement("li", {className: "country", "data-dial-code": "1", "data-country-code": "do"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag do"})), React.createElement("span", {className: "country-name"}, "Dominican Republic (República Dominicana)"), React.createElement("span", {className: "dial-code"}, "+1")), React.createElement("li", {className: "country", "data-dial-code": "593", "data-country-code": "ec"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag ec"})), React.createElement("span", {className: "country-name"}, "Ecuador"), React.createElement("span", {className: "dial-code"}, "+593")), React.createElement("li", {className: "country", "data-dial-code": "20", "data-country-code": "eg"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag eg"})), React.createElement("span", {className: "country-name"}, "Egypt (‫مصر‬‎)"), React.createElement("span", {className: "dial-code"}, "+20")), React.createElement("li", {className: "country", "data-dial-code": "503", "data-country-code": "sv"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag sv"})), React.createElement("span", {className: "country-name"}, "El Salvador"), React.createElement("span", {className: "dial-code"}, "+503")), React.createElement("li", {className: "country", "data-dial-code": "240", "data-country-code": "gq"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag gq"})), React.createElement("span", {className: "country-name"}, "Equatorial Guinea (Guinea Ecuatorial)"), React.createElement("span", {className: "dial-code"}, "+240")), React.createElement("li", {className: "country", "data-dial-code": "291", "data-country-code": "er"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag er"})), React.createElement("span", {className: "country-name"}, "Eritrea"), React.createElement("span", {className: "dial-code"}, "+291")), React.createElement("li", {className: "country", "data-dial-code": "372", "data-country-code": "ee"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag ee"})), React.createElement("span", {className: "country-name"}, "Estonia (Eesti)"), React.createElement("span", {className: "dial-code"}, "+372")), React.createElement("li", {className: "country", "data-dial-code": "251", "data-country-code": "et"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag et"})), React.createElement("span", {className: "country-name"}, "Ethiopia"), React.createElement("span", {className: "dial-code"}, "+251")), React.createElement("li", {className: "country", "data-dial-code": "500", "data-country-code": "fk"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag fk"})), React.createElement("span", {className: "country-name"}, "Falkland Islands (Islas Malvinas)"), React.createElement("span", {className: "dial-code"}, "+500")), React.createElement("li", {className: "country", "data-dial-code": "298", "data-country-code": "fo"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag fo"})), React.createElement("span", {className: "country-name"}, "Faroe Islands (Føroyar)"), React.createElement("span", {className: "dial-code"}, "+298")), React.createElement("li", {className: "country", "data-dial-code": "679", "data-country-code": "fj"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag fj"})), React.createElement("span", {className: "country-name"}, "Fiji"), React.createElement("span", {className: "dial-code"}, "+679")), React.createElement("li", {className: "country", "data-dial-code": "358", "data-country-code": "fi"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag fi"})), React.createElement("span", {className: "country-name"}, "Finland (Suomi)"), React.createElement("span", {className: "dial-code"}, "+358")), React.createElement("li", {className: "country", "data-dial-code": "33", "data-country-code": "fr"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag fr"})), React.createElement("span", {className: "country-name"}, "France"), React.createElement("span", {className: "dial-code"}, "+33")), React.createElement("li", {className: "country", "data-dial-code": "594", "data-country-code": "gf"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag gf"})), React.createElement("span", {className: "country-name"}, "French Guiana (Guyane française)"), React.createElement("span", {className: "dial-code"}, "+594")), React.createElement("li", {className: "country", "data-dial-code": "689", "data-country-code": "pf"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag pf"})), React.createElement("span", {className: "country-name"}, "French Polynesia (Polynésie française)"), React.createElement("span", {className: "dial-code"}, "+689")), React.createElement("li", {className: "country", "data-dial-code": "241", "data-country-code": "ga"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag ga"})), React.createElement("span", {className: "country-name"}, "Gabon"), React.createElement("span", {className: "dial-code"}, "+241")), React.createElement("li", {className: "country", "data-dial-code": "220", "data-country-code": "gm"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag gm"})), React.createElement("span", {className: "country-name"}, "Gambia"), React.createElement("span", {className: "dial-code"}, "+220")), React.createElement("li", {className: "country", "data-dial-code": "995", "data-country-code": "ge"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag ge"})), React.createElement("span", {className: "country-name"}, "Georgia (საქართველო)"), React.createElement("span", {className: "dial-code"}, "+995")), React.createElement("li", {className: "country", "data-dial-code": "49", "data-country-code": "de"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag de"})), React.createElement("span", {className: "country-name"}, "Germany (Deutschland)"), React.createElement("span", {className: "dial-code"}, "+49")), React.createElement("li", {className: "country", "data-dial-code": "233", "data-country-code": "gh"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag gh"})), React.createElement("span", {className: "country-name"}, "Ghana (Gaana)"), React.createElement("span", {className: "dial-code"}, "+233")), React.createElement("li", {className: "country", "data-dial-code": "350", "data-country-code": "gi"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag gi"})), React.createElement("span", {className: "country-name"}, "Gibraltar"), React.createElement("span", {className: "dial-code"}, "+350")), React.createElement("li", {className: "country", "data-dial-code": "30", "data-country-code": "gr"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag gr"})), React.createElement("span", {className: "country-name"}, "Greece (Ελλάδα)"), React.createElement("span", {className: "dial-code"}, "+30")), React.createElement("li", {className: "country", "data-dial-code": "299", "data-country-code": "gl"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag gl"})), React.createElement("span", {className: "country-name"}, "Greenland (Kalaallit Nunaat)"), React.createElement("span", {className: "dial-code"}, "+299")), React.createElement("li", {className: "country", "data-dial-code": "1473", "data-country-code": "gd"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag gd"})), React.createElement("span", {className: "country-name"}, "Grenada"), React.createElement("span", {className: "dial-code"}, "+1473")), React.createElement("li", {className: "country", "data-dial-code": "590", "data-country-code": "gp"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag gp"})), React.createElement("span", {className: "country-name"}, "Guadeloupe"), React.createElement("span", {className: "dial-code"}, "+590")), React.createElement("li", {className: "country", "data-dial-code": "1671", "data-country-code": "gu"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag gu"})), React.createElement("span", {className: "country-name"}, "Guam"), React.createElement("span", {className: "dial-code"}, "+1671")), React.createElement("li", {className: "country", "data-dial-code": "502", "data-country-code": "gt"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag gt"})), React.createElement("span", {className: "country-name"}, "Guatemala"), React.createElement("span", {className: "dial-code"}, "+502")), React.createElement("li", {className: "country", "data-dial-code": "224", "data-country-code": "gn"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag gn"})), React.createElement("span", {className: "country-name"}, "Guinea (Guinée)"), React.createElement("span", {className: "dial-code"}, "+224")), React.createElement("li", {className: "country", "data-dial-code": "245", "data-country-code": "gw"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag gw"})), React.createElement("span", {className: "country-name"}, "Guinea-Bissau (Guiné Bissau)"), React.createElement("span", {className: "dial-code"}, "+245")), React.createElement("li", {className: "country", "data-dial-code": "592", "data-country-code": "gy"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag gy"})), React.createElement("span", {className: "country-name"}, "Guyana"), React.createElement("span", {className: "dial-code"}, "+592")), React.createElement("li", {className: "country", "data-dial-code": "509", "data-country-code": "ht"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag ht"})), React.createElement("span", {className: "country-name"}, "Haiti"), React.createElement("span", {className: "dial-code"}, "+509")), React.createElement("li", {className: "country", "data-dial-code": "504", "data-country-code": "hn"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag hn"})), React.createElement("span", {className: "country-name"}, "Honduras"), React.createElement("span", {className: "dial-code"}, "+504")), React.createElement("li", {className: "country", "data-dial-code": "852", "data-country-code": "hk"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag hk"})), React.createElement("span", {className: "country-name"}, "Hong Kong (香港)"), React.createElement("span", {className: "dial-code"}, "+852")), React.createElement("li", {className: "country", "data-dial-code": "36", "data-country-code": "hu"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag hu"})), React.createElement("span", {className: "country-name"}, "Hungary (Magyarország)"), React.createElement("span", {className: "dial-code"}, "+36")), React.createElement("li", {className: "country", "data-dial-code": "354", "data-country-code": "is"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag is"})), React.createElement("span", {className: "country-name"}, "Iceland (Ísland)"), React.createElement("span", {className: "dial-code"}, "+354")), React.createElement("li", {className: "country", "data-dial-code": "91", "data-country-code": "in"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag in"})), React.createElement("span", {className: "country-name"}, "India (भारत)"), React.createElement("span", {className: "dial-code"}, "+91")), React.createElement("li", {className: "country", "data-dial-code": "62", "data-country-code": "id"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag id"})), React.createElement("span", {className: "country-name"}, "Indonesia"), React.createElement("span", {className: "dial-code"}, "+62")), React.createElement("li", {className: "country", "data-dial-code": "98", "data-country-code": "ir"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag ir"})), React.createElement("span", {className: "country-name"}, "Iran (‫ایران‬‎)"), React.createElement("span", {className: "dial-code"}, "+98")), React.createElement("li", {className: "country", "data-dial-code": "964", "data-country-code": "iq"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag iq"})), React.createElement("span", {className: "country-name"}, "Iraq (‫العراق‬‎)"), React.createElement("span", {className: "dial-code"}, "+964")), React.createElement("li", {className: "country", "data-dial-code": "353", "data-country-code": "ie"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag ie"})), React.createElement("span", {className: "country-name"}, "Ireland"), React.createElement("span", {className: "dial-code"}, "+353")), React.createElement("li", {className: "country", "data-dial-code": "972", "data-country-code": "il"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag il"})), React.createElement("span", {className: "country-name"}, "Israel (‫ישראל‬‎)"), React.createElement("span", {className: "dial-code"}, "+972")), React.createElement("li", {className: "country", "data-dial-code": "39", "data-country-code": "it"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag it"})), React.createElement("span", {className: "country-name"}, "Italy (Italia)"), React.createElement("span", {className: "dial-code"}, "+39")), React.createElement("li", {className: "country", "data-dial-code": "1876", "data-country-code": "jm"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag jm"})), React.createElement("span", {className: "country-name"}, "Jamaica"), React.createElement("span", {className: "dial-code"}, "+1876")), React.createElement("li", {className: "country", "data-dial-code": "81", "data-country-code": "jp"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag jp"})), React.createElement("span", {className: "country-name"}, "Japan (日本)"), React.createElement("span", {className: "dial-code"}, "+81")), React.createElement("li", {className: "country", "data-dial-code": "962", "data-country-code": "jo"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag jo"})), React.createElement("span", {className: "country-name"}, "Jordan (‫الأردن‬‎)"), React.createElement("span", {className: "dial-code"}, "+962")), React.createElement("li", {className: "country", "data-dial-code": "7", "data-country-code": "kz"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag kz"})), React.createElement("span", {className: "country-name"}, "Kazakhstan (Казахстан)"), React.createElement("span", {className: "dial-code"}, "+7")), React.createElement("li", {className: "country", "data-dial-code": "254", "data-country-code": "ke"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag ke"})), React.createElement("span", {className: "country-name"}, "Kenya"), React.createElement("span", {className: "dial-code"}, "+254")), React.createElement("li", {className: "country", "data-dial-code": "686", "data-country-code": "ki"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag ki"})), React.createElement("span", {className: "country-name"}, "Kiribati"), React.createElement("span", {className: "dial-code"}, "+686")), React.createElement("li", {className: "country", "data-dial-code": "965", "data-country-code": "kw"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag kw"})), React.createElement("span", {className: "country-name"}, "Kuwait (‫الكويت‬‎)"), React.createElement("span", {className: "dial-code"}, "+965")), React.createElement("li", {className: "country", "data-dial-code": "996", "data-country-code": "kg"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag kg"})), React.createElement("span", {className: "country-name"}, "Kyrgyzstan (Кыргызстан)"), React.createElement("span", {className: "dial-code"}, "+996")), React.createElement("li", {className: "country", "data-dial-code": "856", "data-country-code": "la"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag la"})), React.createElement("span", {className: "country-name"}, "Laos (ລາວ)"), React.createElement("span", {className: "dial-code"}, "+856")), React.createElement("li", {className: "country", "data-dial-code": "371", "data-country-code": "lv"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag lv"})), React.createElement("span", {className: "country-name"}, "Latvia (Latvija)"), React.createElement("span", {className: "dial-code"}, "+371")), React.createElement("li", {className: "country", "data-dial-code": "961", "data-country-code": "lb"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag lb"})), React.createElement("span", {className: "country-name"}, "Lebanon (‫لبنان‬‎)"), React.createElement("span", {className: "dial-code"}, "+961")), React.createElement("li", {className: "country", "data-dial-code": "266", "data-country-code": "ls"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag ls"})), React.createElement("span", {className: "country-name"}, "Lesotho"), React.createElement("span", {className: "dial-code"}, "+266")), React.createElement("li", {className: "country", "data-dial-code": "231", "data-country-code": "lr"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag lr"})), React.createElement("span", {className: "country-name"}, "Liberia"), React.createElement("span", {className: "dial-code"}, "+231")), React.createElement("li", {className: "country", "data-dial-code": "218", "data-country-code": "ly"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag ly"})), React.createElement("span", {className: "country-name"}, "Libya (‫ليبيا‬‎)"), React.createElement("span", {className: "dial-code"}, "+218")), React.createElement("li", {className: "country", "data-dial-code": "423", "data-country-code": "li"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag li"})), React.createElement("span", {className: "country-name"}, "Liechtenstein"), React.createElement("span", {className: "dial-code"}, "+423")), React.createElement("li", {className: "country", "data-dial-code": "370", "data-country-code": "lt"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag lt"})), React.createElement("span", {className: "country-name"}, "Lithuania (Lietuva)"), React.createElement("span", {className: "dial-code"}, "+370")), React.createElement("li", {className: "country", "data-dial-code": "352", "data-country-code": "lu"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag lu"})), React.createElement("span", {className: "country-name"}, "Luxembourg"), React.createElement("span", {className: "dial-code"}, "+352")), React.createElement("li", {className: "country", "data-dial-code": "853", "data-country-code": "mo"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag mo"})), React.createElement("span", {className: "country-name"}, "Macau (澳門)"), React.createElement("span", {className: "dial-code"}, "+853")), React.createElement("li", {className: "country", "data-dial-code": "389", "data-country-code": "mk"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag mk"})), React.createElement("span", {className: "country-name"}, "Macedonia (FYROM) (Македонија)"), React.createElement("span", {className: "dial-code"}, "+389")), React.createElement("li", {className: "country", "data-dial-code": "261", "data-country-code": "mg"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag mg"})), React.createElement("span", {className: "country-name"}, "Madagascar (Madagasikara)"), React.createElement("span", {className: "dial-code"}, "+261")), React.createElement("li", {className: "country", "data-dial-code": "265", "data-country-code": "mw"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag mw"})), React.createElement("span", {className: "country-name"}, "Malawi"), React.createElement("span", {className: "dial-code"}, "+265")), React.createElement("li", {className: "country", "data-dial-code": "60", "data-country-code": "my"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag my"})), React.createElement("span", {className: "country-name"}, "Malaysia"), React.createElement("span", {className: "dial-code"}, "+60")), React.createElement("li", {className: "country", "data-dial-code": "960", "data-country-code": "mv"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag mv"})), React.createElement("span", {className: "country-name"}, "Maldives"), React.createElement("span", {className: "dial-code"}, "+960")), React.createElement("li", {className: "country", "data-dial-code": "223", "data-country-code": "ml"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag ml"})), React.createElement("span", {className: "country-name"}, "Mali"), React.createElement("span", {className: "dial-code"}, "+223")), React.createElement("li", {className: "country", "data-dial-code": "356", "data-country-code": "mt"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag mt"})), React.createElement("span", {className: "country-name"}, "Malta"), React.createElement("span", {className: "dial-code"}, "+356")), React.createElement("li", {className: "country", "data-dial-code": "692", "data-country-code": "mh"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag mh"})), React.createElement("span", {className: "country-name"}, "Marshall Islands"), React.createElement("span", {className: "dial-code"}, "+692")), React.createElement("li", {className: "country", "data-dial-code": "596", "data-country-code": "mq"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag mq"})), React.createElement("span", {className: "country-name"}, "Martinique"), React.createElement("span", {className: "dial-code"}, "+596")), React.createElement("li", {className: "country", "data-dial-code": "222", "data-country-code": "mr"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag mr"})), React.createElement("span", {className: "country-name"}, "Mauritania (‫موريتانيا‬‎)"), React.createElement("span", {className: "dial-code"}, "+222")), React.createElement("li", {className: "country", "data-dial-code": "230", "data-country-code": "mu"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag mu"})), React.createElement("span", {className: "country-name"}, "Mauritius (Moris)"), React.createElement("span", {className: "dial-code"}, "+230")), React.createElement("li", {className: "country", "data-dial-code": "52", "data-country-code": "mx"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag mx"})), React.createElement("span", {className: "country-name"}, "Mexico (México)"), React.createElement("span", {className: "dial-code"}, "+52")), React.createElement("li", {className: "country", "data-dial-code": "691", "data-country-code": "fm"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag fm"})), React.createElement("span", {className: "country-name"}, "Micronesia"), React.createElement("span", {className: "dial-code"}, "+691")), React.createElement("li", {className: "country", "data-dial-code": "373", "data-country-code": "md"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag md"})), React.createElement("span", {className: "country-name"}, "Moldova (Republica Moldova)"), React.createElement("span", {className: "dial-code"}, "+373")), React.createElement("li", {className: "country", "data-dial-code": "377", "data-country-code": "mc"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag mc"})), React.createElement("span", {className: "country-name"}, "Monaco"), React.createElement("span", {className: "dial-code"}, "+377")), React.createElement("li", {className: "country", "data-dial-code": "976", "data-country-code": "mn"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag mn"})), React.createElement("span", {className: "country-name"}, "Mongolia (Монгол)"), React.createElement("span", {className: "dial-code"}, "+976")), React.createElement("li", {className: "country", "data-dial-code": "382", "data-country-code": "me"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag me"})), React.createElement("span", {className: "country-name"}, "Montenegro (Crna Gora)"), React.createElement("span", {className: "dial-code"}, "+382")), React.createElement("li", {className: "country", "data-dial-code": "1664", "data-country-code": "ms"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag ms"})), React.createElement("span", {className: "country-name"}, "Montserrat"), React.createElement("span", {className: "dial-code"}, "+1664")), React.createElement("li", {className: "country", "data-dial-code": "212", "data-country-code": "ma"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag ma"})), React.createElement("span", {className: "country-name"}, "Morocco (‫المغرب‬‎)"), React.createElement("span", {className: "dial-code"}, "+212")), React.createElement("li", {className: "country", "data-dial-code": "258", "data-country-code": "mz"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag mz"})), React.createElement("span", {className: "country-name"}, "Mozambique (Moçambique)"), React.createElement("span", {className: "dial-code"}, "+258")), React.createElement("li", {className: "country", "data-dial-code": "95", "data-country-code": "mm"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag mm"})), React.createElement("span", {className: "country-name"}, "Myanmar (Burma) (မြန်မာ)"), React.createElement("span", {className: "dial-code"}, "+95")), React.createElement("li", {className: "country", "data-dial-code": "264", "data-country-code": "na"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag na"})), React.createElement("span", {className: "country-name"}, "Namibia (Namibië)"), React.createElement("span", {className: "dial-code"}, "+264")), React.createElement("li", {className: "country", "data-dial-code": "674", "data-country-code": "nr"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag nr"})), React.createElement("span", {className: "country-name"}, "Nauru"), React.createElement("span", {className: "dial-code"}, "+674")), React.createElement("li", {className: "country", "data-dial-code": "977", "data-country-code": "np"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag np"})), React.createElement("span", {className: "country-name"}, "Nepal (नेपाल)"), React.createElement("span", {className: "dial-code"}, "+977")), React.createElement("li", {className: "country", "data-dial-code": "31", "data-country-code": "nl"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag nl"})), React.createElement("span", {className: "country-name"}, "Netherlands (Nederland)"), React.createElement("span", {className: "dial-code"}, "+31")), React.createElement("li", {className: "country", "data-dial-code": "687", "data-country-code": "nc"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag nc"})), React.createElement("span", {className: "country-name"}, "New Caledonia (Nouvelle-Calédonie)"), React.createElement("span", {className: "dial-code"}, "+687")), React.createElement("li", {className: "country", "data-dial-code": "64", "data-country-code": "nz"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag nz"})), React.createElement("span", {className: "country-name"}, "New Zealand"), React.createElement("span", {className: "dial-code"}, "+64")), React.createElement("li", {className: "country", "data-dial-code": "505", "data-country-code": "ni"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag ni"})), React.createElement("span", {className: "country-name"}, "Nicaragua"), React.createElement("span", {className: "dial-code"}, "+505")), React.createElement("li", {className: "country", "data-dial-code": "227", "data-country-code": "ne"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag ne"})), React.createElement("span", {className: "country-name"}, "Niger (Nijar)"), React.createElement("span", {className: "dial-code"}, "+227")), React.createElement("li", {className: "country", "data-dial-code": "234", "data-country-code": "ng"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag ng"})), React.createElement("span", {className: "country-name"}, "Nigeria"), React.createElement("span", {className: "dial-code"}, "+234")), React.createElement("li", {className: "country", "data-dial-code": "683", "data-country-code": "nu"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag nu"})), React.createElement("span", {className: "country-name"}, "Niue"), React.createElement("span", {className: "dial-code"}, "+683")), React.createElement("li", {className: "country", "data-dial-code": "672", "data-country-code": "nf"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag nf"})), React.createElement("span", {className: "country-name"}, "Norfolk Island"), React.createElement("span", {className: "dial-code"}, "+672")), React.createElement("li", {className: "country", "data-dial-code": "850", "data-country-code": "kp"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag kp"})), React.createElement("span", {className: "country-name"}, "North Korea (조선 민주주의 인민 공화국)"), React.createElement("span", {className: "dial-code"}, "+850")), React.createElement("li", {className: "country", "data-dial-code": "1670", "data-country-code": "mp"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag mp"})), React.createElement("span", {className: "country-name"}, "Northern Mariana Islands"), React.createElement("span", {className: "dial-code"}, "+1670")), React.createElement("li", {className: "country", "data-dial-code": "47", "data-country-code": "no"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag no"})), React.createElement("span", {className: "country-name"}, "Norway (Norge)"), React.createElement("span", {className: "dial-code"}, "+47")), React.createElement("li", {className: "country", "data-dial-code": "968", "data-country-code": "om"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag om"})), React.createElement("span", {className: "country-name"}, "Oman (‫عُمان‬‎)"), React.createElement("span", {className: "dial-code"}, "+968")), React.createElement("li", {className: "country", "data-dial-code": "92", "data-country-code": "pk"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag pk"})), React.createElement("span", {className: "country-name"}, "Pakistan (‫پاکستان‬‎)"), React.createElement("span", {className: "dial-code"}, "+92")), React.createElement("li", {className: "country", "data-dial-code": "680", "data-country-code": "pw"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag pw"})), React.createElement("span", {className: "country-name"}, "Palau"), React.createElement("span", {className: "dial-code"}, "+680")), React.createElement("li", {className: "country", "data-dial-code": "970", "data-country-code": "ps"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag ps"})), React.createElement("span", {className: "country-name"}, "Palestine (‫فلسطين‬‎)"), React.createElement("span", {className: "dial-code"}, "+970")), React.createElement("li", {className: "country", "data-dial-code": "507", "data-country-code": "pa"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag pa"})), React.createElement("span", {className: "country-name"}, "Panama (Panamá)"), React.createElement("span", {className: "dial-code"}, "+507")), React.createElement("li", {className: "country", "data-dial-code": "675", "data-country-code": "pg"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag pg"})), React.createElement("span", {className: "country-name"}, "Papua New Guinea"), React.createElement("span", {className: "dial-code"}, "+675")), React.createElement("li", {className: "country", "data-dial-code": "595", "data-country-code": "py"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag py"})), React.createElement("span", {className: "country-name"}, "Paraguay"), React.createElement("span", {className: "dial-code"}, "+595")), React.createElement("li", {className: "country", "data-dial-code": "51", "data-country-code": "pe"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag pe"})), React.createElement("span", {className: "country-name"}, "Peru (Perú)"), React.createElement("span", {className: "dial-code"}, "+51")), React.createElement("li", {className: "country", "data-dial-code": "63", "data-country-code": "ph"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag ph"})), React.createElement("span", {className: "country-name"}, "Philippines"), React.createElement("span", {className: "dial-code"}, "+63")), React.createElement("li", {className: "country", "data-dial-code": "48", "data-country-code": "pl"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag pl"})), React.createElement("span", {className: "country-name"}, "Poland (Polska)"), React.createElement("span", {className: "dial-code"}, "+48")), React.createElement("li", {className: "country", "data-dial-code": "351", "data-country-code": "pt"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag pt"})), React.createElement("span", {className: "country-name"}, "Portugal"), React.createElement("span", {className: "dial-code"}, "+351")), React.createElement("li", {className: "country", "data-dial-code": "1", "data-country-code": "pr"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag pr"})), React.createElement("span", {className: "country-name"}, "Puerto Rico"), React.createElement("span", {className: "dial-code"}, "+1")), React.createElement("li", {className: "country", "data-dial-code": "974", "data-country-code": "qa"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag qa"})), React.createElement("span", {className: "country-name"}, "Qatar (‫قطر‬‎)"), React.createElement("span", {className: "dial-code"}, "+974")), React.createElement("li", {className: "country", "data-dial-code": "262", "data-country-code": "re"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag re"})), React.createElement("span", {className: "country-name"}, "Réunion (La Réunion)"), React.createElement("span", {className: "dial-code"}, "+262")), React.createElement("li", {className: "country", "data-dial-code": "40", "data-country-code": "ro"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag ro"})), React.createElement("span", {className: "country-name"}, "Romania (România)"), React.createElement("span", {className: "dial-code"}, "+40")), React.createElement("li", {className: "country", "data-dial-code": "7", "data-country-code": "ru"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag ru"})), React.createElement("span", {className: "country-name"}, "Russia (Россия)"), React.createElement("span", {className: "dial-code"}, "+7")), React.createElement("li", {className: "country", "data-dial-code": "250", "data-country-code": "rw"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag rw"})), React.createElement("span", {className: "country-name"}, "Rwanda"), React.createElement("span", {className: "dial-code"}, "+250")), React.createElement("li", {className: "country", "data-dial-code": "590", "data-country-code": "bl"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag bl"})), React.createElement("span", {className: "country-name"}, "Saint Barthélemy (Saint-Barthélemy)"), React.createElement("span", {className: "dial-code"}, "+590")), React.createElement("li", {className: "country", "data-dial-code": "290", "data-country-code": "sh"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag sh"})), React.createElement("span", {className: "country-name"}, "Saint Helena"), React.createElement("span", {className: "dial-code"}, "+290")), React.createElement("li", {className: "country", "data-dial-code": "1869", "data-country-code": "kn"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag kn"})), React.createElement("span", {className: "country-name"}, "Saint Kitts and Nevis"), React.createElement("span", {className: "dial-code"}, "+1869")), React.createElement("li", {className: "country", "data-dial-code": "1758", "data-country-code": "lc"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag lc"})), React.createElement("span", {className: "country-name"}, "Saint Lucia"), React.createElement("span", {className: "dial-code"}, "+1758")), React.createElement("li", {className: "country", "data-dial-code": "590", "data-country-code": "mf"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag mf"})), React.createElement("span", {className: "country-name"}, "Saint Martin (Saint-Martin (partie française))"), React.createElement("span", {className: "dial-code"}, "+590")), React.createElement("li", {className: "country", "data-dial-code": "508", "data-country-code": "pm"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag pm"})), React.createElement("span", {className: "country-name"}, "Saint Pierre and Miquelon (Saint-Pierre-et-Miquelon)"), React.createElement("span", {className: "dial-code"}, "+508")), React.createElement("li", {className: "country", "data-dial-code": "1784", "data-country-code": "vc"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag vc"})), React.createElement("span", {className: "country-name"}, "Saint Vincent and the Grenadines"), React.createElement("span", {className: "dial-code"}, "+1784")), React.createElement("li", {className: "country", "data-dial-code": "685", "data-country-code": "ws"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag ws"})), React.createElement("span", {className: "country-name"}, "Samoa"), React.createElement("span", {className: "dial-code"}, "+685")), React.createElement("li", {className: "country", "data-dial-code": "378", "data-country-code": "sm"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag sm"})), React.createElement("span", {className: "country-name"}, "San Marino"), React.createElement("span", {className: "dial-code"}, "+378")), React.createElement("li", {className: "country", "data-dial-code": "239", "data-country-code": "st"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag st"})), React.createElement("span", {className: "country-name"}, "São Tomé and Príncipe (São Tomé e Príncipe)"), React.createElement("span", {className: "dial-code"}, "+239")), React.createElement("li", {className: "country", "data-dial-code": "966", "data-country-code": "sa"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag sa"})), React.createElement("span", {className: "country-name"}, "Saudi Arabia (‫المملكة العربية السعودية‬‎)"), React.createElement("span", {className: "dial-code"}, "+966")), React.createElement("li", {className: "country", "data-dial-code": "221", "data-country-code": "sn"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag sn"})), React.createElement("span", {className: "country-name"}, "Senegal (Sénégal)"), React.createElement("span", {className: "dial-code"}, "+221")), React.createElement("li", {className: "country", "data-dial-code": "381", "data-country-code": "rs"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag rs"})), React.createElement("span", {className: "country-name"}, "Serbia (Србија)"), React.createElement("span", {className: "dial-code"}, "+381")), React.createElement("li", {className: "country", "data-dial-code": "248", "data-country-code": "sc"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag sc"})), React.createElement("span", {className: "country-name"}, "Seychelles"), React.createElement("span", {className: "dial-code"}, "+248")), React.createElement("li", {className: "country", "data-dial-code": "232", "data-country-code": "sl"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag sl"})), React.createElement("span", {className: "country-name"}, "Sierra Leone"), React.createElement("span", {className: "dial-code"}, "+232")), React.createElement("li", {className: "country", "data-dial-code": "65", "data-country-code": "sg"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag sg"})), React.createElement("span", {className: "country-name"}, "Singapore"), React.createElement("span", {className: "dial-code"}, "+65")), React.createElement("li", {className: "country", "data-dial-code": "1721", "data-country-code": "sx"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag sx"})), React.createElement("span", {className: "country-name"}, "Sint Maarten"), React.createElement("span", {className: "dial-code"}, "+1721")), React.createElement("li", {className: "country", "data-dial-code": "421", "data-country-code": "sk"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag sk"})), React.createElement("span", {className: "country-name"}, "Slovakia (Slovensko)"), React.createElement("span", {className: "dial-code"}, "+421")), React.createElement("li", {className: "country", "data-dial-code": "386", "data-country-code": "si"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag si"})), React.createElement("span", {className: "country-name"}, "Slovenia (Slovenija)"), React.createElement("span", {className: "dial-code"}, "+386")), React.createElement("li", {className: "country", "data-dial-code": "677", "data-country-code": "sb"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag sb"})), React.createElement("span", {className: "country-name"}, "Solomon Islands"), React.createElement("span", {className: "dial-code"}, "+677")), React.createElement("li", {className: "country", "data-dial-code": "252", "data-country-code": "so"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag so"})), React.createElement("span", {className: "country-name"}, "Somalia (Soomaaliya)"), React.createElement("span", {className: "dial-code"}, "+252")), React.createElement("li", {className: "country", "data-dial-code": "27", "data-country-code": "za"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag za"})), React.createElement("span", {className: "country-name"}, "South Africa"), React.createElement("span", {className: "dial-code"}, "+27")), React.createElement("li", {className: "country", "data-dial-code": "82", "data-country-code": "kr"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag kr"})), React.createElement("span", {className: "country-name"}, "South Korea (대한민국)"), React.createElement("span", {className: "dial-code"}, "+82")), React.createElement("li", {className: "country", "data-dial-code": "211", "data-country-code": "ss"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag ss"})), React.createElement("span", {className: "country-name"}, "South Sudan (‫جنوب السودان‬‎)"), React.createElement("span", {className: "dial-code"}, "+211")), React.createElement("li", {className: "country", "data-dial-code": "34", "data-country-code": "es"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag es"})), React.createElement("span", {className: "country-name"}, "Spain (España)"), React.createElement("span", {className: "dial-code"}, "+34")), React.createElement("li", {className: "country", "data-dial-code": "94", "data-country-code": "lk"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag lk"})), React.createElement("span", {className: "country-name"}, "Sri Lanka (ශ්‍රී ලංකාව)"), React.createElement("span", {className: "dial-code"}, "+94")), React.createElement("li", {className: "country", "data-dial-code": "249", "data-country-code": "sd"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag sd"})), React.createElement("span", {className: "country-name"}, "Sudan (‫السودان‬‎)"), React.createElement("span", {className: "dial-code"}, "+249")), React.createElement("li", {className: "country", "data-dial-code": "597", "data-country-code": "sr"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag sr"})), React.createElement("span", {className: "country-name"}, "Suriname"), React.createElement("span", {className: "dial-code"}, "+597")), React.createElement("li", {className: "country", "data-dial-code": "268", "data-country-code": "sz"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag sz"})), React.createElement("span", {className: "country-name"}, "Swaziland"), React.createElement("span", {className: "dial-code"}, "+268")), React.createElement("li", {className: "country", "data-dial-code": "46", "data-country-code": "se"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag se"})), React.createElement("span", {className: "country-name"}, "Sweden (Sverige)"), React.createElement("span", {className: "dial-code"}, "+46")), React.createElement("li", {className: "country", "data-dial-code": "41", "data-country-code": "ch"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag ch"})), React.createElement("span", {className: "country-name"}, "Switzerland (Schweiz)"), React.createElement("span", {className: "dial-code"}, "+41")), React.createElement("li", {className: "country", "data-dial-code": "963", "data-country-code": "sy"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag sy"})), React.createElement("span", {className: "country-name"}, "Syria (‫سوريا‬‎)"), React.createElement("span", {className: "dial-code"}, "+963")), React.createElement("li", {className: "country", "data-dial-code": "886", "data-country-code": "tw"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag tw"})), React.createElement("span", {className: "country-name"}, "Taiwan (台灣)"), React.createElement("span", {className: "dial-code"}, "+886")), React.createElement("li", {className: "country", "data-dial-code": "992", "data-country-code": "tj"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag tj"})), React.createElement("span", {className: "country-name"}, "Tajikistan"), React.createElement("span", {className: "dial-code"}, "+992")), React.createElement("li", {className: "country", "data-dial-code": "255", "data-country-code": "tz"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag tz"})), React.createElement("span", {className: "country-name"}, "Tanzania"), React.createElement("span", {className: "dial-code"}, "+255")), React.createElement("li", {className: "country", "data-dial-code": "66", "data-country-code": "th"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag th"})), React.createElement("span", {className: "country-name"}, "Thailand (ไทย)"), React.createElement("span", {className: "dial-code"}, "+66")), React.createElement("li", {className: "country", "data-dial-code": "670", "data-country-code": "tl"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag tl"})), React.createElement("span", {className: "country-name"}, "Timor-Leste"), React.createElement("span", {className: "dial-code"}, "+670")), React.createElement("li", {className: "country", "data-dial-code": "228", "data-country-code": "tg"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag tg"})), React.createElement("span", {className: "country-name"}, "Togo"), React.createElement("span", {className: "dial-code"}, "+228")), React.createElement("li", {className: "country", "data-dial-code": "690", "data-country-code": "tk"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag tk"})), React.createElement("span", {className: "country-name"}, "Tokelau"), React.createElement("span", {className: "dial-code"}, "+690")), React.createElement("li", {className: "country", "data-dial-code": "676", "data-country-code": "to"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag to"})), React.createElement("span", {className: "country-name"}, "Tonga"), React.createElement("span", {className: "dial-code"}, "+676")), React.createElement("li", {className: "country", "data-dial-code": "1868", "data-country-code": "tt"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag tt"})), React.createElement("span", {className: "country-name"}, "Trinidad and Tobago"), React.createElement("span", {className: "dial-code"}, "+1868")), React.createElement("li", {className: "country", "data-dial-code": "216", "data-country-code": "tn"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag tn"})), React.createElement("span", {className: "country-name"}, "Tunisia (‫تونس‬‎)"), React.createElement("span", {className: "dial-code"}, "+216")), React.createElement("li", {className: "country", "data-dial-code": "90", "data-country-code": "tr"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag tr"})), React.createElement("span", {className: "country-name"}, "Turkey (Türkiye)"), React.createElement("span", {className: "dial-code"}, "+90")), React.createElement("li", {className: "country", "data-dial-code": "993", "data-country-code": "tm"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag tm"})), React.createElement("span", {className: "country-name"}, "Turkmenistan"), React.createElement("span", {className: "dial-code"}, "+993")), React.createElement("li", {className: "country", "data-dial-code": "1649", "data-country-code": "tc"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag tc"})), React.createElement("span", {className: "country-name"}, "Turks and Caicos Islands"), React.createElement("span", {className: "dial-code"}, "+1649")), React.createElement("li", {className: "country", "data-dial-code": "688", "data-country-code": "tv"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag tv"})), React.createElement("span", {className: "country-name"}, "Tuvalu"), React.createElement("span", {className: "dial-code"}, "+688")), React.createElement("li", {className: "country", "data-dial-code": "1340", "data-country-code": "vi"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag vi"})), React.createElement("span", {className: "country-name"}, "U.S. Virgin Islands"), React.createElement("span", {className: "dial-code"}, "+1340")), React.createElement("li", {className: "country", "data-dial-code": "256", "data-country-code": "ug"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag ug"})), React.createElement("span", {className: "country-name"}, "Uganda"), React.createElement("span", {className: "dial-code"}, "+256")), React.createElement("li", {className: "country", "data-dial-code": "380", "data-country-code": "ua"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag ua"})), React.createElement("span", {className: "country-name"}, "Ukraine (Україна)"), React.createElement("span", {className: "dial-code"}, "+380")), React.createElement("li", {className: "country", "data-dial-code": "971", "data-country-code": "ae"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag ae"})), React.createElement("span", {className: "country-name"}, "United Arab Emirates (‫الإمارات العربية المتحدة‬‎)"), React.createElement("span", {className: "dial-code"}, "+971")), React.createElement("li", {className: "country", "data-dial-code": "44", "data-country-code": "gb"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag gb"})), React.createElement("span", {className: "country-name"}, "United Kingdom"), React.createElement("span", {className: "dial-code"}, "+44")), React.createElement("li", {className: "country", "data-dial-code": "1", "data-country-code": "us"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag us"})), React.createElement("span", {className: "country-name"}, "United States"), React.createElement("span", {className: "dial-code"}, "+1")), React.createElement("li", {className: "country", "data-dial-code": "598", "data-country-code": "uy"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag uy"})), React.createElement("span", {className: "country-name"}, "Uruguay"), React.createElement("span", {className: "dial-code"}, "+598")), React.createElement("li", {className: "country", "data-dial-code": "998", "data-country-code": "uz"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag uz"})), React.createElement("span", {className: "country-name"}, "Uzbekistan (Oʻzbekiston)"), React.createElement("span", {className: "dial-code"}, "+998")), React.createElement("li", {className: "country", "data-dial-code": "678", "data-country-code": "vu"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag vu"})), React.createElement("span", {className: "country-name"}, "Vanuatu"), React.createElement("span", {className: "dial-code"}, "+678")), React.createElement("li", {className: "country", "data-dial-code": "39", "data-country-code": "va"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag va"})), React.createElement("span", {className: "country-name"}, "Vatican City (Città del Vaticano)"), React.createElement("span", {className: "dial-code"}, "+39")), React.createElement("li", {className: "country", "data-dial-code": "58", "data-country-code": "ve"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag ve"})), React.createElement("span", {className: "country-name"}, "Venezuela"), React.createElement("span", {className: "dial-code"}, "+58")), React.createElement("li", {className: "country", "data-dial-code": "84", "data-country-code": "vn"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag vn"})), React.createElement("span", {className: "country-name"}, "Vietnam (Việt Nam)"), React.createElement("span", {className: "dial-code"}, "+84")), React.createElement("li", {className: "country", "data-dial-code": "681", "data-country-code": "wf"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag wf"})), React.createElement("span", {className: "country-name"}, "Wallis and Futuna"), React.createElement("span", {className: "dial-code"}, "+681")), React.createElement("li", {className: "country", "data-dial-code": "967", "data-country-code": "ye"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag ye"})), React.createElement("span", {className: "country-name"}, "Yemen (‫اليمن‬‎)"), React.createElement("span", {className: "dial-code"}, "+967")), React.createElement("li", {className: "country", "data-dial-code": "260", "data-country-code": "zm"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag zm"})), React.createElement("span", {className: "country-name"}, "Zambia"), React.createElement("span", {className: "dial-code"}, "+260")), React.createElement("li", {className: "country", "data-dial-code": "263", "data-country-code": "zw"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag zw"})), React.createElement("span", {className: "country-name"}, "Zimbabwe"), React.createElement("span", {className: "dial-code"}, "+263")))), React.createElement("input", {type: "tel", className: "form-control", name: "phone", "data-component-elm": "info[phone]", autocomplete: "off"}))
-	      ), 
-	      React.createElement("p", {className: "checkout-info-note"}, "We'll email/text you when your meal has arrived!")
-	    ), 
-	    React.createElement("div", {className: "payment-info"}, 
-	      React.createElement("h3", {className: "section-title"}, "Payment Info"), 
-	      React.createElement("div", {className: "error-group", "data-error-group": "payment_method"}), 
-	      React.createElement("div", {className: "payment-method-wrapper"}, 
-	        React.createElement("div", {className: "form-group form-group-member-name"}, 
-	          React.createElement("label", {for: ""}, "Name on card"), 
-	          React.createElement("input", {value: "", type: "text", className: "form-control", name: "card_member_name", "data-component-elm": "card[name]"})
-	        ), 
-	        React.createElement("div", {className: "inline-form-group-list"}, 
-	          React.createElement("div", {className: "form-group form-group-card-number"}, 
-	            React.createElement("label", {for: ""}, "Card number"), 
-	            React.createElement("input", {type: "tel", className: "form-control", name: "card_number", "data-component-elm": "card[number]"})
-	          ), 
-	          React.createElement("div", {className: "form-group form-group-card-cvv"}, 
-	            React.createElement("label", {for: ""}, "CVV"), 
-	            React.createElement("input", {type: "tel", className: "form-control", name: "card_cvv", "data-component-elm": "card[cvc]"})
-	          ), 
-	          React.createElement("div", {className: "form-group form-group-expiration"}, 
-	            React.createElement("label", {for: ""}, "Expiration date"), 
-	            React.createElement("input", {type: "tel", className: "form-control", placeholder: "MM", name: "card_expiration_month", "data-component-elm": "card[expire-month]"}), 
-	            "/", 
-	            React.createElement("input", {type: "tel", className: "form-control", placeholder: "YY", name: "card_expiration_year", "data-component-elm": "card[expire-year]"})
-	          ), 
-	          React.createElement("div", {className: "form-group form-group"}, 
-	            React.createElement("label", null, 
-	              React.createElement("input", {type: "checkbox", name: "save_card", checked: ""}), 
-	              "Save card?"
-	            )
-	          )
-	        )
-	    )
-	  )
-	    )
-	  );
-	}
-
-/***/ },
-/* 140 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
@@ -43492,6 +43487,26 @@
 
 
 /***/ },
+/* 140 */
+/***/ function(module, exports) {
+
+	/** @jsx React.DOM */module.exports = function (Context) {
+	  // TODO: Remove this once we can inject 'React' automatically at build time.
+	  var React = Context.REACT;
+	  return (
+	    React.createElement("div", {className: "container"}, 
+
+	  React.createElement("div", {className: "warning-section", "data-component-id": "warning-section"}, 
+	    React.createElement("img", {src: "/lunchroom-landing~0/resources/assets/img~cupcake-shocked-9c195d3.png", alt: "", className: "warning-section-supporting-graphic"}), 
+	    React.createElement("h2", {className: "warning-section-header"}, "Sorry, time’s up :(."), 
+	    React.createElement("p", null, "You must place your order by ", React.createElement("span", {"data-component-prop": "orderBy"}, "10am"), ".")
+	  )
+
+	    )
+	  );
+	}
+
+/***/ },
 /* 141 */
 /***/ function(module, exports) {
 
@@ -43532,7 +43547,8 @@
 	}
 
 /***/ },
-/* 143 */
+/* 143 */,
+/* 144 */
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM */module.exports = function (Context) {
@@ -43597,7 +43613,7 @@
 	}
 
 /***/ },
-/* 144 */
+/* 145 */
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM */module.exports = function (Context) {
@@ -43633,17 +43649,17 @@
 	}
 
 /***/ },
-/* 145 */
+/* 146 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(module) {/** @jsx React.DOM */
-	__webpack_require__(146)['for'](module, {
+	__webpack_require__(147)['for'](module, {
 
 		getTemplates: function (Context) {
 
 			return {
 				"orderPlaced": new Context.Template({
-					impl: __webpack_require__(147),
+					impl: __webpack_require__(148),
 					markup: function (element) {
 
 					},
@@ -43684,7 +43700,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(23)(module)))
 
 /***/ },
-/* 146 */
+/* 147 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
@@ -43735,7 +43751,7 @@
 
 
 /***/ },
-/* 147 */
+/* 148 */
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM */module.exports = function (Context) {
@@ -43763,11 +43779,11 @@
 	}
 
 /***/ },
-/* 148 */
+/* 149 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(module) {/** @jsx React.DOM */
-	__webpack_require__(149)['for'](module, {
+	__webpack_require__(150)['for'](module, {
 		getHTML: function (Context) {
 
 			// TODO: Remove this once we can inject 'React' automatically at build time.
@@ -43782,7 +43798,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(23)(module)))
 
 /***/ },
-/* 149 */
+/* 150 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
@@ -43840,162 +43856,162 @@
 
 
 /***/ },
-/* 150 */
+/* 151 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
 	var WEB_COMPONENTS = {
-		"Header": __webpack_require__(153),
-		"Menu": __webpack_require__(154),
-		"Footer": __webpack_require__(155)
+		"Header": __webpack_require__(154),
+		"Menu": __webpack_require__(155),
+		"Footer": __webpack_require__(156)
 	};
 
 	var EMAIL_COMPONENTS = {
 		CORRESPONDENCE: {
-			"Header": __webpack_require__(156),
-			"Footer": __webpack_require__(159)
+			"Header": __webpack_require__(157),
+			"Footer": __webpack_require__(160)
 		},
 		LIST: {
-			"Header": __webpack_require__(160),
-			"Footer": __webpack_require__(163)
+			"Header": __webpack_require__(161),
+			"Footer": __webpack_require__(164)
 		}
 	};
 
 
-	exports.RootView = __webpack_require__(164);
+	exports.RootView = __webpack_require__(165);
 
 	exports.views = {
 		"Landing": {
-			"component": __webpack_require__(165),
+			"component": __webpack_require__(166),
 			"config": {}
 		},
 		"Menu_Email": {
-			"component": __webpack_require__(166),
+			"component": __webpack_require__(167),
 			"config": {},
 			"components": EMAIL_COMPONENTS.LIST
 		},
 		"Menu_Web": {
-			"component": __webpack_require__(167),
-			"config": {},
-			"components": WEB_COMPONENTS
-		},
-		"Checkout": {
 			"component": __webpack_require__(168),
 			"config": {},
 			"components": WEB_COMPONENTS
 		},
-		"Order_Placed": {
+		"Checkout": {
 			"component": __webpack_require__(169),
 			"config": {},
 			"components": WEB_COMPONENTS
 		},
-		"Receipt": {
+		"Order_Placed": {
 			"component": __webpack_require__(170),
+			"config": {},
+			"components": WEB_COMPONENTS
+		},
+		"Receipt": {
+			"component": __webpack_require__(171),
 			"config": {},
 			"components": EMAIL_COMPONENTS.CORRESPONDENCE
 		},
 		"Order_Arrived": {
-			"component": __webpack_require__(171),
+			"component": __webpack_require__(172),
 			"config": {},
 			"components": WEB_COMPONENTS.CORRESPONDENCE
 		},
 		"ContactUs": {
-			"component": __webpack_require__(173),
+			"component": __webpack_require__(174),
 			"config": {},
 			"components": WEB_COMPONENTS
 		},
 		"PrivacyPolicy": {
-			"component": __webpack_require__(151),
+			"component": __webpack_require__(152),
 			"config": {},
 			"components": WEB_COMPONENTS
 		},
 		"TermsOfService": {
-			"component": __webpack_require__(175),
+			"component": __webpack_require__(176),
 			"config": {},
 			"components": WEB_COMPONENTS
 		},
 		"Admin_Events": {
 			"group": "admin",
 			"container": "iframe",
-			"component": __webpack_require__(177),
+			"component": __webpack_require__(178),
 			"config": {}
 		},
 		"Admin_Orders": {
 			"group": "admin",
 			"container": "iframe",
-			"component": __webpack_require__(178),
+			"component": __webpack_require__(179),
 			"config": {}
 		},
 		"Admin_Restaurant": {
 			"group": "admin",
 			"container": "iframe",
-			"component": __webpack_require__(179),
+			"component": __webpack_require__(180),
 			"config": {}
 		},	
 		"Model_Days": {
 			"group": "model",
-			"component": __webpack_require__(180),
+			"component": __webpack_require__(181),
 			"config": {}
 		},
 		"Model_Events": {
 			"group": "model",
-			"component": __webpack_require__(181),
+			"component": __webpack_require__(182),
 			"config": {}
 		},
 		"Model_Vendors": {
 			"group": "model",
-			"component": __webpack_require__(182),
+			"component": __webpack_require__(183),
 			"config": {}
 		},
 		"Model_Items": {
 			"group": "model",
-			"component": __webpack_require__(183),
+			"component": __webpack_require__(184),
 			"config": {}
 		},
 		"Model_Menus": {
 			"group": "model",
-			"component": __webpack_require__(184),
+			"component": __webpack_require__(185),
 			"config": {}
 		},
 		"Model_ConsumerGroups": {
 			"group": "model",
-			"component": __webpack_require__(185),
+			"component": __webpack_require__(186),
 			"config": {}
 		},
 		"Model_Consumers": {
 			"group": "model",
-			"component": __webpack_require__(186),
+			"component": __webpack_require__(187),
 			"config": {}
 		},
 		"Model_ConsumerGroupSubscriptions": {
 			"group": "model",
-			"component": __webpack_require__(187),
+			"component": __webpack_require__(188),
 			"config": {}
 		},
 		"Model_Cart": {
 			"group": "model",
-			"component": __webpack_require__(188),
+			"component": __webpack_require__(189),
 			"config": {}
 		},
 		"Model_Orders": {
 			"group": "model",
-			"component": __webpack_require__(189),
+			"component": __webpack_require__(190),
 			"config": {}
 		},
 		"Model_OrderStatus": {
 			"group": "model",
-			"component": __webpack_require__(190),
+			"component": __webpack_require__(191),
 			"config": {}
 		}
 	};
 
 
 /***/ },
-/* 151 */
+/* 152 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(module) {/** @jsx React.DOM */
-	__webpack_require__(152)['for'](module, {
+	__webpack_require__(153)['for'](module, {
 
 		getHTML: function (Context) {
 
@@ -44062,7 +44078,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(23)(module)))
 
 /***/ },
-/* 152 */
+/* 153 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
@@ -44086,7 +44102,7 @@
 
 
 /***/ },
-/* 153 */
+/* 154 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(module) {/** @jsx React.DOM */
@@ -44109,7 +44125,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(23)(module)))
 
 /***/ },
-/* 154 */
+/* 155 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(module) {/** @jsx React.DOM */
@@ -44259,7 +44275,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(23)(module)))
 
 /***/ },
-/* 155 */
+/* 156 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(module) {/** @jsx React.DOM */
@@ -44284,18 +44300,18 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(23)(module)))
 
 /***/ },
-/* 156 */
-[272, 157],
 /* 157 */
 [273, 158],
 /* 158 */
+[274, 159],
+/* 159 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(4)();
 	exports.push([module.id, "", ""]);
 
 /***/ },
-/* 159 */
+/* 160 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
@@ -44316,18 +44332,18 @@
 
 
 /***/ },
-/* 160 */
-[272, 161],
 /* 161 */
 [273, 162],
 /* 162 */
+[274, 163],
+/* 163 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(4)();
 	exports.push([module.id, "\n.ui.basic.table.GBL_Skin_invisibleTable td {\n\tborder-top: 0px !important;\n}\n.ui.basic.table.GBL_Skin_lessPadding td {\n\tpadding-top: 3px;\n\tpadding-bottom: 3px;\n}\n\n.ui.table tr.GBL_Skin_invisibleRowBorder td {\n\tborder-top: 0px !important;\n}\n.ui.table tr.GBL_Skin_lessPadding td {\n\tpadding-top: 3px !important;\n\tpadding-bottom: 3px !important;\n}\n", ""]);
 
 /***/ },
-/* 163 */
+/* 164 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
@@ -44354,7 +44370,7 @@
 
 
 /***/ },
-/* 164 */
+/* 165 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(module) {/** @jsx React.DOM */
@@ -44496,7 +44512,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(23)(module)))
 
 /***/ },
-/* 165 */
+/* 166 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(module) {/** @jsx React.DOM */
@@ -44833,7 +44849,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(23)(module)))
 
 /***/ },
-/* 166 */
+/* 167 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(module) {/** @jsx React.DOM */
@@ -44953,7 +44969,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(23)(module)))
 
 /***/ },
-/* 167 */
+/* 168 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(module) {/** @jsx React.DOM */
@@ -45194,11 +45210,11 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(23)(module)))
 
 /***/ },
-/* 168 */
+/* 169 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(module) {/** @jsx React.DOM */
-	__webpack_require__(140)['for'](module, {
+	__webpack_require__(139)['for'](module, {
 
 		afterRender: function (Context, element) {
 
@@ -45534,11 +45550,11 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(23)(module)))
 
 /***/ },
-/* 169 */
+/* 170 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(module) {/** @jsx React.DOM */
-	__webpack_require__(146)['for'](module, {
+	__webpack_require__(147)['for'](module, {
 
 		afterRender: function (Context, element) {
 		},
@@ -45614,11 +45630,11 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(23)(module)))
 
 /***/ },
-/* 170 */
+/* 171 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(module) {/** @jsx React.DOM */
-	__webpack_require__(149)['for'](module, {
+	__webpack_require__(150)['for'](module, {
 
 		afterRender: function (Context, element) {
 		},
@@ -45766,11 +45782,11 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(23)(module)))
 
 /***/ },
-/* 171 */
+/* 172 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(module) {/** @jsx React.DOM */
-	__webpack_require__(172)['for'](module, {
+	__webpack_require__(173)['for'](module, {
 
 		afterRender: function (Context, element) {
 		},
@@ -45827,7 +45843,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(23)(module)))
 
 /***/ },
-/* 172 */
+/* 173 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
@@ -45871,11 +45887,11 @@
 
 
 /***/ },
-/* 173 */
+/* 174 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(module) {/** @jsx React.DOM */
-	__webpack_require__(174)['for'](module, {
+	__webpack_require__(175)['for'](module, {
 
 		afterRender: function (Context, element) {
 			var self = this;
@@ -46007,7 +46023,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(23)(module)))
 
 /***/ },
-/* 174 */
+/* 175 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
@@ -46031,11 +46047,11 @@
 
 
 /***/ },
-/* 175 */
+/* 176 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(module) {/** @jsx React.DOM */
-	__webpack_require__(176)['for'](module, {
+	__webpack_require__(177)['for'](module, {
 
 		getHTML: function (Context) {
 
@@ -46109,7 +46125,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(23)(module)))
 
 /***/ },
-/* 176 */
+/* 177 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
@@ -46133,7 +46149,7 @@
 
 
 /***/ },
-/* 177 */
+/* 178 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM *//** @jsx React.DOM */
@@ -46755,7 +46771,7 @@
 
 
 /***/ },
-/* 178 */
+/* 179 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM *//** @jsx React.DOM */
@@ -46881,7 +46897,7 @@
 
 
 /***/ },
-/* 179 */
+/* 180 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM *//** @jsx React.DOM */
@@ -47131,7 +47147,7 @@
 
 
 /***/ },
-/* 180 */
+/* 181 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM *//** @jsx React.DOM */
@@ -47177,7 +47193,7 @@
 
 
 /***/ },
-/* 181 */
+/* 182 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM *//** @jsx React.DOM */
@@ -47232,7 +47248,7 @@
 
 
 /***/ },
-/* 182 */
+/* 183 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM *//** @jsx React.DOM */
@@ -47275,7 +47291,7 @@
 
 
 /***/ },
-/* 183 */
+/* 184 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
@@ -47344,7 +47360,7 @@
 
 
 /***/ },
-/* 184 */
+/* 185 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM *//** @jsx React.DOM */
@@ -47511,7 +47527,7 @@
 
 
 /***/ },
-/* 185 */
+/* 186 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM *//** @jsx React.DOM */
@@ -47554,7 +47570,7 @@
 
 
 /***/ },
-/* 186 */
+/* 187 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM *//** @jsx React.DOM */
@@ -47597,7 +47613,7 @@
 
 
 /***/ },
-/* 187 */
+/* 188 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
@@ -47670,7 +47686,7 @@
 
 
 /***/ },
-/* 188 */
+/* 189 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM *//** @jsx React.DOM */
@@ -47728,7 +47744,7 @@
 
 
 /***/ },
-/* 189 */
+/* 190 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM *//** @jsx React.DOM */
@@ -47777,7 +47793,7 @@
 
 
 /***/ },
-/* 190 */
+/* 191 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM *//** @jsx React.DOM */
@@ -47820,18 +47836,18 @@
 
 
 /***/ },
-/* 191 */
+/* 192 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
-	var COMMON = __webpack_require__(192);
+	var COMMON = __webpack_require__(193);
 	var UNDERSCORE = __webpack_require__(12);
-	var PAGE = __webpack_require__(203);
+	var PAGE = __webpack_require__(204);
 	var MOMENT = __webpack_require__(26);
 	var Q = __webpack_require__(114);
 	var HEAD = head;
 
-	var Model = __webpack_require__(206);
+	var Model = __webpack_require__(207);
 
 
 	exports['for'] = function (overrides) {
@@ -48001,7 +48017,7 @@
 		function initLiveNotify () {
 			try {
 
-				var client = __webpack_require__(207);
+				var client = __webpack_require__(208);
 				var socket = client.connect(appContext.get("windowOrigin"));
 
 				// TODO: Handle re-connects by re-sending init.
@@ -48096,6 +48112,32 @@
 								return event.get('id');
 							}));
 						}).then(function () {
+
+							var today = appContext.get('stores').events.modelRecords(appContext.get('stores').events.getToday())[0];
+
+							function monitorOrderDeadline (today) {
+								var ordersLocked = null;
+								var interval = setInterval(function () {
+									if (ordersLocked === null) {
+										ordersLocked = today.get("ordersLocked");
+									} else
+									if (today.get("ordersLocked") !== ordersLocked) {
+										ordersLocked = today.get("ordersLocked");
+										// Status has changed so we reload to lock the UI.
+										console.log("Lock event due to ordersLocked");
+										appContext.get('stores').events.loadForId(context.dbfilter.event_id).fail(function (err) {
+											console.error("Error loading event", err.stack);
+										});
+									}
+									if (ordersLocked && interval) {
+										clearInterval(interval);
+										interval = null;
+									}
+								}, 5 * 1000);
+							}
+
+							monitorOrderDeadline(today);
+
 
 							finalizeInit();
 
@@ -48203,16 +48245,16 @@
 
 
 /***/ },
-/* 192 */
+/* 193 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
 
 	// The API for the data stores running in the UI.
 	// Running all API access through here allows for easy porting later.
-	var API = exports.API = Object.create(__webpack_require__(193).API);
+	var API = exports.API = Object.create(__webpack_require__(194).API);
 	API.BACKBONE = __webpack_require__(11);
-	API.FIRENODE = __webpack_require__(201);
+	API.FIRENODE = __webpack_require__(202);
 
 
 	exports.makeEndpointUrl = function (name) {
@@ -48351,37 +48393,6 @@
 
 
 
-	exports.makeFormatter = function (type) {
-
-		if (type === "deliveryTime") {
-			return {
-				deps: [
-					"deliveryStartTime",
-					"pickupEndTime"
-				],
-	            fn: function () {
-	            	var deliveryStartTime = API.MOMENT(this.deliveryStartTime);
-	            	var pickupEndTime = API.MOMENT(this.pickupEndTime);
-	            	return deliveryStartTime.format("hh:mm") + "-" + pickupEndTime.format("hh:mm A");
-	            }
-		    };
-		} else
-		if (type === "deliveryDate") {
-			return {
-				deps: [
-					"deliveryStartTime"
-				],
-	            fn: function () {
-	            	var deliveryStartTime = API.MOMENT(this.deliveryStartTime);
-	            	return deliveryStartTime.format("dddd, MMM Do YYYY");
-	            }
-		    };
-		}
-
-		throw new Error("Formatter of type '" + type + "' not supported!");
-	}
-
-
 
 	function initLocalStorage () {
 
@@ -48419,7 +48430,7 @@
 
 
 /***/ },
-/* 193 */
+/* 194 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
@@ -48429,12 +48440,12 @@
 	var API = exports.API = {
 		Q: __webpack_require__(114),
 		UNDERSCORE: __webpack_require__(12),
-		AMPERSAND_STATE: __webpack_require__(195),
+		AMPERSAND_STATE: __webpack_require__(196),
 		MOMENT: __webpack_require__(26),
-		NUMERAL: __webpack_require__(194),
-		UUID: __webpack_require__(197),
-		JSSHA: __webpack_require__(199),
-		CJSON: __webpack_require__(200)
+		NUMERAL: __webpack_require__(195),
+		UUID: __webpack_require__(198),
+		JSSHA: __webpack_require__(200),
+		CJSON: __webpack_require__(201)
 	};
 
 
@@ -48453,7 +48464,7 @@
 		            fn: function () {
 		            	var deliveryStartTime = API.MOMENT(this.deliveryStartTime);
 		            	var pickupEndTime = API.MOMENT(this.pickupEndTime);
-		            	return deliveryStartTime.format("hh:mm") + "-" + pickupEndTime.format("hh:mm A");
+		            	return deliveryStartTime.format("h:mm") + "-" + pickupEndTime.format("h:mm A");
 		            }
 			    };
 			} else
@@ -48467,6 +48478,17 @@
 		            	return deliveryStartTime.format("dddd, MMM Do YYYY");
 		            }
 			    };
+			} else
+			if (type === "orderByTime") {
+				return {
+					deps: [
+						"orderByTime"
+					],
+		            fn: function () {
+		            	var orderByTime = API.MOMENT(this.orderByTime);
+		            	return orderByTime.format("h:mm A");
+		            }
+			    };
 			}
 
 			throw new Error("Formatter of type '" + type + "' not supported!");
@@ -48477,7 +48499,7 @@
 
 
 /***/ },
-/* 194 */
+/* 195 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/** @jsx React.DOM *//*!
@@ -49162,7 +49184,7 @@
 
 
 /***/ },
-/* 195 */
+/* 196 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
@@ -49204,7 +49226,7 @@
 	    }
 	*/
 
-	var EVENTS = __webpack_require__(196);
+	var EVENTS = __webpack_require__(197);
 	// Below only works on server while above only works in browser.
 	if (EVENTS.EventEmitter2) EVENTS = EVENTS.EventEmitter2;
 
@@ -49278,7 +49300,7 @@
 
 
 /***/ },
-/* 196 */
+/* 197 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_RESULT__;/** @jsx React.DOM *//*!
@@ -49857,7 +49879,7 @@
 
 
 /***/ },
-/* 197 */
+/* 198 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM *///     uuid.js
@@ -49868,7 +49890,7 @@
 	// Unique ID creation requires a high quality random # generator.  We feature
 	// detect to determine the best RNG source, normalizing to a function that
 	// returns 128-bits of randomness, since that's what's usually required
-	var _rng = __webpack_require__(198);
+	var _rng = __webpack_require__(199);
 
 	// Maps for number <-> hex string conversion
 	var _byteToHex = [];
@@ -50046,7 +50068,7 @@
 
 
 /***/ },
-/* 198 */
+/* 199 */
 /***/ function(module, exports) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {/** @jsx React.DOM */
@@ -50084,7 +50106,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 199 */
+/* 200 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_RESULT__;/** @jsx React.DOM *//*
@@ -50127,7 +50149,7 @@
 
 
 /***/ },
-/* 200 */
+/* 201 */
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM */
@@ -50352,11 +50374,11 @@
 
 
 /***/ },
-/* 201 */
+/* 202 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
-	const COOKIES = __webpack_require__(202);
+	const COOKIES = __webpack_require__(203);
 
 
 	var Client = exports.Client = function (sessionToken, context) {
@@ -50371,7 +50393,7 @@
 
 
 /***/ },
-/* 202 */
+/* 203 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;/** @jsx React.DOM *//*!
@@ -50516,7 +50538,7 @@
 
 
 /***/ },
-/* 203 */
+/* 204 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/** @jsx React.DOM */  /* globals require, module */
@@ -50527,7 +50549,7 @@
 	   * Module dependencies.
 	   */
 
-	  var pathtoRegexp = __webpack_require__(204);
+	  var pathtoRegexp = __webpack_require__(205);
 
 	  /**
 	   * Module exports.
@@ -51145,10 +51167,10 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(115)))
 
 /***/ },
-/* 204 */
+/* 205 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/** @jsx React.DOM */var isArray = __webpack_require__(205);
+	/** @jsx React.DOM */var isArray = __webpack_require__(206);
 
 	/**
 	 * Expose `pathToRegexp`.
@@ -51353,7 +51375,7 @@
 
 
 /***/ },
-/* 205 */
+/* 206 */
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM */module.exports = Array.isArray || function (arr) {
@@ -51362,11 +51384,11 @@
 
 
 /***/ },
-/* 206 */
+/* 207 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
-	var COMMON = __webpack_require__(193);
+	var COMMON = __webpack_require__(194);
 
 
 	exports.makeContextForClient = function (overrides) {
@@ -51501,7 +51523,7 @@
 
 
 /***/ },
-/* 207 */
+/* 208 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
@@ -51509,10 +51531,10 @@
 	 * Module dependencies.
 	 */
 
-	var url = __webpack_require__(209);
-	var parser = __webpack_require__(211);
-	var Manager = __webpack_require__(219);
-	var debug = __webpack_require__(208)('socket.io-client');
+	var url = __webpack_require__(210);
+	var parser = __webpack_require__(212);
+	var Manager = __webpack_require__(220);
+	var debug = __webpack_require__(209)('socket.io-client');
 
 	/**
 	 * Module exports.
@@ -51589,12 +51611,12 @@
 	 * @api public
 	 */
 
-	exports.Manager = __webpack_require__(219);
-	exports.Socket = __webpack_require__(251);
+	exports.Manager = __webpack_require__(220);
+	exports.Socket = __webpack_require__(252);
 
 
 /***/ },
-/* 208 */
+/* 209 */
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM */
@@ -51737,7 +51759,7 @@
 
 
 /***/ },
-/* 209 */
+/* 210 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {/** @jsx React.DOM */
@@ -51745,8 +51767,8 @@
 	 * Module dependencies.
 	 */
 
-	var parseuri = __webpack_require__(210);
-	var debug = __webpack_require__(208)('socket.io-client:url');
+	var parseuri = __webpack_require__(211);
+	var debug = __webpack_require__(209)('socket.io-client:url');
 
 	/**
 	 * Module exports.
@@ -51817,7 +51839,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 210 */
+/* 211 */
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM *//**
@@ -51848,7 +51870,7 @@
 
 
 /***/ },
-/* 211 */
+/* 212 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
@@ -51856,12 +51878,12 @@
 	 * Module dependencies.
 	 */
 
-	var debug = __webpack_require__(213)('socket.io-parser');
-	var json = __webpack_require__(214);
-	var isArray = __webpack_require__(216);
-	var Emitter = __webpack_require__(212);
-	var binary = __webpack_require__(217);
-	var isBuf = __webpack_require__(218);
+	var debug = __webpack_require__(214)('socket.io-parser');
+	var json = __webpack_require__(215);
+	var isArray = __webpack_require__(217);
+	var Emitter = __webpack_require__(213);
+	var binary = __webpack_require__(218);
+	var isBuf = __webpack_require__(219);
 
 	/**
 	 * Protocol version.
@@ -52254,7 +52276,7 @@
 
 
 /***/ },
-/* 212 */
+/* 213 */
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM */
@@ -52424,9 +52446,9 @@
 
 
 /***/ },
-/* 213 */
-208,
 /* 214 */
+209,
+/* 215 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_RESULT__;/** @jsx React.DOM *//*! JSON v3.2.6 | http://bestiejs.github.io/json3 | Copyright 2012-2013, Kit Cambridge | http://kit.mit-license.org */
@@ -52436,7 +52458,7 @@
 
 	  // Detect the `define` function exposed by asynchronous module loaders. The
 	  // strict `define` check is necessary for compatibility with `r.js`.
-	  var isLoader = "function" === "function" && __webpack_require__(215);
+	  var isLoader = "function" === "function" && __webpack_require__(216);
 
 	  // Detect native implementations.
 	  var nativeJSON = typeof JSON == "object" && JSON;
@@ -53293,7 +53315,7 @@
 
 
 /***/ },
-/* 215 */
+/* 216 */
 /***/ function(module, exports) {
 
 	/* WEBPACK VAR INJECTION */(function(__webpack_amd_options__) {module.exports = __webpack_amd_options__;
@@ -53301,9 +53323,9 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, {}))
 
 /***/ },
-/* 216 */
-205,
 /* 217 */
+206,
+/* 218 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {/** @jsx React.DOM *//*global Blob,File*/
@@ -53312,8 +53334,8 @@
 	 * Module requirements
 	 */
 
-	var isArray = __webpack_require__(216);
-	var isBuf = __webpack_require__(218);
+	var isArray = __webpack_require__(217);
+	var isBuf = __webpack_require__(219);
 
 	/**
 	 * Replaces every Buffer | ArrayBuffer in packet with a numbered placeholder.
@@ -53451,7 +53473,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 218 */
+/* 219 */
 /***/ function(module, exports) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {/** @jsx React.DOM */
@@ -53471,7 +53493,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 219 */
+/* 220 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
@@ -53479,17 +53501,17 @@
 	 * Module dependencies.
 	 */
 
-	var url = __webpack_require__(209);
-	var eio = __webpack_require__(220);
-	var Socket = __webpack_require__(251);
-	var Emitter = __webpack_require__(240);
-	var parser = __webpack_require__(211);
-	var on = __webpack_require__(253);
-	var bind = __webpack_require__(254);
-	var object = __webpack_require__(257);
-	var debug = __webpack_require__(208)('socket.io-client:manager');
-	var indexOf = __webpack_require__(248);
-	var Backoff = __webpack_require__(258);
+	var url = __webpack_require__(210);
+	var eio = __webpack_require__(221);
+	var Socket = __webpack_require__(252);
+	var Emitter = __webpack_require__(241);
+	var parser = __webpack_require__(212);
+	var on = __webpack_require__(254);
+	var bind = __webpack_require__(255);
+	var object = __webpack_require__(258);
+	var debug = __webpack_require__(209)('socket.io-client:manager');
+	var indexOf = __webpack_require__(249);
+	var Backoff = __webpack_require__(259);
 
 	/**
 	 * Module exports
@@ -53980,19 +54002,19 @@
 
 
 /***/ },
-/* 220 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/** @jsx React.DOM */
-	module.exports =  __webpack_require__(221);
-
-
-/***/ },
 /* 221 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
-	module.exports = __webpack_require__(222);
+	module.exports =  __webpack_require__(222);
+
+
+/***/ },
+/* 222 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/** @jsx React.DOM */
+	module.exports = __webpack_require__(223);
 
 	/**
 	 * Exports parser
@@ -54000,25 +54022,25 @@
 	 * @api public
 	 *
 	 */
-	module.exports.parser = __webpack_require__(231);
+	module.exports.parser = __webpack_require__(232);
 
 
 /***/ },
-/* 222 */
+/* 223 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {/** @jsx React.DOM *//**
 	 * Module dependencies.
 	 */
 
-	var transports = __webpack_require__(223);
-	var Emitter = __webpack_require__(240);
-	var debug = __webpack_require__(242)('engine.io-client:socket');
-	var index = __webpack_require__(248);
-	var parser = __webpack_require__(231);
-	var parseuri = __webpack_require__(249);
-	var parsejson = __webpack_require__(250);
-	var parseqs = __webpack_require__(241);
+	var transports = __webpack_require__(224);
+	var Emitter = __webpack_require__(241);
+	var debug = __webpack_require__(243)('engine.io-client:socket');
+	var index = __webpack_require__(249);
+	var parser = __webpack_require__(232);
+	var parseuri = __webpack_require__(250);
+	var parsejson = __webpack_require__(251);
+	var parseqs = __webpack_require__(242);
 
 	/**
 	 * Module exports.
@@ -54133,9 +54155,9 @@
 	 */
 
 	Socket.Socket = Socket;
-	Socket.Transport = __webpack_require__(230);
-	Socket.transports = __webpack_require__(223);
-	Socket.parser = __webpack_require__(231);
+	Socket.Transport = __webpack_require__(231);
+	Socket.transports = __webpack_require__(224);
+	Socket.parser = __webpack_require__(232);
 
 	/**
 	 * Creates transport of the given type.
@@ -54716,17 +54738,17 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 223 */
+/* 224 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {/** @jsx React.DOM *//**
 	 * Module dependencies
 	 */
 
-	var XMLHttpRequest = __webpack_require__(224);
-	var XHR = __webpack_require__(227);
-	var JSONP = __webpack_require__(245);
-	var websocket = __webpack_require__(246);
+	var XMLHttpRequest = __webpack_require__(225);
+	var XHR = __webpack_require__(228);
+	var JSONP = __webpack_require__(246);
+	var websocket = __webpack_require__(247);
 
 	/**
 	 * Export transports.
@@ -54776,11 +54798,11 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 224 */
+/* 225 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */// browser shim for xmlhttprequest module
-	var hasCORS = __webpack_require__(225);
+	var hasCORS = __webpack_require__(226);
 
 	module.exports = function(opts) {
 	  var xdomain = opts.xdomain;
@@ -54818,7 +54840,7 @@
 
 
 /***/ },
-/* 225 */
+/* 226 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
@@ -54826,7 +54848,7 @@
 	 * Module dependencies.
 	 */
 
-	var global = __webpack_require__(226);
+	var global = __webpack_require__(227);
 
 	/**
 	 * Module exports.
@@ -54847,7 +54869,7 @@
 
 
 /***/ },
-/* 226 */
+/* 227 */
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM */
@@ -54861,18 +54883,18 @@
 
 
 /***/ },
-/* 227 */
+/* 228 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {/** @jsx React.DOM *//**
 	 * Module requirements.
 	 */
 
-	var XMLHttpRequest = __webpack_require__(224);
-	var Polling = __webpack_require__(228);
-	var Emitter = __webpack_require__(240);
-	var inherit = __webpack_require__(229);
-	var debug = __webpack_require__(242)('engine.io-client:polling-xhr');
+	var XMLHttpRequest = __webpack_require__(225);
+	var Polling = __webpack_require__(229);
+	var Emitter = __webpack_require__(241);
+	var inherit = __webpack_require__(230);
+	var debug = __webpack_require__(243)('engine.io-client:polling-xhr');
 
 	/**
 	 * Module exports.
@@ -55252,18 +55274,18 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 228 */
+/* 229 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM *//**
 	 * Module dependencies.
 	 */
 
-	var Transport = __webpack_require__(230);
-	var parseqs = __webpack_require__(241);
-	var parser = __webpack_require__(231);
-	var inherit = __webpack_require__(229);
-	var debug = __webpack_require__(242)('engine.io-client:polling');
+	var Transport = __webpack_require__(231);
+	var parseqs = __webpack_require__(242);
+	var parser = __webpack_require__(232);
+	var inherit = __webpack_require__(230);
+	var debug = __webpack_require__(243)('engine.io-client:polling');
 
 	/**
 	 * Module exports.
@@ -55276,7 +55298,7 @@
 	 */
 
 	var hasXHR2 = (function() {
-	  var XMLHttpRequest = __webpack_require__(224);
+	  var XMLHttpRequest = __webpack_require__(225);
 	  var xhr = new XMLHttpRequest({ xdomain: false });
 	  return null != xhr.responseType;
 	})();
@@ -55503,7 +55525,7 @@
 
 
 /***/ },
-/* 229 */
+/* 230 */
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM */
@@ -55515,15 +55537,15 @@
 	};
 
 /***/ },
-/* 230 */
+/* 231 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM *//**
 	 * Module dependencies.
 	 */
 
-	var parser = __webpack_require__(231);
-	var Emitter = __webpack_require__(240);
+	var parser = __webpack_require__(232);
+	var Emitter = __webpack_require__(241);
 
 	/**
 	 * Module exports.
@@ -55680,19 +55702,19 @@
 
 
 /***/ },
-/* 231 */
+/* 232 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {/** @jsx React.DOM *//**
 	 * Module dependencies.
 	 */
 
-	var keys = __webpack_require__(232);
-	var hasBinary = __webpack_require__(233);
-	var sliceBuffer = __webpack_require__(235);
-	var base64encoder = __webpack_require__(236);
-	var after = __webpack_require__(237);
-	var utf8 = __webpack_require__(238);
+	var keys = __webpack_require__(233);
+	var hasBinary = __webpack_require__(234);
+	var sliceBuffer = __webpack_require__(236);
+	var base64encoder = __webpack_require__(237);
+	var after = __webpack_require__(238);
+	var utf8 = __webpack_require__(239);
 
 	/**
 	 * Check if we are running an android browser. That requires us to use
@@ -55749,7 +55771,7 @@
 	 * Create a blob api even for blob builder when vendor prefixes exist
 	 */
 
-	var Blob = __webpack_require__(239);
+	var Blob = __webpack_require__(240);
 
 	/**
 	 * Encodes a packet.
@@ -56281,7 +56303,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 232 */
+/* 233 */
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM */
@@ -56306,7 +56328,7 @@
 
 
 /***/ },
-/* 233 */
+/* 234 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {/** @jsx React.DOM */
@@ -56314,7 +56336,7 @@
 	 * Module requirements.
 	 */
 
-	var isArray = __webpack_require__(234);
+	var isArray = __webpack_require__(235);
 
 	/**
 	 * Module exports.
@@ -56371,9 +56393,9 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 234 */
-205,
 /* 235 */
+206,
+/* 236 */
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM *//**
@@ -56408,7 +56430,7 @@
 
 
 /***/ },
-/* 236 */
+/* 237 */
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM *//*
@@ -56473,7 +56495,7 @@
 
 
 /***/ },
-/* 237 */
+/* 238 */
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM */module.exports = after
@@ -56507,7 +56529,7 @@
 
 
 /***/ },
-/* 238 */
+/* 239 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_RESULT__;/* WEBPACK VAR INJECTION */(function(module, global) {/** @jsx React.DOM *//*! http://mths.be/utf8js v2.0.0 by @mathias */
@@ -56751,7 +56773,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(23)(module), (function() { return this; }())))
 
 /***/ },
-/* 239 */
+/* 240 */
 /***/ function(module, exports) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {/** @jsx React.DOM *//**
@@ -56807,9 +56829,9 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 240 */
-212,
 /* 241 */
+213,
+/* 242 */
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM *//**
@@ -56852,7 +56874,7 @@
 
 
 /***/ },
-/* 242 */
+/* 243 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
@@ -56862,7 +56884,7 @@
 	 * Expose `debug()` as the module.
 	 */
 
-	exports = module.exports = __webpack_require__(243);
+	exports = module.exports = __webpack_require__(244);
 	exports.log = log;
 	exports.formatArgs = formatArgs;
 	exports.save = save;
@@ -57005,7 +57027,7 @@
 
 
 /***/ },
-/* 243 */
+/* 244 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
@@ -57021,7 +57043,7 @@
 	exports.disable = disable;
 	exports.enable = enable;
 	exports.enabled = enabled;
-	exports.humanize = __webpack_require__(244);
+	exports.humanize = __webpack_require__(245);
 
 	/**
 	 * The currently active debug mode names, and names to skip.
@@ -57208,7 +57230,7 @@
 
 
 /***/ },
-/* 244 */
+/* 245 */
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM *//**
@@ -57325,7 +57347,7 @@
 
 
 /***/ },
-/* 245 */
+/* 246 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {/** @jsx React.DOM */
@@ -57333,8 +57355,8 @@
 	 * Module requirements.
 	 */
 
-	var Polling = __webpack_require__(228);
-	var inherit = __webpack_require__(229);
+	var Polling = __webpack_require__(229);
+	var inherit = __webpack_require__(230);
 
 	/**
 	 * Module exports.
@@ -57565,18 +57587,18 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 246 */
+/* 247 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM *//**
 	 * Module dependencies.
 	 */
 
-	var Transport = __webpack_require__(230);
-	var parser = __webpack_require__(231);
-	var parseqs = __webpack_require__(241);
-	var inherit = __webpack_require__(229);
-	var debug = __webpack_require__(242)('engine.io-client:websocket');
+	var Transport = __webpack_require__(231);
+	var parser = __webpack_require__(232);
+	var parseqs = __webpack_require__(242);
+	var inherit = __webpack_require__(230);
+	var debug = __webpack_require__(243)('engine.io-client:websocket');
 
 	/**
 	 * `ws` exposes a WebSocket-compatible interface in
@@ -57584,7 +57606,7 @@
 	 * in the browser.
 	 */
 
-	var WebSocket = __webpack_require__(247);
+	var WebSocket = __webpack_require__(248);
 
 	/**
 	 * Module exports.
@@ -57809,7 +57831,7 @@
 
 
 /***/ },
-/* 247 */
+/* 248 */
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM */
@@ -57858,7 +57880,7 @@
 
 
 /***/ },
-/* 248 */
+/* 249 */
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM */
@@ -57873,7 +57895,7 @@
 	};
 
 /***/ },
-/* 249 */
+/* 250 */
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM *//**
@@ -57918,7 +57940,7 @@
 
 
 /***/ },
-/* 250 */
+/* 251 */
 /***/ function(module, exports) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {/** @jsx React.DOM *//**
@@ -57956,7 +57978,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 251 */
+/* 252 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
@@ -57964,13 +57986,13 @@
 	 * Module dependencies.
 	 */
 
-	var parser = __webpack_require__(211);
-	var Emitter = __webpack_require__(240);
-	var toArray = __webpack_require__(252);
-	var on = __webpack_require__(253);
-	var bind = __webpack_require__(254);
-	var debug = __webpack_require__(208)('socket.io-client:socket');
-	var hasBin = __webpack_require__(255);
+	var parser = __webpack_require__(212);
+	var Emitter = __webpack_require__(241);
+	var toArray = __webpack_require__(253);
+	var on = __webpack_require__(254);
+	var bind = __webpack_require__(255);
+	var debug = __webpack_require__(209)('socket.io-client:socket');
+	var hasBin = __webpack_require__(256);
 
 	/**
 	 * Module exports.
@@ -58347,7 +58369,7 @@
 
 
 /***/ },
-/* 252 */
+/* 253 */
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM */module.exports = toArray
@@ -58366,7 +58388,7 @@
 
 
 /***/ },
-/* 253 */
+/* 254 */
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM */
@@ -58396,7 +58418,7 @@
 
 
 /***/ },
-/* 254 */
+/* 255 */
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM *//**
@@ -58425,7 +58447,7 @@
 
 
 /***/ },
-/* 255 */
+/* 256 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {/** @jsx React.DOM */
@@ -58433,7 +58455,7 @@
 	 * Module requirements.
 	 */
 
-	var isArray = __webpack_require__(256);
+	var isArray = __webpack_require__(257);
 
 	/**
 	 * Module exports.
@@ -58490,9 +58512,9 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 256 */
-205,
 /* 257 */
+206,
+/* 258 */
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM */
@@ -58581,7 +58603,7 @@
 	};
 
 /***/ },
-/* 258 */
+/* 259 */
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM */
@@ -58672,11 +58694,11 @@
 
 
 /***/ },
-/* 259 */
+/* 260 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
-	var COMMON = __webpack_require__(192);
+	var COMMON = __webpack_require__(193);
 
 
 
@@ -58786,11 +58808,11 @@
 
 
 /***/ },
-/* 260 */
+/* 261 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
-	var COMMON = __webpack_require__(192);
+	var COMMON = __webpack_require__(193);
 
 
 	var ENDPOINT = COMMON.makeEndpointUrl("events");
@@ -58987,7 +59009,7 @@
 		var store = new Store();
 
 
-		store.Model = __webpack_require__(261).forContext(context);
+		store.Model = __webpack_require__(262).forContext(context);
 
 
 		store.getToday = function () {
@@ -59055,7 +59077,7 @@
 		store.modelRecords = function (records) {
 			return COMMON.resolveForeignKeys(store, records, {
 				"consumer_group_id": {
-					store: __webpack_require__(262),
+					store: __webpack_require__(263),
 					model: context.appContext.get('stores').consumerGroups.Model,
 					localFieldPrefix: "consumerGroup"
 				}
@@ -59087,7 +59109,7 @@
 			}
 			return COMMON.resolveForeignKeys(store, record, {
 				"consumer_group_id": {
-					store: __webpack_require__(262),
+					store: __webpack_require__(263),
 					model: context.appContext.get('stores').consumerGroups.Model,
 					localFieldPrefix: "consumerGroup"
 				}
@@ -59118,12 +59140,12 @@
 
 
 /***/ },
-/* 261 */
+/* 262 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
 
-	var COMMON = __webpack_require__(193);
+	var COMMON = __webpack_require__(194);
 
 
 	exports.forContext = function (context) {
@@ -59224,6 +59246,7 @@
 			    },
 			    "format.deliveryDate": common.makeFormatter("deliveryDate"),
 			    "format.deliveryTime": common.makeFormatter("deliveryTime"),
+			    "format.orderByTime": common.makeFormatter("orderByTime"),
 			    "format.orderTimer": {
 					deps: [
 						"orderByTime"
@@ -59303,11 +59326,11 @@
 
 
 /***/ },
-/* 262 */
+/* 263 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
-	var COMMON = __webpack_require__(192);
+	var COMMON = __webpack_require__(193);
 
 	var ENDPOINT = COMMON.makeEndpointUrl("consumer-groups");
 
@@ -59430,11 +59453,11 @@
 
 
 /***/ },
-/* 263 */
+/* 264 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
-	var COMMON = __webpack_require__(192);
+	var COMMON = __webpack_require__(193);
 
 	var ENDPOINT = COMMON.makeEndpointUrl("items");
 
@@ -59535,7 +59558,7 @@
 		store.modelRecords = function (records) {
 			return COMMON.resolveForeignKeys(store, records, {
 				"vendor_id": {
-					store: __webpack_require__(264),
+					store: __webpack_require__(265),
 					model: context.appContext.get('stores').vendors.Model,
 					localFieldPrefix: "vendor"
 				}
@@ -59573,7 +59596,7 @@
 
 			return COMMON.resolveForeignKeys(store, records, {
 				"vendor_id": {
-					store: __webpack_require__(264),
+					store: __webpack_require__(265),
 					model: context.appContext.get('stores').vendors.Model,
 					localFieldPrefix: "vendor"
 				}
@@ -59603,12 +59626,12 @@
 
 
 /***/ },
-/* 264 */
+/* 265 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
-	var COMMON = __webpack_require__(192);
-	var NUMERAL = __webpack_require__(194);
+	var COMMON = __webpack_require__(193);
+	var NUMERAL = __webpack_require__(195);
 
 	var ENDPOINT = COMMON.makeEndpointUrl("vendors");
 
@@ -59714,11 +59737,11 @@
 
 
 /***/ },
-/* 265 */
+/* 266 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
-	var COMMON = __webpack_require__(192);
+	var COMMON = __webpack_require__(193);
 
 
 	var ENDPOINT = COMMON.makeEndpointUrl("menus");
@@ -59865,12 +59888,12 @@
 		store.modelRecords = function (records) {
 			return COMMON.resolveForeignKeys(store, records, {
 				"vendor_id": {
-					store: __webpack_require__(264),
+					store: __webpack_require__(265),
 					model: context.appContext.get('stores').vendors.Model,
 					localFieldPrefix: "vendor"
 				},
 				"item_id": {
-					store: __webpack_require__(263),
+					store: __webpack_require__(264),
 					model: context.appContext.get('stores').items.Model,
 					localFieldPrefix: "item"
 				}
@@ -59898,11 +59921,11 @@
 
 
 /***/ },
-/* 266 */
+/* 267 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
-	var COMMON = __webpack_require__(192);
+	var COMMON = __webpack_require__(193);
 
 	var BACKBONE = __webpack_require__(11);
 	var UNDERSCORE = __webpack_require__(12);
@@ -59954,11 +59977,11 @@
 
 
 /***/ },
-/* 267 */
+/* 268 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
-	var COMMON = __webpack_require__(192);
+	var COMMON = __webpack_require__(193);
 
 	var ENDPOINT = COMMON.makeEndpointUrl("consumer-group-subscriptions");
 
@@ -60085,7 +60108,7 @@
 		store.modelRecords = function (records) {
 			return COMMON.resolveForeignKeys(store, records, {
 				"consumer_group_id": {
-					store: __webpack_require__(262),
+					store: __webpack_require__(263),
 					model: context.appContext.get('stores').consumerGroups.Model,
 					localFieldPrefix: "consumerGroup"
 				}
@@ -60111,11 +60134,11 @@
 
 
 /***/ },
-/* 268 */
+/* 269 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
-	var COMMON = __webpack_require__(192);
+	var COMMON = __webpack_require__(193);
 
 
 	//var ENDPOINT = COMMON.makeEndpointUrl("items");
@@ -60283,7 +60306,7 @@
 				if (self.get(cartItemId)) {
 					return COMMON.API.Q.resolve(self.get(cartItemId));
 				}
-				return __webpack_require__(263)['for']({
+				return __webpack_require__(264)['for']({
 					appContext: context.appContext,
 					ids: [
 						itemId
@@ -60346,12 +60369,12 @@
 
 
 /***/ },
-/* 269 */
+/* 270 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
-	var COMMON = __webpack_require__(192);
-
+	var COMMON = __webpack_require__(193);
+	var COMMON_MODEL = __webpack_require__(194);
 
 	var ENDPOINT = COMMON.makeEndpointUrl("orders");
 
@@ -60435,6 +60458,8 @@
 
 	exports['for'] = function (context) {
 
+		var common = COMMON_MODEL.forAppContext(context.appContext);
+
 
 		function loadStatusInfoForOrder (orderHashId) {
 			return context.appContext.get('stores').orderStatus.fetchStatusInfoForOrderHashId(orderHashId);
@@ -60460,8 +60485,8 @@
 		        "statusInfo": "object"
 		    },
 		    derived: {
-		    	"format.deliveryTime": COMMON.makeFormatter("deliveryTime"),
-		    	"format.deliveryDate": COMMON.makeFormatter("deliveryDate"),
+		    	"format.deliveryTime": common.makeFormatter("deliveryTime"),
+		    	"format.deliveryDate": common.makeFormatter("deliveryDate"),
 		    	"event.consumerGroup.contact": {
 		    		deps: [
 						"event"
@@ -60729,11 +60754,11 @@
 
 
 /***/ },
-/* 270 */
+/* 271 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
-	var COMMON = __webpack_require__(192);
+	var COMMON = __webpack_require__(193);
 
 
 	var ENDPOINT = COMMON.makeEndpointUrl("order-status");
@@ -60761,7 +60786,7 @@
 		var store = new Store();
 
 
-		store.Model = __webpack_require__(271).forContext(context);
+		store.Model = __webpack_require__(272).forContext(context);
 
 
 		store.fetchStatusInfoForOrderHashId = function (orderHashId) {
@@ -60843,12 +60868,12 @@
 
 
 /***/ },
-/* 271 */
+/* 272 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
 
-	var COMMON = __webpack_require__(193);
+	var COMMON = __webpack_require__(194);
 
 
 	exports.forContext = function (context) {
@@ -60896,7 +60921,7 @@
 
 
 /***/ },
-/* 272 */
+/* 273 */
 /***/ function(module, exports, __webpack_require__, __webpack_module_template_argument_0__) {
 
 	/** @jsx React.DOM */
@@ -60914,7 +60939,7 @@
 
 
 /***/ },
-/* 273 */
+/* 274 */
 /***/ function(module, exports, __webpack_require__, __webpack_module_template_argument_0__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
@@ -60937,6 +60962,70 @@
 		}
 		// When the module is disposed, remove the <style> tags
 		module.hot.dispose(function() { update(); });
+	}
+
+/***/ },
+/* 275 */
+/***/ function(module, exports) {
+
+	/** @jsx React.DOM */module.exports = function (Context) {
+	  // TODO: Remove this once we can inject 'React' automatically at build time.
+	  var React = Context.REACT;
+	  return (
+	    React.createElement("div", {className: "container checkout-info-container", id: "section-checkout-info"}, 
+
+	  React.createElement("fieldset", {className: "checkout-info form-vertical", "data-component-id": "checkout-form", "data-component-view": "default"}, 
+	    React.createElement("div", {className: "user-info"}, 
+	      React.createElement("h3", {className: "section-title"}, "Your Info"), 
+	      React.createElement("div", {className: "form-group"}, 
+	        React.createElement("label", {for: ""}, "Name"), 
+	        React.createElement("input", {type: "text", className: "form-control", "data-component-elm": "info[name]"})
+	      ), 
+	      React.createElement("div", {className: "form-group"}, 
+	        React.createElement("label", {for: ""}, "Email"), 
+	        React.createElement("input", {type: "email", className: "form-control", "data-component-elm": "info[email]"})
+	      ), 
+	      React.createElement("div", {className: "form-group"}, 
+	        React.createElement("label", {for: ""}, "Phone Number"), 
+	        React.createElement("div", {className: "intl-tel-input"}, React.createElement("div", {className: "flag-dropdown"}, React.createElement("div", {tabindex: "0", className: "selected-flag", title: "United States: +1"}, React.createElement("div", {className: "iti-flag us"}), React.createElement("div", {className: "arrow"})), React.createElement("ul", {className: "country-list hide"}, React.createElement("li", {className: "country preferred active", "data-dial-code": "1", "data-country-code": "us"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag us"})), React.createElement("span", {className: "country-name"}, "United States"), React.createElement("span", {className: "dial-code"}, "+1")), React.createElement("li", {className: "country preferred", "data-dial-code": "44", "data-country-code": "gb"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag gb"})), React.createElement("span", {className: "country-name"}, "United Kingdom"), React.createElement("span", {className: "dial-code"}, "+44")), React.createElement("li", {className: "divider"}), React.createElement("li", {className: "country", "data-dial-code": "93", "data-country-code": "af"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag af"})), React.createElement("span", {className: "country-name"}, "Afghanistan (‫افغانستان‬‎)"), React.createElement("span", {className: "dial-code"}, "+93")), React.createElement("li", {className: "country", "data-dial-code": "355", "data-country-code": "al"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag al"})), React.createElement("span", {className: "country-name"}, "Albania (Shqipëri)"), React.createElement("span", {className: "dial-code"}, "+355")), React.createElement("li", {className: "country", "data-dial-code": "213", "data-country-code": "dz"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag dz"})), React.createElement("span", {className: "country-name"}, "Algeria (‫الجزائر‬‎)"), React.createElement("span", {className: "dial-code"}, "+213")), React.createElement("li", {className: "country", "data-dial-code": "1684", "data-country-code": "as"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag as"})), React.createElement("span", {className: "country-name"}, "American Samoa"), React.createElement("span", {className: "dial-code"}, "+1684")), React.createElement("li", {className: "country", "data-dial-code": "376", "data-country-code": "ad"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag ad"})), React.createElement("span", {className: "country-name"}, "Andorra"), React.createElement("span", {className: "dial-code"}, "+376")), React.createElement("li", {className: "country", "data-dial-code": "244", "data-country-code": "ao"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag ao"})), React.createElement("span", {className: "country-name"}, "Angola"), React.createElement("span", {className: "dial-code"}, "+244")), React.createElement("li", {className: "country", "data-dial-code": "1264", "data-country-code": "ai"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag ai"})), React.createElement("span", {className: "country-name"}, "Anguilla"), React.createElement("span", {className: "dial-code"}, "+1264")), React.createElement("li", {className: "country", "data-dial-code": "1268", "data-country-code": "ag"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag ag"})), React.createElement("span", {className: "country-name"}, "Antigua and Barbuda"), React.createElement("span", {className: "dial-code"}, "+1268")), React.createElement("li", {className: "country", "data-dial-code": "54", "data-country-code": "ar"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag ar"})), React.createElement("span", {className: "country-name"}, "Argentina"), React.createElement("span", {className: "dial-code"}, "+54")), React.createElement("li", {className: "country", "data-dial-code": "374", "data-country-code": "am"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag am"})), React.createElement("span", {className: "country-name"}, "Armenia (Հայաստան)"), React.createElement("span", {className: "dial-code"}, "+374")), React.createElement("li", {className: "country", "data-dial-code": "297", "data-country-code": "aw"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag aw"})), React.createElement("span", {className: "country-name"}, "Aruba"), React.createElement("span", {className: "dial-code"}, "+297")), React.createElement("li", {className: "country", "data-dial-code": "61", "data-country-code": "au"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag au"})), React.createElement("span", {className: "country-name"}, "Australia"), React.createElement("span", {className: "dial-code"}, "+61")), React.createElement("li", {className: "country", "data-dial-code": "43", "data-country-code": "at"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag at"})), React.createElement("span", {className: "country-name"}, "Austria (Österreich)"), React.createElement("span", {className: "dial-code"}, "+43")), React.createElement("li", {className: "country", "data-dial-code": "994", "data-country-code": "az"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag az"})), React.createElement("span", {className: "country-name"}, "Azerbaijan (Azərbaycan)"), React.createElement("span", {className: "dial-code"}, "+994")), React.createElement("li", {className: "country", "data-dial-code": "1242", "data-country-code": "bs"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag bs"})), React.createElement("span", {className: "country-name"}, "Bahamas"), React.createElement("span", {className: "dial-code"}, "+1242")), React.createElement("li", {className: "country", "data-dial-code": "973", "data-country-code": "bh"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag bh"})), React.createElement("span", {className: "country-name"}, "Bahrain (‫البحرين‬‎)"), React.createElement("span", {className: "dial-code"}, "+973")), React.createElement("li", {className: "country", "data-dial-code": "880", "data-country-code": "bd"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag bd"})), React.createElement("span", {className: "country-name"}, "Bangladesh (বাংলাদেশ)"), React.createElement("span", {className: "dial-code"}, "+880")), React.createElement("li", {className: "country", "data-dial-code": "1246", "data-country-code": "bb"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag bb"})), React.createElement("span", {className: "country-name"}, "Barbados"), React.createElement("span", {className: "dial-code"}, "+1246")), React.createElement("li", {className: "country", "data-dial-code": "375", "data-country-code": "by"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag by"})), React.createElement("span", {className: "country-name"}, "Belarus (Беларусь)"), React.createElement("span", {className: "dial-code"}, "+375")), React.createElement("li", {className: "country", "data-dial-code": "32", "data-country-code": "be"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag be"})), React.createElement("span", {className: "country-name"}, "Belgium (België)"), React.createElement("span", {className: "dial-code"}, "+32")), React.createElement("li", {className: "country", "data-dial-code": "501", "data-country-code": "bz"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag bz"})), React.createElement("span", {className: "country-name"}, "Belize"), React.createElement("span", {className: "dial-code"}, "+501")), React.createElement("li", {className: "country", "data-dial-code": "229", "data-country-code": "bj"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag bj"})), React.createElement("span", {className: "country-name"}, "Benin (Bénin)"), React.createElement("span", {className: "dial-code"}, "+229")), React.createElement("li", {className: "country", "data-dial-code": "1441", "data-country-code": "bm"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag bm"})), React.createElement("span", {className: "country-name"}, "Bermuda"), React.createElement("span", {className: "dial-code"}, "+1441")), React.createElement("li", {className: "country", "data-dial-code": "975", "data-country-code": "bt"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag bt"})), React.createElement("span", {className: "country-name"}, "Bhutan (འབྲུག)"), React.createElement("span", {className: "dial-code"}, "+975")), React.createElement("li", {className: "country", "data-dial-code": "591", "data-country-code": "bo"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag bo"})), React.createElement("span", {className: "country-name"}, "Bolivia"), React.createElement("span", {className: "dial-code"}, "+591")), React.createElement("li", {className: "country", "data-dial-code": "387", "data-country-code": "ba"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag ba"})), React.createElement("span", {className: "country-name"}, "Bosnia and Herzegovina (Босна и Херцеговина)"), React.createElement("span", {className: "dial-code"}, "+387")), React.createElement("li", {className: "country", "data-dial-code": "267", "data-country-code": "bw"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag bw"})), React.createElement("span", {className: "country-name"}, "Botswana"), React.createElement("span", {className: "dial-code"}, "+267")), React.createElement("li", {className: "country", "data-dial-code": "55", "data-country-code": "br"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag br"})), React.createElement("span", {className: "country-name"}, "Brazil (Brasil)"), React.createElement("span", {className: "dial-code"}, "+55")), React.createElement("li", {className: "country", "data-dial-code": "246", "data-country-code": "io"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag io"})), React.createElement("span", {className: "country-name"}, "British Indian Ocean Territory"), React.createElement("span", {className: "dial-code"}, "+246")), React.createElement("li", {className: "country", "data-dial-code": "1284", "data-country-code": "vg"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag vg"})), React.createElement("span", {className: "country-name"}, "British Virgin Islands"), React.createElement("span", {className: "dial-code"}, "+1284")), React.createElement("li", {className: "country", "data-dial-code": "673", "data-country-code": "bn"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag bn"})), React.createElement("span", {className: "country-name"}, "Brunei"), React.createElement("span", {className: "dial-code"}, "+673")), React.createElement("li", {className: "country", "data-dial-code": "359", "data-country-code": "bg"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag bg"})), React.createElement("span", {className: "country-name"}, "Bulgaria (България)"), React.createElement("span", {className: "dial-code"}, "+359")), React.createElement("li", {className: "country", "data-dial-code": "226", "data-country-code": "bf"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag bf"})), React.createElement("span", {className: "country-name"}, "Burkina Faso"), React.createElement("span", {className: "dial-code"}, "+226")), React.createElement("li", {className: "country", "data-dial-code": "257", "data-country-code": "bi"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag bi"})), React.createElement("span", {className: "country-name"}, "Burundi (Uburundi)"), React.createElement("span", {className: "dial-code"}, "+257")), React.createElement("li", {className: "country", "data-dial-code": "855", "data-country-code": "kh"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag kh"})), React.createElement("span", {className: "country-name"}, "Cambodia (កម្ពុជា)"), React.createElement("span", {className: "dial-code"}, "+855")), React.createElement("li", {className: "country", "data-dial-code": "237", "data-country-code": "cm"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag cm"})), React.createElement("span", {className: "country-name"}, "Cameroon (Cameroun)"), React.createElement("span", {className: "dial-code"}, "+237")), React.createElement("li", {className: "country", "data-dial-code": "1", "data-country-code": "ca"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag ca"})), React.createElement("span", {className: "country-name"}, "Canada"), React.createElement("span", {className: "dial-code"}, "+1")), React.createElement("li", {className: "country", "data-dial-code": "238", "data-country-code": "cv"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag cv"})), React.createElement("span", {className: "country-name"}, "Cape Verde (Kabu Verdi)"), React.createElement("span", {className: "dial-code"}, "+238")), React.createElement("li", {className: "country", "data-dial-code": "599", "data-country-code": "bq"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag bq"})), React.createElement("span", {className: "country-name"}, "Caribbean Netherlands"), React.createElement("span", {className: "dial-code"}, "+599")), React.createElement("li", {className: "country", "data-dial-code": "1345", "data-country-code": "ky"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag ky"})), React.createElement("span", {className: "country-name"}, "Cayman Islands"), React.createElement("span", {className: "dial-code"}, "+1345")), React.createElement("li", {className: "country", "data-dial-code": "236", "data-country-code": "cf"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag cf"})), React.createElement("span", {className: "country-name"}, "Central African Republic (République centrafricaine)"), React.createElement("span", {className: "dial-code"}, "+236")), React.createElement("li", {className: "country", "data-dial-code": "235", "data-country-code": "td"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag td"})), React.createElement("span", {className: "country-name"}, "Chad (Tchad)"), React.createElement("span", {className: "dial-code"}, "+235")), React.createElement("li", {className: "country", "data-dial-code": "56", "data-country-code": "cl"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag cl"})), React.createElement("span", {className: "country-name"}, "Chile"), React.createElement("span", {className: "dial-code"}, "+56")), React.createElement("li", {className: "country", "data-dial-code": "86", "data-country-code": "cn"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag cn"})), React.createElement("span", {className: "country-name"}, "China (中国)"), React.createElement("span", {className: "dial-code"}, "+86")), React.createElement("li", {className: "country", "data-dial-code": "57", "data-country-code": "co"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag co"})), React.createElement("span", {className: "country-name"}, "Colombia"), React.createElement("span", {className: "dial-code"}, "+57")), React.createElement("li", {className: "country", "data-dial-code": "269", "data-country-code": "km"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag km"})), React.createElement("span", {className: "country-name"}, "Comoros (‫جزر القمر‬‎)"), React.createElement("span", {className: "dial-code"}, "+269")), React.createElement("li", {className: "country", "data-dial-code": "243", "data-country-code": "cd"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag cd"})), React.createElement("span", {className: "country-name"}, "Congo (DRC) (Jamhuri ya Kidemokrasia ya Kongo)"), React.createElement("span", {className: "dial-code"}, "+243")), React.createElement("li", {className: "country", "data-dial-code": "242", "data-country-code": "cg"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag cg"})), React.createElement("span", {className: "country-name"}, "Congo (Republic) (Congo-Brazzaville)"), React.createElement("span", {className: "dial-code"}, "+242")), React.createElement("li", {className: "country", "data-dial-code": "682", "data-country-code": "ck"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag ck"})), React.createElement("span", {className: "country-name"}, "Cook Islands"), React.createElement("span", {className: "dial-code"}, "+682")), React.createElement("li", {className: "country", "data-dial-code": "506", "data-country-code": "cr"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag cr"})), React.createElement("span", {className: "country-name"}, "Costa Rica"), React.createElement("span", {className: "dial-code"}, "+506")), React.createElement("li", {className: "country", "data-dial-code": "225", "data-country-code": "ci"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag ci"})), React.createElement("span", {className: "country-name"}, "Côte d’Ivoire"), React.createElement("span", {className: "dial-code"}, "+225")), React.createElement("li", {className: "country", "data-dial-code": "385", "data-country-code": "hr"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag hr"})), React.createElement("span", {className: "country-name"}, "Croatia (Hrvatska)"), React.createElement("span", {className: "dial-code"}, "+385")), React.createElement("li", {className: "country", "data-dial-code": "53", "data-country-code": "cu"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag cu"})), React.createElement("span", {className: "country-name"}, "Cuba"), React.createElement("span", {className: "dial-code"}, "+53")), React.createElement("li", {className: "country", "data-dial-code": "599", "data-country-code": "cw"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag cw"})), React.createElement("span", {className: "country-name"}, "Curaçao"), React.createElement("span", {className: "dial-code"}, "+599")), React.createElement("li", {className: "country", "data-dial-code": "357", "data-country-code": "cy"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag cy"})), React.createElement("span", {className: "country-name"}, "Cyprus (Κύπρος)"), React.createElement("span", {className: "dial-code"}, "+357")), React.createElement("li", {className: "country", "data-dial-code": "420", "data-country-code": "cz"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag cz"})), React.createElement("span", {className: "country-name"}, "Czech Republic (Česká republika)"), React.createElement("span", {className: "dial-code"}, "+420")), React.createElement("li", {className: "country", "data-dial-code": "45", "data-country-code": "dk"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag dk"})), React.createElement("span", {className: "country-name"}, "Denmark (Danmark)"), React.createElement("span", {className: "dial-code"}, "+45")), React.createElement("li", {className: "country", "data-dial-code": "253", "data-country-code": "dj"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag dj"})), React.createElement("span", {className: "country-name"}, "Djibouti"), React.createElement("span", {className: "dial-code"}, "+253")), React.createElement("li", {className: "country", "data-dial-code": "1767", "data-country-code": "dm"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag dm"})), React.createElement("span", {className: "country-name"}, "Dominica"), React.createElement("span", {className: "dial-code"}, "+1767")), React.createElement("li", {className: "country", "data-dial-code": "1", "data-country-code": "do"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag do"})), React.createElement("span", {className: "country-name"}, "Dominican Republic (República Dominicana)"), React.createElement("span", {className: "dial-code"}, "+1")), React.createElement("li", {className: "country", "data-dial-code": "593", "data-country-code": "ec"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag ec"})), React.createElement("span", {className: "country-name"}, "Ecuador"), React.createElement("span", {className: "dial-code"}, "+593")), React.createElement("li", {className: "country", "data-dial-code": "20", "data-country-code": "eg"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag eg"})), React.createElement("span", {className: "country-name"}, "Egypt (‫مصر‬‎)"), React.createElement("span", {className: "dial-code"}, "+20")), React.createElement("li", {className: "country", "data-dial-code": "503", "data-country-code": "sv"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag sv"})), React.createElement("span", {className: "country-name"}, "El Salvador"), React.createElement("span", {className: "dial-code"}, "+503")), React.createElement("li", {className: "country", "data-dial-code": "240", "data-country-code": "gq"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag gq"})), React.createElement("span", {className: "country-name"}, "Equatorial Guinea (Guinea Ecuatorial)"), React.createElement("span", {className: "dial-code"}, "+240")), React.createElement("li", {className: "country", "data-dial-code": "291", "data-country-code": "er"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag er"})), React.createElement("span", {className: "country-name"}, "Eritrea"), React.createElement("span", {className: "dial-code"}, "+291")), React.createElement("li", {className: "country", "data-dial-code": "372", "data-country-code": "ee"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag ee"})), React.createElement("span", {className: "country-name"}, "Estonia (Eesti)"), React.createElement("span", {className: "dial-code"}, "+372")), React.createElement("li", {className: "country", "data-dial-code": "251", "data-country-code": "et"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag et"})), React.createElement("span", {className: "country-name"}, "Ethiopia"), React.createElement("span", {className: "dial-code"}, "+251")), React.createElement("li", {className: "country", "data-dial-code": "500", "data-country-code": "fk"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag fk"})), React.createElement("span", {className: "country-name"}, "Falkland Islands (Islas Malvinas)"), React.createElement("span", {className: "dial-code"}, "+500")), React.createElement("li", {className: "country", "data-dial-code": "298", "data-country-code": "fo"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag fo"})), React.createElement("span", {className: "country-name"}, "Faroe Islands (Føroyar)"), React.createElement("span", {className: "dial-code"}, "+298")), React.createElement("li", {className: "country", "data-dial-code": "679", "data-country-code": "fj"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag fj"})), React.createElement("span", {className: "country-name"}, "Fiji"), React.createElement("span", {className: "dial-code"}, "+679")), React.createElement("li", {className: "country", "data-dial-code": "358", "data-country-code": "fi"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag fi"})), React.createElement("span", {className: "country-name"}, "Finland (Suomi)"), React.createElement("span", {className: "dial-code"}, "+358")), React.createElement("li", {className: "country", "data-dial-code": "33", "data-country-code": "fr"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag fr"})), React.createElement("span", {className: "country-name"}, "France"), React.createElement("span", {className: "dial-code"}, "+33")), React.createElement("li", {className: "country", "data-dial-code": "594", "data-country-code": "gf"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag gf"})), React.createElement("span", {className: "country-name"}, "French Guiana (Guyane française)"), React.createElement("span", {className: "dial-code"}, "+594")), React.createElement("li", {className: "country", "data-dial-code": "689", "data-country-code": "pf"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag pf"})), React.createElement("span", {className: "country-name"}, "French Polynesia (Polynésie française)"), React.createElement("span", {className: "dial-code"}, "+689")), React.createElement("li", {className: "country", "data-dial-code": "241", "data-country-code": "ga"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag ga"})), React.createElement("span", {className: "country-name"}, "Gabon"), React.createElement("span", {className: "dial-code"}, "+241")), React.createElement("li", {className: "country", "data-dial-code": "220", "data-country-code": "gm"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag gm"})), React.createElement("span", {className: "country-name"}, "Gambia"), React.createElement("span", {className: "dial-code"}, "+220")), React.createElement("li", {className: "country", "data-dial-code": "995", "data-country-code": "ge"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag ge"})), React.createElement("span", {className: "country-name"}, "Georgia (საქართველო)"), React.createElement("span", {className: "dial-code"}, "+995")), React.createElement("li", {className: "country", "data-dial-code": "49", "data-country-code": "de"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag de"})), React.createElement("span", {className: "country-name"}, "Germany (Deutschland)"), React.createElement("span", {className: "dial-code"}, "+49")), React.createElement("li", {className: "country", "data-dial-code": "233", "data-country-code": "gh"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag gh"})), React.createElement("span", {className: "country-name"}, "Ghana (Gaana)"), React.createElement("span", {className: "dial-code"}, "+233")), React.createElement("li", {className: "country", "data-dial-code": "350", "data-country-code": "gi"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag gi"})), React.createElement("span", {className: "country-name"}, "Gibraltar"), React.createElement("span", {className: "dial-code"}, "+350")), React.createElement("li", {className: "country", "data-dial-code": "30", "data-country-code": "gr"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag gr"})), React.createElement("span", {className: "country-name"}, "Greece (Ελλάδα)"), React.createElement("span", {className: "dial-code"}, "+30")), React.createElement("li", {className: "country", "data-dial-code": "299", "data-country-code": "gl"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag gl"})), React.createElement("span", {className: "country-name"}, "Greenland (Kalaallit Nunaat)"), React.createElement("span", {className: "dial-code"}, "+299")), React.createElement("li", {className: "country", "data-dial-code": "1473", "data-country-code": "gd"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag gd"})), React.createElement("span", {className: "country-name"}, "Grenada"), React.createElement("span", {className: "dial-code"}, "+1473")), React.createElement("li", {className: "country", "data-dial-code": "590", "data-country-code": "gp"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag gp"})), React.createElement("span", {className: "country-name"}, "Guadeloupe"), React.createElement("span", {className: "dial-code"}, "+590")), React.createElement("li", {className: "country", "data-dial-code": "1671", "data-country-code": "gu"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag gu"})), React.createElement("span", {className: "country-name"}, "Guam"), React.createElement("span", {className: "dial-code"}, "+1671")), React.createElement("li", {className: "country", "data-dial-code": "502", "data-country-code": "gt"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag gt"})), React.createElement("span", {className: "country-name"}, "Guatemala"), React.createElement("span", {className: "dial-code"}, "+502")), React.createElement("li", {className: "country", "data-dial-code": "224", "data-country-code": "gn"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag gn"})), React.createElement("span", {className: "country-name"}, "Guinea (Guinée)"), React.createElement("span", {className: "dial-code"}, "+224")), React.createElement("li", {className: "country", "data-dial-code": "245", "data-country-code": "gw"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag gw"})), React.createElement("span", {className: "country-name"}, "Guinea-Bissau (Guiné Bissau)"), React.createElement("span", {className: "dial-code"}, "+245")), React.createElement("li", {className: "country", "data-dial-code": "592", "data-country-code": "gy"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag gy"})), React.createElement("span", {className: "country-name"}, "Guyana"), React.createElement("span", {className: "dial-code"}, "+592")), React.createElement("li", {className: "country", "data-dial-code": "509", "data-country-code": "ht"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag ht"})), React.createElement("span", {className: "country-name"}, "Haiti"), React.createElement("span", {className: "dial-code"}, "+509")), React.createElement("li", {className: "country", "data-dial-code": "504", "data-country-code": "hn"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag hn"})), React.createElement("span", {className: "country-name"}, "Honduras"), React.createElement("span", {className: "dial-code"}, "+504")), React.createElement("li", {className: "country", "data-dial-code": "852", "data-country-code": "hk"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag hk"})), React.createElement("span", {className: "country-name"}, "Hong Kong (香港)"), React.createElement("span", {className: "dial-code"}, "+852")), React.createElement("li", {className: "country", "data-dial-code": "36", "data-country-code": "hu"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag hu"})), React.createElement("span", {className: "country-name"}, "Hungary (Magyarország)"), React.createElement("span", {className: "dial-code"}, "+36")), React.createElement("li", {className: "country", "data-dial-code": "354", "data-country-code": "is"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag is"})), React.createElement("span", {className: "country-name"}, "Iceland (Ísland)"), React.createElement("span", {className: "dial-code"}, "+354")), React.createElement("li", {className: "country", "data-dial-code": "91", "data-country-code": "in"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag in"})), React.createElement("span", {className: "country-name"}, "India (भारत)"), React.createElement("span", {className: "dial-code"}, "+91")), React.createElement("li", {className: "country", "data-dial-code": "62", "data-country-code": "id"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag id"})), React.createElement("span", {className: "country-name"}, "Indonesia"), React.createElement("span", {className: "dial-code"}, "+62")), React.createElement("li", {className: "country", "data-dial-code": "98", "data-country-code": "ir"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag ir"})), React.createElement("span", {className: "country-name"}, "Iran (‫ایران‬‎)"), React.createElement("span", {className: "dial-code"}, "+98")), React.createElement("li", {className: "country", "data-dial-code": "964", "data-country-code": "iq"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag iq"})), React.createElement("span", {className: "country-name"}, "Iraq (‫العراق‬‎)"), React.createElement("span", {className: "dial-code"}, "+964")), React.createElement("li", {className: "country", "data-dial-code": "353", "data-country-code": "ie"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag ie"})), React.createElement("span", {className: "country-name"}, "Ireland"), React.createElement("span", {className: "dial-code"}, "+353")), React.createElement("li", {className: "country", "data-dial-code": "972", "data-country-code": "il"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag il"})), React.createElement("span", {className: "country-name"}, "Israel (‫ישראל‬‎)"), React.createElement("span", {className: "dial-code"}, "+972")), React.createElement("li", {className: "country", "data-dial-code": "39", "data-country-code": "it"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag it"})), React.createElement("span", {className: "country-name"}, "Italy (Italia)"), React.createElement("span", {className: "dial-code"}, "+39")), React.createElement("li", {className: "country", "data-dial-code": "1876", "data-country-code": "jm"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag jm"})), React.createElement("span", {className: "country-name"}, "Jamaica"), React.createElement("span", {className: "dial-code"}, "+1876")), React.createElement("li", {className: "country", "data-dial-code": "81", "data-country-code": "jp"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag jp"})), React.createElement("span", {className: "country-name"}, "Japan (日本)"), React.createElement("span", {className: "dial-code"}, "+81")), React.createElement("li", {className: "country", "data-dial-code": "962", "data-country-code": "jo"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag jo"})), React.createElement("span", {className: "country-name"}, "Jordan (‫الأردن‬‎)"), React.createElement("span", {className: "dial-code"}, "+962")), React.createElement("li", {className: "country", "data-dial-code": "7", "data-country-code": "kz"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag kz"})), React.createElement("span", {className: "country-name"}, "Kazakhstan (Казахстан)"), React.createElement("span", {className: "dial-code"}, "+7")), React.createElement("li", {className: "country", "data-dial-code": "254", "data-country-code": "ke"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag ke"})), React.createElement("span", {className: "country-name"}, "Kenya"), React.createElement("span", {className: "dial-code"}, "+254")), React.createElement("li", {className: "country", "data-dial-code": "686", "data-country-code": "ki"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag ki"})), React.createElement("span", {className: "country-name"}, "Kiribati"), React.createElement("span", {className: "dial-code"}, "+686")), React.createElement("li", {className: "country", "data-dial-code": "965", "data-country-code": "kw"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag kw"})), React.createElement("span", {className: "country-name"}, "Kuwait (‫الكويت‬‎)"), React.createElement("span", {className: "dial-code"}, "+965")), React.createElement("li", {className: "country", "data-dial-code": "996", "data-country-code": "kg"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag kg"})), React.createElement("span", {className: "country-name"}, "Kyrgyzstan (Кыргызстан)"), React.createElement("span", {className: "dial-code"}, "+996")), React.createElement("li", {className: "country", "data-dial-code": "856", "data-country-code": "la"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag la"})), React.createElement("span", {className: "country-name"}, "Laos (ລາວ)"), React.createElement("span", {className: "dial-code"}, "+856")), React.createElement("li", {className: "country", "data-dial-code": "371", "data-country-code": "lv"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag lv"})), React.createElement("span", {className: "country-name"}, "Latvia (Latvija)"), React.createElement("span", {className: "dial-code"}, "+371")), React.createElement("li", {className: "country", "data-dial-code": "961", "data-country-code": "lb"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag lb"})), React.createElement("span", {className: "country-name"}, "Lebanon (‫لبنان‬‎)"), React.createElement("span", {className: "dial-code"}, "+961")), React.createElement("li", {className: "country", "data-dial-code": "266", "data-country-code": "ls"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag ls"})), React.createElement("span", {className: "country-name"}, "Lesotho"), React.createElement("span", {className: "dial-code"}, "+266")), React.createElement("li", {className: "country", "data-dial-code": "231", "data-country-code": "lr"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag lr"})), React.createElement("span", {className: "country-name"}, "Liberia"), React.createElement("span", {className: "dial-code"}, "+231")), React.createElement("li", {className: "country", "data-dial-code": "218", "data-country-code": "ly"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag ly"})), React.createElement("span", {className: "country-name"}, "Libya (‫ليبيا‬‎)"), React.createElement("span", {className: "dial-code"}, "+218")), React.createElement("li", {className: "country", "data-dial-code": "423", "data-country-code": "li"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag li"})), React.createElement("span", {className: "country-name"}, "Liechtenstein"), React.createElement("span", {className: "dial-code"}, "+423")), React.createElement("li", {className: "country", "data-dial-code": "370", "data-country-code": "lt"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag lt"})), React.createElement("span", {className: "country-name"}, "Lithuania (Lietuva)"), React.createElement("span", {className: "dial-code"}, "+370")), React.createElement("li", {className: "country", "data-dial-code": "352", "data-country-code": "lu"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag lu"})), React.createElement("span", {className: "country-name"}, "Luxembourg"), React.createElement("span", {className: "dial-code"}, "+352")), React.createElement("li", {className: "country", "data-dial-code": "853", "data-country-code": "mo"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag mo"})), React.createElement("span", {className: "country-name"}, "Macau (澳門)"), React.createElement("span", {className: "dial-code"}, "+853")), React.createElement("li", {className: "country", "data-dial-code": "389", "data-country-code": "mk"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag mk"})), React.createElement("span", {className: "country-name"}, "Macedonia (FYROM) (Македонија)"), React.createElement("span", {className: "dial-code"}, "+389")), React.createElement("li", {className: "country", "data-dial-code": "261", "data-country-code": "mg"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag mg"})), React.createElement("span", {className: "country-name"}, "Madagascar (Madagasikara)"), React.createElement("span", {className: "dial-code"}, "+261")), React.createElement("li", {className: "country", "data-dial-code": "265", "data-country-code": "mw"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag mw"})), React.createElement("span", {className: "country-name"}, "Malawi"), React.createElement("span", {className: "dial-code"}, "+265")), React.createElement("li", {className: "country", "data-dial-code": "60", "data-country-code": "my"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag my"})), React.createElement("span", {className: "country-name"}, "Malaysia"), React.createElement("span", {className: "dial-code"}, "+60")), React.createElement("li", {className: "country", "data-dial-code": "960", "data-country-code": "mv"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag mv"})), React.createElement("span", {className: "country-name"}, "Maldives"), React.createElement("span", {className: "dial-code"}, "+960")), React.createElement("li", {className: "country", "data-dial-code": "223", "data-country-code": "ml"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag ml"})), React.createElement("span", {className: "country-name"}, "Mali"), React.createElement("span", {className: "dial-code"}, "+223")), React.createElement("li", {className: "country", "data-dial-code": "356", "data-country-code": "mt"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag mt"})), React.createElement("span", {className: "country-name"}, "Malta"), React.createElement("span", {className: "dial-code"}, "+356")), React.createElement("li", {className: "country", "data-dial-code": "692", "data-country-code": "mh"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag mh"})), React.createElement("span", {className: "country-name"}, "Marshall Islands"), React.createElement("span", {className: "dial-code"}, "+692")), React.createElement("li", {className: "country", "data-dial-code": "596", "data-country-code": "mq"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag mq"})), React.createElement("span", {className: "country-name"}, "Martinique"), React.createElement("span", {className: "dial-code"}, "+596")), React.createElement("li", {className: "country", "data-dial-code": "222", "data-country-code": "mr"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag mr"})), React.createElement("span", {className: "country-name"}, "Mauritania (‫موريتانيا‬‎)"), React.createElement("span", {className: "dial-code"}, "+222")), React.createElement("li", {className: "country", "data-dial-code": "230", "data-country-code": "mu"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag mu"})), React.createElement("span", {className: "country-name"}, "Mauritius (Moris)"), React.createElement("span", {className: "dial-code"}, "+230")), React.createElement("li", {className: "country", "data-dial-code": "52", "data-country-code": "mx"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag mx"})), React.createElement("span", {className: "country-name"}, "Mexico (México)"), React.createElement("span", {className: "dial-code"}, "+52")), React.createElement("li", {className: "country", "data-dial-code": "691", "data-country-code": "fm"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag fm"})), React.createElement("span", {className: "country-name"}, "Micronesia"), React.createElement("span", {className: "dial-code"}, "+691")), React.createElement("li", {className: "country", "data-dial-code": "373", "data-country-code": "md"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag md"})), React.createElement("span", {className: "country-name"}, "Moldova (Republica Moldova)"), React.createElement("span", {className: "dial-code"}, "+373")), React.createElement("li", {className: "country", "data-dial-code": "377", "data-country-code": "mc"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag mc"})), React.createElement("span", {className: "country-name"}, "Monaco"), React.createElement("span", {className: "dial-code"}, "+377")), React.createElement("li", {className: "country", "data-dial-code": "976", "data-country-code": "mn"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag mn"})), React.createElement("span", {className: "country-name"}, "Mongolia (Монгол)"), React.createElement("span", {className: "dial-code"}, "+976")), React.createElement("li", {className: "country", "data-dial-code": "382", "data-country-code": "me"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag me"})), React.createElement("span", {className: "country-name"}, "Montenegro (Crna Gora)"), React.createElement("span", {className: "dial-code"}, "+382")), React.createElement("li", {className: "country", "data-dial-code": "1664", "data-country-code": "ms"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag ms"})), React.createElement("span", {className: "country-name"}, "Montserrat"), React.createElement("span", {className: "dial-code"}, "+1664")), React.createElement("li", {className: "country", "data-dial-code": "212", "data-country-code": "ma"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag ma"})), React.createElement("span", {className: "country-name"}, "Morocco (‫المغرب‬‎)"), React.createElement("span", {className: "dial-code"}, "+212")), React.createElement("li", {className: "country", "data-dial-code": "258", "data-country-code": "mz"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag mz"})), React.createElement("span", {className: "country-name"}, "Mozambique (Moçambique)"), React.createElement("span", {className: "dial-code"}, "+258")), React.createElement("li", {className: "country", "data-dial-code": "95", "data-country-code": "mm"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag mm"})), React.createElement("span", {className: "country-name"}, "Myanmar (Burma) (မြန်မာ)"), React.createElement("span", {className: "dial-code"}, "+95")), React.createElement("li", {className: "country", "data-dial-code": "264", "data-country-code": "na"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag na"})), React.createElement("span", {className: "country-name"}, "Namibia (Namibië)"), React.createElement("span", {className: "dial-code"}, "+264")), React.createElement("li", {className: "country", "data-dial-code": "674", "data-country-code": "nr"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag nr"})), React.createElement("span", {className: "country-name"}, "Nauru"), React.createElement("span", {className: "dial-code"}, "+674")), React.createElement("li", {className: "country", "data-dial-code": "977", "data-country-code": "np"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag np"})), React.createElement("span", {className: "country-name"}, "Nepal (नेपाल)"), React.createElement("span", {className: "dial-code"}, "+977")), React.createElement("li", {className: "country", "data-dial-code": "31", "data-country-code": "nl"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag nl"})), React.createElement("span", {className: "country-name"}, "Netherlands (Nederland)"), React.createElement("span", {className: "dial-code"}, "+31")), React.createElement("li", {className: "country", "data-dial-code": "687", "data-country-code": "nc"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag nc"})), React.createElement("span", {className: "country-name"}, "New Caledonia (Nouvelle-Calédonie)"), React.createElement("span", {className: "dial-code"}, "+687")), React.createElement("li", {className: "country", "data-dial-code": "64", "data-country-code": "nz"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag nz"})), React.createElement("span", {className: "country-name"}, "New Zealand"), React.createElement("span", {className: "dial-code"}, "+64")), React.createElement("li", {className: "country", "data-dial-code": "505", "data-country-code": "ni"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag ni"})), React.createElement("span", {className: "country-name"}, "Nicaragua"), React.createElement("span", {className: "dial-code"}, "+505")), React.createElement("li", {className: "country", "data-dial-code": "227", "data-country-code": "ne"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag ne"})), React.createElement("span", {className: "country-name"}, "Niger (Nijar)"), React.createElement("span", {className: "dial-code"}, "+227")), React.createElement("li", {className: "country", "data-dial-code": "234", "data-country-code": "ng"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag ng"})), React.createElement("span", {className: "country-name"}, "Nigeria"), React.createElement("span", {className: "dial-code"}, "+234")), React.createElement("li", {className: "country", "data-dial-code": "683", "data-country-code": "nu"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag nu"})), React.createElement("span", {className: "country-name"}, "Niue"), React.createElement("span", {className: "dial-code"}, "+683")), React.createElement("li", {className: "country", "data-dial-code": "672", "data-country-code": "nf"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag nf"})), React.createElement("span", {className: "country-name"}, "Norfolk Island"), React.createElement("span", {className: "dial-code"}, "+672")), React.createElement("li", {className: "country", "data-dial-code": "850", "data-country-code": "kp"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag kp"})), React.createElement("span", {className: "country-name"}, "North Korea (조선 민주주의 인민 공화국)"), React.createElement("span", {className: "dial-code"}, "+850")), React.createElement("li", {className: "country", "data-dial-code": "1670", "data-country-code": "mp"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag mp"})), React.createElement("span", {className: "country-name"}, "Northern Mariana Islands"), React.createElement("span", {className: "dial-code"}, "+1670")), React.createElement("li", {className: "country", "data-dial-code": "47", "data-country-code": "no"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag no"})), React.createElement("span", {className: "country-name"}, "Norway (Norge)"), React.createElement("span", {className: "dial-code"}, "+47")), React.createElement("li", {className: "country", "data-dial-code": "968", "data-country-code": "om"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag om"})), React.createElement("span", {className: "country-name"}, "Oman (‫عُمان‬‎)"), React.createElement("span", {className: "dial-code"}, "+968")), React.createElement("li", {className: "country", "data-dial-code": "92", "data-country-code": "pk"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag pk"})), React.createElement("span", {className: "country-name"}, "Pakistan (‫پاکستان‬‎)"), React.createElement("span", {className: "dial-code"}, "+92")), React.createElement("li", {className: "country", "data-dial-code": "680", "data-country-code": "pw"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag pw"})), React.createElement("span", {className: "country-name"}, "Palau"), React.createElement("span", {className: "dial-code"}, "+680")), React.createElement("li", {className: "country", "data-dial-code": "970", "data-country-code": "ps"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag ps"})), React.createElement("span", {className: "country-name"}, "Palestine (‫فلسطين‬‎)"), React.createElement("span", {className: "dial-code"}, "+970")), React.createElement("li", {className: "country", "data-dial-code": "507", "data-country-code": "pa"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag pa"})), React.createElement("span", {className: "country-name"}, "Panama (Panamá)"), React.createElement("span", {className: "dial-code"}, "+507")), React.createElement("li", {className: "country", "data-dial-code": "675", "data-country-code": "pg"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag pg"})), React.createElement("span", {className: "country-name"}, "Papua New Guinea"), React.createElement("span", {className: "dial-code"}, "+675")), React.createElement("li", {className: "country", "data-dial-code": "595", "data-country-code": "py"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag py"})), React.createElement("span", {className: "country-name"}, "Paraguay"), React.createElement("span", {className: "dial-code"}, "+595")), React.createElement("li", {className: "country", "data-dial-code": "51", "data-country-code": "pe"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag pe"})), React.createElement("span", {className: "country-name"}, "Peru (Perú)"), React.createElement("span", {className: "dial-code"}, "+51")), React.createElement("li", {className: "country", "data-dial-code": "63", "data-country-code": "ph"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag ph"})), React.createElement("span", {className: "country-name"}, "Philippines"), React.createElement("span", {className: "dial-code"}, "+63")), React.createElement("li", {className: "country", "data-dial-code": "48", "data-country-code": "pl"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag pl"})), React.createElement("span", {className: "country-name"}, "Poland (Polska)"), React.createElement("span", {className: "dial-code"}, "+48")), React.createElement("li", {className: "country", "data-dial-code": "351", "data-country-code": "pt"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag pt"})), React.createElement("span", {className: "country-name"}, "Portugal"), React.createElement("span", {className: "dial-code"}, "+351")), React.createElement("li", {className: "country", "data-dial-code": "1", "data-country-code": "pr"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag pr"})), React.createElement("span", {className: "country-name"}, "Puerto Rico"), React.createElement("span", {className: "dial-code"}, "+1")), React.createElement("li", {className: "country", "data-dial-code": "974", "data-country-code": "qa"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag qa"})), React.createElement("span", {className: "country-name"}, "Qatar (‫قطر‬‎)"), React.createElement("span", {className: "dial-code"}, "+974")), React.createElement("li", {className: "country", "data-dial-code": "262", "data-country-code": "re"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag re"})), React.createElement("span", {className: "country-name"}, "Réunion (La Réunion)"), React.createElement("span", {className: "dial-code"}, "+262")), React.createElement("li", {className: "country", "data-dial-code": "40", "data-country-code": "ro"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag ro"})), React.createElement("span", {className: "country-name"}, "Romania (România)"), React.createElement("span", {className: "dial-code"}, "+40")), React.createElement("li", {className: "country", "data-dial-code": "7", "data-country-code": "ru"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag ru"})), React.createElement("span", {className: "country-name"}, "Russia (Россия)"), React.createElement("span", {className: "dial-code"}, "+7")), React.createElement("li", {className: "country", "data-dial-code": "250", "data-country-code": "rw"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag rw"})), React.createElement("span", {className: "country-name"}, "Rwanda"), React.createElement("span", {className: "dial-code"}, "+250")), React.createElement("li", {className: "country", "data-dial-code": "590", "data-country-code": "bl"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag bl"})), React.createElement("span", {className: "country-name"}, "Saint Barthélemy (Saint-Barthélemy)"), React.createElement("span", {className: "dial-code"}, "+590")), React.createElement("li", {className: "country", "data-dial-code": "290", "data-country-code": "sh"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag sh"})), React.createElement("span", {className: "country-name"}, "Saint Helena"), React.createElement("span", {className: "dial-code"}, "+290")), React.createElement("li", {className: "country", "data-dial-code": "1869", "data-country-code": "kn"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag kn"})), React.createElement("span", {className: "country-name"}, "Saint Kitts and Nevis"), React.createElement("span", {className: "dial-code"}, "+1869")), React.createElement("li", {className: "country", "data-dial-code": "1758", "data-country-code": "lc"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag lc"})), React.createElement("span", {className: "country-name"}, "Saint Lucia"), React.createElement("span", {className: "dial-code"}, "+1758")), React.createElement("li", {className: "country", "data-dial-code": "590", "data-country-code": "mf"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag mf"})), React.createElement("span", {className: "country-name"}, "Saint Martin (Saint-Martin (partie française))"), React.createElement("span", {className: "dial-code"}, "+590")), React.createElement("li", {className: "country", "data-dial-code": "508", "data-country-code": "pm"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag pm"})), React.createElement("span", {className: "country-name"}, "Saint Pierre and Miquelon (Saint-Pierre-et-Miquelon)"), React.createElement("span", {className: "dial-code"}, "+508")), React.createElement("li", {className: "country", "data-dial-code": "1784", "data-country-code": "vc"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag vc"})), React.createElement("span", {className: "country-name"}, "Saint Vincent and the Grenadines"), React.createElement("span", {className: "dial-code"}, "+1784")), React.createElement("li", {className: "country", "data-dial-code": "685", "data-country-code": "ws"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag ws"})), React.createElement("span", {className: "country-name"}, "Samoa"), React.createElement("span", {className: "dial-code"}, "+685")), React.createElement("li", {className: "country", "data-dial-code": "378", "data-country-code": "sm"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag sm"})), React.createElement("span", {className: "country-name"}, "San Marino"), React.createElement("span", {className: "dial-code"}, "+378")), React.createElement("li", {className: "country", "data-dial-code": "239", "data-country-code": "st"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag st"})), React.createElement("span", {className: "country-name"}, "São Tomé and Príncipe (São Tomé e Príncipe)"), React.createElement("span", {className: "dial-code"}, "+239")), React.createElement("li", {className: "country", "data-dial-code": "966", "data-country-code": "sa"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag sa"})), React.createElement("span", {className: "country-name"}, "Saudi Arabia (‫المملكة العربية السعودية‬‎)"), React.createElement("span", {className: "dial-code"}, "+966")), React.createElement("li", {className: "country", "data-dial-code": "221", "data-country-code": "sn"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag sn"})), React.createElement("span", {className: "country-name"}, "Senegal (Sénégal)"), React.createElement("span", {className: "dial-code"}, "+221")), React.createElement("li", {className: "country", "data-dial-code": "381", "data-country-code": "rs"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag rs"})), React.createElement("span", {className: "country-name"}, "Serbia (Србија)"), React.createElement("span", {className: "dial-code"}, "+381")), React.createElement("li", {className: "country", "data-dial-code": "248", "data-country-code": "sc"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag sc"})), React.createElement("span", {className: "country-name"}, "Seychelles"), React.createElement("span", {className: "dial-code"}, "+248")), React.createElement("li", {className: "country", "data-dial-code": "232", "data-country-code": "sl"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag sl"})), React.createElement("span", {className: "country-name"}, "Sierra Leone"), React.createElement("span", {className: "dial-code"}, "+232")), React.createElement("li", {className: "country", "data-dial-code": "65", "data-country-code": "sg"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag sg"})), React.createElement("span", {className: "country-name"}, "Singapore"), React.createElement("span", {className: "dial-code"}, "+65")), React.createElement("li", {className: "country", "data-dial-code": "1721", "data-country-code": "sx"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag sx"})), React.createElement("span", {className: "country-name"}, "Sint Maarten"), React.createElement("span", {className: "dial-code"}, "+1721")), React.createElement("li", {className: "country", "data-dial-code": "421", "data-country-code": "sk"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag sk"})), React.createElement("span", {className: "country-name"}, "Slovakia (Slovensko)"), React.createElement("span", {className: "dial-code"}, "+421")), React.createElement("li", {className: "country", "data-dial-code": "386", "data-country-code": "si"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag si"})), React.createElement("span", {className: "country-name"}, "Slovenia (Slovenija)"), React.createElement("span", {className: "dial-code"}, "+386")), React.createElement("li", {className: "country", "data-dial-code": "677", "data-country-code": "sb"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag sb"})), React.createElement("span", {className: "country-name"}, "Solomon Islands"), React.createElement("span", {className: "dial-code"}, "+677")), React.createElement("li", {className: "country", "data-dial-code": "252", "data-country-code": "so"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag so"})), React.createElement("span", {className: "country-name"}, "Somalia (Soomaaliya)"), React.createElement("span", {className: "dial-code"}, "+252")), React.createElement("li", {className: "country", "data-dial-code": "27", "data-country-code": "za"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag za"})), React.createElement("span", {className: "country-name"}, "South Africa"), React.createElement("span", {className: "dial-code"}, "+27")), React.createElement("li", {className: "country", "data-dial-code": "82", "data-country-code": "kr"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag kr"})), React.createElement("span", {className: "country-name"}, "South Korea (대한민국)"), React.createElement("span", {className: "dial-code"}, "+82")), React.createElement("li", {className: "country", "data-dial-code": "211", "data-country-code": "ss"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag ss"})), React.createElement("span", {className: "country-name"}, "South Sudan (‫جنوب السودان‬‎)"), React.createElement("span", {className: "dial-code"}, "+211")), React.createElement("li", {className: "country", "data-dial-code": "34", "data-country-code": "es"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag es"})), React.createElement("span", {className: "country-name"}, "Spain (España)"), React.createElement("span", {className: "dial-code"}, "+34")), React.createElement("li", {className: "country", "data-dial-code": "94", "data-country-code": "lk"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag lk"})), React.createElement("span", {className: "country-name"}, "Sri Lanka (ශ්‍රී ලංකාව)"), React.createElement("span", {className: "dial-code"}, "+94")), React.createElement("li", {className: "country", "data-dial-code": "249", "data-country-code": "sd"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag sd"})), React.createElement("span", {className: "country-name"}, "Sudan (‫السودان‬‎)"), React.createElement("span", {className: "dial-code"}, "+249")), React.createElement("li", {className: "country", "data-dial-code": "597", "data-country-code": "sr"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag sr"})), React.createElement("span", {className: "country-name"}, "Suriname"), React.createElement("span", {className: "dial-code"}, "+597")), React.createElement("li", {className: "country", "data-dial-code": "268", "data-country-code": "sz"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag sz"})), React.createElement("span", {className: "country-name"}, "Swaziland"), React.createElement("span", {className: "dial-code"}, "+268")), React.createElement("li", {className: "country", "data-dial-code": "46", "data-country-code": "se"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag se"})), React.createElement("span", {className: "country-name"}, "Sweden (Sverige)"), React.createElement("span", {className: "dial-code"}, "+46")), React.createElement("li", {className: "country", "data-dial-code": "41", "data-country-code": "ch"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag ch"})), React.createElement("span", {className: "country-name"}, "Switzerland (Schweiz)"), React.createElement("span", {className: "dial-code"}, "+41")), React.createElement("li", {className: "country", "data-dial-code": "963", "data-country-code": "sy"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag sy"})), React.createElement("span", {className: "country-name"}, "Syria (‫سوريا‬‎)"), React.createElement("span", {className: "dial-code"}, "+963")), React.createElement("li", {className: "country", "data-dial-code": "886", "data-country-code": "tw"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag tw"})), React.createElement("span", {className: "country-name"}, "Taiwan (台灣)"), React.createElement("span", {className: "dial-code"}, "+886")), React.createElement("li", {className: "country", "data-dial-code": "992", "data-country-code": "tj"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag tj"})), React.createElement("span", {className: "country-name"}, "Tajikistan"), React.createElement("span", {className: "dial-code"}, "+992")), React.createElement("li", {className: "country", "data-dial-code": "255", "data-country-code": "tz"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag tz"})), React.createElement("span", {className: "country-name"}, "Tanzania"), React.createElement("span", {className: "dial-code"}, "+255")), React.createElement("li", {className: "country", "data-dial-code": "66", "data-country-code": "th"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag th"})), React.createElement("span", {className: "country-name"}, "Thailand (ไทย)"), React.createElement("span", {className: "dial-code"}, "+66")), React.createElement("li", {className: "country", "data-dial-code": "670", "data-country-code": "tl"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag tl"})), React.createElement("span", {className: "country-name"}, "Timor-Leste"), React.createElement("span", {className: "dial-code"}, "+670")), React.createElement("li", {className: "country", "data-dial-code": "228", "data-country-code": "tg"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag tg"})), React.createElement("span", {className: "country-name"}, "Togo"), React.createElement("span", {className: "dial-code"}, "+228")), React.createElement("li", {className: "country", "data-dial-code": "690", "data-country-code": "tk"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag tk"})), React.createElement("span", {className: "country-name"}, "Tokelau"), React.createElement("span", {className: "dial-code"}, "+690")), React.createElement("li", {className: "country", "data-dial-code": "676", "data-country-code": "to"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag to"})), React.createElement("span", {className: "country-name"}, "Tonga"), React.createElement("span", {className: "dial-code"}, "+676")), React.createElement("li", {className: "country", "data-dial-code": "1868", "data-country-code": "tt"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag tt"})), React.createElement("span", {className: "country-name"}, "Trinidad and Tobago"), React.createElement("span", {className: "dial-code"}, "+1868")), React.createElement("li", {className: "country", "data-dial-code": "216", "data-country-code": "tn"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag tn"})), React.createElement("span", {className: "country-name"}, "Tunisia (‫تونس‬‎)"), React.createElement("span", {className: "dial-code"}, "+216")), React.createElement("li", {className: "country", "data-dial-code": "90", "data-country-code": "tr"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag tr"})), React.createElement("span", {className: "country-name"}, "Turkey (Türkiye)"), React.createElement("span", {className: "dial-code"}, "+90")), React.createElement("li", {className: "country", "data-dial-code": "993", "data-country-code": "tm"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag tm"})), React.createElement("span", {className: "country-name"}, "Turkmenistan"), React.createElement("span", {className: "dial-code"}, "+993")), React.createElement("li", {className: "country", "data-dial-code": "1649", "data-country-code": "tc"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag tc"})), React.createElement("span", {className: "country-name"}, "Turks and Caicos Islands"), React.createElement("span", {className: "dial-code"}, "+1649")), React.createElement("li", {className: "country", "data-dial-code": "688", "data-country-code": "tv"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag tv"})), React.createElement("span", {className: "country-name"}, "Tuvalu"), React.createElement("span", {className: "dial-code"}, "+688")), React.createElement("li", {className: "country", "data-dial-code": "1340", "data-country-code": "vi"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag vi"})), React.createElement("span", {className: "country-name"}, "U.S. Virgin Islands"), React.createElement("span", {className: "dial-code"}, "+1340")), React.createElement("li", {className: "country", "data-dial-code": "256", "data-country-code": "ug"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag ug"})), React.createElement("span", {className: "country-name"}, "Uganda"), React.createElement("span", {className: "dial-code"}, "+256")), React.createElement("li", {className: "country", "data-dial-code": "380", "data-country-code": "ua"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag ua"})), React.createElement("span", {className: "country-name"}, "Ukraine (Україна)"), React.createElement("span", {className: "dial-code"}, "+380")), React.createElement("li", {className: "country", "data-dial-code": "971", "data-country-code": "ae"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag ae"})), React.createElement("span", {className: "country-name"}, "United Arab Emirates (‫الإمارات العربية المتحدة‬‎)"), React.createElement("span", {className: "dial-code"}, "+971")), React.createElement("li", {className: "country", "data-dial-code": "44", "data-country-code": "gb"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag gb"})), React.createElement("span", {className: "country-name"}, "United Kingdom"), React.createElement("span", {className: "dial-code"}, "+44")), React.createElement("li", {className: "country", "data-dial-code": "1", "data-country-code": "us"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag us"})), React.createElement("span", {className: "country-name"}, "United States"), React.createElement("span", {className: "dial-code"}, "+1")), React.createElement("li", {className: "country", "data-dial-code": "598", "data-country-code": "uy"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag uy"})), React.createElement("span", {className: "country-name"}, "Uruguay"), React.createElement("span", {className: "dial-code"}, "+598")), React.createElement("li", {className: "country", "data-dial-code": "998", "data-country-code": "uz"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag uz"})), React.createElement("span", {className: "country-name"}, "Uzbekistan (Oʻzbekiston)"), React.createElement("span", {className: "dial-code"}, "+998")), React.createElement("li", {className: "country", "data-dial-code": "678", "data-country-code": "vu"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag vu"})), React.createElement("span", {className: "country-name"}, "Vanuatu"), React.createElement("span", {className: "dial-code"}, "+678")), React.createElement("li", {className: "country", "data-dial-code": "39", "data-country-code": "va"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag va"})), React.createElement("span", {className: "country-name"}, "Vatican City (Città del Vaticano)"), React.createElement("span", {className: "dial-code"}, "+39")), React.createElement("li", {className: "country", "data-dial-code": "58", "data-country-code": "ve"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag ve"})), React.createElement("span", {className: "country-name"}, "Venezuela"), React.createElement("span", {className: "dial-code"}, "+58")), React.createElement("li", {className: "country", "data-dial-code": "84", "data-country-code": "vn"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag vn"})), React.createElement("span", {className: "country-name"}, "Vietnam (Việt Nam)"), React.createElement("span", {className: "dial-code"}, "+84")), React.createElement("li", {className: "country", "data-dial-code": "681", "data-country-code": "wf"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag wf"})), React.createElement("span", {className: "country-name"}, "Wallis and Futuna"), React.createElement("span", {className: "dial-code"}, "+681")), React.createElement("li", {className: "country", "data-dial-code": "967", "data-country-code": "ye"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag ye"})), React.createElement("span", {className: "country-name"}, "Yemen (‫اليمن‬‎)"), React.createElement("span", {className: "dial-code"}, "+967")), React.createElement("li", {className: "country", "data-dial-code": "260", "data-country-code": "zm"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag zm"})), React.createElement("span", {className: "country-name"}, "Zambia"), React.createElement("span", {className: "dial-code"}, "+260")), React.createElement("li", {className: "country", "data-dial-code": "263", "data-country-code": "zw"}, React.createElement("div", {className: "flag"}, React.createElement("div", {className: "iti-flag zw"})), React.createElement("span", {className: "country-name"}, "Zimbabwe"), React.createElement("span", {className: "dial-code"}, "+263")))), React.createElement("input", {type: "tel", className: "form-control", name: "phone", "data-component-elm": "info[phone]", autocomplete: "off"}))
+	      ), 
+	      React.createElement("p", {className: "checkout-info-note"}, "We'll email/text you when your meal has arrived!")
+	    ), 
+	    React.createElement("div", {className: "payment-info"}, 
+	      React.createElement("h3", {className: "section-title"}, "Payment Info"), 
+	      React.createElement("div", {className: "error-group", "data-error-group": "payment_method"}), 
+	      React.createElement("div", {className: "payment-method-wrapper"}, 
+	        React.createElement("div", {className: "form-group form-group-member-name"}, 
+	          React.createElement("label", {for: ""}, "Name on card"), 
+	          React.createElement("input", {value: "", type: "text", className: "form-control", name: "card_member_name", "data-component-elm": "card[name]"})
+	        ), 
+	        React.createElement("div", {className: "inline-form-group-list"}, 
+	          React.createElement("div", {className: "form-group form-group-card-number"}, 
+	            React.createElement("label", {for: ""}, "Card number"), 
+	            React.createElement("input", {type: "tel", className: "form-control", name: "card_number", "data-component-elm": "card[number]"})
+	          ), 
+	          React.createElement("div", {className: "form-group form-group-card-cvv"}, 
+	            React.createElement("label", {for: ""}, "CVV"), 
+	            React.createElement("input", {type: "tel", className: "form-control", name: "card_cvv", "data-component-elm": "card[cvc]"})
+	          ), 
+	          React.createElement("div", {className: "form-group form-group-expiration"}, 
+	            React.createElement("label", {for: ""}, "Expiration date"), 
+	            React.createElement("input", {type: "tel", className: "form-control", placeholder: "MM", name: "card_expiration_month", "data-component-elm": "card[expire-month]"}), 
+	            "/", 
+	            React.createElement("input", {type: "tel", className: "form-control", placeholder: "YY", name: "card_expiration_year", "data-component-elm": "card[expire-year]"})
+	          )
+	        ), 
+	        React.createElement("div", {className: "form-group form-group", "data-component-view": "show-save-option"}, 
+	          React.createElement("label", null, 
+	            React.createElement("input", {type: "checkbox", name: "save_card", checked: ""}), 
+	            "Save card?"
+	          )
+	        )
+	    )
+	  ))
+
+	    )
+	  );
 	}
 
 /***/ }

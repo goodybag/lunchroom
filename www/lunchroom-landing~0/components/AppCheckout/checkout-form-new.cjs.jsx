@@ -44,12 +44,12 @@ module.exports = function (Context) {
             /
             <input type="tel" className="form-control" placeholder="YY" name="card_expiration_year" data-component-elm="card[expire-year]"/>
           </div>
-          <div className="form-group form-group">
-            <label>
-              <input type="checkbox" name="save_card" checked=""/>
-              Save card?
-            </label>
-          </div>
+        </div>
+        <div className="form-group form-group" data-component-view="show-save-option">
+          <label>
+            <input type="checkbox" name="save_card" checked=""/>
+            Save card?
+          </label>
         </div>
     </div>
   </div></fieldset>

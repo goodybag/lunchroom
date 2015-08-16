@@ -23,46 +23,46 @@ module.exports = function (Context) {
     </div>
     <div className="payment-info">
       <h3 className="section-title">Payment Info</h3>
-        <div className="form-group form-group-cc-selction">
-          <label for="">Select a card</label>
-          <select name="payment_method_id" className="form-control">
-            <option value="1">**** 1234 Exp. 07/17</option>
-             <option value="2">**** 5678 Exp. 11/19</option> 
-          </select>
+      <div className="form-group form-group-cc-selction">
+        <label for="">Select a card</label>
+        <select name="payment_method_id" className="form-control">
+          <option value="1">**** 1234 Exp. 07/17</option>
+           <option value="2">**** 5678 Exp. 11/19</option> 
+        </select>
+      </div>
+      <label className="form-group-header">
+        <input type="checkbox" name="will_add_new_card"/>
+        Or, add a new card
+      </label>
+      <div className="error-group" data-error-group="payment_method"></div>
+      <div className="payment-method-wrapper disabled">
+        <div className="form-group form-group-member-name">
+          <label for="">Name on card</label>
+          <input value="" type="text" className="form-control" name="card_member_name" data-component-elm="card[name]"/>
         </div>
-        <label className="form-group-header">
-          <input type="checkbox" name="will_add_new_card"/>
-          Or, add a new card
-        </label>
-        <div className="error-group" data-error-group="payment_method"></div>
-        <div className="payment-method-wrapper disabled">
-          <div className="form-group form-group-member-name">
-            <label for="">Name on card</label>
-            <input value="" type="text" className="form-control" name="card_member_name" data-component-elm="card[name]"/>
+        <div className="inline-form-group-list">
+          <div className="form-group form-group-card-number">
+            <label for="">Card number</label>
+            <input type="tel" className="form-control" name="card_number" data-component-elm="card[number]"/>
           </div>
-          <div className="inline-form-group-list">
-            <div className="form-group form-group-card-number">
-              <label for="">Card number</label>
-              <input type="tel" className="form-control" name="card_number" data-component-elm="card[number]"/>
-            </div>
-            <div className="form-group form-group-card-cvv">
-              <label for="">CVV</label>
-              <input type="tel" className="form-control" name="card_cvv" data-component-elm="card[cvc]"/>
-            </div>
-            <div className="form-group form-group-expiration">
-              <label for="">Expiration date</label>
-              <input type="tel" className="form-control" placeholder="MM" name="card_expiration_month" data-component-elm="card[expire-month]"/>
-              /
-              <input type="tel" className="form-control" placeholder="YY" name="card_expiration_year" data-component-elm="card[expire-year]"/>
-            </div>
-            <div className="form-group form-group">
-              <label>
-                <input type="checkbox" name="save_card" checked=""/>
-                Save card?
-              </label>
-            </div>
+          <div className="form-group form-group-card-cvv">
+            <label for="">CVV</label>
+            <input type="tel" className="form-control" name="card_cvv" data-component-elm="card[cvc]"/>
+          </div>
+          <div className="form-group form-group-expiration">
+            <label for="">Expiration date</label>
+            <input type="tel" className="form-control" placeholder="MM" name="card_expiration_month" data-component-elm="card[expire-month]"/>
+            /
+            <input type="tel" className="form-control" placeholder="YY" name="card_expiration_year" data-component-elm="card[expire-year]"/>
           </div>
         </div>
+        <div className="form-group form-group">
+          <label>
+            <input type="checkbox" name="save_card" checked=""/>
+            Save card?
+          </label>
+        </div>
+      </div>
     </div>
   </fieldset>
 

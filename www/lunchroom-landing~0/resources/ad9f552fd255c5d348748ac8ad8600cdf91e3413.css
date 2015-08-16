@@ -4379,12 +4379,14 @@ fieldset .fieldset-title {
   }
 }
 
-.checkout-info .form-group-card-number {
-  width: 177.666667px;
-}
+@media screen and (min-width: 1140px) {
+  .checkout-info .form-group-card-number {
+    width: 177.666667px;
+  }
 
-.checkout-info .form-group-card-cvv {
-  margin-left: 18px;
+  .checkout-info .form-group-card-cvv {
+    margin-left: 18px;
+  }
 }
 
 .checkout-info .form-group-expiration {
