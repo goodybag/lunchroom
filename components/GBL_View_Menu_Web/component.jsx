@@ -58,6 +58,8 @@ exports['for'] = function (module, Context) {
 				selectedEvent = null;
 			}
 
+console.log("selectedEvent", selectedEvent);
+
 	        return {
 
 				eventToday: self.modelRecordsWithStore(events, events.getToday()).pop(),

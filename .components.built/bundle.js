@@ -42447,8 +42447,6 @@
 
 	exports['for'] = function (module, Context) {
 
-	console.log("INTI LANDING");
-
 		module.exports = COMPONENT.create(Context, {
 
 			appContextView: "Landing",
@@ -42923,6 +42921,8 @@
 				} else {
 					selectedEvent = null;
 				}
+
+	console.log("selectedEvent", selectedEvent);
 
 		        return {
 
@@ -48456,20 +48456,25 @@
 							function monitorOrderDeadline (today) {
 								var ordersLocked = null;
 								var interval = setInterval(function () {
-									if (ordersLocked === null) {
-										ordersLocked = today.get("ordersLocked");
-									} else
-									if (today.get("ordersLocked") !== ordersLocked) {
-										ordersLocked = today.get("ordersLocked");
-										// Status has changed so we reload to lock the UI.
-										console.log("Lock event due to ordersLocked");
-										appContext.get('stores').events.loadForId(context.dbfilter.event_id).fail(function (err) {
-											console.error("Error loading event", err.stack);
-										});
-									}
-									if (ordersLocked && interval) {
-										clearInterval(interval);
-										interval = null;
+									try {
+										if (!today) return;
+										if (ordersLocked === null) {
+											ordersLocked = today.get("ordersLocked");
+										} else
+										if (today.get("ordersLocked") !== ordersLocked) {
+											ordersLocked = today.get("ordersLocked");
+											// Status has changed so we reload to lock the UI.
+											console.log("Lock event due to ordersLocked");
+											appContext.get('stores').events.loadForId(context.dbfilter.event_id).fail(function (err) {
+												console.error("Error loading event", err.stack);
+											});
+										}
+										if (ordersLocked && interval) {
+											clearInterval(interval);
+											interval = null;
+										}
+									} catch (err) {
+										console.error("Error monitoring order deadline:", err.stack);
 									}
 								}, 5 * 1000);
 							}
@@ -59058,8 +59063,8 @@
 		var startOfWeek = COMMON.API.MOMENT().startOf('week');
 		// If Saturday or Sunday, jump to next week.
 		if (
-			COMMON.API.MOMENT().day() === 6 ||
-			COMMON.API.MOMENT().day() === 0
+			COMMON.API.MOMENT().day() === 6// ||
+	//		COMMON.API.MOMENT().day() === 0
 		) {
 			startOfWeek.add(7, 'days');
 		}
@@ -59401,7 +59406,7 @@
 		        self.fetch({
 		            data: $.param({
 		                "filter[consumer_group_id]": id,
-		                "filter[day_id]": dayIds
+		                "filter[day_id]": dayIds.join(",")
 		            }),
 		            success: function () {
 		            	return callback(null, store.where({
@@ -60249,7 +60254,7 @@
 			return COMMON.API.Q.denodeify(function (callback) {
 		        self.fetch({
 		            data: $.param({
-		                "filter[event_id]": event_ids
+		                "filter[event_id]": event_ids.join(",")
 		            }),
 		            success: function () {
 		            	return callback(null);

@@ -3,8 +3,6 @@ var COMPONENT = require("../GBL_ReactComponent");
 
 exports['for'] = function (module, Context) {
 
-console.log("INTI LANDING");
-
 	module.exports = COMPONENT.create(Context, {
 
 		appContextView: "Landing",
