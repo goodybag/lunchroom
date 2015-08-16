@@ -81,20 +81,25 @@ module.exports = COMPONENT.create({
             );
         }
 
+        var vendorTitle = (
+            Context.activeVendor &&
+            Context.activeVendor.get("title")
+        ) || "Please select!";
+
         return (
           <div>
-            <h1>Restaurant Admin</h1>
+            <h1>Orders for Today for: {vendorTitle}</h1>
 
             {MasterAdmin}
 
             <table className="ui celled table">
               <thead>
                 <tr>
-                    <th>Number</th>
-                    <th>Date</th>
-                    <th>Time</th>
-                    <th>Vendor</th>
-                    <th>Status</th>
+                    <th>Code</th>
+                    <th>Order Time</th>
+                    <th>Delivery Time</th>
+                    <th>Location</th>
+                    <th>Customer</th>
                 </tr>
               </thead>
               <tbody>
@@ -103,11 +108,11 @@ module.exports = COMPONENT.create({
 
                     var Row = (
                         <tr key={item.get('id')}>
-                          <td>{item.get("number")}</td>
-                          <td>{item.get("format.deliveryDate")}</td>
+                          <td>{item.get("referenceCode3")}</td>
+                          <td>{item.get("format.orderPlacedTime")}</td>
                           <td>{item.get("format.deliveryTime")}</td>
-                          <td>{item.get("orderFrom")}</td>
-                          <td>{item.get("status.format")}</td>
+                          <td>{item.get("pickupLocation")}</td>
+                          <td>{item.get("customer")}</td>
                         </tr>
                     );
 
@@ -190,9 +195,10 @@ module.exports = COMPONENT.create({
 
         fetchForActiveRestaurant: function () {
             if (this.props.selectedRestaurant) {
-                this.props.appContext.get('stores').orders.loadForVendorId(this.props.selectedRestaurant);
-            } else {
-                this.props.appContext.get('stores').orders.fetch();
+                this.props.appContext.get('stores').orders.loadForVendorIdAndDayId(
+                    this.props.selectedRestaurant,
+                    COMPONENT.API.MOMENT().format("YYYY-MM-DD")
+                );
             }
         }
     },
@@ -224,20 +230,39 @@ module.exports = COMPONENT.create({
         var vendors = self.props.appContext.get('stores').vendors;
 
         var activeVendor = null;
+
+        var orderRecords = [];
+
         var ordersWhere = {
             day_id: this.props.appContext.get('todayId')
         };
 
-        if (this.props.selectedRestaurant) {
-            activeVendor = vendors.get(this.props.selectedRestaurant);
-            ordersWhere = {
-                vendor_ids: ""+this.props.selectedRestaurant
-            };
+        if (this.props.appContext.get('context').type === "vendor") {
+
+            activeVendor = vendors.get(this.props.appContext.get('context').vendor_id);
+
+            ordersWhere.vendor_ids = ""+this.props.appContext.get('context').vendor_id;
+            orderRecords = self.modelRecordsWithStore(orders, orders.where(ordersWhere));
+
+        } else {
+
+            if (this.props.selectedRestaurant) {
+                activeVendor = vendors.get(this.props.selectedRestaurant);
+                ordersWhere = {
+                    vendor_ids: ""+this.props.selectedRestaurant
+                };
+                orderRecords = self.modelRecordsWithStore(orders, orders.where(ordersWhere));
+            }
         }
+
+        COMPONENT.API.UNDERSCORE.sortBy(orderRecords, function (record) {
+            return record.get("time");
+        });
+        orderRecords.reverse();
 
         return {
             vendors: self.modelRecordsWithStore(vendors, vendors.where()),
-            orders: self.modelRecordsWithStore(orders, orders.where(ordersWhere)),
+            orders: orderRecords,
             activeVendor: activeVendor
         };
     }

@@ -97,6 +97,7 @@ exports['for'] = function (context) {
 		name: "orders",
 		props: {
 			id: "string",
+			time: "string",
 			orderHashId: "string",
 			day_id: "string",
 	        form: "object",
@@ -111,6 +112,15 @@ exports['for'] = function (context) {
 	        "statusInfo": "object"
 	    },
 	    derived: {
+	    	"format.orderPlacedTime": {
+	    		deps: [
+					"time"
+				],
+	            fn: function () {
+	            	var time = COMMON.API.MOMENT(this.time);
+	            	return time.format("h:mm A");
+	            }
+	    	},
 	    	"format.deliveryTime": common.makeFormatter("deliveryTime"),
 	    	"format.deliveryDate": common.makeFormatter("deliveryDate"),
 	    	"event.consumerGroup.contact": {
@@ -129,6 +139,14 @@ exports['for'] = function (context) {
 	            fn: function () {
 	            	if (!this.event) return "";
 	            	return JSON.parse(this.event)["consumerGroup.pickupLocation"];
+	            }
+	    	},
+	    	"referenceCode3": {
+	    		deps: [
+					"orderHashId"
+				],
+	            fn: function () {
+	            	return this.orderHashId.substring(0, 3).toUpperCase();
 	            }
 	    	},
 	    	"number": {
@@ -166,6 +184,24 @@ exports['for'] = function (context) {
 	            	) return "New";
 	            	return this.statusInfo.active.substring(0, 1).toUpperCase() + this.statusInfo.active.substring(1);
 	            }
+	    	},
+	    	"customer": {
+	    		deps: [
+					"form"
+				],
+	            fn: function () {
+	            	var form = JSON.parse(this.form);
+	            	return form["info[name]"];
+	            }
+	    	},
+	    	"pickupLocation": {
+	    		deps: [
+					"event"
+				],
+	            fn: function () {
+	            	var event = JSON.parse(this.event);
+	            	return event["consumerGroup.pickupLocation"];
+	            }
 	    	}
 	    }
 	});
@@ -201,6 +237,23 @@ exports['for'] = function (context) {
 	            remove: true,
 	            data: $.param({
 	                "filter[vendor_ids]": vendorId
+	            }),
+	            success: function () {
+	            	return callback(null);
+	            }
+	        });
+		})();
+    }
+
+	store.loadForVendorIdAndDayId = function (vendorId, dayId) {
+		var self = this;
+		return COMMON.API.Q.denodeify(function (callback) {
+	        self.fetch({
+	            reset: true,
+	            remove: true,
+	            data: $.param({
+	                "filter[vendor_ids]": vendorId,
+	                "filter[day_id]": dayId
 	            }),
 	            success: function () {
 	            	return callback(null);
