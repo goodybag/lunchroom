@@ -76,6 +76,7 @@
           "DEEPMERGE": "deepmerge",
           "ASSERT": "assert",
           "Q": "q",
+          "QFS": "q-io/fs",
           "REQUEST": "request",
           "vendor-router": "./stores/Vendors.db/firenode-router.js",
           "event-router": "./stores/Events.db/firenode-router.js",

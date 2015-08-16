@@ -23,6 +23,7 @@ const LIVE_NOTIFY = require("./server/live-notify");
 const FIRENODE = require("firenode-for-jsonapi/server");
 const UGLIFY = require("uglify-js");
 const JOBS = require("./server/jobs");
+const EMAILS = require("./server/emails");
 const REQUEST = require("request");
 
 const APP_CONTEXT_MODEL = require("./stores/ui.AppContext.model");
@@ -195,7 +196,24 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
 
 		var landingResources = getResourceMappingsForSkinPage("Landing");
 		var appResources = getResourceMappingsForSkinPage("AppMenu");
+/*
+		app.get(/^(\/event-email-[^\/]+)?(\/.*)$/, function (req, res, next) {
 
+			return EMAILS.for({
+				args: {
+					config: req._FireNodeContext.config
+				}
+			}).then(function (EMAILS) {
+				return EMAILS.renderEmail("menu").then(function (html) {
+
+					res.writeHead(200, {
+						"Content-Type": "text/html"
+					});
+					return res.end(html);
+				});
+			}).fail(next);
+		});
+*/
 		app.get(/^(\/(?:vendor|order|event)-[^\/]+)?(\/.*)$/, function (req, res, next) {
 
 			var path = req.params[1];

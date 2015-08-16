@@ -17,7 +17,7 @@ require("./component.jsx")['for'](module, {
 
 		var copyName = {};
 
-		return {
+		return {			
 			"too_late": new Context.Template({
 				impl: require("../../www/lunchroom-landing~0/components/AppCheckout/too-late.cjs.jsx"),
 				markup: function (element) {

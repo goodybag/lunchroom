@@ -3,6 +3,17 @@ require("./component.jsx")['for'](module, {
 
 	getTemplates: function (Context) {
 		return {
+			"menu_signup": new Context.Template({
+				impl: require("../../www/lunchroom-landing~0/components/AppMenu/menu-signup.cjs.jsx"),
+				markup: function (element) {
+				},
+				fill: function (element, data, Context) {
+
+					this.fillProperties(element, {
+						"orderBy": Context.eventToday.get('format.orderByTime')
+					});
+				}
+			}),			
 			"too_late": new Context.Template({
 				impl: require("../../www/lunchroom-landing~0/components/AppMenu/too-late.cjs.jsx"),
 				markup: function (element) {
@@ -15,7 +26,7 @@ require("./component.jsx")['for'](module, {
 				}
 			}),
 			"menu_not_created": new Context.Template({
-				impl: require("../../www/lunchroom-landing~0/components/AppComponents/menu-not-created.cjs.jsx"),
+				impl: require("../../www/lunchroom-landing~0/components/AppMenu/menu-not-created.cjs.jsx"),
 				markup: function (element) {
 				},
 				fill: function (element, data, Context) {
@@ -174,6 +185,7 @@ require("./component.jsx")['for'](module, {
 						<Context.templates.too_late.comp />
 						<Context.templates.popup.comp />
 						<Context.templates.menu.comp />
+						<Context.templates.menu_signup.comp />
 					</div>
 				);
 
@@ -183,6 +195,7 @@ require("./component.jsx")['for'](module, {
 					<div>
 						<Context.templates.popup.comp />
 						<Context.templates.menu.comp />
+						<Context.templates.menu_signup.comp />
 					</div>
 				);
 			}
