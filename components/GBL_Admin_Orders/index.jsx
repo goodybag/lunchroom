@@ -30,16 +30,17 @@ module.exports = COMPONENT.create({
 
         return (
           <div>
-            <h1>Orders Admin</h1>
+            <h1>All Orders</h1>
 
             <table className="ui celled table">
               <thead>
                 <tr>
-                    <th>Number</th>
+                    <th>Code</th>
                     <th>Date</th>
                     <th>Time</th>
                     <th>Vendor</th>
-                    <th>Status</th>
+                    <th>Customer</th>
+                    <th>Pickup Location</th>
                 </tr>
               </thead>
               <tbody>
@@ -48,11 +49,12 @@ module.exports = COMPONENT.create({
 
                     var Row = (
                         <tr key={item.get('id')}>
-                          <td>{item.get("number")}</td>
+                          <td>{item.get("referenceCode3")}</td>
                           <td>{item.get("format.deliveryDate")}</td>
                           <td>{item.get("format.deliveryTime")}</td>
                           <td>{item.get("orderFrom")}</td>
-                          <td>{item.get("status.format")}</td>
+                          <td>{item.get("customer")}</td>
+                          <td>{item.get("pickupLocation")}</td>
                         </tr>
                     );
 
@@ -96,10 +98,18 @@ module.exports = COMPONENT.create({
 }, {
 
     onMount: function () {
-        this.props.appContext.get('stores').orders.on("sync", this._trigger_forceUpdate);
+        var self = this;
 
-        this.props.appContext.get('stores').orders.reset();
-        this.props.appContext.get('stores').orders.fetch();
+        self.props.appContext.get('stores').orders.on("sync", self._trigger_forceUpdate);
+
+        self.props.appContext.get('stores').orders.reset();
+        self.props.appContext.get('stores').orders.fetch();
+
+        // Reload every 60 seconds.
+        setInterval(function () {
+            self.props.appContext.get('stores').orders.reset();
+            self.props.appContext.get('stores').orders.fetch();
+        }, 60 * 1000);
     },
 
     onUnmount: function () {

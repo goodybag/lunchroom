@@ -45,6 +45,14 @@
 					"constraints": {
 						"required": true
 					}
+				},
+				{
+					"name": "lunchroomLive",
+					"type": "boolean",
+					"default": false,
+					"constraints": {
+						"required": true
+					}
 				}
 			]
 		},

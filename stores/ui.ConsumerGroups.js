@@ -18,8 +18,92 @@ var Store = COMMON.API.BACKBONE.Collection.extend({
 				id: record.id
 			});
 		});
+	},
+
+	setLunchroomOpenForId: function (id) {
+		var self = this;
+
+		return COMMON.API.Q.denodeify(function (callback) {
+
+			self.get(id).set("lunchroomLive", true);
+
+			var payload = {
+				data: {
+					type: "consumer-groups",
+					id: id,
+					attributes: {
+						"lunchroomLive": true
+					}
+				}
+			};
+
+			return $.ajax({
+				method: "PATCH",
+				url: ENDPOINT + "/" + id,
+				contentType: "application/vnd.api+json",
+				headers: {
+					"Accept": "application/vnd.api+json"
+				},
+    			dataType: "json",
+				data: JSON.stringify(payload)
+			})
+			.done(function (response) {
+
+				return callback(null);
+			})
+			.fail(function(err) {
+
+// TODO: Ask user to submit again.
+console.log("error!", err.stack);
+
+				return callback(err);
+			});
+		})();
+	},
+
+	setLunchroomClosedForId: function (id) {
+		var self = this;
+
+		return COMMON.API.Q.denodeify(function (callback) {
+
+			self.get(id).set("lunchroomLive", false);
+
+			var payload = {
+				data: {
+					type: "consumer-groups",
+					id: id,
+					attributes: {
+						"lunchroomLive": false
+					}
+				}
+			};
+
+			return $.ajax({
+				method: "PATCH",
+				url: ENDPOINT + "/" + id,
+				contentType: "application/vnd.api+json",
+				headers: {
+					"Accept": "application/vnd.api+json"
+				},
+    			dataType: "json",
+				data: JSON.stringify(payload)
+			})
+			.done(function (response) {
+
+				return callback(null);
+			})
+			.fail(function(err) {
+
+// TODO: Ask user to submit again.
+console.log("error!", err.stack);
+
+				return callback(err);
+			});
+		})();
 	}
+
 });
+
 
 
 var store = new Store();
@@ -61,7 +145,8 @@ exports['for'] = function (context) {
 	        contact: "string",
 	        address: "string",
 	        pickupLocation: "string",
-	        orderTax: "string"
+	        orderTax: "string",
+	        lunchroomLive: "string"
 		},
 		derived: {
 		    "lunchroomUrl": {
@@ -71,6 +156,15 @@ exports['for'] = function (context) {
 				cache: false,
 	            fn: function () {
 	            	return context.appContext.get("windowOrigin") + "/" + this["alias"];
+	            }
+		    },
+		    "format.lunchroomLive": {
+		    	deps: [
+					"lunchroomLive"
+				],
+				cache: false,
+	            fn: function () {
+	            	return (this.lunchroomLive ? "Yes" : "No");
 	            }
 		    }
 		}

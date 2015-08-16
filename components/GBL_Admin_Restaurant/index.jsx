@@ -50,30 +50,38 @@ module.exports = COMPONENT.create({
 
                     <form className="ui form">
 
-                        <div data-fieldname="vendor_id" className="ui floating dropdown labeled button">
-                          <span className="text">Select Restaurant</span>
-                          <div className="menu">
-                            <div className="ui icon search input">
-                              <i className="search icon"></i>
-                              <input type="text"/>
-                            </div>
-                            <div className="scrolling menu">
-                                {Context.vendors.map(function(item) {
-                                    return (
-                                        <div className="item" data-value={item.get("id")}>
-                                          {item.get("title")}
-                                        </div>
-                                    );
-                                })}
-                            </div>
-                          </div>
-                        </div>
+                        <div className="fields">
 
-                        <div className="ui corner labeled input">
-                          <input type="text" value={externalVendorAdminLink}/>
-                          <div className="ui corner label">
-                            <i className="external icon"></i>
+                          <div className="field">
+
+                            <div data-fieldname="vendor_id" className="ui floating dropdown labeled button">
+                              <span className="text">Select Restaurant</span>
+                              <div className="menu">
+                                <div className="ui icon search input">
+                                  <i className="search icon"></i>
+                                  <input type="text"/>
+                                </div>
+                                <div className="scrolling menu">
+                                    {Context.vendors.map(function(item) {
+                                        return (
+                                            <div className="item" data-value={item.get("id")}>
+                                              {item.get("title")}
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+                              </div>
+                            </div>
+
                           </div>
+                          <div className="field">
+
+                            <div className="ui corner labeled input">
+                              <a href={externalVendorAdminLink} target="_blank">External link to give to Restaurant</a>
+                            </div>
+
+                          </div>
+
                         </div>
 
                     </form>
@@ -204,17 +212,25 @@ module.exports = COMPONENT.create({
     },
 
     onMount: function () {
-        this.props.appContext.get('stores').orders.on("sync", this._trigger_forceUpdate);
-        this.props.appContext.get('stores').vendors.on("sync", this._trigger_forceUpdate);
+        var self = this;
 
-        if (this.props.appContext.get('context').type === "vendor") {
-            this.selectRestaurant(this.props.appContext.get('context').vendor_id);
+        self.props.appContext.get('stores').orders.on("sync", self._trigger_forceUpdate);
+        self.props.appContext.get('stores').vendors.on("sync", self._trigger_forceUpdate);
+
+        if (self.props.appContext.get('context').type === "vendor") {
+            self.selectRestaurant(self.props.appContext.get('context').vendor_id);
         } else {
-            this.fetchForActiveRestaurant();
+            self.fetchForActiveRestaurant();
         }
 
-        this.props.appContext.get('stores').vendors.reset();
-        this.props.appContext.get('stores').vendors.fetch();
+        self.props.appContext.get('stores').vendors.reset();
+        self.props.appContext.get('stores').vendors.fetch();
+
+        // Reload every 60 seconds.
+        setInterval(function () {
+            self.props.appContext.get('stores').vendors.reset();
+            self.props.appContext.get('stores').vendors.fetch();
+        }, 60 * 1000);
     },
 
     onUnmount: function () {
@@ -255,7 +271,7 @@ module.exports = COMPONENT.create({
             }
         }
 
-        COMPONENT.API.UNDERSCORE.sortBy(orderRecords, function (record) {
+        orderRecords = COMPONENT.API.UNDERSCORE.sortBy(orderRecords, function (record) {
             return record.get("time");
         });
         orderRecords.reverse();

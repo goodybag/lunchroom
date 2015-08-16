@@ -86,6 +86,12 @@ exports.views = {
 		"container": "iframe",
 		"component": require("./GBL_Admin_Restaurant/index"),
 		"config": {}
+	},
+	"Admin_Company": {
+		"group": "admin",
+		"container": "iframe",
+		"component": require("./GBL_Admin_Company/index"),
+		"config": {}
 	},	
 	"Model_Days": {
 		"group": "model",
