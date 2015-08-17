@@ -119,7 +119,8 @@ store.update = function (model, params, request) {
 						var stripe = STRIPE("sk_live_kjAFUHK2tYc6BRHRyeMlZPON");
 //						var stripe = STRIPE(request._FireNodeContext.config.stripeSecretKey);
 						var payload = {
-							amount: summary.amount,
+//							amount: summary.amount,
+							amount: summary.total,
 							currency: "usd",
 							metadata: {
 								orderHashId: resp.attributes.orderHashId,
