@@ -13,7 +13,7 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
                 message = API.DEEPMERGE({
                     "subject": "Lunch is ordered!",
                     "text": [
-                        "Thanks for ordering with Goodybag. You will receive another email when your lunch arrives.",
+                        "Thanks for ordering with Goodybag. You'll receive a follow-up email when your lunch arrives.",
                         "",
                         "Order ID: " + message.data.orderHashId.substring(0, 7),
                         "Order from: <Should we still keep this if we can have items from multiple restaurants?>",
@@ -66,13 +66,9 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
             if (templateId === "Menu") {
 
                 message = API.DEEPMERGE({
-                    "subject": "Menu for today!",
+                    "subject": "Daily Lunch Menu - Order by 10am",
                     "text": [
-                        "Hi there",
-                        "",
-                        "We have some goodies for you today!",
-                        "",
-                        "See the menu: " + message.data.menu.url,
+                        "Todays menu is from: " + message.data.menu.restaurantName,
                         "",
                         "Here is a taste:",
                         "",
@@ -80,10 +76,12 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
                             return "  * " + item.title;
                         }).join("\n"),
                         "",
-                        "See you soon",
+                        "Goto " + message.data.menu.url + " to see the full menu.",
+                        "",
+                        "Sincerely,",
                         "-Goodybot",
                         "",
-                        message.data.menu.url + " http://goodybag.com"                        
+                        message.data.menu.url + " https://www.goodybag.com"
                     ].join("\n")
                 }, message || {});
 
@@ -93,18 +91,16 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
             if (templateId === "Order_Arrived") {
 
                 message = API.DEEPMERGE({
-                    "subject": "Your meal has arrived!",
+                    "subject": "Your Lunchroom Order has Arrived!",
                     "text": [
-                        "Hi there",
+                        "Lunchroom Order #" + message.data.orderHashId.substring(0, 7) + " has arrived and waiting for you at:",
                         "",
-                        "Your meal has arrived!",
+                        message.data.menu.deliveryLocation
                         "",
-                        "<TODO>",
-                        "",
-                        "See you soon",
+                        "Sincerely,",
                         "-Goodybot",
                         "",
-                        "http://goodybag.com"                        
+                        "https://www.goodybag.com"                        
                     ].join("\n")
                 }, message || {});
 
@@ -133,7 +129,10 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
 
                 message = API.DEEPMERGE({
                     "to": "<REPLACE>",
-                    "body": "Hello your lunch from Goodybag is here!"
+                    "body": [
+                        "Your Goodybag Lunchroom Order has arrived and is waiting for you at: ",
+                        message.data.menu.deliveryLocation
+                    ].join('')
                 }, message || {});
 
                 return API["twilio-send"]["$io.pinf.service.twilio/send/0"].sendMessage(message);
