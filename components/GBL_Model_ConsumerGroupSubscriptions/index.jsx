@@ -18,6 +18,7 @@ module.exports = COMPONENT.create({
                     <th>Company</th>
                     <th>Subscribed</th>
                     <th>Confirmed</th>
+                    <th>Phone</th>
                 </tr>
               </thead>
               <tbody>
@@ -30,6 +31,7 @@ module.exports = COMPONENT.create({
                           <td>{item.get("consumerGroup.title")}</td>
                           <td>{item.get("subscribeEmail")}</td>
                           <td>{item.get("confirmedEmail")}</td>
+                          <td>{item.get("subscribePhone")}</td>
                         </tr>
                     );
                     return Row;

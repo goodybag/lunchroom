@@ -94,13 +94,13 @@
 					"type": "timestamp"
 				},
 				{
-					"name": "subscribeEmail",
-					"constraints": {
-						"required": true
-					}
+					"name": "subscribeEmail"
 				},
 				{
 					"name": "confirmedEmail"
+				},
+				{
+					"name": "subscribePhone"
 				}
 			]
 		},

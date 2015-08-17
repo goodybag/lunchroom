@@ -107,12 +107,13 @@ exports['for'] = function (context) {
 	        confirmed_time: "string",
 	        subscribeEmail: "string",
 	        confirmedEmail: "string",
+	        subscribePhone: "string",
 
 	        "consumerGroup.title": "string"
 		}
 	});
 
-	store.subscribeWithEmail = function (consumer_group_id, email) {
+	store.subscribeWithEmail = function (consumer_group_id, email, phone) {
 		var self = this;
 		return COMMON.API.Q.denodeify(function (callback) {
 
@@ -121,7 +122,8 @@ exports['for'] = function (context) {
 					type: "consumer-group-subscriptions",
 					attributes: {
 						consumer_group_id: consumer_group_id,
-						subscribeEmail: email
+						subscribeEmail: email || "",
+						subscribePhone: phone || ""
 					}
 				}
 			};

@@ -10,18 +10,16 @@ require("./component.jsx")['for'](module, {
 					$('[data-component-elm="signupButton"]', element).click(function () {
 
 						var email = $('[data-component-elm="email"]', element).val();
-						if (email) {
+						var phone = $('[data-component-elm="phone"]', element).val();
+						if (email || phone) {
 
-				    		Context.subscribeWithEmail(email);
+				    		Context.subscribeWithEmail(email, phone);
 
 				    		element.addClass("hidden");
 						}
 
 						return false;
 					});
-
-// TODO: Remove this once we can signup with phone number as well.
-$('.phone-form-group').addClass('hidden');
 
 				},
 				fill: function (element, data, Context) {
@@ -36,7 +34,14 @@ $('.phone-form-group').addClass('hidden');
 //						});
 					}
 				}
-			}),			
+			}),
+			"feedback": new Context.Template({
+				impl: require("../../www/lunchroom-landing~0/components/AppMenu/feedback.cjs.jsx"),
+				markup: function (element) {
+				},
+				fill: function (element, data, Context) {
+				}
+			}),
 			"too_late": new Context.Template({
 				impl: require("../../www/lunchroom-landing~0/components/AppMenu/too-late.cjs.jsx"),
 				markup: function (element) {
@@ -236,6 +241,7 @@ $('.phone-form-group').addClass('hidden');
 						<Context.templates.popup.comp />
 						<Context.templates.menu.comp />
 						<Context.templates.menu_signup.comp />
+						<Context.templates.feedback.comp />
 					</div>
 				);
 
@@ -246,6 +252,7 @@ $('.phone-form-group').addClass('hidden');
 						<Context.templates.popup.comp />
 						<Context.templates.menu.comp />
 						<Context.templates.menu_signup.comp />
+						<Context.templates.feedback.comp />
 					</div>
 				);
 			}

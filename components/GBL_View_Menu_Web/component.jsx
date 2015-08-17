@@ -91,10 +91,10 @@ exports['for'] = function (module, Context) {
 
 	        	consumerGroupSubscription: consumerGroupSubscription,
 
-	        	subscribeWithEmail: function (email) {
+	        	subscribeWithEmail: function (email, phone) {
 
 					self.props.appContext.get('stores').consumerGroupSubscriptions.subscribeWithEmail(
-						consumerGroups.where()[0].get("id"), email
+						consumerGroups.where()[0].get("id"), email, phone
 					);
 				}	        	
 	        };
