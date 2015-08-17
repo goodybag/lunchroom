@@ -45214,13 +45214,76 @@
 
 	/* WEBPACK VAR INJECTION */(function(module) {/** @jsx React.DOM */
 	__webpack_require__(139)['for'](module, {
-		getHTML: function (Context) {
 
-			var tpl = __webpack_require__(140)(Context);
+		getTemplate: function (Context) {
 
-			return tpl;
+			return new Context.Template({
+				impl: __webpack_require__(140),
+				markup: function (element) {
+					var self = this;
+
+			    	$('#contact-us-form', element).submit(function () {
+
+						$('[data-dismiss="modal"]').click();
+
+			    		var formElm = $('#contact-us-form', element);
+
+			    		var payload = {
+			    			name: $('[data-component-elm="name"]', formElm).val(),
+			    			email: $('[data-component-elm="email"]', formElm).val(),
+			    			message: $('[data-component-elm="message"]', formElm).val()
+			    		};
+
+	console.log("payload", payload);
+
+						$.ajax({
+							method: "POST",
+							url: "/contact-us",
+							contentType: "application/json",
+							data: JSON.stringify(payload),
+
+							success: function ( data, textStatus, jqXHR ) {
+
+				    			$('[data-component-elm="message"]', formElm).val("");
+							},
+
+							error: function (jqXHR, textStatus, errorThrown) {
+
+	console.log("error");
+
+	console.log("jqXHR", jqXHR);
+	console.log("textStatus", textStatus);
+	console.log("errorThrown", errorThrown);
+
+	/*
+								if (err.status === 200) {
+									// This happens on IE 8 & 9.
+									// We had success after all.
+									return;
+								}
+
+								for (var name in err) {
+									console.error("ERR " + name + ": " + err[name]);
+								}
+								console.error("Error status code: " + err.statusCode);
+								console.log("Error sending message to server!" + err.stack || err.message || err);
+		// TODO: Display error.
+	*/
+							}
+						});
+						return false;
+			    	});
+
+				},
+				fill: function (element, data, Context) {
+
+	// TODO: Pre-fill email if available in local storage.
+
+				}
+			});
 		}
 	});
+
 
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(18)(module)))
 
@@ -45264,6 +45327,36 @@
 	          React.createElement("li", null, React.createElement("a", {href: "#", "data-toggle": "modal", "data-target": "#contact-us-modal"}, "Contact Us")), 
 	          React.createElement("li", null, React.createElement("a", {href: "https://www.goodybag.com/legal"}, "Terms of service")), 
 	          React.createElement("li", null, React.createElement("a", {href: "https://www.goodybag.com/privacy"}, "Privacy policy"))
+	        ), 
+
+	        React.createElement("div", {className: "modal fade", id: "contact-us-modal"}, 
+	          React.createElement("div", {className: "modal-dialog"}, 
+	            React.createElement("div", {className: "modal-content"}, 
+	              React.createElement("div", {className: "modal-header"}, 
+	                React.createElement("h3", {className: "modal-title"}, "Contact Us")
+	              ), 
+	              React.createElement("form", {action: "#", className: "form form-vertical contact-us-form", id: "contact-us-form"}, 
+	                React.createElement("div", {className: "modal-body"}, 
+	                  React.createElement("div", {className: "form-group"}, 
+	                    React.createElement("label", {for: "name-input"}, "Name"), 
+	                    React.createElement("input", {type: "text", name: "name", "data-component-elm": "name"})
+	                  ), 
+	                  React.createElement("div", {className: "form-group"}, 
+	                    React.createElement("label", {for: "name-input"}, "Email"), 
+	                    React.createElement("input", {type: "email", name: "email", "data-component-elm": "email"})
+	                  ), 
+	                  React.createElement("div", {className: "form-group"}, 
+	                    React.createElement("label", {for: "message-input"}, "Message"), 
+	                    React.createElement("textarea", {rows: "6", type: "text", name: "message", "data-component-elm": "message"})
+	                  )
+	                ), 
+	                React.createElement("div", {className: "modal-footer"}, 
+	                  React.createElement("button", {type: "button", className: "btn btn-default", "data-dismiss": "modal"}, "Close"), 
+	                  React.createElement("button", {type: "submit", className: "btn btn-primary"}, "Submit")
+	                )
+	              )
+	            )
+	          )
 	        )
 	      
 	    )
@@ -45446,6 +45539,59 @@
 				"landing":  new Context.Template({
 					impl: __webpack_require__(145),
 					markup: function (element) {
+
+
+						$('#contact-us-form', element).submit(function () {
+
+							$('[data-dismiss="modal"]').click();
+
+				    		var formElm = $('#contact-us-form', element);
+
+				    		var payload = {
+				    			name: $('[data-component-elm="name"]', formElm).val(),
+				    			email: $('[data-component-elm="email"]', formElm).val(),
+				    			message: $('[data-component-elm="message"]', formElm).val()
+				    		};
+
+		console.log("payload", payload);
+
+							$.ajax({
+								method: "POST",
+								url: "/contact-us",
+								contentType: "application/json",
+								data: JSON.stringify(payload),
+
+								success: function ( data, textStatus, jqXHR ) {
+
+					    			$('[data-component-elm="message"]', formElm).val("");
+								},
+
+								error: function (jqXHR, textStatus, errorThrown) {
+
+		console.log("error");
+
+		console.log("jqXHR", jqXHR);
+		console.log("textStatus", textStatus);
+		console.log("errorThrown", errorThrown);
+
+		/*
+									if (err.status === 200) {
+										// This happens on IE 8 & 9.
+										// We had success after all.
+										return;
+									}
+
+									for (var name in err) {
+										console.error("ERR " + name + ": " + err[name]);
+									}
+									console.error("Error status code: " + err.statusCode);
+									console.log("Error sending message to server!" + err.stack || err.message || err);
+			// TODO: Display error.
+		*/
+								}
+							});
+							return false;
+				    	});
 
 
 						$('[data-component-id="subscribe"]', element).submit(function () {
@@ -45656,41 +45802,42 @@
 	  )
 	), 
 
-	React.createElement("div", {className: "modal fade", id: "contact-us-modal"}, 
-	  React.createElement("div", {className: "modal-dialog"}, 
-	    React.createElement("div", {className: "modal-content"}, 
-	      React.createElement("div", {className: "modal-header"}, 
-	        React.createElement("h3", {className: "modal-title"}, "Contact Us")
-	      ), 
-	      React.createElement("form", {action: "#", className: "form form-vertical contact-us-form"}, 
-	        React.createElement("div", {className: "modal-body"}, 
-	          React.createElement("div", {className: "form-group"}, 
-	            React.createElement("label", {for: "name-input"}, "Name"), 
-	            React.createElement("input", {type: "text", name: "name"})
-	          ), 
-	          React.createElement("div", {className: "form-group"}, 
-	            React.createElement("label", {for: "name-input"}, "Email"), 
-	            React.createElement("input", {type: "email", name: "email"})
-	          ), 
-	          React.createElement("div", {className: "form-group"}, 
-	            React.createElement("label", {for: "message-input"}, "Message"), 
-	            React.createElement("textarea", {rows: "6", type: "text", name: "message"})
-	          )
-	        ), 
-	        React.createElement("div", {className: "modal-footer"}, 
-	          React.createElement("button", {type: "button", className: "btn btn-default", "data-dismiss": "modal"}, "Close"), 
-	          React.createElement("button", {type: "submit", className: "btn btn-primary"}, "Submit")
-	        )
-	      )
-	    )
-	  )
-	), 
 
-	React.createElement("footer", {className: "footer"}, 
+	React.createElement("footer", {className: "footer", "data-component-id": "footer"}, 
 	  React.createElement("ul", {className: "nav footer-nav"}, 
 	    React.createElement("li", null, React.createElement("a", {href: "#", "data-toggle": "modal", "data-target": "#contact-us-modal"}, "Contact Us")), 
 	    React.createElement("li", null, React.createElement("a", {href: "https://www.goodybag.com/legal"}, "Terms of service")), 
 	    React.createElement("li", null, React.createElement("a", {href: "https://www.goodybag.com/privacy"}, "Privacy policy"))
+	  ), 
+
+	  React.createElement("div", {className: "modal fade", id: "contact-us-modal"}, 
+	    React.createElement("div", {className: "modal-dialog"}, 
+	      React.createElement("div", {className: "modal-content"}, 
+	        React.createElement("div", {className: "modal-header"}, 
+	          React.createElement("h3", {className: "modal-title"}, "Contact Us")
+	        ), 
+	        React.createElement("form", {action: "#", className: "form form-vertical contact-us-form", id: "contact-us-form"}, 
+	          React.createElement("div", {className: "modal-body"}, 
+	            React.createElement("div", {className: "form-group"}, 
+	              React.createElement("label", {for: "name-input"}, "Name"), 
+	              React.createElement("input", {type: "text", name: "name", "data-component-elm": "name"})
+	            ), 
+	            React.createElement("div", {className: "form-group"}, 
+	              React.createElement("label", {for: "name-input"}, "Email"), 
+	              React.createElement("input", {type: "email", name: "email", "data-component-elm": "email"})
+	            ), 
+	            React.createElement("div", {className: "form-group"}, 
+	              React.createElement("label", {for: "message-input"}, "Message"), 
+	              React.createElement("textarea", {rows: "6", type: "text", name: "message", "data-component-elm": "message"})
+	            )
+	          ), 
+	          React.createElement("div", {className: "modal-footer"}, 
+	            React.createElement("button", {type: "button", className: "btn btn-default", "data-dismiss": "modal"}, "Close"), 
+	            React.createElement("button", {type: "submit", className: "btn btn-primary"}, "Submit")
+	          )
+	        )
+	      )
+	    )
 	  )
 	)
 
@@ -45848,6 +45995,7 @@
 								"title": item.get("item.title"),
 								"price": item.get("item.format.price"),
 								"description": item.get("item.description"),
+								"tags": item.get("item.tags"),
 								"quantity": item.get("cartQuantity")
 							};
 						}), function getView (data) {
@@ -45917,6 +46065,25 @@
 							} else {
 								self.showViews(elm, []);
 							}
+
+
+							var tags = [];
+							try {
+								if (data.tags) tags = JSON.parse(data.tags);
+							} catch (err) {}
+
+							self.renderSection("diet-tags", tags.map(function(tag) {
+								return {
+									"tag": tag
+								};
+							}), function getView (data) {
+								return 'default';
+							}, function hookEvents(elm, data) {
+
+								elm.removeClass("diet-tag-spicy");
+								elm.addClass("diet-tag-" + data.tag);
+
+							});
 					    });
 					}
 				})
@@ -51492,7 +51659,7 @@
 		    selectedDay: MOMENT().format("ddd"),
 		    selectedDayId: MOMENT().format("YYYY-MM-DD"),
 		    windowOrigin: window.location.origin || (window.location.protocol + "//" + window.location.host),
-		    forceAllowOrder: true
+		    forceAllowOrder: false
 		};
 
 		COMMON.API.UNDERSCORE.extend(config, overrides || {});
@@ -60074,7 +60241,7 @@
 	});
 
 
-	var INCLUDE_PRIOR_WEEKEND = true;
+	var INCLUDE_PRIOR_WEEKEND = false;
 
 
 	var store = new Store();
@@ -60238,6 +60405,7 @@
 		        description: "string",
 		        photo_url: "string",
 		        properties: "string",
+		        tags: "string",
 		        options: "string",
 		        price: "integer",
 		        quantity: "integer",
@@ -60505,7 +60673,8 @@
 		        "item.properties": "string",
 		        "item.format.price": "string",
 		        "item.description": "string",
-		        "item.options": "string"
+		        "item.options": "string",
+		        "item.tags": "string"
 		    },
 		    derived: {
 			    "cartQuantity": {

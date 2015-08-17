@@ -45075,10 +45075,13 @@
 						});
 				    });
 
+
+				    var views = [];
+			    	if (Context.appContext.get("forceAllowOrder")) {
+			    		views.push("not-on-checkout");
+			    	}
 				    if (data['day_id']) {
-				    	var views = [
-					    	"menuAvailable"
-				    	];
+				    	views.push("menuAvailable");
 				    	if (
 				    		data['day_id'] === Context.appContext.get('todayId')
 				    	) {
@@ -45092,7 +45095,7 @@
 				    	}
 						self.showViews(element, views);
 				    } else {
-						self.showViews(element, []);
+						self.showViews(element, views);
 				    }
 
 				    if (
@@ -45211,13 +45214,76 @@
 
 	/* WEBPACK VAR INJECTION */(function(module) {/** @jsx React.DOM */
 	__webpack_require__(139)['for'](module, {
-		getHTML: function (Context) {
 
-			var tpl = __webpack_require__(140)(Context);
+		getTemplate: function (Context) {
 
-			return tpl;
+			return new Context.Template({
+				impl: __webpack_require__(140),
+				markup: function (element) {
+					var self = this;
+
+			    	$('#contact-us-form', element).submit(function () {
+
+						$('[data-dismiss="modal"]').click();
+
+			    		var formElm = $('#contact-us-form', element);
+
+			    		var payload = {
+			    			name: $('[data-component-elm="name"]', formElm).val(),
+			    			email: $('[data-component-elm="email"]', formElm).val(),
+			    			message: $('[data-component-elm="message"]', formElm).val()
+			    		};
+
+	console.log("payload", payload);
+
+						$.ajax({
+							method: "POST",
+							url: "/contact-us",
+							contentType: "application/json",
+							data: JSON.stringify(payload),
+
+							success: function ( data, textStatus, jqXHR ) {
+
+				    			$('[data-component-elm="message"]', formElm).val("");
+							},
+
+							error: function (jqXHR, textStatus, errorThrown) {
+
+	console.log("error");
+
+	console.log("jqXHR", jqXHR);
+	console.log("textStatus", textStatus);
+	console.log("errorThrown", errorThrown);
+
+	/*
+								if (err.status === 200) {
+									// This happens on IE 8 & 9.
+									// We had success after all.
+									return;
+								}
+
+								for (var name in err) {
+									console.error("ERR " + name + ": " + err[name]);
+								}
+								console.error("Error status code: " + err.statusCode);
+								console.log("Error sending message to server!" + err.stack || err.message || err);
+		// TODO: Display error.
+	*/
+							}
+						});
+						return false;
+			    	});
+
+				},
+				fill: function (element, data, Context) {
+
+	// TODO: Pre-fill email if available in local storage.
+
+				}
+			});
 		}
 	});
+
 
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(18)(module)))
 
@@ -45261,6 +45327,36 @@
 	          React.createElement("li", null, React.createElement("a", {href: "#", "data-toggle": "modal", "data-target": "#contact-us-modal"}, "Contact Us")), 
 	          React.createElement("li", null, React.createElement("a", {href: "https://www.goodybag.com/legal"}, "Terms of service")), 
 	          React.createElement("li", null, React.createElement("a", {href: "https://www.goodybag.com/privacy"}, "Privacy policy"))
+	        ), 
+
+	        React.createElement("div", {className: "modal fade", id: "contact-us-modal"}, 
+	          React.createElement("div", {className: "modal-dialog"}, 
+	            React.createElement("div", {className: "modal-content"}, 
+	              React.createElement("div", {className: "modal-header"}, 
+	                React.createElement("h3", {className: "modal-title"}, "Contact Us")
+	              ), 
+	              React.createElement("form", {action: "#", className: "form form-vertical contact-us-form", id: "contact-us-form"}, 
+	                React.createElement("div", {className: "modal-body"}, 
+	                  React.createElement("div", {className: "form-group"}, 
+	                    React.createElement("label", {for: "name-input"}, "Name"), 
+	                    React.createElement("input", {type: "text", name: "name", "data-component-elm": "name"})
+	                  ), 
+	                  React.createElement("div", {className: "form-group"}, 
+	                    React.createElement("label", {for: "name-input"}, "Email"), 
+	                    React.createElement("input", {type: "email", name: "email", "data-component-elm": "email"})
+	                  ), 
+	                  React.createElement("div", {className: "form-group"}, 
+	                    React.createElement("label", {for: "message-input"}, "Message"), 
+	                    React.createElement("textarea", {rows: "6", type: "text", name: "message", "data-component-elm": "message"})
+	                  )
+	                ), 
+	                React.createElement("div", {className: "modal-footer"}, 
+	                  React.createElement("button", {type: "button", className: "btn btn-default", "data-dismiss": "modal"}, "Close"), 
+	                  React.createElement("button", {type: "submit", className: "btn btn-primary"}, "Submit")
+	                )
+	              )
+	            )
+	          )
 	        )
 	      
 	    )
@@ -45443,6 +45539,59 @@
 				"landing":  new Context.Template({
 					impl: __webpack_require__(145),
 					markup: function (element) {
+
+
+						$('#contact-us-form', element).submit(function () {
+
+							$('[data-dismiss="modal"]').click();
+
+				    		var formElm = $('#contact-us-form', element);
+
+				    		var payload = {
+				    			name: $('[data-component-elm="name"]', formElm).val(),
+				    			email: $('[data-component-elm="email"]', formElm).val(),
+				    			message: $('[data-component-elm="message"]', formElm).val()
+				    		};
+
+		console.log("payload", payload);
+
+							$.ajax({
+								method: "POST",
+								url: "/contact-us",
+								contentType: "application/json",
+								data: JSON.stringify(payload),
+
+								success: function ( data, textStatus, jqXHR ) {
+
+					    			$('[data-component-elm="message"]', formElm).val("");
+								},
+
+								error: function (jqXHR, textStatus, errorThrown) {
+
+		console.log("error");
+
+		console.log("jqXHR", jqXHR);
+		console.log("textStatus", textStatus);
+		console.log("errorThrown", errorThrown);
+
+		/*
+									if (err.status === 200) {
+										// This happens on IE 8 & 9.
+										// We had success after all.
+										return;
+									}
+
+									for (var name in err) {
+										console.error("ERR " + name + ": " + err[name]);
+									}
+									console.error("Error status code: " + err.statusCode);
+									console.log("Error sending message to server!" + err.stack || err.message || err);
+			// TODO: Display error.
+		*/
+								}
+							});
+							return false;
+				    	});
 
 
 						$('[data-component-id="subscribe"]', element).submit(function () {
@@ -45653,41 +45802,42 @@
 	  )
 	), 
 
-	React.createElement("div", {className: "modal fade", id: "contact-us-modal"}, 
-	  React.createElement("div", {className: "modal-dialog"}, 
-	    React.createElement("div", {className: "modal-content"}, 
-	      React.createElement("div", {className: "modal-header"}, 
-	        React.createElement("h3", {className: "modal-title"}, "Contact Us")
-	      ), 
-	      React.createElement("form", {action: "#", className: "form form-vertical contact-us-form"}, 
-	        React.createElement("div", {className: "modal-body"}, 
-	          React.createElement("div", {className: "form-group"}, 
-	            React.createElement("label", {for: "name-input"}, "Name"), 
-	            React.createElement("input", {type: "text", name: "name"})
-	          ), 
-	          React.createElement("div", {className: "form-group"}, 
-	            React.createElement("label", {for: "name-input"}, "Email"), 
-	            React.createElement("input", {type: "email", name: "email"})
-	          ), 
-	          React.createElement("div", {className: "form-group"}, 
-	            React.createElement("label", {for: "message-input"}, "Message"), 
-	            React.createElement("textarea", {rows: "6", type: "text", name: "message"})
-	          )
-	        ), 
-	        React.createElement("div", {className: "modal-footer"}, 
-	          React.createElement("button", {type: "button", className: "btn btn-default", "data-dismiss": "modal"}, "Close"), 
-	          React.createElement("button", {type: "submit", className: "btn btn-primary"}, "Submit")
-	        )
-	      )
-	    )
-	  )
-	), 
 
-	React.createElement("footer", {className: "footer"}, 
+	React.createElement("footer", {className: "footer", "data-component-id": "footer"}, 
 	  React.createElement("ul", {className: "nav footer-nav"}, 
 	    React.createElement("li", null, React.createElement("a", {href: "#", "data-toggle": "modal", "data-target": "#contact-us-modal"}, "Contact Us")), 
 	    React.createElement("li", null, React.createElement("a", {href: "https://www.goodybag.com/legal"}, "Terms of service")), 
 	    React.createElement("li", null, React.createElement("a", {href: "https://www.goodybag.com/privacy"}, "Privacy policy"))
+	  ), 
+
+	  React.createElement("div", {className: "modal fade", id: "contact-us-modal"}, 
+	    React.createElement("div", {className: "modal-dialog"}, 
+	      React.createElement("div", {className: "modal-content"}, 
+	        React.createElement("div", {className: "modal-header"}, 
+	          React.createElement("h3", {className: "modal-title"}, "Contact Us")
+	        ), 
+	        React.createElement("form", {action: "#", className: "form form-vertical contact-us-form", id: "contact-us-form"}, 
+	          React.createElement("div", {className: "modal-body"}, 
+	            React.createElement("div", {className: "form-group"}, 
+	              React.createElement("label", {for: "name-input"}, "Name"), 
+	              React.createElement("input", {type: "text", name: "name", "data-component-elm": "name"})
+	            ), 
+	            React.createElement("div", {className: "form-group"}, 
+	              React.createElement("label", {for: "name-input"}, "Email"), 
+	              React.createElement("input", {type: "email", name: "email", "data-component-elm": "email"})
+	            ), 
+	            React.createElement("div", {className: "form-group"}, 
+	              React.createElement("label", {for: "message-input"}, "Message"), 
+	              React.createElement("textarea", {rows: "6", type: "text", name: "message", "data-component-elm": "message"})
+	            )
+	          ), 
+	          React.createElement("div", {className: "modal-footer"}, 
+	            React.createElement("button", {type: "button", className: "btn btn-default", "data-dismiss": "modal"}, "Close"), 
+	            React.createElement("button", {type: "submit", className: "btn btn-primary"}, "Submit")
+	          )
+	        )
+	      )
+	    )
 	  )
 	)
 
@@ -45901,9 +46051,12 @@
 							});
 
 							if (
-								Context.selectedEvent &&
-								Context.selectedEvent.get("day_id") === Context.appContext.get('todayId') &&
-								parseInt(Context.selectedEvent.get("format.orderTimerSeconds") || 0)
+								Context.appContext.get("forceAllowOrder") ||
+								(
+									Context.selectedEvent &&
+									Context.selectedEvent.get("day_id") === Context.appContext.get('todayId') &&
+									parseInt(Context.selectedEvent.get("format.orderTimerSeconds") || 0)
+								)
 							) {
 								self.showViews(elm, [
 									"orderable"
@@ -46541,7 +46694,8 @@
 							"default"
 						]);
 
-						window.attachSkinApp();
+	// TODO: Enable this once phone number validation works.
+	//					window.attachSkinApp();
 					}
 				}),
 				"items": new Context.Template({
@@ -46674,8 +46828,8 @@
 								});
 							}
 
-							function finalizeOrder (order, paymentConfirmation) {
-								return order.addPaymentConfirmation(paymentConfirmation).then(function () {
+							function finalizeOrder (order, paymentToken) {
+								return order.addPaymentToken(paymentToken).then(function () {
 
 									return Context.appContext.get('stores').cart.clearAllItems();
 
@@ -46710,8 +46864,8 @@
 									}
 
 									return prepareOrder(Context.order).then(function (order) {
-										return chargeCard(order).then(function (paymentConfirmation) {
-											return finalizeOrder(order, paymentConfirmation);
+										return chargeCard(order).then(function (paymentToken) {
+											return finalizeOrder(order, paymentToken);
 										}).then(function () {
 											return redirect(order);
 										});
@@ -46754,7 +46908,10 @@
 
 			var Panel = null;
 
-			if (parseInt(Context.eventToday.get("format.orderTimerSeconds") || 0) <= 0) {
+			if (
+				!Context.appContext.get("forceAllowOrder") &&
+				parseInt(Context.eventToday.get("format.orderTimerSeconds") || 0) <= 0
+			) {
 
 				Panel = (
 					React.createElement(Context.templates.too_late.comp, null)
@@ -51481,7 +51638,8 @@
 			context: JSON.parse(decodeURIComponent($('head > meta[name="app.context"]').attr("value"))),
 		    selectedDay: MOMENT().format("ddd"),
 		    selectedDayId: MOMENT().format("YYYY-MM-DD"),
-		    windowOrigin: window.location.origin || (window.location.protocol + "//" + window.location.host)
+		    windowOrigin: window.location.origin || (window.location.protocol + "//" + window.location.host),
+		    forceAllowOrder: false
 		};
 
 		COMMON.API.UNDERSCORE.extend(config, overrides || {});
@@ -52759,7 +52917,8 @@
 		    today: COMMON.API.MOMENT().format("ddd"),
 		    windowOrigin: null,
 		    stores: null,
-		    skin: null
+		    skin: null,
+		    forceAllowOrder: false
 		};
 
 		Object.keys(overrides).forEach(function (name) {
@@ -52782,6 +52941,7 @@
 		        todayId: "string",
 		        lockedView: "string",
 		        windowOrigin: "string",
+		        forceAllowOrder: "boolean",
 	//		},
 	//	    session: {
 		        selectedView: "string",
@@ -60061,7 +60221,7 @@
 	});
 
 
-	var INCLUDE_PRIOR_WEEKEND = true;
+	var INCLUDE_PRIOR_WEEKEND = false;
 
 
 	var store = new Store();
@@ -61554,18 +61714,18 @@
 					});
 				}
 
-				order.addPaymentConfirmation = function (paymentConfirmation) {
+				order.addPaymentToken = function (paymentToken) {
 
 					return COMMON.API.Q.denodeify(function (callback) {
 
-						order.set("paymentConfirmation", JSON.stringify(paymentConfirmation));
+						order.set("paymentToken", JSON.stringify(paymentToken));
 
 						var payload = {
 							data: {
 								type: "orders",
 								id: order.get("id"),
 								attributes: {
-									"paymentConfirmation": order.get("paymentConfirmation")
+									"paymentToken": order.get("paymentToken")
 								}
 							}
 						};

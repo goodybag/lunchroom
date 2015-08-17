@@ -35,42 +35,42 @@
 </div>
 
       
-      <div class="modal fade" id="contact-us-modal" component:id="contact-us-modal">
-        <div class="modal-dialog">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h3 class="modal-title">Contact Us</h3>
-            </div>
-            <form action="#" class="form form-vertical contact-us-form">
-              <div class="modal-body">
-                <div class="form-group">
-                  <label for="name-input">Name</label>
-                  <input type="text" name="name">
-                </div>
-                <div class="form-group">
-                  <label for="name-input">Email</label>
-                  <input type="email" name="email">
-                </div>
-                <div class="form-group">
-                  <label for="message-input">Message</label>
-                  <textarea rows="6" type="text" name="message"></textarea>
-                </div>
-              </div>
-              <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                <button type="submit" class="btn btn-primary">Submit</button>
-              </div>
-            </form>
-          </div>
-        </div>
-      </div>
-
       <footer class="footer" component:id="footer">
         <ul class="nav footer-nav">
           <li><a href="#" data-toggle="modal" data-target="#contact-us-modal">Contact Us</a></li>
           <li><a href="https://www.goodybag.com/legal">Terms of service</a></li>
           <li><a href="https://www.goodybag.com/privacy">Privacy policy</a></li>
         </ul>
+
+        <div class="modal fade" id="contact-us-modal">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h3 class="modal-title">Contact Us</h3>
+              </div>
+              <form action="#" class="form form-vertical contact-us-form" id="contact-us-form">
+                <div class="modal-body">
+                  <div class="form-group">
+                    <label for="name-input">Name</label>
+                    <input type="text" name="name" component:elm="name">
+                  </div>
+                  <div class="form-group">
+                    <label for="name-input">Email</label>
+                    <input type="email" name="email" component:elm="email">
+                  </div>
+                  <div class="form-group">
+                    <label for="message-input">Message</label>
+                    <textarea rows="6" type="text" name="message" component:elm="message"></textarea>
+                  </div>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                  <button type="submit" class="btn btn-primary">Submit</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
       </footer>
     
     </div>

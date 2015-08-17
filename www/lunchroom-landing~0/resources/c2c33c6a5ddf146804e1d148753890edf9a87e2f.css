@@ -5280,6 +5280,10 @@ a:hover {
   margin-top: 24px;
 }
 
+.modal {
+  text-align: left;
+}
+
 .modal-backdrop.in {
   opacity: 0.6;
 }
