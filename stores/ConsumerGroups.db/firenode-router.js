@@ -12,42 +12,74 @@ exports['for'] = function (API) {
 	exports.processRequest = function (req, res, opts) {
 
 		var session = req._FireNodeContext.session;
+/*
+
 		if (
 			session &&
 			session.dbfilter &&
 			session.dbfilter.consumer_group_id
 		) {
 
-			if (!opts.arg) {
+//			if (!opts.arg) {
 				// Redirect to alias url for consumer group.
 
-				return DB.getKnex()('consumer-groups').where({
-					"id": session.dbfilter.consumer_group_id
-				}).select('alias').then(function (result) {
+			return DB.getKnex()('consumer-groups').where({
+				"id": session.dbfilter.consumer_group_id
+			}).select('alias', 'lunchroomLive').then(function (result) {
 
-					if (result.length === 0) {
-						// This should not happen but just in case.
-						req._FireNodeContext.resetSession();
-						req._FireNodeContext.addLayer({
-							config: {
-								externalRedirect: "/"
-							}
-						});
-						return false;
-					}
-
+				if (result.length === 0) {
+					// This should not happen but just in case.
+					req._FireNodeContext.resetSession();
 					req._FireNodeContext.addLayer({
 						config: {
-							externalRedirect: "/" + result[0].alias
+							externalRedirect: "/"
 						}
 					});
 					return false;
+				}
+
+console.log("result1b", result);
+
+				if (result[0].lunchroomLive) {
+
+					return DB.getKnex()('events').where({
+						"day_id": MOMENT().format("YYYY-MM-DD"),					
+					}).select('token').then(function (result2) {
+
+console.log("result2b", result2);
+
+						if (result2.length === 0) {
+
+							req._FireNodeContext.addLayer({
+								config: {
+									externalRedirect: "/" + result[0].alias
+								}
+							});
+
+							return false;
+						}
+
+						req._FireNodeContext.addLayer({
+							config: {
+								externalRedirect: "/event-" + result2[0].token
+							}
+						});
+						return false;
+					});
+				}
+
+				req._FireNodeContext.addLayer({
+					config: {
+						externalRedirect: "/" + result[0].alias
+					}
 				});
-			}
+				return false;
+			});
+//			}
 
 			return false;
 		}
-
+*/
 		if (!opts.arg) {
 
 			// Redirect to default consumer group.
@@ -74,13 +106,17 @@ exports['for'] = function (API) {
 				return false;
 			}
 
+console.log("result1a", result);
+
 			if (result[0].lunchroomLive) {
 
 				return DB.getKnex()('events').where({
 					"day_id": MOMENT().format("YYYY-MM-DD"),					
-				}).select('token').then(function (result) {
+				}).select('token').then(function (result2) {
 
-					if (result.length === 0) {
+console.log("result2a", result2);
+
+					if (result2.length === 0) {
 
 						req._FireNodeContext.addLayer({
 							session: {
@@ -95,7 +131,7 @@ exports['for'] = function (API) {
 
 					req._FireNodeContext.addLayer({
 						config: {
-							externalRedirect: "/event-" + result[0].token
+							externalRedirect: "/event-" + result2[0].token
 						}
 					});
 					return false;
