@@ -31,6 +31,7 @@ exports.forContext = function (context) {
 	        "consumerGroup.contact": "string",
 	        "consumerGroup.address": "string",
 	        "consumerGroup.pickupLocation": "string",
+	        "consumerGroup.deliverLocation": "string",
 	        "consumerGroup.orderTax": "string"
 	    },
 	    derived: {

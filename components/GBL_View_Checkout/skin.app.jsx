@@ -98,6 +98,9 @@ require("./component.jsx")['for'](module, {
 					this.showViews(element, [
 						"default"
 					]);
+
+// TODO: Enable this once phone number validation works.
+//					window.attachSkinApp();
 				}
 			}),
 			"items": new Context.Template({
@@ -230,8 +233,8 @@ require("./component.jsx")['for'](module, {
 							});
 						}
 
-						function finalizeOrder (order, paymentConfirmation) {
-							return order.addPaymentConfirmation(paymentConfirmation).then(function () {
+						function finalizeOrder (order, paymentToken) {
+							return order.addPaymentToken(paymentToken).then(function () {
 
 								return Context.appContext.get('stores').cart.clearAllItems();
 
@@ -266,8 +269,8 @@ require("./component.jsx")['for'](module, {
 								}
 
 								return prepareOrder(Context.order).then(function (order) {
-									return chargeCard(order).then(function (paymentConfirmation) {
-										return finalizeOrder(order, paymentConfirmation);
+									return chargeCard(order).then(function (paymentToken) {
+										return finalizeOrder(order, paymentToken);
 									}).then(function () {
 										return redirect(order);
 									});
@@ -310,7 +313,10 @@ require("./component.jsx")['for'](module, {
 
 		var Panel = null;
 
-		if (parseInt(Context.eventToday.get("format.orderTimerSeconds") || 0) <= 0) {
+		if (
+			!Context.appContext.get("forceAllowOrder") &&
+			parseInt(Context.eventToday.get("format.orderTimerSeconds") || 0) <= 0
+		) {
 
 			Panel = (
 				<Context.templates.too_late.comp />
@@ -337,7 +343,7 @@ require("./component.jsx")['for'](module, {
 	    }
 
 		return (
-        	<div className="page page-menu">
+        	<div className="page page-checkout">
 
 	        	{Context.components.Header}
 

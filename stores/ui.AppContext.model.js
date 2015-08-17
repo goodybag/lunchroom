@@ -20,7 +20,8 @@ exports.makeContextForClient = function (overrides) {
 	    today: COMMON.API.MOMENT().format("ddd"),
 	    windowOrigin: null,
 	    stores: null,
-	    skin: null
+	    skin: null,
+	    forceAllowOrder: false
 	};
 
 	Object.keys(overrides).forEach(function (name) {
@@ -43,6 +44,7 @@ exports.makeContextForClient = function (overrides) {
 	        todayId: "string",
 	        lockedView: "string",
 	        windowOrigin: "string",
+	        forceAllowOrder: "boolean",
 //		},
 //	    session: {
 	        selectedView: "string",

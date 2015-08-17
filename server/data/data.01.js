@@ -8,6 +8,7 @@ exports.seeds = {
       contact: "Gillian Lambert",
       address: "7901 Cameron Rd<br/>Bldg 2, Ste. 300<br/>Austin, TX 78754",
       pickupLocation: "in the Bazaarvoice Lobby",
+      deliverLocation: "Bazaarvoice Lobby",
       orderTax: "825"
     },
     "2": {
@@ -17,6 +18,7 @@ exports.seeds = {
       contact: "Big belly",
       address: "Somewhere<br/>accross the<br/>Rainbow",
       pickupLocation: "In the clouds",
+      deliverLocation: "The Clouds",
       orderTax: "825"
     },
     "3": {
@@ -26,6 +28,7 @@ exports.seeds = {
       contact: "Big stomach",
       address: "Right<br/>where it need<br/>to be",
       pickupLocation: "Hold out your hands and wiggle your nose",
+      deliverLocation: "Your Hands",
       orderTax: "825"
     },
     "4": {
@@ -35,6 +38,7 @@ exports.seeds = {
       contact: "Gillian Lambert",
       address: "7901 Cameron Rd<br/>Bldg 2, Ste. 300<br/>Austin, TX 78754",
       pickupLocation: "in the Bazaarvoice Lobby",
+      deliverLocation: "Bazaarvoice Lobby",
       orderTax: "825"
     }    
   }

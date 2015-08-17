@@ -187,6 +187,7 @@
                             "cater": {
                                 "host": "staging.goodybag.com"
                             },
+                            "stripeSecretKey": "sk_test_XksbwDuLK1xbpOFaSVLVf9qZ",
                             "clientContext": {
                                 "stripePublishableKey": "pk_test_9N1srz1fVmWGyRAAhmzAA7aP"                                
                             }
@@ -200,6 +201,7 @@
                             "cater": {
                                 "host": "staging.goodybag.com"
                             },
+                            "stripeSecretKey": "sk_test_XksbwDuLK1xbpOFaSVLVf9qZ",
                             "clientContext": {
                                 "stripePublishableKey": "pk_test_9N1srz1fVmWGyRAAhmzAA7aP"                                
                             }
@@ -213,6 +215,7 @@
                             "cater": {
                                 "host": "goodybag.com"
                             },
+                            "stripeSecretKey": "sk_live_kjAFUHK2tYc6BRHRyeMlZPON",
                             "clientContext": {
                                 "stripePublishableKey": "pk_live_kShOkv0NSx9Lj1qWGqxAXotN"                                
                             }
@@ -226,6 +229,7 @@
                             "cater": {
                                 "host": "goodybag.com"
                             },
+                            "stripeSecretKey": "sk_live_kjAFUHK2tYc6BRHRyeMlZPON",
                             "clientContext": {
                                 "stripePublishableKey": "pk_live_kShOkv0NSx9Lj1qWGqxAXotN"                                
                             }

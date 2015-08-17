@@ -380,18 +380,18 @@ console.log("TODO: trigger save of order info in local storage so nothing is los
 				});
 			}
 
-			order.addPaymentConfirmation = function (paymentConfirmation) {
+			order.addPaymentToken = function (paymentToken) {
 
 				return COMMON.API.Q.denodeify(function (callback) {
 
-					order.set("paymentConfirmation", JSON.stringify(paymentConfirmation));
+					order.set("paymentToken", JSON.stringify(paymentToken));
 
 					var payload = {
 						data: {
 							type: "orders",
 							id: order.get("id"),
 							attributes: {
-								"paymentConfirmation": order.get("paymentConfirmation")
+								"paymentToken": order.get("paymentToken")
 							}
 						}
 					};

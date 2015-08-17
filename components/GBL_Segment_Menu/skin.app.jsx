@@ -50,7 +50,7 @@ require("./component.jsx")['for'](module, {
 			data['deliveryTime'] = event.get("format.deliveryTime");
 			data['timeLeftToOrder'] = event.get("format.orderTimer") || "Too late for today!";
 			data['secondsLeftToOrder'] = parseInt(event.get("format.orderTimerSeconds") || 0);
-			data['deliverTo'] = event.get("consumerGroup.title");
+			data['deliverTo'] = event.get("consumerGroup.deliverLocation");
 			data['cartItemCount'] = Context.cartItemCount;
 			data['day_id'] = event.get("day_id");
 		}
@@ -111,10 +111,13 @@ require("./component.jsx")['for'](module, {
 					});
 			    });
 
+
+			    var views = [];
+		    	if (Context.appContext.get("forceAllowOrder")) {
+		    		views.push("not-on-checkout");
+		    	}
 			    if (data['day_id']) {
-			    	var views = [
-				    	"menuAvailable"
-			    	];
+			    	views.push("menuAvailable");
 			    	if (
 			    		data['day_id'] === Context.appContext.get('todayId')
 			    	) {
@@ -128,7 +131,7 @@ require("./component.jsx")['for'](module, {
 			    	}
 					self.showViews(element, views);
 			    } else {
-					self.showViews(element, []);
+					self.showViews(element, views);
 			    }
 
 			    if (

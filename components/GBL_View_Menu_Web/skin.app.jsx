@@ -174,9 +174,12 @@ require("./component.jsx")['for'](module, {
 						});
 
 						if (
-							Context.selectedEvent &&
-							Context.selectedEvent.get("day_id") === Context.appContext.get('todayId') &&
-							parseInt(Context.selectedEvent.get("format.orderTimerSeconds") || 0)
+							Context.appContext.get("forceAllowOrder") ||
+							(
+								Context.selectedEvent &&
+								Context.selectedEvent.get("day_id") === Context.appContext.get('todayId') &&
+								parseInt(Context.selectedEvent.get("format.orderTimerSeconds") || 0)
+							)
 						) {
 							self.showViews(elm, [
 								"orderable"

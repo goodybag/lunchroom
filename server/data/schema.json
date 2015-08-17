@@ -41,6 +41,12 @@
 					}
 				},
 				{
+					"name": "deliverLocation",
+					"constraints": {
+						"required": true
+					}
+				},
+				{
 					"name": "orderTax",
 					"constraints": {
 						"required": true
@@ -391,7 +397,10 @@
 					}
 				},
 				{
-					"name": "paymentConfirmation"
+					"name": "paymentToken"
+				},
+				{
+					"name": "paymentCharge"
 				}
 			]
 		},

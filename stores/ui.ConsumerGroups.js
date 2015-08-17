@@ -145,6 +145,7 @@ exports['for'] = function (context) {
 	        contact: "string",
 	        address: "string",
 	        pickupLocation: "string",
+	        deliverLocation: "string",
 	        orderTax: "string",
 	        lunchroomLive: "string"
 		},

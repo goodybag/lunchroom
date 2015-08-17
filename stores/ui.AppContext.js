@@ -16,7 +16,8 @@ exports['for'] = function (overrides) {
 		context: JSON.parse(decodeURIComponent($('head > meta[name="app.context"]').attr("value"))),
 	    selectedDay: MOMENT().format("ddd"),
 	    selectedDayId: MOMENT().format("YYYY-MM-DD"),
-	    windowOrigin: window.location.origin || (window.location.protocol + "//" + window.location.host)
+	    windowOrigin: window.location.origin || (window.location.protocol + "//" + window.location.host),
+	    forceAllowOrder: true
 	};
 
 	COMMON.API.UNDERSCORE.extend(config, overrides || {});

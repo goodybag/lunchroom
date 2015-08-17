@@ -4,8 +4,11 @@ var API = require("../../server/db/api.endpoints");
 var ENDPOINTS = require('endpoints');
 var EXTEND = require("extend");
 var UUID = require("uuid");
+var Q = require("q");
+var STRIPE = require("stripe");
 
 var SERVICES = require("../../server/services");
+var DB = require("../../server/db/bookshelf.knex.postgresql");
 
 
 var store = EXTEND(false, {}, ENDPOINTS.Store.bookshelf);
@@ -32,7 +35,7 @@ store.update = function (model, params, request) {
 
 			try {
 
-				if (resp.attributes['paymentConfirmation']) {
+				if (resp.attributes['paymentToken']) {
 
 					var form = JSON.parse(resp.attributes.form);
 
@@ -86,14 +89,15 @@ store.update = function (model, params, request) {
 					  deliveryStartTime: Sat Aug 15 2015 20:45:00 GMT-0700 (PDT),
 					  deliveryEndTime: null,
 					  pickupEndTime: Sat Aug 15 2015 21:00:00 GMT-0700 (PDT),
-					  paymentConfirmation: '{"id":"tok_16aGc8EQiCMC2eZ7PcmdwrMq","livemode":false,"created":1439691072,"used":false,"object":"token","type":"card","card":{"id":"card_16aGc8EQiCMC2eZ7UwGZATAD","object":"card","last4":"4242","brand":"Visa","funding":"credit","exp_month":12,"exp_year":2016,"country":"US","name":"Bill Smith","address_line1":null,"address_line2":null,"address_city":null,"address_state":null,"address_zip":null,"address_country":null,"cvc_check":"unchecked","address_line1_check":null,"address_zip_check":null,"tokenization_method":null,"dynamic_last4":null,"metadata":{}},"client_ip":"192.200.148.4"}',
+					  paymentToken: '{"id":"tok_16aGc8EQiCMC2eZ7PcmdwrMq","livemode":false,"created":1439691072,"used":false,"object":"token","type":"card","card":{"id":"card_16aGc8EQiCMC2eZ7UwGZATAD","object":"card","last4":"4242","brand":"Visa","funding":"credit","exp_month":12,"exp_year":2016,"country":"US","name":"Bill Smith","address_line1":null,"address_line2":null,"address_city":null,"address_state":null,"address_zip":null,"address_country":null,"cvc_check":"unchecked","address_line1_check":null,"address_zip_check":null,"tokenization_method":null,"dynamic_last4":null,"metadata":{}},"client_ip":"192.200.148.4"}',
 					  summary: '{"amount":799,"format.amount":"$7.99","tax":10,"taxAmount":79.9,"format.tax":"10%","format.taxAmount":"$0.80","goodybagFee":299,"format.goodybagFee":"$2.99","total":1178,"format.total":"$11.78"}',
 					  event_id: '79'
 					}
 					*/
 //console.log("resp.attributes", resp.attributes);
 
-					var paymentConfirmation = JSON.parse(resp.attributes.paymentConfirmation);
+					var referenceCode = resp.attributes.orderHashId.substring(0, 7).toUpperCase();
+					var paymentToken = JSON.parse(resp.attributes.paymentToken);
 					var vendor_id = parseInt(resp.attributes.vendor_ids);
 					if (!vendor_id) {
 						// TODO: Look at items and split up order for different vendors.
@@ -101,6 +105,35 @@ store.update = function (model, params, request) {
 					}
 					var summary = JSON.parse(resp.attributes.summary);
 
+
+					Q.denodeify(function (callback) {
+						var stripe = STRIPE(request._FireNodeContext.config.stripeSecretKey);
+						var payload = {
+							amount: summary.amount,
+							currency: "usd",
+							metadata: {
+								orderHashId: resp.attributes.orderHashId,
+								email: form["info[email]"]
+							},
+							capture: true,
+							source: paymentToken.id,
+							description: "Lunchroom charge for order '" + referenceCode + "'"
+						};
+						console.log("Posting to stripe:", JSON.stringify(payload, null, 4));
+						stripe.charges.create(payload, function (err, paymentCharge) {
+							if (err) return callback(err);
+
+							return DB.getKnex()('orders').update({
+								paymentCharge: JSON.stringify(paymentCharge)
+							}).where("id", resp.attributes.id);
+						});
+					})().fail(function (err) {
+
+// TODO: Repeat on non-fatal error.
+						console.error("Error charging card:", err.stack);
+					});
+
+/*
 					SERVICES.cater.sendPayment({
 		                // Goodybag Restaurant ID whose account will be credited
 		                restaurant_id: vendor_id,
@@ -108,7 +141,7 @@ store.update = function (model, params, request) {
 // TODO: Use this once we create customer records.
 		                customer: "",
 		                // Stripe Credit Card Object/Identifier
-		                source: paymentConfirmation.card.id,
+		                source: paymentToken.card.id,
 		                // Amount to be charged in cents before Tax and optional service_fee
 		                amount: summary.amount,
 		                // Amount in cents on top of base `amount` - all funds go to Goodybag account
@@ -122,7 +155,7 @@ store.update = function (model, params, request) {
 					}, request).fail(function (err) {
 						console.error("Error sending receipt:", err.stack);
 					});
-
+*/
 				}
 
 			} catch (err) {
