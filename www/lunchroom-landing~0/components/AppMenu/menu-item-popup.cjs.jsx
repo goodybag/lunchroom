@@ -5,9 +5,12 @@ module.exports = function (Context) {
     <div className="modal item-modal fade" id="item-modal">
 
   <div className="modal-dialog">
+    <div className="close">
+      <span data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></span>
+    </div>
     <div className="modal-content">
       <div className="modal-photo-wrapper">
-        <img className="modal-photo" src="https://www.filepicker.io/api/file/SZoK9zUvTPWXzmK81aGg/convert?w=430&amp;h=400&amp;fit=crop" data-component-prop="photoUrl" data-component-prop-target="src"/>
+        <img className="modal-photo" src="https://www.filepicker.io/api/file/SZoK9zUvTPWXzmK81aGg/convert?w=430&amp;h=400&amp;fit=crop" data-component-prop="modalPhotoUrl" data-component-prop-target="src"/>
       </div>
       <div className="modal-main-content">
         <div className="modal-main-content-body">
