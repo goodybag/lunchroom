@@ -419,25 +419,25 @@
 		if (skin === "app") {
 			return __webpack_require__(126);
 		} else {
-			return __webpack_require__(167);
+			return __webpack_require__(168);
 		}
 	}
 
 	function initAppContext (skin) {
 		var storeContext = {};
-		var appContext = __webpack_require__(209)['for']({
+		var appContext = __webpack_require__(210)['for']({
 			stores: {
-				days: __webpack_require__(266)['for'](storeContext),
+				days: __webpack_require__(267)['for'](storeContext),
 				events: __webpack_require__(7)['for'](storeContext),
-				items: __webpack_require__(267)['for'](storeContext),
-				vendors: __webpack_require__(268)['for'](storeContext),
-				menus: __webpack_require__(269)['for'](storeContext),
-				consumers: __webpack_require__(270)['for'](storeContext),
+				items: __webpack_require__(268)['for'](storeContext),
+				vendors: __webpack_require__(269)['for'](storeContext),
+				menus: __webpack_require__(270)['for'](storeContext),
+				consumers: __webpack_require__(271)['for'](storeContext),
 				consumerGroups: __webpack_require__(114)['for'](storeContext),
-				consumerGroupSubscriptions: __webpack_require__(271)['for'](storeContext),
-				cart: __webpack_require__(272)['for'](storeContext),
-				orders: __webpack_require__(273)['for'](storeContext),
-				orderStatus: __webpack_require__(274)['for'](storeContext)
+				consumerGroupSubscriptions: __webpack_require__(272)['for'](storeContext),
+				cart: __webpack_require__(273)['for'](storeContext),
+				orders: __webpack_require__(274)['for'](storeContext),
+				orderStatus: __webpack_require__(275)['for'](storeContext)
 			},
 			skin: skin
 			// TODO: Inject config
@@ -20322,6 +20322,7 @@
 		        "consumerGroup.contact": "string",
 		        "consumerGroup.address": "string",
 		        "consumerGroup.pickupLocation": "string",
+		        "consumerGroup.deliverLocation": "string",
 		        "consumerGroup.orderTax": "string"
 		    },
 		    derived: {
@@ -20622,6 +20623,7 @@
 		        contact: "string",
 		        address: "string",
 		        pickupLocation: "string",
+		        deliverLocation: "string",
 		        orderTax: "string",
 		        lunchroomLive: "string"
 			},
@@ -44139,17 +44141,17 @@
 			"components": WEB_COMPONENTS
 		},
 		"Checkout": {
-			"component": __webpack_require__(154),
+			"component": __webpack_require__(155),
 			"config": {},
 			"components": WEB_COMPONENTS
 		},
 		"Order_Placed": {
-			"component": __webpack_require__(162),
+			"component": __webpack_require__(163),
 			"config": {},
 			"components": WEB_COMPONENTS
 		},
 		"Receipt": {
-			"component": __webpack_require__(165),
+			"component": __webpack_require__(166),
 			"config": {}
 		}
 	};
@@ -45012,7 +45014,7 @@
 				data['deliveryTime'] = event.get("format.deliveryTime");
 				data['timeLeftToOrder'] = event.get("format.orderTimer") || "Too late for today!";
 				data['secondsLeftToOrder'] = parseInt(event.get("format.orderTimerSeconds") || 0);
-				data['deliverTo'] = event.get("consumerGroup.title");
+				data['deliverTo'] = event.get("consumerGroup.deliverLocation");
 				data['cartItemCount'] = Context.cartItemCount;
 				data['day_id'] = event.get("day_id");
 			}
@@ -45724,12 +45726,12 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(module) {/** @jsx React.DOM */
-	__webpack_require__(149)['for'](module, {
+	__webpack_require__(148)['for'](module, {
 
 		getTemplates: function (Context) {
 			return {
 				"menu_signup": new Context.Template({
-					impl: __webpack_require__(150),
+					impl: __webpack_require__(149),
 					markup: function (element) {
 
 						$('[data-component-elm="signupButton"]', element).click(function () {
@@ -45761,7 +45763,7 @@
 					}
 				}),
 				"feedback": new Context.Template({
-					impl: __webpack_require__(278),
+					impl: __webpack_require__(150),
 					markup: function (element) {
 					},
 					fill: function (element, data, Context) {
@@ -45779,14 +45781,14 @@
 					}
 				}),
 				"menu_not_created": new Context.Template({
-					impl: __webpack_require__(148),
+					impl: __webpack_require__(152),
 					markup: function (element) {
 					},
 					fill: function (element, data, Context) {
 					}
 				}),
 				"popup": new Context.Template({
-					impl: __webpack_require__(152),
+					impl: __webpack_require__(153),
 					markup: function (element) {
 						var self = this;
 
@@ -45819,7 +45821,7 @@
 					}
 				}),
 				"menu": new Context.Template({
-					impl: __webpack_require__(153),
+					impl: __webpack_require__(154),
 					markup: function (element) {
 						this.liftSections(element);
 					},
@@ -46007,26 +46009,6 @@
 
 /***/ },
 /* 148 */
-/***/ function(module, exports) {
-
-	/** @jsx React.DOM */module.exports = function (Context) {
-	  // TODO: Remove this once we can inject 'React' automatically at build time.
-	  var React = Context.REACT;
-	  return (
-	    React.createElement("div", {className: "container"}, 
-
-	  React.createElement("div", {className: "warning-section", "data-component-id": "warning-section"}, 
-	    React.createElement("img", {src: "/lunchroom-landing~0/resources/assets/img~cupcake-shocked-2-4bc6fb3.png", alt: "", className: "warning-section-supporting-graphic"}), 
-	    React.createElement("h2", {className: "warning-section-header"}, "This menu has not been created yet!"), 
-	    React.createElement("p", null, "Either this is an error with Goodybag, or the menu hasn't been created yet. Please check again later.")
-	  )
-
-	    )
-	  );
-	}
-
-/***/ },
-/* 149 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
@@ -46136,7 +46118,7 @@
 
 
 /***/ },
-/* 150 */
+/* 149 */
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM */module.exports = function (Context) {
@@ -46170,6 +46152,22 @@
 	}
 
 /***/ },
+/* 150 */
+/***/ function(module, exports) {
+
+	/** @jsx React.DOM */module.exports = function (Context) {
+	  // TODO: Remove this once we can inject 'React' automatically at build time.
+	  var React = Context.REACT;
+	  return (
+	    React.createElement("div", {className: "container outro-header-section"}, 
+
+	  React.createElement("h3", {className: "outro-header"}, "To give feedback or ask questions, please email us at ", React.createElement("a", {href: "mailto:support@goodybag.com"}, "support@goodybag.com"))
+
+	    )
+	  );
+	}
+
+/***/ },
 /* 151 */
 /***/ function(module, exports) {
 
@@ -46191,6 +46189,26 @@
 
 /***/ },
 /* 152 */
+/***/ function(module, exports) {
+
+	/** @jsx React.DOM */module.exports = function (Context) {
+	  // TODO: Remove this once we can inject 'React' automatically at build time.
+	  var React = Context.REACT;
+	  return (
+	    React.createElement("div", {className: "container"}, 
+
+	  React.createElement("div", {className: "warning-section", "data-component-id": "warning-section"}, 
+	    React.createElement("img", {src: "/lunchroom-landing~0/resources/assets/img~cupcake-shocked-2-4bc6fb3.png", alt: "", className: "warning-section-supporting-graphic"}), 
+	    React.createElement("h2", {className: "warning-section-header"}, "This menu has not been created yet!"), 
+	    React.createElement("p", null, "Either this is an error with Goodybag, or the menu hasn't been created yet. Please check again later.")
+	  )
+
+	    )
+	  );
+	}
+
+/***/ },
+/* 153 */
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM */module.exports = function (Context) {
@@ -46230,7 +46248,7 @@
 	}
 
 /***/ },
-/* 153 */
+/* 154 */
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM */module.exports = function (Context) {
@@ -46419,11 +46437,11 @@
 	}
 
 /***/ },
-/* 154 */
+/* 155 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(module) {/** @jsx React.DOM */
-	__webpack_require__(155)['for'](module, {
+	__webpack_require__(156)['for'](module, {
 
 		singleton: function (Context) {
 
@@ -46443,7 +46461,7 @@
 
 			return {			
 				"too_late": new Context.Template({
-					impl: __webpack_require__(156),
+					impl: __webpack_require__(157),
 					markup: function (element) {
 					},
 					fill: function (element, data, Context) {
@@ -46454,18 +46472,6 @@
 					}
 				}),
 				"no_items": new Context.Template({
-					impl: __webpack_require__(157),
-					markup: function (element) {
-
-						$('[data-component-elm="addItemsLink"]', element).click(function () {
-							Context.appContext.set('selectedView', "Menu_Web");
-							return false;
-						});
-					},
-					fill: function (element, data, Context) {
-					}
-				}),
-				"navbar": new Context.Template({
 					impl: __webpack_require__(158),
 					markup: function (element) {
 
@@ -46477,8 +46483,20 @@
 					fill: function (element, data, Context) {
 					}
 				}),
-				"form": new Context.Template({
+				"navbar": new Context.Template({
 					impl: __webpack_require__(159),
+					markup: function (element) {
+
+						$('[data-component-elm="addItemsLink"]', element).click(function () {
+							Context.appContext.set('selectedView', "Menu_Web");
+							return false;
+						});
+					},
+					fill: function (element, data, Context) {
+					}
+				}),
+				"form": new Context.Template({
+					impl: __webpack_require__(160),
 					markup: function (element) {
 
 						this.liftSections(element);
@@ -46522,10 +46540,12 @@
 						this.showViews(element, [
 							"default"
 						]);
+
+						window.attachSkinApp();
 					}
 				}),
 				"items": new Context.Template({
-					impl: __webpack_require__(160),
+					impl: __webpack_require__(161),
 					markup: function (element) {
 
 						this.liftSections(element);
@@ -46561,7 +46581,7 @@
 					}
 				}),
 				"summary": new Context.Template({
-					impl: __webpack_require__(161),
+					impl: __webpack_require__(162),
 					markup: function (element) {
 
 						$('[data-component-elm="placeOrderButton"]', element).click(function () {
@@ -46761,7 +46781,7 @@
 		    }
 
 			return (
-	        	React.createElement("div", {className: "page page-menu"}, 
+	        	React.createElement("div", {className: "page page-checkout"}, 
 
 		        	Context.components.Header, 
 
@@ -46779,7 +46799,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(18)(module)))
 
 /***/ },
-/* 155 */
+/* 156 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
@@ -46842,7 +46862,7 @@
 
 
 /***/ },
-/* 156 */
+/* 157 */
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM */module.exports = function (Context) {
@@ -46862,7 +46882,7 @@
 	}
 
 /***/ },
-/* 157 */
+/* 158 */
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM */module.exports = function (Context) {
@@ -46882,7 +46902,7 @@
 	}
 
 /***/ },
-/* 158 */
+/* 159 */
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM */module.exports = function (Context) {
@@ -46902,7 +46922,7 @@
 	}
 
 /***/ },
-/* 159 */
+/* 160 */
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM */module.exports = function (Context) {
@@ -46966,7 +46986,7 @@
 	}
 
 /***/ },
-/* 160 */
+/* 161 */
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM */module.exports = function (Context) {
@@ -47031,7 +47051,7 @@
 	}
 
 /***/ },
-/* 161 */
+/* 162 */
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM */module.exports = function (Context) {
@@ -47067,17 +47087,17 @@
 	}
 
 /***/ },
-/* 162 */
+/* 163 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(module) {/** @jsx React.DOM */
-	__webpack_require__(163)['for'](module, {
+	__webpack_require__(164)['for'](module, {
 
 		getTemplates: function (Context) {
 
 			return {
 				"orderPlaced": new Context.Template({
-					impl: __webpack_require__(164),
+					impl: __webpack_require__(165),
 					markup: function (element) {
 
 					},
@@ -47118,7 +47138,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(18)(module)))
 
 /***/ },
-/* 163 */
+/* 164 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
@@ -47169,7 +47189,7 @@
 
 
 /***/ },
-/* 164 */
+/* 165 */
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM */module.exports = function (Context) {
@@ -47197,11 +47217,11 @@
 	}
 
 /***/ },
-/* 165 */
+/* 166 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(module) {/** @jsx React.DOM */
-	__webpack_require__(166)['for'](module, {
+	__webpack_require__(167)['for'](module, {
 		getHTML: function (Context) {
 
 			// TODO: Remove this once we can inject 'React' automatically at build time.
@@ -47216,7 +47236,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(18)(module)))
 
 /***/ },
-/* 166 */
+/* 167 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
@@ -47274,164 +47294,164 @@
 
 
 /***/ },
-/* 167 */
+/* 168 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
 	var WEB_COMPONENTS = {
-		"Header": __webpack_require__(168),
-		"Menu": __webpack_require__(169),
-		"Footer": __webpack_require__(170)
+		"Header": __webpack_require__(169),
+		"Menu": __webpack_require__(170),
+		"Footer": __webpack_require__(171)
 	};
 
 	var EMAIL_COMPONENTS = {
 		CORRESPONDENCE: {
-			"Header": __webpack_require__(171),
-			"Footer": __webpack_require__(174)
+			"Header": __webpack_require__(172),
+			"Footer": __webpack_require__(175)
 		},
 		LIST: {
-			"Header": __webpack_require__(175),
-			"Footer": __webpack_require__(178)
+			"Header": __webpack_require__(176),
+			"Footer": __webpack_require__(179)
 		}
 	};
 
 
-	exports.RootView = __webpack_require__(179);
+	exports.RootView = __webpack_require__(180);
 
 	exports.views = {
 		"Landing": {
-			"component": __webpack_require__(180),
+			"component": __webpack_require__(181),
 			"config": {}
 		},
 		"Menu_Email": {
-			"component": __webpack_require__(181),
+			"component": __webpack_require__(182),
 			"config": {},
 			"components": EMAIL_COMPONENTS.LIST
 		},
 		"Menu_Web": {
-			"component": __webpack_require__(182),
-			"config": {},
-			"components": WEB_COMPONENTS
-		},
-		"Checkout": {
 			"component": __webpack_require__(183),
 			"config": {},
 			"components": WEB_COMPONENTS
 		},
-		"Order_Placed": {
+		"Checkout": {
 			"component": __webpack_require__(184),
 			"config": {},
 			"components": WEB_COMPONENTS
 		},
-		"Receipt": {
+		"Order_Placed": {
 			"component": __webpack_require__(185),
+			"config": {},
+			"components": WEB_COMPONENTS
+		},
+		"Receipt": {
+			"component": __webpack_require__(186),
 			"config": {},
 			"components": EMAIL_COMPONENTS.CORRESPONDENCE
 		},
 		"Order_Arrived": {
-			"component": __webpack_require__(186),
+			"component": __webpack_require__(187),
 			"config": {},
 			"components": WEB_COMPONENTS.CORRESPONDENCE
 		},
 		"ContactUs": {
-			"component": __webpack_require__(188),
+			"component": __webpack_require__(189),
 			"config": {},
 			"components": WEB_COMPONENTS
 		},
 		"PrivacyPolicy": {
-			"component": __webpack_require__(190),
+			"component": __webpack_require__(191),
 			"config": {},
 			"components": WEB_COMPONENTS
 		},
 		"TermsOfService": {
-			"component": __webpack_require__(192),
+			"component": __webpack_require__(193),
 			"config": {},
 			"components": WEB_COMPONENTS
 		},
 		"Admin_Events": {
 			"group": "admin",
 			"container": "iframe",
-			"component": __webpack_require__(194),
+			"component": __webpack_require__(195),
 			"config": {}
 		},
 		"Admin_Orders": {
 			"group": "admin",
 			"container": "iframe",
-			"component": __webpack_require__(195),
+			"component": __webpack_require__(196),
 			"config": {}
 		},
 		"Admin_Restaurant": {
 			"group": "admin",
 			"container": "iframe",
-			"component": __webpack_require__(196),
+			"component": __webpack_require__(197),
 			"config": {}
 		},
 		"Admin_Company": {
 			"group": "admin",
 			"container": "iframe",
-			"component": __webpack_require__(197),
+			"component": __webpack_require__(198),
 			"config": {}
 		},	
 		"Model_Days": {
 			"group": "model",
-			"component": __webpack_require__(198),
+			"component": __webpack_require__(199),
 			"config": {}
 		},
 		"Model_Events": {
 			"group": "model",
-			"component": __webpack_require__(199),
+			"component": __webpack_require__(200),
 			"config": {}
 		},
 		"Model_Vendors": {
 			"group": "model",
-			"component": __webpack_require__(200),
+			"component": __webpack_require__(201),
 			"config": {}
 		},
 		"Model_Items": {
 			"group": "model",
-			"component": __webpack_require__(201),
+			"component": __webpack_require__(202),
 			"config": {}
 		},
 		"Model_Menus": {
 			"group": "model",
-			"component": __webpack_require__(202),
+			"component": __webpack_require__(203),
 			"config": {}
 		},
 		"Model_ConsumerGroups": {
 			"group": "model",
-			"component": __webpack_require__(203),
+			"component": __webpack_require__(204),
 			"config": {}
 		},
 		"Model_Consumers": {
 			"group": "model",
-			"component": __webpack_require__(204),
+			"component": __webpack_require__(205),
 			"config": {}
 		},
 		"Model_ConsumerGroupSubscriptions": {
 			"group": "model",
-			"component": __webpack_require__(205),
+			"component": __webpack_require__(206),
 			"config": {}
 		},
 		"Model_Cart": {
 			"group": "model",
-			"component": __webpack_require__(206),
+			"component": __webpack_require__(207),
 			"config": {}
 		},
 		"Model_Orders": {
 			"group": "model",
-			"component": __webpack_require__(207),
+			"component": __webpack_require__(208),
 			"config": {}
 		},
 		"Model_OrderStatus": {
 			"group": "model",
-			"component": __webpack_require__(208),
+			"component": __webpack_require__(209),
 			"config": {}
 		}
 	};
 
 
 /***/ },
-/* 168 */
+/* 169 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(module) {/** @jsx React.DOM */
@@ -47454,7 +47474,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(18)(module)))
 
 /***/ },
-/* 169 */
+/* 170 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(module) {/** @jsx React.DOM */
@@ -47604,7 +47624,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(18)(module)))
 
 /***/ },
-/* 170 */
+/* 171 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(module) {/** @jsx React.DOM */
@@ -47629,18 +47649,18 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(18)(module)))
 
 /***/ },
-/* 171 */
-[276, 172],
 /* 172 */
 [277, 173],
 /* 173 */
+[278, 174],
+/* 174 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(4)();
 	exports.push([module.id, "", ""]);
 
 /***/ },
-/* 174 */
+/* 175 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
@@ -47661,18 +47681,18 @@
 
 
 /***/ },
-/* 175 */
-[276, 176],
 /* 176 */
 [277, 177],
 /* 177 */
+[278, 178],
+/* 178 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(4)();
 	exports.push([module.id, "\n.ui.basic.table.GBL_Skin_invisibleTable td {\n\tborder-top: 0px !important;\n}\n.ui.basic.table.GBL_Skin_lessPadding td {\n\tpadding-top: 3px;\n\tpadding-bottom: 3px;\n}\n\n.ui.table tr.GBL_Skin_invisibleRowBorder td {\n\tborder-top: 0px !important;\n}\n.ui.table tr.GBL_Skin_lessPadding td {\n\tpadding-top: 3px !important;\n\tpadding-bottom: 3px !important;\n}\n", ""]);
 
 /***/ },
-/* 178 */
+/* 179 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
@@ -47699,7 +47719,7 @@
 
 
 /***/ },
-/* 179 */
+/* 180 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(module) {/** @jsx React.DOM */
@@ -47841,7 +47861,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(18)(module)))
 
 /***/ },
-/* 180 */
+/* 181 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(module) {/** @jsx React.DOM */
@@ -48178,7 +48198,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(18)(module)))
 
 /***/ },
-/* 181 */
+/* 182 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(module) {/** @jsx React.DOM */
@@ -48298,11 +48318,11 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(18)(module)))
 
 /***/ },
-/* 182 */
+/* 183 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(module) {/** @jsx React.DOM */
-	__webpack_require__(149)['for'](module, {
+	__webpack_require__(148)['for'](module, {
 		afterRender: function (Context, element) {
 
 			$('.tab', element).removeClass('active');
@@ -48539,11 +48559,11 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(18)(module)))
 
 /***/ },
-/* 183 */
+/* 184 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(module) {/** @jsx React.DOM */
-	__webpack_require__(155)['for'](module, {
+	__webpack_require__(156)['for'](module, {
 
 		afterRender: function (Context, element) {
 
@@ -48879,11 +48899,11 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(18)(module)))
 
 /***/ },
-/* 184 */
+/* 185 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(module) {/** @jsx React.DOM */
-	__webpack_require__(163)['for'](module, {
+	__webpack_require__(164)['for'](module, {
 
 		afterRender: function (Context, element) {
 		},
@@ -48959,11 +48979,11 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(18)(module)))
 
 /***/ },
-/* 185 */
+/* 186 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(module) {/** @jsx React.DOM */
-	__webpack_require__(166)['for'](module, {
+	__webpack_require__(167)['for'](module, {
 
 		afterRender: function (Context, element) {
 		},
@@ -49111,11 +49131,11 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(18)(module)))
 
 /***/ },
-/* 186 */
+/* 187 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(module) {/** @jsx React.DOM */
-	__webpack_require__(187)['for'](module, {
+	__webpack_require__(188)['for'](module, {
 
 		afterRender: function (Context, element) {
 		},
@@ -49172,7 +49192,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(18)(module)))
 
 /***/ },
-/* 187 */
+/* 188 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
@@ -49216,11 +49236,11 @@
 
 
 /***/ },
-/* 188 */
+/* 189 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(module) {/** @jsx React.DOM */
-	__webpack_require__(189)['for'](module, {
+	__webpack_require__(190)['for'](module, {
 
 		afterRender: function (Context, element) {
 			var self = this;
@@ -49352,7 +49372,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(18)(module)))
 
 /***/ },
-/* 189 */
+/* 190 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
@@ -49376,11 +49396,11 @@
 
 
 /***/ },
-/* 190 */
+/* 191 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(module) {/** @jsx React.DOM */
-	__webpack_require__(191)['for'](module, {
+	__webpack_require__(192)['for'](module, {
 
 		getHTML: function (Context) {
 
@@ -49447,7 +49467,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(18)(module)))
 
 /***/ },
-/* 191 */
+/* 192 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
@@ -49471,11 +49491,11 @@
 
 
 /***/ },
-/* 192 */
+/* 193 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(module) {/** @jsx React.DOM */
-	__webpack_require__(193)['for'](module, {
+	__webpack_require__(194)['for'](module, {
 
 		getHTML: function (Context) {
 
@@ -49549,7 +49569,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(18)(module)))
 
 /***/ },
-/* 193 */
+/* 194 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
@@ -49573,7 +49593,7 @@
 
 
 /***/ },
-/* 194 */
+/* 195 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM *//** @jsx React.DOM */
@@ -50195,7 +50215,7 @@
 
 
 /***/ },
-/* 195 */
+/* 196 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM *//** @jsx React.DOM */
@@ -50331,7 +50351,7 @@
 
 
 /***/ },
-/* 196 */
+/* 197 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM *//** @jsx React.DOM */
@@ -50622,7 +50642,7 @@
 
 
 /***/ },
-/* 197 */
+/* 198 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM *//** @jsx React.DOM */
@@ -50749,7 +50769,7 @@
 
 
 /***/ },
-/* 198 */
+/* 199 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM *//** @jsx React.DOM */
@@ -50795,7 +50815,7 @@
 
 
 /***/ },
-/* 199 */
+/* 200 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM *//** @jsx React.DOM */
@@ -50850,7 +50870,7 @@
 
 
 /***/ },
-/* 200 */
+/* 201 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM *//** @jsx React.DOM */
@@ -50893,7 +50913,7 @@
 
 
 /***/ },
-/* 201 */
+/* 202 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
@@ -50962,7 +50982,7 @@
 
 
 /***/ },
-/* 202 */
+/* 203 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM *//** @jsx React.DOM */
@@ -51129,7 +51149,7 @@
 
 
 /***/ },
-/* 203 */
+/* 204 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM *//** @jsx React.DOM */
@@ -51172,7 +51192,7 @@
 
 
 /***/ },
-/* 204 */
+/* 205 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM *//** @jsx React.DOM */
@@ -51215,7 +51235,7 @@
 
 
 /***/ },
-/* 205 */
+/* 206 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
@@ -51290,7 +51310,7 @@
 
 
 /***/ },
-/* 206 */
+/* 207 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM *//** @jsx React.DOM */
@@ -51348,7 +51368,7 @@
 
 
 /***/ },
-/* 207 */
+/* 208 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM *//** @jsx React.DOM */
@@ -51397,7 +51417,7 @@
 
 
 /***/ },
-/* 208 */
+/* 209 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM *//** @jsx React.DOM */
@@ -51440,18 +51460,18 @@
 
 
 /***/ },
-/* 209 */
+/* 210 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
 	var COMMON = __webpack_require__(8);
 	var UNDERSCORE = __webpack_require__(14);
-	var PAGE = __webpack_require__(210);
+	var PAGE = __webpack_require__(211);
 	var MOMENT = __webpack_require__(17);
 	var Q = __webpack_require__(11);
 	var HEAD = head;
 
-	var Model = __webpack_require__(213);
+	var Model = __webpack_require__(214);
 
 
 	exports['for'] = function (overrides) {
@@ -51635,7 +51655,7 @@
 		function initLiveNotify () {
 			try {
 
-				var client = __webpack_require__(214);
+				var client = __webpack_require__(215);
 				var socket = client.connect(appContext.get("windowOrigin"));
 
 				// TODO: Handle re-connects by re-sending init.
@@ -51868,7 +51888,7 @@
 
 
 /***/ },
-/* 210 */
+/* 211 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/** @jsx React.DOM */  /* globals require, module */
@@ -51879,7 +51899,7 @@
 	   * Module dependencies.
 	   */
 
-	  var pathtoRegexp = __webpack_require__(211);
+	  var pathtoRegexp = __webpack_require__(212);
 
 	  /**
 	   * Module exports.
@@ -52497,10 +52517,10 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(12)))
 
 /***/ },
-/* 211 */
+/* 212 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/** @jsx React.DOM */var isArray = __webpack_require__(212);
+	/** @jsx React.DOM */var isArray = __webpack_require__(213);
 
 	/**
 	 * Expose `pathToRegexp`.
@@ -52705,7 +52725,7 @@
 
 
 /***/ },
-/* 212 */
+/* 213 */
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM */module.exports = Array.isArray || function (arr) {
@@ -52714,7 +52734,7 @@
 
 
 /***/ },
-/* 213 */
+/* 214 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
@@ -52853,7 +52873,7 @@
 
 
 /***/ },
-/* 214 */
+/* 215 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
@@ -52861,10 +52881,10 @@
 	 * Module dependencies.
 	 */
 
-	var url = __webpack_require__(216);
-	var parser = __webpack_require__(218);
-	var Manager = __webpack_require__(226);
-	var debug = __webpack_require__(215)('socket.io-client');
+	var url = __webpack_require__(217);
+	var parser = __webpack_require__(219);
+	var Manager = __webpack_require__(227);
+	var debug = __webpack_require__(216)('socket.io-client');
 
 	/**
 	 * Module exports.
@@ -52941,12 +52961,12 @@
 	 * @api public
 	 */
 
-	exports.Manager = __webpack_require__(226);
-	exports.Socket = __webpack_require__(258);
+	exports.Manager = __webpack_require__(227);
+	exports.Socket = __webpack_require__(259);
 
 
 /***/ },
-/* 215 */
+/* 216 */
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM */
@@ -53089,7 +53109,7 @@
 
 
 /***/ },
-/* 216 */
+/* 217 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {/** @jsx React.DOM */
@@ -53097,8 +53117,8 @@
 	 * Module dependencies.
 	 */
 
-	var parseuri = __webpack_require__(217);
-	var debug = __webpack_require__(215)('socket.io-client:url');
+	var parseuri = __webpack_require__(218);
+	var debug = __webpack_require__(216)('socket.io-client:url');
 
 	/**
 	 * Module exports.
@@ -53169,7 +53189,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 217 */
+/* 218 */
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM *//**
@@ -53200,7 +53220,7 @@
 
 
 /***/ },
-/* 218 */
+/* 219 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
@@ -53208,12 +53228,12 @@
 	 * Module dependencies.
 	 */
 
-	var debug = __webpack_require__(220)('socket.io-parser');
-	var json = __webpack_require__(221);
-	var isArray = __webpack_require__(223);
-	var Emitter = __webpack_require__(219);
-	var binary = __webpack_require__(224);
-	var isBuf = __webpack_require__(225);
+	var debug = __webpack_require__(221)('socket.io-parser');
+	var json = __webpack_require__(222);
+	var isArray = __webpack_require__(224);
+	var Emitter = __webpack_require__(220);
+	var binary = __webpack_require__(225);
+	var isBuf = __webpack_require__(226);
 
 	/**
 	 * Protocol version.
@@ -53606,7 +53626,7 @@
 
 
 /***/ },
-/* 219 */
+/* 220 */
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM */
@@ -53776,9 +53796,9 @@
 
 
 /***/ },
-/* 220 */
-215,
 /* 221 */
+216,
+/* 222 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_RESULT__;/** @jsx React.DOM *//*! JSON v3.2.6 | http://bestiejs.github.io/json3 | Copyright 2012-2013, Kit Cambridge | http://kit.mit-license.org */
@@ -53788,7 +53808,7 @@
 
 	  // Detect the `define` function exposed by asynchronous module loaders. The
 	  // strict `define` check is necessary for compatibility with `r.js`.
-	  var isLoader = "function" === "function" && __webpack_require__(222);
+	  var isLoader = "function" === "function" && __webpack_require__(223);
 
 	  // Detect native implementations.
 	  var nativeJSON = typeof JSON == "object" && JSON;
@@ -54645,7 +54665,7 @@
 
 
 /***/ },
-/* 222 */
+/* 223 */
 /***/ function(module, exports) {
 
 	/* WEBPACK VAR INJECTION */(function(__webpack_amd_options__) {module.exports = __webpack_amd_options__;
@@ -54653,9 +54673,9 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, {}))
 
 /***/ },
-/* 223 */
-212,
 /* 224 */
+213,
+/* 225 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {/** @jsx React.DOM *//*global Blob,File*/
@@ -54664,8 +54684,8 @@
 	 * Module requirements
 	 */
 
-	var isArray = __webpack_require__(223);
-	var isBuf = __webpack_require__(225);
+	var isArray = __webpack_require__(224);
+	var isBuf = __webpack_require__(226);
 
 	/**
 	 * Replaces every Buffer | ArrayBuffer in packet with a numbered placeholder.
@@ -54803,7 +54823,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 225 */
+/* 226 */
 /***/ function(module, exports) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {/** @jsx React.DOM */
@@ -54823,7 +54843,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 226 */
+/* 227 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
@@ -54831,17 +54851,17 @@
 	 * Module dependencies.
 	 */
 
-	var url = __webpack_require__(216);
-	var eio = __webpack_require__(227);
-	var Socket = __webpack_require__(258);
-	var Emitter = __webpack_require__(247);
-	var parser = __webpack_require__(218);
-	var on = __webpack_require__(260);
-	var bind = __webpack_require__(261);
-	var object = __webpack_require__(264);
-	var debug = __webpack_require__(215)('socket.io-client:manager');
-	var indexOf = __webpack_require__(255);
-	var Backoff = __webpack_require__(265);
+	var url = __webpack_require__(217);
+	var eio = __webpack_require__(228);
+	var Socket = __webpack_require__(259);
+	var Emitter = __webpack_require__(248);
+	var parser = __webpack_require__(219);
+	var on = __webpack_require__(261);
+	var bind = __webpack_require__(262);
+	var object = __webpack_require__(265);
+	var debug = __webpack_require__(216)('socket.io-client:manager');
+	var indexOf = __webpack_require__(256);
+	var Backoff = __webpack_require__(266);
 
 	/**
 	 * Module exports
@@ -55332,19 +55352,19 @@
 
 
 /***/ },
-/* 227 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/** @jsx React.DOM */
-	module.exports =  __webpack_require__(228);
-
-
-/***/ },
 /* 228 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
-	module.exports = __webpack_require__(229);
+	module.exports =  __webpack_require__(229);
+
+
+/***/ },
+/* 229 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/** @jsx React.DOM */
+	module.exports = __webpack_require__(230);
 
 	/**
 	 * Exports parser
@@ -55352,25 +55372,25 @@
 	 * @api public
 	 *
 	 */
-	module.exports.parser = __webpack_require__(238);
+	module.exports.parser = __webpack_require__(239);
 
 
 /***/ },
-/* 229 */
+/* 230 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {/** @jsx React.DOM *//**
 	 * Module dependencies.
 	 */
 
-	var transports = __webpack_require__(230);
-	var Emitter = __webpack_require__(247);
-	var debug = __webpack_require__(249)('engine.io-client:socket');
-	var index = __webpack_require__(255);
-	var parser = __webpack_require__(238);
-	var parseuri = __webpack_require__(256);
-	var parsejson = __webpack_require__(257);
-	var parseqs = __webpack_require__(248);
+	var transports = __webpack_require__(231);
+	var Emitter = __webpack_require__(248);
+	var debug = __webpack_require__(250)('engine.io-client:socket');
+	var index = __webpack_require__(256);
+	var parser = __webpack_require__(239);
+	var parseuri = __webpack_require__(257);
+	var parsejson = __webpack_require__(258);
+	var parseqs = __webpack_require__(249);
 
 	/**
 	 * Module exports.
@@ -55485,9 +55505,9 @@
 	 */
 
 	Socket.Socket = Socket;
-	Socket.Transport = __webpack_require__(237);
-	Socket.transports = __webpack_require__(230);
-	Socket.parser = __webpack_require__(238);
+	Socket.Transport = __webpack_require__(238);
+	Socket.transports = __webpack_require__(231);
+	Socket.parser = __webpack_require__(239);
 
 	/**
 	 * Creates transport of the given type.
@@ -56068,17 +56088,17 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 230 */
+/* 231 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {/** @jsx React.DOM *//**
 	 * Module dependencies
 	 */
 
-	var XMLHttpRequest = __webpack_require__(231);
-	var XHR = __webpack_require__(234);
-	var JSONP = __webpack_require__(252);
-	var websocket = __webpack_require__(253);
+	var XMLHttpRequest = __webpack_require__(232);
+	var XHR = __webpack_require__(235);
+	var JSONP = __webpack_require__(253);
+	var websocket = __webpack_require__(254);
 
 	/**
 	 * Export transports.
@@ -56128,11 +56148,11 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 231 */
+/* 232 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */// browser shim for xmlhttprequest module
-	var hasCORS = __webpack_require__(232);
+	var hasCORS = __webpack_require__(233);
 
 	module.exports = function(opts) {
 	  var xdomain = opts.xdomain;
@@ -56170,7 +56190,7 @@
 
 
 /***/ },
-/* 232 */
+/* 233 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
@@ -56178,7 +56198,7 @@
 	 * Module dependencies.
 	 */
 
-	var global = __webpack_require__(233);
+	var global = __webpack_require__(234);
 
 	/**
 	 * Module exports.
@@ -56199,7 +56219,7 @@
 
 
 /***/ },
-/* 233 */
+/* 234 */
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM */
@@ -56213,18 +56233,18 @@
 
 
 /***/ },
-/* 234 */
+/* 235 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {/** @jsx React.DOM *//**
 	 * Module requirements.
 	 */
 
-	var XMLHttpRequest = __webpack_require__(231);
-	var Polling = __webpack_require__(235);
-	var Emitter = __webpack_require__(247);
-	var inherit = __webpack_require__(236);
-	var debug = __webpack_require__(249)('engine.io-client:polling-xhr');
+	var XMLHttpRequest = __webpack_require__(232);
+	var Polling = __webpack_require__(236);
+	var Emitter = __webpack_require__(248);
+	var inherit = __webpack_require__(237);
+	var debug = __webpack_require__(250)('engine.io-client:polling-xhr');
 
 	/**
 	 * Module exports.
@@ -56604,18 +56624,18 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 235 */
+/* 236 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM *//**
 	 * Module dependencies.
 	 */
 
-	var Transport = __webpack_require__(237);
-	var parseqs = __webpack_require__(248);
-	var parser = __webpack_require__(238);
-	var inherit = __webpack_require__(236);
-	var debug = __webpack_require__(249)('engine.io-client:polling');
+	var Transport = __webpack_require__(238);
+	var parseqs = __webpack_require__(249);
+	var parser = __webpack_require__(239);
+	var inherit = __webpack_require__(237);
+	var debug = __webpack_require__(250)('engine.io-client:polling');
 
 	/**
 	 * Module exports.
@@ -56628,7 +56648,7 @@
 	 */
 
 	var hasXHR2 = (function() {
-	  var XMLHttpRequest = __webpack_require__(231);
+	  var XMLHttpRequest = __webpack_require__(232);
 	  var xhr = new XMLHttpRequest({ xdomain: false });
 	  return null != xhr.responseType;
 	})();
@@ -56855,7 +56875,7 @@
 
 
 /***/ },
-/* 236 */
+/* 237 */
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM */
@@ -56867,15 +56887,15 @@
 	};
 
 /***/ },
-/* 237 */
+/* 238 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM *//**
 	 * Module dependencies.
 	 */
 
-	var parser = __webpack_require__(238);
-	var Emitter = __webpack_require__(247);
+	var parser = __webpack_require__(239);
+	var Emitter = __webpack_require__(248);
 
 	/**
 	 * Module exports.
@@ -57032,19 +57052,19 @@
 
 
 /***/ },
-/* 238 */
+/* 239 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {/** @jsx React.DOM *//**
 	 * Module dependencies.
 	 */
 
-	var keys = __webpack_require__(239);
-	var hasBinary = __webpack_require__(240);
-	var sliceBuffer = __webpack_require__(242);
-	var base64encoder = __webpack_require__(243);
-	var after = __webpack_require__(244);
-	var utf8 = __webpack_require__(245);
+	var keys = __webpack_require__(240);
+	var hasBinary = __webpack_require__(241);
+	var sliceBuffer = __webpack_require__(243);
+	var base64encoder = __webpack_require__(244);
+	var after = __webpack_require__(245);
+	var utf8 = __webpack_require__(246);
 
 	/**
 	 * Check if we are running an android browser. That requires us to use
@@ -57101,7 +57121,7 @@
 	 * Create a blob api even for blob builder when vendor prefixes exist
 	 */
 
-	var Blob = __webpack_require__(246);
+	var Blob = __webpack_require__(247);
 
 	/**
 	 * Encodes a packet.
@@ -57633,7 +57653,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 239 */
+/* 240 */
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM */
@@ -57658,7 +57678,7 @@
 
 
 /***/ },
-/* 240 */
+/* 241 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {/** @jsx React.DOM */
@@ -57666,7 +57686,7 @@
 	 * Module requirements.
 	 */
 
-	var isArray = __webpack_require__(241);
+	var isArray = __webpack_require__(242);
 
 	/**
 	 * Module exports.
@@ -57723,9 +57743,9 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 241 */
-212,
 /* 242 */
+213,
+/* 243 */
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM *//**
@@ -57760,7 +57780,7 @@
 
 
 /***/ },
-/* 243 */
+/* 244 */
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM *//*
@@ -57825,7 +57845,7 @@
 
 
 /***/ },
-/* 244 */
+/* 245 */
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM */module.exports = after
@@ -57859,7 +57879,7 @@
 
 
 /***/ },
-/* 245 */
+/* 246 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_RESULT__;/* WEBPACK VAR INJECTION */(function(module, global) {/** @jsx React.DOM *//*! http://mths.be/utf8js v2.0.0 by @mathias */
@@ -58103,7 +58123,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(18)(module), (function() { return this; }())))
 
 /***/ },
-/* 246 */
+/* 247 */
 /***/ function(module, exports) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {/** @jsx React.DOM *//**
@@ -58159,9 +58179,9 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 247 */
-219,
 /* 248 */
+220,
+/* 249 */
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM *//**
@@ -58204,7 +58224,7 @@
 
 
 /***/ },
-/* 249 */
+/* 250 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
@@ -58214,7 +58234,7 @@
 	 * Expose `debug()` as the module.
 	 */
 
-	exports = module.exports = __webpack_require__(250);
+	exports = module.exports = __webpack_require__(251);
 	exports.log = log;
 	exports.formatArgs = formatArgs;
 	exports.save = save;
@@ -58357,7 +58377,7 @@
 
 
 /***/ },
-/* 250 */
+/* 251 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
@@ -58373,7 +58393,7 @@
 	exports.disable = disable;
 	exports.enable = enable;
 	exports.enabled = enabled;
-	exports.humanize = __webpack_require__(251);
+	exports.humanize = __webpack_require__(252);
 
 	/**
 	 * The currently active debug mode names, and names to skip.
@@ -58560,7 +58580,7 @@
 
 
 /***/ },
-/* 251 */
+/* 252 */
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM *//**
@@ -58677,7 +58697,7 @@
 
 
 /***/ },
-/* 252 */
+/* 253 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {/** @jsx React.DOM */
@@ -58685,8 +58705,8 @@
 	 * Module requirements.
 	 */
 
-	var Polling = __webpack_require__(235);
-	var inherit = __webpack_require__(236);
+	var Polling = __webpack_require__(236);
+	var inherit = __webpack_require__(237);
 
 	/**
 	 * Module exports.
@@ -58917,18 +58937,18 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 253 */
+/* 254 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM *//**
 	 * Module dependencies.
 	 */
 
-	var Transport = __webpack_require__(237);
-	var parser = __webpack_require__(238);
-	var parseqs = __webpack_require__(248);
-	var inherit = __webpack_require__(236);
-	var debug = __webpack_require__(249)('engine.io-client:websocket');
+	var Transport = __webpack_require__(238);
+	var parser = __webpack_require__(239);
+	var parseqs = __webpack_require__(249);
+	var inherit = __webpack_require__(237);
+	var debug = __webpack_require__(250)('engine.io-client:websocket');
 
 	/**
 	 * `ws` exposes a WebSocket-compatible interface in
@@ -58936,7 +58956,7 @@
 	 * in the browser.
 	 */
 
-	var WebSocket = __webpack_require__(254);
+	var WebSocket = __webpack_require__(255);
 
 	/**
 	 * Module exports.
@@ -59161,7 +59181,7 @@
 
 
 /***/ },
-/* 254 */
+/* 255 */
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM */
@@ -59210,7 +59230,7 @@
 
 
 /***/ },
-/* 255 */
+/* 256 */
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM */
@@ -59225,7 +59245,7 @@
 	};
 
 /***/ },
-/* 256 */
+/* 257 */
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM *//**
@@ -59270,7 +59290,7 @@
 
 
 /***/ },
-/* 257 */
+/* 258 */
 /***/ function(module, exports) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {/** @jsx React.DOM *//**
@@ -59308,7 +59328,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 258 */
+/* 259 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
@@ -59316,13 +59336,13 @@
 	 * Module dependencies.
 	 */
 
-	var parser = __webpack_require__(218);
-	var Emitter = __webpack_require__(247);
-	var toArray = __webpack_require__(259);
-	var on = __webpack_require__(260);
-	var bind = __webpack_require__(261);
-	var debug = __webpack_require__(215)('socket.io-client:socket');
-	var hasBin = __webpack_require__(262);
+	var parser = __webpack_require__(219);
+	var Emitter = __webpack_require__(248);
+	var toArray = __webpack_require__(260);
+	var on = __webpack_require__(261);
+	var bind = __webpack_require__(262);
+	var debug = __webpack_require__(216)('socket.io-client:socket');
+	var hasBin = __webpack_require__(263);
 
 	/**
 	 * Module exports.
@@ -59699,7 +59719,7 @@
 
 
 /***/ },
-/* 259 */
+/* 260 */
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM */module.exports = toArray
@@ -59718,7 +59738,7 @@
 
 
 /***/ },
-/* 260 */
+/* 261 */
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM */
@@ -59748,7 +59768,7 @@
 
 
 /***/ },
-/* 261 */
+/* 262 */
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM *//**
@@ -59777,7 +59797,7 @@
 
 
 /***/ },
-/* 262 */
+/* 263 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {/** @jsx React.DOM */
@@ -59785,7 +59805,7 @@
 	 * Module requirements.
 	 */
 
-	var isArray = __webpack_require__(263);
+	var isArray = __webpack_require__(264);
 
 	/**
 	 * Module exports.
@@ -59842,9 +59862,9 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 263 */
-212,
 /* 264 */
+213,
+/* 265 */
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM */
@@ -59933,7 +59953,7 @@
 	};
 
 /***/ },
-/* 265 */
+/* 266 */
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM */
@@ -60024,7 +60044,7 @@
 
 
 /***/ },
-/* 266 */
+/* 267 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
@@ -60138,7 +60158,7 @@
 
 
 /***/ },
-/* 267 */
+/* 268 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
@@ -60243,7 +60263,7 @@
 		store.modelRecords = function (records) {
 			return COMMON.resolveForeignKeys(store, records, {
 				"vendor_id": {
-					store: __webpack_require__(268),
+					store: __webpack_require__(269),
 					model: context.appContext.get('stores').vendors.Model,
 					localFieldPrefix: "vendor"
 				}
@@ -60281,7 +60301,7 @@
 
 			return COMMON.resolveForeignKeys(store, records, {
 				"vendor_id": {
-					store: __webpack_require__(268),
+					store: __webpack_require__(269),
 					model: context.appContext.get('stores').vendors.Model,
 					localFieldPrefix: "vendor"
 				}
@@ -60311,7 +60331,7 @@
 
 
 /***/ },
-/* 268 */
+/* 269 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
@@ -60422,7 +60442,7 @@
 
 
 /***/ },
-/* 269 */
+/* 270 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
@@ -60583,12 +60603,12 @@
 		store.modelRecords = function (records) {
 			return COMMON.resolveForeignKeys(store, records, {
 				"vendor_id": {
-					store: __webpack_require__(268),
+					store: __webpack_require__(269),
 					model: context.appContext.get('stores').vendors.Model,
 					localFieldPrefix: "vendor"
 				},
 				"item_id": {
-					store: __webpack_require__(267),
+					store: __webpack_require__(268),
 					model: context.appContext.get('stores').items.Model,
 					localFieldPrefix: "item"
 				}
@@ -60616,7 +60636,7 @@
 
 
 /***/ },
-/* 270 */
+/* 271 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
@@ -60672,7 +60692,7 @@
 
 
 /***/ },
-/* 271 */
+/* 272 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
@@ -60877,7 +60897,7 @@
 
 
 /***/ },
-/* 272 */
+/* 273 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
@@ -61086,7 +61106,7 @@
 				if (self.get(cartItemId)) {
 					return COMMON.API.Q.resolve(self.get(cartItemId));
 				}
-				return __webpack_require__(267)['for']({
+				return __webpack_require__(268)['for']({
 					appContext: context.appContext,
 					ids: [
 						itemId
@@ -61149,7 +61169,7 @@
 
 
 /***/ },
-/* 273 */
+/* 274 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
@@ -61587,7 +61607,7 @@
 
 
 /***/ },
-/* 274 */
+/* 275 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
@@ -61619,7 +61639,7 @@
 		var store = new Store();
 
 
-		store.Model = __webpack_require__(275).forContext(context);
+		store.Model = __webpack_require__(276).forContext(context);
 
 
 		store.fetchStatusInfoForOrderHashId = function (orderHashId) {
@@ -61701,7 +61721,7 @@
 
 
 /***/ },
-/* 275 */
+/* 276 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
@@ -61754,7 +61774,7 @@
 
 
 /***/ },
-/* 276 */
+/* 277 */
 /***/ function(module, exports, __webpack_require__, __webpack_module_template_argument_0__) {
 
 	/** @jsx React.DOM */
@@ -61772,7 +61792,7 @@
 
 
 /***/ },
-/* 277 */
+/* 278 */
 /***/ function(module, exports, __webpack_require__, __webpack_module_template_argument_0__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
@@ -61795,22 +61815,6 @@
 		}
 		// When the module is disposed, remove the <style> tags
 		module.hot.dispose(function() { update(); });
-	}
-
-/***/ },
-/* 278 */
-/***/ function(module, exports) {
-
-	/** @jsx React.DOM */module.exports = function (Context) {
-	  // TODO: Remove this once we can inject 'React' automatically at build time.
-	  var React = Context.REACT;
-	  return (
-	    React.createElement("div", {className: "container outro-header-section"}, 
-
-	  React.createElement("h3", {className: "outro-header"}, "To give feedback or ask questions, please email us at ", React.createElement("a", {href: "mailto:support@goodybag.com"}, "support@goodybag.com"))
-
-	    )
-	  );
 	}
 
 /***/ }

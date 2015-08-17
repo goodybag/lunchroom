@@ -65,7 +65,7 @@ module.exports = function (Context) {
 </div>
 
       
-      <div className="modal fade" id="contact-us-modal">
+      <div className="modal fade" id="contact-us-modal" data-component-id="contact-us-modal">
         <div className="modal-dialog">
           <div className="modal-content">
             <div className="modal-header">
@@ -94,7 +94,7 @@ module.exports = function (Context) {
           </div>
         </div>
       </div>
-      
+
       <footer className="footer" data-component-id="footer">
         <ul className="nav footer-nav">
           <li><a href="#" data-toggle="modal" data-target="#contact-us-modal">Contact Us</a></li>
