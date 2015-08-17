@@ -189,24 +189,29 @@ require("./component.jsx")['for'](module, {
 							self.showViews(elm, []);
 						}
 
-
+/*
 						var tags = [];
 						try {
 							if (data.tags) tags = JSON.parse(data.tags);
 						} catch (err) {}
 
-						self.renderSection("diet-tags", tags.map(function(tag) {
-							return {
-								"tag": tag
-							};
-						}), function getView (data) {
-							return 'default';
-						}, function hookEvents(elm, data) {
+						if (tags.length > 0) {
+							self.renderSection("diet-tags", tags.map(function(tag) {
+								if (tag === "glutenFree") tag = "gluten-free";
+								return {
+									"tag": tag
+								};
+							}), function getView (data) {
+								return 'default';
+							}, function hookEvents(elm, data) {
+								elm.removeClass("diet-tag-spicy");
+								elm.addClass("diet-tag-" + data.tag);
 
-							elm.removeClass("diet-tag-spicy");
-							elm.addClass("diet-tag-" + data.tag);
-
-						});
+							});
+						} else {
+							$('.diet-tag', elm).hide();
+						}
+*/						
 				    });
 				}
 			})
