@@ -9,6 +9,59 @@ require("./component.jsx")['for'](module, {
 				markup: function (element) {
 
 
+					$('#contact-us-form', element).submit(function () {
+
+						$('[data-dismiss="modal"]').click();
+
+			    		var formElm = $('#contact-us-form', element);
+
+			    		var payload = {
+			    			name: $('[data-component-elm="name"]', formElm).val(),
+			    			email: $('[data-component-elm="email"]', formElm).val(),
+			    			message: $('[data-component-elm="message"]', formElm).val()
+			    		};
+
+	console.log("payload", payload);
+
+						$.ajax({
+							method: "POST",
+							url: "/contact-us",
+							contentType: "application/json",
+							data: JSON.stringify(payload),
+
+							success: function ( data, textStatus, jqXHR ) {
+
+				    			$('[data-component-elm="message"]', formElm).val("");
+							},
+
+							error: function (jqXHR, textStatus, errorThrown) {
+
+	console.log("error");
+
+	console.log("jqXHR", jqXHR);
+	console.log("textStatus", textStatus);
+	console.log("errorThrown", errorThrown);
+
+	/*
+								if (err.status === 200) {
+									// This happens on IE 8 & 9.
+									// We had success after all.
+									return;
+								}
+
+								for (var name in err) {
+									console.error("ERR " + name + ": " + err[name]);
+								}
+								console.error("Error status code: " + err.statusCode);
+								console.log("Error sending message to server!" + err.stack || err.message || err);
+		// TODO: Display error.
+	*/
+							}
+						});
+						return false;
+			    	});
+
+
 					$('[data-component-id="subscribe"]', element).submit(function () {
 
 

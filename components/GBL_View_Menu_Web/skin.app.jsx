@@ -118,6 +118,7 @@ require("./component.jsx")['for'](module, {
 							"title": item.get("item.title"),
 							"price": item.get("item.format.price"),
 							"description": item.get("item.description"),
+							"tags": item.get("item.tags"),
 							"quantity": item.get("cartQuantity")
 						};
 					}), function getView (data) {
@@ -187,6 +188,25 @@ require("./component.jsx")['for'](module, {
 						} else {
 							self.showViews(elm, []);
 						}
+
+
+						var tags = [];
+						try {
+							if (data.tags) tags = JSON.parse(data.tags);
+						} catch (err) {}
+
+						self.renderSection("diet-tags", tags.map(function(tag) {
+							return {
+								"tag": tag
+							};
+						}), function getView (data) {
+							return 'default';
+						}, function hookEvents(elm, data) {
+
+							elm.removeClass("diet-tag-spicy");
+							elm.addClass("diet-tag-" + data.tag);
+
+						});
 				    });
 				}
 			})

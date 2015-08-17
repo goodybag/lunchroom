@@ -236,7 +236,8 @@ exports.init = function (config, options) {
 						"title": item.name || "",
 						"description": item.description || item.name || "",
 						"photo_url": item.photo_url || "",
-						"price": item.price || ""
+						"price": item.price || "",
+						"tags": JSON.stringify(item.tags || [])
 					};
 				});
 			}

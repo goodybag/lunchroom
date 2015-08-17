@@ -45,7 +45,8 @@ exports['for'] = function (context) {
 	        "item.properties": "string",
 	        "item.format.price": "string",
 	        "item.description": "string",
-	        "item.options": "string"
+	        "item.options": "string",
+	        "item.tags": "string"
 	    },
 	    derived: {
 		    "cartQuantity": {

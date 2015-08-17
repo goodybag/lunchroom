@@ -62,6 +62,7 @@ exports['for'] = function (context) {
 	        description: "string",
 	        photo_url: "string",
 	        properties: "string",
+	        tags: "string",
 	        options: "string",
 	        price: "integer",
 	        quantity: "integer",

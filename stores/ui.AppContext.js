@@ -17,7 +17,7 @@ exports['for'] = function (overrides) {
 	    selectedDay: MOMENT().format("ddd"),
 	    selectedDayId: MOMENT().format("YYYY-MM-DD"),
 	    windowOrigin: window.location.origin || (window.location.protocol + "//" + window.location.host),
-	    forceAllowOrder: true
+	    forceAllowOrder: false
 	};
 
 	COMMON.API.UNDERSCORE.extend(config, overrides || {});

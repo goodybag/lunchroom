@@ -273,6 +273,9 @@
 					"name": "options"
 				},
 				{
+					"name": "tags"
+				},
+				{
 					"name": "price",
 					"constraints": {
 						"required": true

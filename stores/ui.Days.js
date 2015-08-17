@@ -12,7 +12,7 @@ var Store = COMMON.API.BACKBONE.Collection.extend({
 });
 
 
-var INCLUDE_PRIOR_WEEKEND = true;
+var INCLUDE_PRIOR_WEEKEND = false;
 
 
 var store = new Store();

@@ -150,6 +150,19 @@
                             }
                         }
                     },
+                    "^/event-email-([^/]+)$": {
+                        "lastMatchingRoute": true,
+                        "config": {
+                            "router": {
+                                "impl": "07-lunchroom/event-router/0"
+                            },
+                            "clientContext": {
+                                "selectedView": "",
+                                "lockedView": "",
+                                "type": ""
+                            }
+                        }
+                    },
                     "^/event-([^/]+)$": {
                         "lastMatchingRoute": true,
                         "config": {
