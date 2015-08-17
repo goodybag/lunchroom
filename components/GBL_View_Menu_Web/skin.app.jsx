@@ -41,7 +41,9 @@ require("./component.jsx")['for'](module, {
 
 					$('[data-component-elm="addButton"]', element).click(function () {
 
-						Context.appContext.get('stores').cart.addItem(self.getData().item_id, {});
+						Context.appContext.get('stores').cart.addItem(self.getData().item_id, {}).then(function () {
+							Context.forceUpdate();
+						});
 						return false;
 					});
 				},
@@ -72,6 +74,12 @@ require("./component.jsx")['for'](module, {
 
 					var items = Context.items[Context.appContext.get('selectedDay')] || [];
 
+					if (Context.selectedEvent) {
+						self.fillProperties(element, {
+							"restaurantTitle": Context.vendorTitlesForEvents[Context.selectedEvent.get("id")] || ""
+						});
+					}
+
 					self.renderSection("items", items.map(function(item) {
 						return {
 							"id": item.get('id'),
@@ -80,13 +88,28 @@ require("./component.jsx")['for'](module, {
 							"title": item.get("item.title"),
 							"price": item.get("item.format.price"),
 							"description": item.get("item.description"),
+							"quantity": item.get("cartQuantity")
 						};
 					}), function getView (data) {
 						return 'default';
 				    }, function hookEvents(elm, data) {
 
+				    	if (data.quantity > 0) {
+				    		elm.addClass("is-in-cart");
+				    	} else {
+				    		elm.removeClass("is-in-cart");
+				    	}
+
 						$('[data-component-elm="showDetailsLink"]', elm).click(function () {
 							Context.templates.popup.fill(data);
+						});
+
+
+						$('[data-component-elm="removeButton"]', elm).click(function () {
+							Context.appContext.get('stores').cart.removeItem(data.item_id).then(function () {
+								Context.forceUpdate();
+							});
+							return false;
 						});
 
 						$('[data-component-elm="addButton"]', elm).click(function () {
@@ -114,7 +137,9 @@ require("./component.jsx")['for'](module, {
 							Context.appContext.get('stores').cart.addItem(itemBlock.attr("data-id"), options);
 */
 
-							Context.appContext.get('stores').cart.addItem(data.item_id, options);
+							Context.appContext.get('stores').cart.addItem(data.item_id, options).then(function () {
+								Context.forceUpdate();
+							});
 							return false;
 						});
 

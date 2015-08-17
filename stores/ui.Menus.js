@@ -46,7 +46,17 @@ exports['for'] = function (context) {
 	        "item.format.price": "string",
 	        "item.description": "string",
 	        "item.options": "string"
-	    }
+	    },
+	    derived: {
+		    "cartQuantity": {
+				deps: [
+					"item_id"
+				],
+	            fn: function () {
+	            	return context.appContext.get('stores').cart.getQuantityForItemId(this.item_id);
+	            }
+		    }
+		}
 	});
 
 	store.getForEventIds = function (ids) {

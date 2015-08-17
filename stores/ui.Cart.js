@@ -103,8 +103,8 @@ exports['for'] = function (context) {
 			summary.amount &&
 			summary.tax
 		) {
-			summary["taxAmount"] = Math.round(summary.amount * summary.tax / 100);
-			summary["format.tax"] = summary.tax + "%";
+			summary["taxAmount"] = Math.round(summary.amount * summary.tax/100 / 100);
+			summary["format.tax"] = summary.tax/100 + "%";
 			summary["format.taxAmount"] = COMMON.API.NUMERAL(summary["taxAmount"] / 100).format('$0.00');
 		}
 
@@ -156,6 +156,36 @@ exports['for'] = function (context) {
     	return count;
 	}
 
+	store.getQuantityForItemId = function (itemId) {
+		var item = store.where({
+			"item_id": itemId
+		});
+		if (item.length === 0) return 0;
+		return item[0].get("quantity");
+	}
+
+	store.removeItem = function (itemId) {
+		var self = this;
+
+		var item = store.where({
+			"item_id": itemId
+		});
+		if (item.length === 0) {
+			return COMMON.API.Q.resolve();
+		}
+		item = item[0];
+
+		var quantity = item.get("quantity");
+		if (quantity > 1) {
+			item.set("quantity", quantity - 1);
+			store.trigger("change", item);
+		} else {
+			store.remove(item.get("id"));
+			store.trigger("change", null);
+		}
+		return COMMON.API.Q.resolve();
+	}
+
 	store.addItem = function (itemId, options) {
 		var self = this;
 
@@ -190,7 +220,7 @@ exports['for'] = function (context) {
 
 		return ensureItem().then(function (item) {
 			item.set("quantity", item.get("quantity") + 1);
-			store.emit("change", item);
+			store.trigger("change", item);
 		});
 	}
 

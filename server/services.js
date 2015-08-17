@@ -33,7 +33,7 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
                         "Goodybag Fee: " + message.data.summary["format.goodybagFee"],
                         "Total: " + message.data.summary["format.total"],
                         "",
-                        "If you have any questions, please contact us at (512) 270-6555 or support@goodybag.com",
+                        "If you have any questions, please contact us at (512) 677-4224 or support@goodybag.com",
                         "This is an automated email and cannot receive replies!"
                     ].join("\n")
                 }, message || {});

@@ -24,6 +24,7 @@ exports['for'] = function (module, Context) {
 
 	        var events = self.props.appContext.get('stores').events;
 	        var menus = self.props.appContext.get('stores').menus;
+	        var vendors = self.props.appContext.get('stores').vendors;
 
 	        var eventIds = {};
 
@@ -37,16 +38,6 @@ exports['for'] = function (module, Context) {
 	        	eventIds[item.get("id")] = ddd;
 	        });
 
-			var items = {};
-
-	        self.modelRecordsWithStore(menus, menus.getForEventIds(eventIds)).forEach(function (item) {
-
-				if (!items[eventIds[item.get("event_id")]]) {
-					items[eventIds[item.get("event_id")]] = [];
-				}
-                // Group menu items per day
-				items[eventIds[item.get("event_id")]].push(item);
-	        });
 
 			var selectedEvent = self.props.appContext.get('stores').events.getModeledForDay(self.props.appContext.get('selectedDayId'));
 			if (selectedEvent.length > 0) {
@@ -58,9 +49,31 @@ exports['for'] = function (module, Context) {
 				selectedEvent = null;
 			}
 
-console.log("selectedEvent", selectedEvent);
+
+			var items = {};
+			var vendorTitlesForEvents = {};
+
+	        self.modelRecordsWithStore(menus, menus.getForEventIds(eventIds)).forEach(function (item) {
+
+				if (!items[eventIds[item.get("event_id")]]) {
+					items[eventIds[item.get("event_id")]] = [];
+				}
+                // Group menu items per day
+				items[eventIds[item.get("event_id")]].push(item);
+
+				// We only grap the first vendor for each event for now.
+				// TODO: Grab more vendor IDs once we allow multiple per event.
+				if (!vendorTitlesForEvents[item.get("event_id")]) {
+					if (vendors.get(item.get("vendor_id"))) {
+						vendorTitlesForEvents[item.get("event_id")] = vendors.get(item.get("vendor_id")).get("title");
+					}
+				}
+	        });
+
 
 	        return {
+
+	        	vendorTitlesForEvents: vendorTitlesForEvents,
 
 				eventToday: self.modelRecordsWithStore(events, events.getToday()).pop(),
 

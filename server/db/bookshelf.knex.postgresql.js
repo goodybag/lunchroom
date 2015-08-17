@@ -6,6 +6,7 @@ const QFS = require("q-io/fs");
 const KNEX = require('knex');
 const BOOKSHELF = require('bookshelf');
 const LIVE_NOTIFY = require("../live-notify");
+const CRYPTO = require("crypto");
 
 
 var knex = null;
@@ -206,6 +207,51 @@ exports.init = function (config, options) {
 			}
 		}
 
+		if (data.cater && data.cater.restaurants) {
+
+			var records = {
+				vendors: {},
+				items: {}
+			};
+
+			function makeAdminAccessToken (restaurant_id) {
+				return CRYPTO.createHash('sha1').update("secret:seed:id:jksd9SJDKS82jSjsjlpw[9282klsss:" + restaurant_id).digest('hex');
+			}
+
+			for (var restaurant_id in data.cater.restaurants) {
+
+				var restaurant = data.cater.restaurants[restaurant_id];
+
+				records.vendors[restaurant_id] = {
+					id: restaurant_id,
+					title: restaurant.title,
+					adminAccessToken: makeAdminAccessToken(restaurant_id),
+					description: ""
+				};
+
+				restaurant.items.forEach(function (item) {
+					records.items[item.id] = {
+						"id": item.id,
+						"vendor_id": restaurant_id,
+						"title": item.name || "",
+						"description": item.description || item.name || "",
+						"photo_url": item.photo_url || "",
+						"price": item.price || ""
+					};
+				});
+			}
+
+			for (var table in records) {
+				insertRecords(
+					table,
+					Object.keys(records[table]).map(function (id) {
+						return records[table][id];
+					})
+				);
+			}
+		}
+
+/*
 		if (data.cater.events) {
 
 			var records = {
@@ -245,6 +291,7 @@ exports.init = function (config, options) {
 				);
 			}
 		}
+*/
 
 		return done;
 	}
@@ -296,11 +343,14 @@ exports.init = function (config, options) {
 
 			return ensureData("data.01").then(function () {
 
-				console.log('########################################');
-				console.log('# Ensuring triggers and function ...');
-				console.log('########################################');
+				return ensureData("data.02").then(function () {
 
-				return ensureTriggersAndFunctions();
+					console.log('########################################');
+					console.log('# Ensuring triggers and function ...');
+					console.log('########################################');
+
+					return ensureTriggersAndFunctions();
+				});
 			});
 		});
 	}

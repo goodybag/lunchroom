@@ -8,7 +8,7 @@ exports.seeds = {
       contact: "Gillian Lambert",
       address: "7901 Cameron Rd<br/>Bldg 2, Ste. 300<br/>Austin, TX 78754",
       pickupLocation: "in the Bazaarvoice Lobby",
-      orderTax: "5"
+      orderTax: "825"
     },
     "2": {
       "id": 2,
@@ -17,7 +17,7 @@ exports.seeds = {
       contact: "Big belly",
       address: "Somewhere<br/>accross the<br/>Rainbow",
       pickupLocation: "In the clouds",
-      orderTax: "15"
+      orderTax: "825"
     },
     "3": {
       "id": 3,
@@ -26,7 +26,7 @@ exports.seeds = {
       contact: "Big stomach",
       address: "Right<br/>where it need<br/>to be",
       pickupLocation: "Hold out your hands and wiggle your nose",
-      orderTax: "10"
+      orderTax: "825"
     },
     "4": {
       "id": 4,
@@ -35,11 +35,12 @@ exports.seeds = {
       contact: "Gillian Lambert",
       address: "7901 Cameron Rd<br/>Bldg 2, Ste. 300<br/>Austin, TX 78754",
       pickupLocation: "in the Bazaarvoice Lobby",
-      orderTax: "5"
+      orderTax: "825"
     }    
   }
 };
 
+/*
 exports.cater = {
   "events": {
     "11690": {
@@ -364,3 +365,4 @@ exports.cater = {
     }
   }
 };
+*/

@@ -81,7 +81,6 @@ require("./component.jsx")['for'](module, {
 					}
 					return false;
 				});
-
 			},
 			fill: function (element, data, Context) {
 				var self = this;

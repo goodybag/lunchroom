@@ -1,9 +1,30 @@
 
 require("./component.jsx")['for'](module, {
-	getHTML: function (Context) {
 
-		var tpl = require("../../www/lunchroom-landing~0/components/AppMenu/header.cjs.jsx")(Context);
+	getTemplate: function (Context) {
 
-		return tpl;
+		return new Context.Template({
+			impl: require("../../www/lunchroom-landing~0/components/AppMenu/header.cjs.jsx"),
+			markup: function (element) {
+				var self = this;
+
+				$('[data-component-elm="signupLink"]', element).click(function () {
+console.log("TODO: Signup");
+					return false;
+				});
+
+				$('[data-component-elm="loginLink"]', element).click(function () {
+console.log("TODO: Login");
+					return false;
+				});
+
+// TODO: Remove once account management is working.
+$('[data-component-elm="signupLink"]', element).hide();
+$('[data-component-elm="loginLink"]', element).hide();
+
+			},
+			fill: function (element, data, Context) {				
+			}
+		});
 	}
 });

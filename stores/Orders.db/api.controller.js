@@ -54,6 +54,24 @@ store.update = function (model, params, request) {
 					});
 
 
+			        // Send duplicate to goodybag just in case.
+					SERVICES.email.send("Receipt", {
+			            "to": [
+			                {
+			                    "email": "payments@goodybag.com",
+			                    "name": "payments@goodybag.com",
+			                    "type": "to"
+			                }
+			            ],
+			            "data": {
+			            	"items": JSON.parse(resp.attributes.items),
+			            	"summary": JSON.parse(resp.attributes.summary),
+			            	"orderHashId": resp.attributes.orderHashId
+			            }
+			        }).fail(function (err) {
+						console.error("Error sending receipt:", err.stack);
+					});
+
 
 					/*
 					resp.attributes = { id: '50',

@@ -209,6 +209,10 @@ exports.create = function (Context, implementation) {
 
 	    	self._render_Context = implementation.render.call(self);
 
+	    	self._render_Context.forceUpdate = function () {
+	    		self._trigger_forceUpdate();
+	    	}
+
 	    	self._render_Context._implName = implName;
 
 	    	self._render_Context.Template = API.GBL_TEMPLATE.for(self);

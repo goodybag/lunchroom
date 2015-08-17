@@ -85,12 +85,12 @@ require("./component.jsx")['for'](module, {
 			    		copyName.lastValue = newValue;
 						$('[data-component-elm="card[name]"]', element).val(copyName.lastValue);
 				    });
+
 				},
 				fill: function (element, data, Context) {
 			    	var values = Context.order.get("form");
 			    	if (values) {
 			    		values = JSON.parse(values);
-
 						this.fillProperties(element, values);
 						this.fillElements(element, values);
 					}
@@ -130,7 +130,7 @@ require("./component.jsx")['for'](module, {
 
 						$('[data-component-elm="removeLink"]', elm).click(function () {
 
-				    		Context.appContext.get('stores').cart.remove(data.id);
+				    		Context.appContext.get('stores').cart.removeItem(data.id);
 							return false;
 						});
 
