@@ -44,7 +44,7 @@ data[411] = {
           price: 600,
           photo_url: 'https://www.filepicker.io/api/file/9LCujcUThWL2aogC6c8n',
           category_id: 11851,
-          tags: [ 'vegetarian' ] } ]
+          tags: [ '' ] } ]
 };
 
 data[24] = {
