@@ -129,7 +129,6 @@ require("./component.jsx")['for'](module, {
 				    }, function hookEvents(elm, data) {
 
 						$('[data-component-elm="removeLink"]', elm).click(function () {
-
 				    		Context.appContext.get('stores').cart.removeItem(data.id);
 							return false;
 						});

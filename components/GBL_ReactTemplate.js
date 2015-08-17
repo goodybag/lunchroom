@@ -11,7 +11,8 @@ exports['for'] = function (Component) {
 				$('[data-component-view]', self.elm).each(function () {
 					var e = $(this);
 					if (typeof e.attr("data-component-section") !== "undefined") return;
-					e.hide();
+//					e.hide();
+					e.addClass("hidden");
 				});
 				if (self._markup) {
 					try {
@@ -143,10 +144,12 @@ exports['for'] = function (Component) {
 		$('[data-component-view]', element).each(function () {
 			var e = $(this);
 			if (typeof e.attr("data-component-section") !== "undefined") return;
-			e.hide();
+//			e.hide();
+			e.addClass("hidden");
 		});
 		views.forEach(function (view) {
-			$('[data-component-view="' + view + '"]', element).show();
+//			$('[data-component-view="' + view + '"]', element).show();
+			$('[data-component-view="' + view + '"]', element).removeClass("hidden");
 		});
 	}
 

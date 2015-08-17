@@ -6,12 +6,35 @@ require("./component.jsx")['for'](module, {
 			"menu_signup": new Context.Template({
 				impl: require("../../www/lunchroom-landing~0/components/AppMenu/menu-signup.cjs.jsx"),
 				markup: function (element) {
+
+					$('[data-component-elm="signupButton"]', element).click(function () {
+
+						var email = $('[data-component-prop="email"]', element).val();
+						if (email) {
+
+				    		Context.subscribeWithEmail(email);
+
+				    		element.addClass("hidden");
+						}
+
+						return false;
+					});
+
+// TODO: Remove this once we can signup with phone number as well.
+$('.phone-form-group').addClass('hidden');
+
 				},
 				fill: function (element, data, Context) {
 
-					this.fillProperties(element, {
-						"orderBy": Context.eventToday.get('format.orderByTime')
-					});
+					var consumerGroupSubscription = Context.consumerGroupSubscription;
+					if (consumerGroupSubscription) {
+
+						// If we have a subscription we hide the form completely.
+						element.addClass("hidden");
+//						this.fillElements(element, {
+//							email: consumerGroupSubscription.get("subscribeEmail")
+//						});
+					}
 				}
 			}),			
 			"too_late": new Context.Template({
@@ -42,6 +65,7 @@ require("./component.jsx")['for'](module, {
 					$('[data-component-elm="addButton"]', element).click(function () {
 
 						Context.appContext.get('stores').cart.addItem(self.getData().item_id, {}).then(function () {
+							$('[data-dismiss="modal"]').click();
 							Context.forceUpdate();
 						});
 						return false;
@@ -84,7 +108,8 @@ require("./component.jsx")['for'](module, {
 						return {
 							"id": item.get('id'),
 							"item_id": item.get('item_id'),
-							"photoUrl": item.get("item.photo_url"),
+							"photoUrl": item.get("item.photo_url") + "/convert?w=400&h=195&fit=crop",
+							"modalPhotoUrl": item.get("item.photo_url") + "/convert?w=430&h=400&fit=crop",
 							"title": item.get("item.title"),
 							"price": item.get("item.format.price"),
 							"description": item.get("item.description"),

@@ -8,6 +8,7 @@ require("./component.jsx")['for'](module, {
 				impl: require("../../www/lunchroom-landing~0/components/Landing/page.cjs.jsx"),
 				markup: function (element) {
 
+
 					$('[data-component-id="subscribe"]', element).submit(function () {
 
 
@@ -38,13 +39,21 @@ require("./component.jsx")['for'](module, {
 
 			    		Context.subscribeWithEmail(emailElement.val());
 
-emailElement.hide();
+			    		$('[data-component-id="subscribe"').addClass("hidden");
+
 //						successMessage.removeClass("hidden");
 //						$("#form-subscribe").addClass("hidden");
 						return false;
 					});
 				},
 				fill: function (element, data, Context) {
+
+					var consumerGroupSubscription = Context.consumerGroupSubscription;
+					if (consumerGroupSubscription) {
+						this.fillElements(element, {
+							email: consumerGroupSubscription.get("subscribeEmail")
+						});
+					}
 
 				}
 			}),

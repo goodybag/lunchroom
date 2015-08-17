@@ -22,9 +22,11 @@ var Store = COMMON.API.BACKBONE.Collection.extend({
 });
 
 
-var store = new Store();
-
 exports['for'] = function (context) {
+
+	var store = new Store();
+
+	store.keepInLocalStorage = true;
 
 /*
 	if (context.ids) {
@@ -51,6 +53,47 @@ exports['for'] = function (context) {
 		return deferred.promise;
 	}
 */
+
+
+
+
+	function getLocalStorageNamespace () {
+		var ctx = context.appContext.get("context");
+		return ctx.dbfilter.consumer_group_id;
+	}
+
+	function syncToLocalStorage () {
+		if (!store.keepInLocalStorage) return;
+		var record = store.where();
+		if (
+			record.length === 1 &&
+			record[0].get("subscribeEmail")
+		) {
+			COMMON.storeLocalValueFor("email", getLocalStorageNamespace(), record[0].get("subscribeEmail"));
+		}
+	}
+	store.on("reset", syncToLocalStorage);
+	store.on("change", syncToLocalStorage);
+	store.on("update", syncToLocalStorage);
+	function recoverFromLocalStorage () {
+		var email = COMMON.getLocalValueFor("email", getLocalStorageNamespace());
+		if (email) {
+			try {
+				store.loadForEmail(email).fail(function (err) {
+					throw err;
+				});
+			} catch (err) {
+				console.error("Error recovering email from local storage");
+			}
+		}
+	}
+	setTimeout(function () {
+		recoverFromLocalStorage();
+	}, 100);
+
+
+
+
 
 	// @see http://ampersandjs.com/docs#ampersand-state
 	var Model = store.Model = COMMON.API.AMPERSAND_STATE.extend({

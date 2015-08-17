@@ -164,19 +164,23 @@ exports['for'] = function (context) {
 		return item[0].get("quantity");
 	}
 
-	store.removeItem = function (itemId) {
+	store.removeItem = function (itemId, all) {
 		var self = this;
 
 		var item = store.where({
 			"item_id": itemId
 		});
 		if (item.length === 0) {
-			return COMMON.API.Q.resolve();
+			item = store.get(itemId);
+			if (!item) {
+				return COMMON.API.Q.resolve();
+			}
+		} else {
+			item = item[0];
 		}
-		item = item[0];
 
 		var quantity = item.get("quantity");
-		if (quantity > 1) {
+		if (quantity > 1 && all !== true) {
 			item.set("quantity", quantity - 1);
 			store.trigger("change", item);
 		} else {

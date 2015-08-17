@@ -71,6 +71,10 @@ exports['for'] = function (module, Context) {
 	        });
 
 
+	        var consumerGroups = self.props.appContext.get('stores').consumerGroups;
+	        var consumerGroupSubscriptions = self.props.appContext.get('stores').consumerGroupSubscriptions;
+			var consumerGroupSubscription = self.modelRecordsWithStore(consumerGroupSubscriptions, consumerGroupSubscriptions.where())[0];
+
 	        return {
 
 	        	vendorTitlesForEvents: vendorTitlesForEvents,
@@ -83,7 +87,16 @@ exports['for'] = function (module, Context) {
 	        	days: days,
 
 	        	// The items for each day
-	        	items: items
+	        	items: items,
+
+	        	consumerGroupSubscription: consumerGroupSubscription,
+
+	        	subscribeWithEmail: function (email) {
+
+					self.props.appContext.get('stores').consumerGroupSubscriptions.subscribeWithEmail(
+						consumerGroups.where()[0].get("id"), email
+					);
+				}	        	
 	        };
 	    }
 	});

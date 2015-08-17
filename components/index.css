@@ -24,3 +24,7 @@ UL.GBL_DEV_Views__menu > LI.menu:hover {
 	cursor: pointer;
 }
 
+
+.hidden {
+	display: none !important;
+}
