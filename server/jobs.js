@@ -179,10 +179,10 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
 						'delivered': true,
 						'deliveredEmailsSent': false
 					});
-//					.whereBetween('deliveryStartTime', [
-//						API.MOMENT_TZ().tz("America/Chicago").format(),
-//						API.MOMENT_TZ().tz("America/Chicago").add(1, 'day').format()
-//					]);
+					//.whereBetween('deliveryStartTime', [
+					//	API.MOMENT_TZ().tz("America/Chicago").format(),
+					//	API.MOMENT_TZ().tz("America/Chicago").add(1, 'day').format()
+					//]);
 	    		} else {
 	    			throw new Error("Unknown type '" + type + "'!");
 	    		}
@@ -264,7 +264,7 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
 		    		API.MOMENT_TZ().tz("America/Chicago").second(0).minute(0).hour(9)
 	    		)) {
 	    			console.log("It is not yet 9am CT so we don't yet check to see if we need to send menu emails for today!");
-//					return API.Q.resolve();
+					return API.Q.resolve();
 	    		};
 
 				return fetchPendingEvents("menus").then(function (events) {
