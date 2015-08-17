@@ -4056,6 +4056,10 @@ fieldset .fieldset-title {
   display: block;
 }
 
+.item-tile.is-in-cart .btn-remove {
+  display: inline-block;
+}
+
 .item-tile .item-tile-quantity-wrapper {
   display: none;
   position: absolute;
@@ -4087,6 +4091,10 @@ fieldset .fieldset-title {
   left: 10px;
   top: 16px;
   font-size: 20px;
+}
+
+.item-tile .btn-remove {
+  display: none;
 }
 
 @media screen and (max-width: 620px) {

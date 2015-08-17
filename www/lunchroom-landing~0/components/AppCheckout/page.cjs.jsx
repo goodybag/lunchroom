@@ -9,6 +9,10 @@ module.exports = function (Context) {
           <a href="/">
             <img src="https://d3bqck8kwfkhx5.cloudfront.net/img/logo.png" alt="Goodybag.com" className="navbar-logo"/>
           </a>
+          <ul className="nav">
+            <li><a href="/pages/register" data-component-elm="signupLink">Sign Up</a></li>
+            <li><a href="/pages/login" data-component-elm="loginLink">Login</a></li>
+          </ul>
         </div>
       </header>
       
@@ -95,7 +99,7 @@ module.exports = function (Context) {
       <div className="payment-method-wrapper">
         <div className="form-group form-group-member-name">
           <label for="">Name on card</label>
-          <input value="" type="text" className="form-control" name="card_member_name" data-component-elm="card[name]"/>
+          <input type="text" className="form-control" name="card_member_name" data-component-elm="card[name]"/>
         </div>
         <div className="inline-form-group-list">
           <div className="form-group form-group-card-number">

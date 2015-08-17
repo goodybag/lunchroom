@@ -9,6 +9,10 @@ module.exports = function (Context) {
           <a href="/">
             <img src="https://d3bqck8kwfkhx5.cloudfront.net/img/logo.png" alt="Goodybag.com" className="navbar-logo"/>
           </a>
+          <ul className="nav">
+            <li><a href="/pages/register" data-component-elm="signupLink">Sign Up</a></li>
+            <li><a href="/pages/login" data-component-elm="loginLink">Login</a></li>
+          </ul>
         </div>
       </header>
       
@@ -56,14 +60,14 @@ module.exports = function (Context) {
 </div>
 
 <div className="container items-container" data-component-id="menu">
-  <h1 className="menu-provider-name">Dos Batos Wood Fired Tacos
+  <h1 className="menu-provider-name"><span data-component-prop="restaurantTitle">Dos Batos Wood Fired Tacos</span>
     <span className="no-tip-note">No tips. Just a flat $2.99 fee</span>
   </h1>
   <div className="tiles item-tiles" data-component-section="items">
       <div className="tile item-tile" data-component-section="items" data-component-view="default">
         <div className="tile-cover" style={{"backgroundImage":"url('https://www.filepicker.io/api/file/SZoK9zUvTPWXzmK81aGg/convert?w=400&amp"}} data-component-prop="photoUrl" data-component-prop-target="style/background-image" data-component-elm="showDetailsLink" data-toggle="modal" data-target="#item-modal">
           <div className="item-tile-quantity-wrapper">
-            <div className="item-tile-quantity"></div>
+            <div className="item-tile-quantity" data-component-prop="quantity"></div>
             in your cart
           </div>
         </div>
@@ -75,6 +79,7 @@ module.exports = function (Context) {
           </ul>
           <div className="item-price" data-component-prop="price">$10.90</div>
           <div className="item-tile-actions">
+            <button className="btn btn-default btn-remove" data-component-elm="removeButton" data-component-view="orderable">-</button>
             <button className="btn btn-default btn-add" data-component-elm="addButton" data-component-view="orderable">Add</button>
           </div>
         </div>
@@ -82,7 +87,7 @@ module.exports = function (Context) {
       <div className="tile item-tile is-in-cart" data-component-section="items" data-component-view="default">
         <div className="tile-cover" style={{"backgroundImage":"url('https://www.filepicker.io/api/file/SZoK9zUvTPWXzmK81aGg/convert?w=400&amp"}} data-component-prop="photoUrl" data-component-prop-target="style/background-image" data-component-elm="showDetailsLink" data-toggle="modal" data-target="#item-modal">
           <div className="item-tile-quantity-wrapper">
-            <div className="item-tile-quantity">2</div>
+            <div className="item-tile-quantity" data-component-prop="quantity">2</div>
             in your cart
           </div>
         </div>
@@ -94,7 +99,7 @@ module.exports = function (Context) {
           </ul>
           <div className="item-price" data-component-prop="price">$12.00</div>
           <div className="item-tile-actions">
-            <button className="btn btn-default btn-remove">-</button>
+            <button className="btn btn-default btn-remove" data-component-elm="removeButton" data-component-view="orderable">-</button>
             <button className="btn btn-default btn-add" data-component-elm="addButton" data-component-view="orderable">Add</button>
           </div>
         </div>
@@ -102,7 +107,7 @@ module.exports = function (Context) {
       <div className="tile item-tile is-in-cart" data-component-section="items" data-component-view="default">
         <div className="tile-cover" style={{"backgroundImage":"url('https://www.filepicker.io/api/file/SZoK9zUvTPWXzmK81aGg/convert?w=400&amp"}} data-component-prop="photoUrl" data-component-prop-target="style/background-image" data-component-elm="showDetailsLink" data-toggle="modal" data-target="#item-modal">
           <div className="item-tile-quantity-wrapper">
-            <div className="item-tile-quantity">1</div>
+            <div className="item-tile-quantity" data-component-prop="quantity">1</div>
             in your cart
           </div>
         </div>
@@ -112,7 +117,7 @@ module.exports = function (Context) {
           </ul>
           <div className="item-price" data-component-prop="price">$10.90</div>
           <div className="item-tile-actions">
-            <button className="btn btn-default btn-remove">-</button>
+            <button className="btn btn-default btn-remove" data-component-elm="removeButton" data-component-view="orderable">-</button>
             <button className="btn btn-default btn-add" data-component-elm="addButton" data-component-view="orderable">Add</button>
           </div>
         </div>
@@ -120,7 +125,7 @@ module.exports = function (Context) {
       <div className="tile item-tile" data-component-section="items" data-component-view="default">
         <div className="tile-cover" style={{"backgroundImage":"url('https://www.filepicker.io/api/file/SZoK9zUvTPWXzmK81aGg/convert?w=400&amp"}} data-component-prop="photoUrl" data-component-prop-target="style/background-image" data-component-elm="showDetailsLink" data-toggle="modal" data-target="#item-modal">
           <div className="item-tile-quantity-wrapper">
-            <div className="item-tile-quantity"></div>
+            <div className="item-tile-quantity" data-component-prop="quantity"></div>
             in your cart
           </div>
         </div>
@@ -132,6 +137,7 @@ module.exports = function (Context) {
           </ul>
           <div className="item-price" data-component-prop="price">$12.00</div>
           <div className="item-tile-actions">
+            <button className="btn btn-default btn-remove" data-component-elm="removeButton" data-component-view="orderable">-</button>
             <button className="btn btn-default btn-add" data-component-elm="addButton" data-component-view="orderable">Add</button>
           </div>
         </div>
@@ -139,7 +145,7 @@ module.exports = function (Context) {
       <div className="tile item-tile" data-component-section="items" data-component-view="default">
         <div className="tile-cover" style={{"backgroundImage":"url('https://www.filepicker.io/api/file/SZoK9zUvTPWXzmK81aGg/convert?w=400&amp"}} data-component-prop="photoUrl" data-component-prop-target="style/background-image" data-component-elm="showDetailsLink" data-toggle="modal" data-target="#item-modal">
           <div className="item-tile-quantity-wrapper">
-            <div className="item-tile-quantity"></div>
+            <div className="item-tile-quantity" data-component-prop="quantity"></div>
             in your cart
           </div>
         </div>
@@ -151,6 +157,7 @@ module.exports = function (Context) {
           </ul>
           <div className="item-price" data-component-prop="price">$12.00</div>
           <div className="item-tile-actions">
+            <button className="btn btn-default btn-remove" data-component-elm="removeButton" data-component-view="orderable">-</button>
             <button className="btn btn-default btn-add" data-component-elm="addButton" data-component-view="orderable">Add</button>
           </div>
         </div>
@@ -158,7 +165,7 @@ module.exports = function (Context) {
       <div className="tile item-tile" data-component-section="items" data-component-view="default">
         <div className="tile-cover" style={{"backgroundImage":"url('https://www.filepicker.io/api/file/SZoK9zUvTPWXzmK81aGg/convert?w=400&amp"}} data-component-prop="photoUrl" data-component-prop-target="style/background-image" data-component-elm="showDetailsLink" data-toggle="modal" data-target="#item-modal">
           <div className="item-tile-quantity-wrapper">
-            <div className="item-tile-quantity"></div>
+            <div className="item-tile-quantity" data-component-prop="quantity"></div>
             in your cart
           </div>
         </div>
@@ -170,6 +177,7 @@ module.exports = function (Context) {
           </ul>
           <div className="item-price" data-component-prop="price">$10.90</div>
           <div className="item-tile-actions">
+            <button className="btn btn-default btn-remove" data-component-elm="removeButton" data-component-view="orderable">-</button>
             <button className="btn btn-default btn-add" data-component-elm="addButton" data-component-view="orderable">Add</button>
           </div>
         </div>
@@ -177,7 +185,7 @@ module.exports = function (Context) {
       <div className="tile item-tile" data-component-section="items" data-component-view="default">
         <div className="tile-cover" style={{"backgroundImage":"url('https://www.filepicker.io/api/file/SZoK9zUvTPWXzmK81aGg/convert?w=400&amp"}} data-component-prop="photoUrl" data-component-prop-target="style/background-image" data-component-elm="showDetailsLink" data-toggle="modal" data-target="#item-modal">
           <div className="item-tile-quantity-wrapper">
-            <div className="item-tile-quantity"></div>
+            <div className="item-tile-quantity" data-component-prop="quantity"></div>
             in your cart
           </div>
         </div>
@@ -189,6 +197,7 @@ module.exports = function (Context) {
           </ul>
           <div className="item-price" data-component-prop="price">$12.00</div>
           <div className="item-tile-actions">
+            <button className="btn btn-default btn-remove" data-component-elm="removeButton" data-component-view="orderable">-</button>
             <button className="btn btn-default btn-add" data-component-elm="addButton" data-component-view="orderable">Add</button>
           </div>
         </div>
@@ -196,7 +205,7 @@ module.exports = function (Context) {
       <div className="tile item-tile" data-component-section="items" data-component-view="default">
         <div className="tile-cover" style={{"backgroundImage":"url('https://www.filepicker.io/api/file/SZoK9zUvTPWXzmK81aGg/convert?w=400&amp"}} data-component-prop="photoUrl" data-component-prop-target="style/background-image" data-component-elm="showDetailsLink" data-toggle="modal" data-target="#item-modal">
           <div className="item-tile-quantity-wrapper">
-            <div className="item-tile-quantity"></div>
+            <div className="item-tile-quantity" data-component-prop="quantity"></div>
             in your cart
           </div>
         </div>
@@ -208,6 +217,7 @@ module.exports = function (Context) {
           </ul>
           <div className="item-price" data-component-prop="price">$12.00</div>
           <div className="item-tile-actions">
+            <button className="btn btn-default btn-remove" data-component-elm="removeButton" data-component-view="orderable">-</button>
             <button className="btn btn-default btn-add" data-component-elm="addButton" data-component-view="orderable">Add</button>
           </div>
         </div>
@@ -215,7 +225,7 @@ module.exports = function (Context) {
       <div className="tile item-tile" data-component-section="items" data-component-view="default">
         <div className="tile-cover" style={{"backgroundImage":"url('https://www.filepicker.io/api/file/SZoK9zUvTPWXzmK81aGg/convert?w=400&amp"}} data-component-prop="photoUrl" data-component-prop-target="style/background-image" data-component-elm="showDetailsLink" data-toggle="modal" data-target="#item-modal">
           <div className="item-tile-quantity-wrapper">
-            <div className="item-tile-quantity"></div>
+            <div className="item-tile-quantity" data-component-prop="quantity"></div>
             in your cart
           </div>
         </div>
@@ -227,6 +237,7 @@ module.exports = function (Context) {
           </ul>
           <div className="item-price" data-component-prop="price">$10.90</div>
           <div className="item-tile-actions">
+            <button className="btn btn-default btn-remove" data-component-elm="removeButton" data-component-view="orderable">-</button>
             <button className="btn btn-default btn-add" data-component-elm="addButton" data-component-view="orderable">Add</button>
           </div>
         </div>

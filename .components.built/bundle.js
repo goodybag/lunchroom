@@ -44470,6 +44470,10 @@
 
 		    	self._render_Context = implementation.render.call(self);
 
+		    	self._render_Context.forceUpdate = function () {
+		    		self._trigger_forceUpdate();
+		    	}
+
 		    	self._render_Context._implName = implName;
 
 		    	self._render_Context.Template = API.GBL_TEMPLATE.for(self);
@@ -44871,11 +44875,32 @@
 
 	/* WEBPACK VAR INJECTION */(function(module) {/** @jsx React.DOM */
 	__webpack_require__(133)['for'](module, {
-		getHTML: function (Context) {
 
-			var tpl = __webpack_require__(134)(Context);
+		getTemplate: function (Context) {
 
-			return tpl;
+			return new Context.Template({
+				impl: __webpack_require__(134),
+				markup: function (element) {
+					var self = this;
+
+					$('[data-component-elm="signupLink"]', element).click(function () {
+	console.log("TODO: Signup");
+						return false;
+					});
+
+					$('[data-component-elm="loginLink"]', element).click(function () {
+	console.log("TODO: Login");
+						return false;
+					});
+
+	// TODO: Remove once account management is working.
+	$('[data-component-elm="signupLink"]', element).hide();
+	$('[data-component-elm="loginLink"]', element).hide();
+
+				},
+				fill: function (element, data, Context) {				
+				}
+			});
 		}
 	});
 
@@ -44917,6 +44942,10 @@
 	        React.createElement("div", {className: "container"}, 
 	          React.createElement("a", {href: "/"}, 
 	            React.createElement("img", {src: "https://d3bqck8kwfkhx5.cloudfront.net/img/logo.png", alt: "Goodybag.com", className: "navbar-logo"})
+	          ), 
+	          React.createElement("ul", {className: "nav"}, 
+	            React.createElement("li", null, React.createElement("a", {href: "/pages/register", "data-component-elm": "signupLink"}, "Sign Up")), 
+	            React.createElement("li", null, React.createElement("a", {href: "/pages/login", "data-component-elm": "loginLink"}, "Login"))
 	          )
 	        )
 	      
@@ -45011,7 +45040,6 @@
 						}
 						return false;
 					});
-
 				},
 				fill: function (element, data, Context) {
 					var self = this;
@@ -45726,7 +45754,9 @@
 
 						$('[data-component-elm="addButton"]', element).click(function () {
 
-							Context.appContext.get('stores').cart.addItem(self.getData().item_id, {});
+							Context.appContext.get('stores').cart.addItem(self.getData().item_id, {}).then(function () {
+								Context.forceUpdate();
+							});
 							return false;
 						});
 					},
@@ -45757,6 +45787,12 @@
 
 						var items = Context.items[Context.appContext.get('selectedDay')] || [];
 
+						if (Context.selectedEvent) {
+							self.fillProperties(element, {
+								"restaurantTitle": Context.vendorTitlesForEvents[Context.selectedEvent.get("id")] || ""
+							});
+						}
+
 						self.renderSection("items", items.map(function(item) {
 							return {
 								"id": item.get('id'),
@@ -45765,13 +45801,28 @@
 								"title": item.get("item.title"),
 								"price": item.get("item.format.price"),
 								"description": item.get("item.description"),
+								"quantity": item.get("cartQuantity")
 							};
 						}), function getView (data) {
 							return 'default';
 					    }, function hookEvents(elm, data) {
 
+					    	if (data.quantity > 0) {
+					    		elm.addClass("is-in-cart");
+					    	} else {
+					    		elm.removeClass("is-in-cart");
+					    	}
+
 							$('[data-component-elm="showDetailsLink"]', elm).click(function () {
 								Context.templates.popup.fill(data);
+							});
+
+
+							$('[data-component-elm="removeButton"]', elm).click(function () {
+								Context.appContext.get('stores').cart.removeItem(data.item_id).then(function () {
+									Context.forceUpdate();
+								});
+								return false;
 							});
 
 							$('[data-component-elm="addButton"]', elm).click(function () {
@@ -45799,7 +45850,9 @@
 								Context.appContext.get('stores').cart.addItem(itemBlock.attr("data-id"), options);
 	*/
 
-								Context.appContext.get('stores').cart.addItem(data.item_id, options);
+								Context.appContext.get('stores').cart.addItem(data.item_id, options).then(function () {
+									Context.forceUpdate();
+								});
 								return false;
 							});
 
@@ -45958,6 +46011,7 @@
 
 		        var events = self.props.appContext.get('stores').events;
 		        var menus = self.props.appContext.get('stores').menus;
+		        var vendors = self.props.appContext.get('stores').vendors;
 
 		        var eventIds = {};
 
@@ -45971,16 +46025,6 @@
 		        	eventIds[item.get("id")] = ddd;
 		        });
 
-				var items = {};
-
-		        self.modelRecordsWithStore(menus, menus.getForEventIds(eventIds)).forEach(function (item) {
-
-					if (!items[eventIds[item.get("event_id")]]) {
-						items[eventIds[item.get("event_id")]] = [];
-					}
-	                // Group menu items per day
-					items[eventIds[item.get("event_id")]].push(item);
-		        });
 
 				var selectedEvent = self.props.appContext.get('stores').events.getModeledForDay(self.props.appContext.get('selectedDayId'));
 				if (selectedEvent.length > 0) {
@@ -45992,9 +46036,31 @@
 					selectedEvent = null;
 				}
 
-	console.log("selectedEvent", selectedEvent);
+
+				var items = {};
+				var vendorTitlesForEvents = {};
+
+		        self.modelRecordsWithStore(menus, menus.getForEventIds(eventIds)).forEach(function (item) {
+
+					if (!items[eventIds[item.get("event_id")]]) {
+						items[eventIds[item.get("event_id")]] = [];
+					}
+	                // Group menu items per day
+					items[eventIds[item.get("event_id")]].push(item);
+
+					// We only grap the first vendor for each event for now.
+					// TODO: Grab more vendor IDs once we allow multiple per event.
+					if (!vendorTitlesForEvents[item.get("event_id")]) {
+						if (vendors.get(item.get("vendor_id"))) {
+							vendorTitlesForEvents[item.get("event_id")] = vendors.get(item.get("vendor_id")).get("title");
+						}
+					}
+		        });
+
 
 		        return {
+
+		        	vendorTitlesForEvents: vendorTitlesForEvents,
 
 					eventToday: self.modelRecordsWithStore(events, events.getToday()).pop(),
 
@@ -46113,14 +46179,14 @@
 	  return (
 	    React.createElement("div", {className: "container items-container"}, 
 
-	  React.createElement("h1", {className: "menu-provider-name"}, "Dos Batos Wood Fired Tacos", 
+	  React.createElement("h1", {className: "menu-provider-name"}, React.createElement("span", {"data-component-prop": "restaurantTitle"}, "Dos Batos Wood Fired Tacos"), 
 	    React.createElement("span", {className: "no-tip-note"}, "No tips. Just a flat $2.99 fee")
 	  ), 
 	  React.createElement("div", {className: "tiles item-tiles", "data-component-section": "items"}, 
 	      React.createElement("div", {className: "tile item-tile", "data-component-section": "items", "data-component-view": "default"}, 
 	        React.createElement("div", {className: "tile-cover", style: {"backgroundImage":"url('https://www.filepicker.io/api/file/SZoK9zUvTPWXzmK81aGg/convert?w=400&amp"}, "data-component-prop": "photoUrl", "data-component-prop-target": "style/background-image", "data-component-elm": "showDetailsLink", "data-toggle": "modal", "data-target": "#item-modal"}, 
 	          React.createElement("div", {className: "item-tile-quantity-wrapper"}, 
-	            React.createElement("div", {className: "item-tile-quantity"}), 
+	            React.createElement("div", {className: "item-tile-quantity", "data-component-prop": "quantity"}), 
 	            "in your cart"
 	          )
 	        ), 
@@ -46132,6 +46198,7 @@
 	          ), 
 	          React.createElement("div", {className: "item-price", "data-component-prop": "price"}, "$10.90"), 
 	          React.createElement("div", {className: "item-tile-actions"}, 
+	            React.createElement("button", {className: "btn btn-default btn-remove", "data-component-elm": "removeButton", "data-component-view": "orderable"}, "-"), 
 	            React.createElement("button", {className: "btn btn-default btn-add", "data-component-elm": "addButton", "data-component-view": "orderable"}, "Add")
 	          )
 	        )
@@ -46139,7 +46206,7 @@
 	      React.createElement("div", {className: "tile item-tile is-in-cart", "data-component-section": "items", "data-component-view": "default"}, 
 	        React.createElement("div", {className: "tile-cover", style: {"backgroundImage":"url('https://www.filepicker.io/api/file/SZoK9zUvTPWXzmK81aGg/convert?w=400&amp"}, "data-component-prop": "photoUrl", "data-component-prop-target": "style/background-image", "data-component-elm": "showDetailsLink", "data-toggle": "modal", "data-target": "#item-modal"}, 
 	          React.createElement("div", {className: "item-tile-quantity-wrapper"}, 
-	            React.createElement("div", {className: "item-tile-quantity"}, "2"), 
+	            React.createElement("div", {className: "item-tile-quantity", "data-component-prop": "quantity"}, "2"), 
 	            "in your cart"
 	          )
 	        ), 
@@ -46151,7 +46218,7 @@
 	          ), 
 	          React.createElement("div", {className: "item-price", "data-component-prop": "price"}, "$12.00"), 
 	          React.createElement("div", {className: "item-tile-actions"}, 
-	            React.createElement("button", {className: "btn btn-default btn-remove"}, "-"), 
+	            React.createElement("button", {className: "btn btn-default btn-remove", "data-component-elm": "removeButton", "data-component-view": "orderable"}, "-"), 
 	            React.createElement("button", {className: "btn btn-default btn-add", "data-component-elm": "addButton", "data-component-view": "orderable"}, "Add")
 	          )
 	        )
@@ -46159,7 +46226,7 @@
 	      React.createElement("div", {className: "tile item-tile is-in-cart", "data-component-section": "items", "data-component-view": "default"}, 
 	        React.createElement("div", {className: "tile-cover", style: {"backgroundImage":"url('https://www.filepicker.io/api/file/SZoK9zUvTPWXzmK81aGg/convert?w=400&amp"}, "data-component-prop": "photoUrl", "data-component-prop-target": "style/background-image", "data-component-elm": "showDetailsLink", "data-toggle": "modal", "data-target": "#item-modal"}, 
 	          React.createElement("div", {className: "item-tile-quantity-wrapper"}, 
-	            React.createElement("div", {className: "item-tile-quantity"}, "1"), 
+	            React.createElement("div", {className: "item-tile-quantity", "data-component-prop": "quantity"}, "1"), 
 	            "in your cart"
 	          )
 	        ), 
@@ -46169,7 +46236,7 @@
 	          ), 
 	          React.createElement("div", {className: "item-price", "data-component-prop": "price"}, "$10.90"), 
 	          React.createElement("div", {className: "item-tile-actions"}, 
-	            React.createElement("button", {className: "btn btn-default btn-remove"}, "-"), 
+	            React.createElement("button", {className: "btn btn-default btn-remove", "data-component-elm": "removeButton", "data-component-view": "orderable"}, "-"), 
 	            React.createElement("button", {className: "btn btn-default btn-add", "data-component-elm": "addButton", "data-component-view": "orderable"}, "Add")
 	          )
 	        )
@@ -46177,7 +46244,7 @@
 	      React.createElement("div", {className: "tile item-tile", "data-component-section": "items", "data-component-view": "default"}, 
 	        React.createElement("div", {className: "tile-cover", style: {"backgroundImage":"url('https://www.filepicker.io/api/file/SZoK9zUvTPWXzmK81aGg/convert?w=400&amp"}, "data-component-prop": "photoUrl", "data-component-prop-target": "style/background-image", "data-component-elm": "showDetailsLink", "data-toggle": "modal", "data-target": "#item-modal"}, 
 	          React.createElement("div", {className: "item-tile-quantity-wrapper"}, 
-	            React.createElement("div", {className: "item-tile-quantity"}), 
+	            React.createElement("div", {className: "item-tile-quantity", "data-component-prop": "quantity"}), 
 	            "in your cart"
 	          )
 	        ), 
@@ -46189,6 +46256,7 @@
 	          ), 
 	          React.createElement("div", {className: "item-price", "data-component-prop": "price"}, "$12.00"), 
 	          React.createElement("div", {className: "item-tile-actions"}, 
+	            React.createElement("button", {className: "btn btn-default btn-remove", "data-component-elm": "removeButton", "data-component-view": "orderable"}, "-"), 
 	            React.createElement("button", {className: "btn btn-default btn-add", "data-component-elm": "addButton", "data-component-view": "orderable"}, "Add")
 	          )
 	        )
@@ -46196,7 +46264,7 @@
 	      React.createElement("div", {className: "tile item-tile", "data-component-section": "items", "data-component-view": "default"}, 
 	        React.createElement("div", {className: "tile-cover", style: {"backgroundImage":"url('https://www.filepicker.io/api/file/SZoK9zUvTPWXzmK81aGg/convert?w=400&amp"}, "data-component-prop": "photoUrl", "data-component-prop-target": "style/background-image", "data-component-elm": "showDetailsLink", "data-toggle": "modal", "data-target": "#item-modal"}, 
 	          React.createElement("div", {className: "item-tile-quantity-wrapper"}, 
-	            React.createElement("div", {className: "item-tile-quantity"}), 
+	            React.createElement("div", {className: "item-tile-quantity", "data-component-prop": "quantity"}), 
 	            "in your cart"
 	          )
 	        ), 
@@ -46208,6 +46276,7 @@
 	          ), 
 	          React.createElement("div", {className: "item-price", "data-component-prop": "price"}, "$12.00"), 
 	          React.createElement("div", {className: "item-tile-actions"}, 
+	            React.createElement("button", {className: "btn btn-default btn-remove", "data-component-elm": "removeButton", "data-component-view": "orderable"}, "-"), 
 	            React.createElement("button", {className: "btn btn-default btn-add", "data-component-elm": "addButton", "data-component-view": "orderable"}, "Add")
 	          )
 	        )
@@ -46215,7 +46284,7 @@
 	      React.createElement("div", {className: "tile item-tile", "data-component-section": "items", "data-component-view": "default"}, 
 	        React.createElement("div", {className: "tile-cover", style: {"backgroundImage":"url('https://www.filepicker.io/api/file/SZoK9zUvTPWXzmK81aGg/convert?w=400&amp"}, "data-component-prop": "photoUrl", "data-component-prop-target": "style/background-image", "data-component-elm": "showDetailsLink", "data-toggle": "modal", "data-target": "#item-modal"}, 
 	          React.createElement("div", {className: "item-tile-quantity-wrapper"}, 
-	            React.createElement("div", {className: "item-tile-quantity"}), 
+	            React.createElement("div", {className: "item-tile-quantity", "data-component-prop": "quantity"}), 
 	            "in your cart"
 	          )
 	        ), 
@@ -46227,6 +46296,7 @@
 	          ), 
 	          React.createElement("div", {className: "item-price", "data-component-prop": "price"}, "$10.90"), 
 	          React.createElement("div", {className: "item-tile-actions"}, 
+	            React.createElement("button", {className: "btn btn-default btn-remove", "data-component-elm": "removeButton", "data-component-view": "orderable"}, "-"), 
 	            React.createElement("button", {className: "btn btn-default btn-add", "data-component-elm": "addButton", "data-component-view": "orderable"}, "Add")
 	          )
 	        )
@@ -46234,7 +46304,7 @@
 	      React.createElement("div", {className: "tile item-tile", "data-component-section": "items", "data-component-view": "default"}, 
 	        React.createElement("div", {className: "tile-cover", style: {"backgroundImage":"url('https://www.filepicker.io/api/file/SZoK9zUvTPWXzmK81aGg/convert?w=400&amp"}, "data-component-prop": "photoUrl", "data-component-prop-target": "style/background-image", "data-component-elm": "showDetailsLink", "data-toggle": "modal", "data-target": "#item-modal"}, 
 	          React.createElement("div", {className: "item-tile-quantity-wrapper"}, 
-	            React.createElement("div", {className: "item-tile-quantity"}), 
+	            React.createElement("div", {className: "item-tile-quantity", "data-component-prop": "quantity"}), 
 	            "in your cart"
 	          )
 	        ), 
@@ -46246,6 +46316,7 @@
 	          ), 
 	          React.createElement("div", {className: "item-price", "data-component-prop": "price"}, "$12.00"), 
 	          React.createElement("div", {className: "item-tile-actions"}, 
+	            React.createElement("button", {className: "btn btn-default btn-remove", "data-component-elm": "removeButton", "data-component-view": "orderable"}, "-"), 
 	            React.createElement("button", {className: "btn btn-default btn-add", "data-component-elm": "addButton", "data-component-view": "orderable"}, "Add")
 	          )
 	        )
@@ -46253,7 +46324,7 @@
 	      React.createElement("div", {className: "tile item-tile", "data-component-section": "items", "data-component-view": "default"}, 
 	        React.createElement("div", {className: "tile-cover", style: {"backgroundImage":"url('https://www.filepicker.io/api/file/SZoK9zUvTPWXzmK81aGg/convert?w=400&amp"}, "data-component-prop": "photoUrl", "data-component-prop-target": "style/background-image", "data-component-elm": "showDetailsLink", "data-toggle": "modal", "data-target": "#item-modal"}, 
 	          React.createElement("div", {className: "item-tile-quantity-wrapper"}, 
-	            React.createElement("div", {className: "item-tile-quantity"}), 
+	            React.createElement("div", {className: "item-tile-quantity", "data-component-prop": "quantity"}), 
 	            "in your cart"
 	          )
 	        ), 
@@ -46265,6 +46336,7 @@
 	          ), 
 	          React.createElement("div", {className: "item-price", "data-component-prop": "price"}, "$12.00"), 
 	          React.createElement("div", {className: "item-tile-actions"}, 
+	            React.createElement("button", {className: "btn btn-default btn-remove", "data-component-elm": "removeButton", "data-component-view": "orderable"}, "-"), 
 	            React.createElement("button", {className: "btn btn-default btn-add", "data-component-elm": "addButton", "data-component-view": "orderable"}, "Add")
 	          )
 	        )
@@ -46272,7 +46344,7 @@
 	      React.createElement("div", {className: "tile item-tile", "data-component-section": "items", "data-component-view": "default"}, 
 	        React.createElement("div", {className: "tile-cover", style: {"backgroundImage":"url('https://www.filepicker.io/api/file/SZoK9zUvTPWXzmK81aGg/convert?w=400&amp"}, "data-component-prop": "photoUrl", "data-component-prop-target": "style/background-image", "data-component-elm": "showDetailsLink", "data-toggle": "modal", "data-target": "#item-modal"}, 
 	          React.createElement("div", {className: "item-tile-quantity-wrapper"}, 
-	            React.createElement("div", {className: "item-tile-quantity"}), 
+	            React.createElement("div", {className: "item-tile-quantity", "data-component-prop": "quantity"}), 
 	            "in your cart"
 	          )
 	        ), 
@@ -46284,6 +46356,7 @@
 	          ), 
 	          React.createElement("div", {className: "item-price", "data-component-prop": "price"}, "$10.90"), 
 	          React.createElement("div", {className: "item-tile-actions"}, 
+	            React.createElement("button", {className: "btn btn-default btn-remove", "data-component-elm": "removeButton", "data-component-view": "orderable"}, "-"), 
 	            React.createElement("button", {className: "btn btn-default btn-add", "data-component-elm": "addButton", "data-component-view": "orderable"}, "Add")
 	          )
 	        )
@@ -46385,12 +46458,12 @@
 				    		copyName.lastValue = newValue;
 							$('[data-component-elm="card[name]"]', element).val(copyName.lastValue);
 					    });
+
 					},
 					fill: function (element, data, Context) {
 				    	var values = Context.order.get("form");
 				    	if (values) {
 				    		values = JSON.parse(values);
-
 							this.fillProperties(element, values);
 							this.fillElements(element, values);
 						}
@@ -46430,7 +46503,7 @@
 
 							$('[data-component-elm="removeLink"]', elm).click(function () {
 
-					    		Context.appContext.get('stores').cart.remove(data.id);
+					    		Context.appContext.get('stores').cart.removeItem(data.id);
 								return false;
 							});
 
@@ -46810,7 +46883,7 @@
 	      React.createElement("div", {className: "payment-method-wrapper"}, 
 	        React.createElement("div", {className: "form-group form-group-member-name"}, 
 	          React.createElement("label", {for: ""}, "Name on card"), 
-	          React.createElement("input", {value: "", type: "text", className: "form-control", name: "card_member_name", "data-component-elm": "card[name]"})
+	          React.createElement("input", {type: "text", className: "form-control", name: "card_member_name", "data-component-elm": "card[name]"})
 	        ), 
 	        React.createElement("div", {className: "inline-form-group-list"}, 
 	          React.createElement("div", {className: "form-group form-group-card-number"}, 
@@ -60346,7 +60419,17 @@
 		        "item.format.price": "string",
 		        "item.description": "string",
 		        "item.options": "string"
-		    }
+		    },
+		    derived: {
+			    "cartQuantity": {
+					deps: [
+						"item_id"
+					],
+		            fn: function () {
+		            	return context.appContext.get('stores').cart.getQuantityForItemId(this.item_id);
+		            }
+			    }
+			}
 		});
 
 		store.getForEventIds = function (ids) {
@@ -60800,8 +60883,8 @@
 				summary.amount &&
 				summary.tax
 			) {
-				summary["taxAmount"] = Math.round(summary.amount * summary.tax / 100);
-				summary["format.tax"] = summary.tax + "%";
+				summary["taxAmount"] = Math.round(summary.amount * summary.tax/100 / 100);
+				summary["format.tax"] = summary.tax/100 + "%";
 				summary["format.taxAmount"] = COMMON.API.NUMERAL(summary["taxAmount"] / 100).format('$0.00');
 			}
 
@@ -60853,6 +60936,36 @@
 	    	return count;
 		}
 
+		store.getQuantityForItemId = function (itemId) {
+			var item = store.where({
+				"item_id": itemId
+			});
+			if (item.length === 0) return 0;
+			return item[0].get("quantity");
+		}
+
+		store.removeItem = function (itemId) {
+			var self = this;
+
+			var item = store.where({
+				"item_id": itemId
+			});
+			if (item.length === 0) {
+				return COMMON.API.Q.resolve();
+			}
+			item = item[0];
+
+			var quantity = item.get("quantity");
+			if (quantity > 1) {
+				item.set("quantity", quantity - 1);
+				store.trigger("change", item);
+			} else {
+				store.remove(item.get("id"));
+				store.trigger("change", null);
+			}
+			return COMMON.API.Q.resolve();
+		}
+
 		store.addItem = function (itemId, options) {
 			var self = this;
 
@@ -60887,7 +61000,7 @@
 
 			return ensureItem().then(function (item) {
 				item.set("quantity", item.get("quantity") + 1);
-				store.emit("change", item);
+				store.trigger("change", item);
 			});
 		}
 

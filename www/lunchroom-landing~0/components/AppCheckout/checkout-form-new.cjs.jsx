@@ -26,7 +26,7 @@ module.exports = function (Context) {
       <div className="payment-method-wrapper">
         <div className="form-group form-group-member-name">
           <label for="">Name on card</label>
-          <input value="" type="text" className="form-control" name="card_member_name" data-component-elm="card[name]"/>
+          <input type="text" className="form-control" name="card_member_name" data-component-elm="card[name]"/>
         </div>
         <div className="inline-form-group-list">
           <div className="form-group form-group-card-number">
