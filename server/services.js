@@ -93,7 +93,7 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
                 message = API.DEEPMERGE({
                     "subject": "Your Lunchroom Order has Arrived!",
                     "text": [
-                        "Lunchroom Order #" + message.data.orderHashId.substring(0, 7) + " has arrived and waiting for you at:",
+                        "Lunchroom Order #" + message.data.orderHashId.substring(0, 7) + " has arrived and is waiting for you at:",
                         "",
                         message.data.menu.deliveryLocation
                         "",
