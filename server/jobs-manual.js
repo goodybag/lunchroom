@@ -10,20 +10,31 @@ var knex = KNEX({
 		"host": "ec2-107-21-253-234.compute-1.amazonaws.com",
         "port": 6002,
         "user": "uenn1nb98f3669",
-        "password": "",
+        "password": "p5i82eo3fhl5m0etr22uimc8cmk",
         "database": "ddn7dgetbsvnkc",
         "ssl": true
     }
 });
 
+//knex('orders').where('form', 'like', '%jag@goodybag.com%').then(function (resp) {
+knex('orders').then(function (resp) {
+
+	console.log("resp1", resp);
+
+});
+
 /*
-knex('orders').where('id', 6).orderBy('time', 'desc').limit(5).then(function (resp) {
+knex('orders').whereIn('id', [
+	3,
+	7,
+	8
+]).delete().then(function (resp) {
 
-console.log("resp", resp);
-
+console.log("resp2", resp);
 
 });
 */
+
 
 /*
 var stripe = STRIPE("");

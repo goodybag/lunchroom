@@ -4139,7 +4139,7 @@ fieldset .fieldset-title {
 @media screen and (max-width: 620px) {
   .tabs > a {
     font-size: 14px;
-    padding: 6px 12px 2px;
+    padding: 6px 11.5px 2px;
     line-height: 18px;
   }
 }
@@ -4151,7 +4151,7 @@ fieldset .fieldset-title {
 .tabs > a.active {
   color: #333a42;
   background-color: white;
-  border: 1px solid #ffffff;
+  border-color: #ffffff;
 }
 
 .tabs > a small {
@@ -4857,7 +4857,7 @@ a:hover {
     float: left;
     clear: left;
     margin-left: -20px;
-    margin-bottom: -1px;
+    margin-bottom: -2px;
   }
 
   .lunchroom-header .modules {
