@@ -147,7 +147,10 @@ console.log("error!", err.stack);
 
 				return callback(err);
 			});
-		})();
+		})().then(function () {
+
+			return store.loadForEmail(email);
+		});
 	}
 
 	store.loadForEmail = function (email) {

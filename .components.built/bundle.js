@@ -45734,7 +45734,7 @@
 
 						$('[data-component-elm="signupButton"]', element).click(function () {
 
-							var email = $('[data-component-prop="email"]', element).val();
+							var email = $('[data-component-elm="email"]', element).val();
 							if (email) {
 
 					    		Context.subscribeWithEmail(email);
@@ -60824,7 +60824,10 @@
 
 					return callback(err);
 				});
-			})();
+			})().then(function () {
+
+				return store.loadForEmail(email);
+			});
 		}
 
 		store.loadForEmail = function (email) {

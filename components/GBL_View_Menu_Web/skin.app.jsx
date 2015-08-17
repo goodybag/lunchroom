@@ -9,7 +9,7 @@ require("./component.jsx")['for'](module, {
 
 					$('[data-component-elm="signupButton"]', element).click(function () {
 
-						var email = $('[data-component-prop="email"]', element).val();
+						var email = $('[data-component-elm="email"]', element).val();
 						if (email) {
 
 				    		Context.subscribeWithEmail(email);
