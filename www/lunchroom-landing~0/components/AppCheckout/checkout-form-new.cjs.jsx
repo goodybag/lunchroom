@@ -41,7 +41,7 @@ module.exports = function (Context) {
           <div className="form-group form-group-expiration">
             <label for="">Expiration date</label>
             <input type="tel" className="form-control" placeholder="MM" name="card_expiration_month" data-component-elm="card[expire-month]"/>
-            /
+            <span className="control-separator">/</span>
             <input type="tel" className="form-control" placeholder="YY" name="card_expiration_year" data-component-elm="card[expire-year]"/>
           </div>
         </div>

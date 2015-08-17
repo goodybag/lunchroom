@@ -45734,19 +45734,17 @@
 
 						$('[data-component-elm="signupButton"]', element).click(function () {
 
-							var email = $('[data-component-prop="email"]', element).val();
-							if (email) {
+							var email = $('[data-component-elm="email"]', element).val();
+							var phone = $('[data-component-elm="phone"]', element).val();
+							if (email || phone) {
 
-					    		Context.subscribeWithEmail(email);
+					    		Context.subscribeWithEmail(email, phone);
 
 					    		element.addClass("hidden");
 							}
 
 							return false;
 						});
-
-	// TODO: Remove this once we can signup with phone number as well.
-	$('.phone-form-group').addClass('hidden');
 
 					},
 					fill: function (element, data, Context) {
@@ -45761,7 +45759,14 @@
 	//						});
 						}
 					}
-				}),			
+				}),
+				"feedback": new Context.Template({
+					impl: __webpack_require__(278),
+					markup: function (element) {
+					},
+					fill: function (element, data, Context) {
+					}
+				}),
 				"too_late": new Context.Template({
 					impl: __webpack_require__(151),
 					markup: function (element) {
@@ -45960,7 +45965,8 @@
 							React.createElement(Context.templates.too_late.comp, null), 
 							React.createElement(Context.templates.popup.comp, null), 
 							React.createElement(Context.templates.menu.comp, null), 
-							React.createElement(Context.templates.menu_signup.comp, null)
+							React.createElement(Context.templates.menu_signup.comp, null), 
+							React.createElement(Context.templates.feedback.comp, null)
 						)
 					);
 
@@ -45970,7 +45976,8 @@
 						React.createElement("div", null, 
 							React.createElement(Context.templates.popup.comp, null), 
 							React.createElement(Context.templates.menu.comp, null), 
-							React.createElement(Context.templates.menu_signup.comp, null)
+							React.createElement(Context.templates.menu_signup.comp, null), 
+							React.createElement(Context.templates.feedback.comp, null)
 						)
 					);
 				}
@@ -46115,10 +46122,10 @@
 
 		        	consumerGroupSubscription: consumerGroupSubscription,
 
-		        	subscribeWithEmail: function (email) {
+		        	subscribeWithEmail: function (email, phone) {
 
 						self.props.appContext.get('stores').consumerGroupSubscriptions.subscribeWithEmail(
-							consumerGroups.where()[0].get("id"), email
+							consumerGroups.where()[0].get("id"), email, phone
 						);
 					}	        	
 		        };
@@ -46251,8 +46258,7 @@
 	          ), 
 	          React.createElement("div", {className: "item-price", "data-component-prop": "price"}, "$10.90"), 
 	          React.createElement("div", {className: "item-tile-actions"}, 
-	            React.createElement("button", {className: "btn btn-default btn-remove", "data-component-elm": "removeButton", "data-component-view": "orderable"}, "-"), 
-	            React.createElement("button", {className: "btn btn-default btn-add", "data-component-elm": "addButton", "data-component-view": "orderable"}, "Add")
+	            React.createElement("button", {className: "btn btn-default btn-remove", "data-component-elm": "removeButton", "data-component-view": "orderable"}, "-"), React.createElement("button", {className: "btn btn-default btn-add", "data-component-elm": "addButton", "data-component-view": "orderable"}, "Add")
 	          )
 	        )
 	      ), 
@@ -46271,8 +46277,7 @@
 	          ), 
 	          React.createElement("div", {className: "item-price", "data-component-prop": "price"}, "$12.00"), 
 	          React.createElement("div", {className: "item-tile-actions"}, 
-	            React.createElement("button", {className: "btn btn-default btn-remove", "data-component-elm": "removeButton", "data-component-view": "orderable"}, "-"), 
-	            React.createElement("button", {className: "btn btn-default btn-add", "data-component-elm": "addButton", "data-component-view": "orderable"}, "Add")
+	            React.createElement("button", {className: "btn btn-default btn-remove", "data-component-elm": "removeButton", "data-component-view": "orderable"}, "-"), React.createElement("button", {className: "btn btn-default btn-add", "data-component-elm": "addButton", "data-component-view": "orderable"}, "Add")
 	          )
 	        )
 	      ), 
@@ -46289,8 +46294,7 @@
 	          ), 
 	          React.createElement("div", {className: "item-price", "data-component-prop": "price"}, "$10.90"), 
 	          React.createElement("div", {className: "item-tile-actions"}, 
-	            React.createElement("button", {className: "btn btn-default btn-remove", "data-component-elm": "removeButton", "data-component-view": "orderable"}, "-"), 
-	            React.createElement("button", {className: "btn btn-default btn-add", "data-component-elm": "addButton", "data-component-view": "orderable"}, "Add")
+	            React.createElement("button", {className: "btn btn-default btn-remove", "data-component-elm": "removeButton", "data-component-view": "orderable"}, "-"), React.createElement("button", {className: "btn btn-default btn-add", "data-component-elm": "addButton", "data-component-view": "orderable"}, "Add")
 	          )
 	        )
 	      ), 
@@ -46309,8 +46313,7 @@
 	          ), 
 	          React.createElement("div", {className: "item-price", "data-component-prop": "price"}, "$12.00"), 
 	          React.createElement("div", {className: "item-tile-actions"}, 
-	            React.createElement("button", {className: "btn btn-default btn-remove", "data-component-elm": "removeButton", "data-component-view": "orderable"}, "-"), 
-	            React.createElement("button", {className: "btn btn-default btn-add", "data-component-elm": "addButton", "data-component-view": "orderable"}, "Add")
+	            React.createElement("button", {className: "btn btn-default btn-remove", "data-component-elm": "removeButton", "data-component-view": "orderable"}, "-"), React.createElement("button", {className: "btn btn-default btn-add", "data-component-elm": "addButton", "data-component-view": "orderable"}, "Add")
 	          )
 	        )
 	      ), 
@@ -46329,8 +46332,7 @@
 	          ), 
 	          React.createElement("div", {className: "item-price", "data-component-prop": "price"}, "$12.00"), 
 	          React.createElement("div", {className: "item-tile-actions"}, 
-	            React.createElement("button", {className: "btn btn-default btn-remove", "data-component-elm": "removeButton", "data-component-view": "orderable"}, "-"), 
-	            React.createElement("button", {className: "btn btn-default btn-add", "data-component-elm": "addButton", "data-component-view": "orderable"}, "Add")
+	            React.createElement("button", {className: "btn btn-default btn-remove", "data-component-elm": "removeButton", "data-component-view": "orderable"}, "-"), React.createElement("button", {className: "btn btn-default btn-add", "data-component-elm": "addButton", "data-component-view": "orderable"}, "Add")
 	          )
 	        )
 	      ), 
@@ -46349,8 +46351,7 @@
 	          ), 
 	          React.createElement("div", {className: "item-price", "data-component-prop": "price"}, "$10.90"), 
 	          React.createElement("div", {className: "item-tile-actions"}, 
-	            React.createElement("button", {className: "btn btn-default btn-remove", "data-component-elm": "removeButton", "data-component-view": "orderable"}, "-"), 
-	            React.createElement("button", {className: "btn btn-default btn-add", "data-component-elm": "addButton", "data-component-view": "orderable"}, "Add")
+	            React.createElement("button", {className: "btn btn-default btn-remove", "data-component-elm": "removeButton", "data-component-view": "orderable"}, "-"), React.createElement("button", {className: "btn btn-default btn-add", "data-component-elm": "addButton", "data-component-view": "orderable"}, "Add")
 	          )
 	        )
 	      ), 
@@ -46369,8 +46370,7 @@
 	          ), 
 	          React.createElement("div", {className: "item-price", "data-component-prop": "price"}, "$12.00"), 
 	          React.createElement("div", {className: "item-tile-actions"}, 
-	            React.createElement("button", {className: "btn btn-default btn-remove", "data-component-elm": "removeButton", "data-component-view": "orderable"}, "-"), 
-	            React.createElement("button", {className: "btn btn-default btn-add", "data-component-elm": "addButton", "data-component-view": "orderable"}, "Add")
+	            React.createElement("button", {className: "btn btn-default btn-remove", "data-component-elm": "removeButton", "data-component-view": "orderable"}, "-"), React.createElement("button", {className: "btn btn-default btn-add", "data-component-elm": "addButton", "data-component-view": "orderable"}, "Add")
 	          )
 	        )
 	      ), 
@@ -46389,8 +46389,7 @@
 	          ), 
 	          React.createElement("div", {className: "item-price", "data-component-prop": "price"}, "$12.00"), 
 	          React.createElement("div", {className: "item-tile-actions"}, 
-	            React.createElement("button", {className: "btn btn-default btn-remove", "data-component-elm": "removeButton", "data-component-view": "orderable"}, "-"), 
-	            React.createElement("button", {className: "btn btn-default btn-add", "data-component-elm": "addButton", "data-component-view": "orderable"}, "Add")
+	            React.createElement("button", {className: "btn btn-default btn-remove", "data-component-elm": "removeButton", "data-component-view": "orderable"}, "-"), React.createElement("button", {className: "btn btn-default btn-add", "data-component-elm": "addButton", "data-component-view": "orderable"}, "Add")
 	          )
 	        )
 	      ), 
@@ -46409,8 +46408,7 @@
 	          ), 
 	          React.createElement("div", {className: "item-price", "data-component-prop": "price"}, "$10.90"), 
 	          React.createElement("div", {className: "item-tile-actions"}, 
-	            React.createElement("button", {className: "btn btn-default btn-remove", "data-component-elm": "removeButton", "data-component-view": "orderable"}, "-"), 
-	            React.createElement("button", {className: "btn btn-default btn-add", "data-component-elm": "addButton", "data-component-view": "orderable"}, "Add")
+	            React.createElement("button", {className: "btn btn-default btn-remove", "data-component-elm": "removeButton", "data-component-view": "orderable"}, "-"), React.createElement("button", {className: "btn btn-default btn-add", "data-component-elm": "addButton", "data-component-view": "orderable"}, "Add")
 	          )
 	        )
 	      )
@@ -46950,7 +46948,7 @@
 	          React.createElement("div", {className: "form-group form-group-expiration"}, 
 	            React.createElement("label", {for: ""}, "Expiration date"), 
 	            React.createElement("input", {type: "tel", className: "form-control", placeholder: "MM", name: "card_expiration_month", "data-component-elm": "card[expire-month]"}), 
-	            "/", 
+	            React.createElement("span", {className: "control-separator"}, "/"), 
 	            React.createElement("input", {type: "tel", className: "form-control", placeholder: "YY", name: "card_expiration_year", "data-component-elm": "card[expire-year]"})
 	          )
 	        ), 
@@ -51239,7 +51237,8 @@
 	                    React.createElement("th", null, "Time"), 
 	                    React.createElement("th", null, "Company"), 
 	                    React.createElement("th", null, "Subscribed"), 
-	                    React.createElement("th", null, "Confirmed")
+	                    React.createElement("th", null, "Confirmed"), 
+	                    React.createElement("th", null, "Phone")
 	                )
 	              ), 
 	              React.createElement("tbody", null, 
@@ -51251,7 +51250,8 @@
 	                          React.createElement("td", null, item.get("subscribe_time")), 
 	                          React.createElement("td", null, item.get("consumerGroup.title")), 
 	                          React.createElement("td", null, item.get("subscribeEmail")), 
-	                          React.createElement("td", null, item.get("confirmedEmail"))
+	                          React.createElement("td", null, item.get("confirmedEmail")), 
+	                          React.createElement("td", null, item.get("subscribePhone"))
 	                        )
 	                    );
 	                    return Row;
@@ -60784,12 +60784,13 @@
 		        confirmed_time: "string",
 		        subscribeEmail: "string",
 		        confirmedEmail: "string",
+		        subscribePhone: "string",
 
 		        "consumerGroup.title": "string"
 			}
 		});
 
-		store.subscribeWithEmail = function (consumer_group_id, email) {
+		store.subscribeWithEmail = function (consumer_group_id, email, phone) {
 			var self = this;
 			return COMMON.API.Q.denodeify(function (callback) {
 
@@ -60798,7 +60799,8 @@
 						type: "consumer-group-subscriptions",
 						attributes: {
 							consumer_group_id: consumer_group_id,
-							subscribeEmail: email
+							subscribeEmail: email || "",
+							subscribePhone: phone || ""
 						}
 					}
 				};
@@ -60824,7 +60826,10 @@
 
 					return callback(err);
 				});
-			})();
+			})().then(function () {
+
+				return store.loadForEmail(email);
+			});
 		}
 
 		store.loadForEmail = function (email) {
@@ -61790,6 +61795,22 @@
 		}
 		// When the module is disposed, remove the <style> tags
 		module.hot.dispose(function() { update(); });
+	}
+
+/***/ },
+/* 278 */
+/***/ function(module, exports) {
+
+	/** @jsx React.DOM */module.exports = function (Context) {
+	  // TODO: Remove this once we can inject 'React' automatically at build time.
+	  var React = Context.REACT;
+	  return (
+	    React.createElement("div", {className: "container outro-header-section"}, 
+
+	  React.createElement("h3", {className: "outro-header"}, "To give feedback or ask questions, please email us at ", React.createElement("a", {href: "mailto:support@goodybag.com"}, "support@goodybag.com"))
+
+	    )
+	  );
 	}
 
 /***/ }

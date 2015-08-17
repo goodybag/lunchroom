@@ -4038,6 +4038,7 @@ fieldset .fieldset-title {
 .item-tile .item-tile-actions {
   float: right;
   margin-top: -40px;
+  font-size: 0;
 }
 
 .item-tile .btn-remove,
@@ -4050,6 +4051,7 @@ fieldset .fieldset-title {
   border-width: 1px;
   border-bottom-width: 1px;
   font-size: 14px;
+  margin-left: 6px;
 }
 
 .item-tile.is-in-cart .item-tile-quantity-wrapper {
@@ -4337,8 +4339,15 @@ fieldset .fieldset-title {
   margin-bottom: 10px;
 }
 
-.checkout-info .form-group.expiration {
+.checkout-info .form-group-expiration {
+  font-size: 0;
+}
+
+.checkout-info .form-group-expiration .control-separator {
+  display: inline-block;
+  margin: 0 4px;
   vertical-align: middle;
+  font-size: 14px;
 }
 
 .checkout-info .form-group-member-name {

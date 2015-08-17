@@ -23,8 +23,7 @@ module.exports = function (Context) {
           </ul>
           <div className="item-price" data-component-prop="price">$10.90</div>
           <div className="item-tile-actions">
-            <button className="btn btn-default btn-remove" data-component-elm="removeButton" data-component-view="orderable">-</button>
-            <button className="btn btn-default btn-add" data-component-elm="addButton" data-component-view="orderable">Add</button>
+            <button className="btn btn-default btn-remove" data-component-elm="removeButton" data-component-view="orderable">-</button><button className="btn btn-default btn-add" data-component-elm="addButton" data-component-view="orderable">Add</button>
           </div>
         </div>
       </div>
@@ -43,8 +42,7 @@ module.exports = function (Context) {
           </ul>
           <div className="item-price" data-component-prop="price">$12.00</div>
           <div className="item-tile-actions">
-            <button className="btn btn-default btn-remove" data-component-elm="removeButton" data-component-view="orderable">-</button>
-            <button className="btn btn-default btn-add" data-component-elm="addButton" data-component-view="orderable">Add</button>
+            <button className="btn btn-default btn-remove" data-component-elm="removeButton" data-component-view="orderable">-</button><button className="btn btn-default btn-add" data-component-elm="addButton" data-component-view="orderable">Add</button>
           </div>
         </div>
       </div>
@@ -61,8 +59,7 @@ module.exports = function (Context) {
           </ul>
           <div className="item-price" data-component-prop="price">$10.90</div>
           <div className="item-tile-actions">
-            <button className="btn btn-default btn-remove" data-component-elm="removeButton" data-component-view="orderable">-</button>
-            <button className="btn btn-default btn-add" data-component-elm="addButton" data-component-view="orderable">Add</button>
+            <button className="btn btn-default btn-remove" data-component-elm="removeButton" data-component-view="orderable">-</button><button className="btn btn-default btn-add" data-component-elm="addButton" data-component-view="orderable">Add</button>
           </div>
         </div>
       </div>
@@ -81,8 +78,7 @@ module.exports = function (Context) {
           </ul>
           <div className="item-price" data-component-prop="price">$12.00</div>
           <div className="item-tile-actions">
-            <button className="btn btn-default btn-remove" data-component-elm="removeButton" data-component-view="orderable">-</button>
-            <button className="btn btn-default btn-add" data-component-elm="addButton" data-component-view="orderable">Add</button>
+            <button className="btn btn-default btn-remove" data-component-elm="removeButton" data-component-view="orderable">-</button><button className="btn btn-default btn-add" data-component-elm="addButton" data-component-view="orderable">Add</button>
           </div>
         </div>
       </div>
@@ -101,8 +97,7 @@ module.exports = function (Context) {
           </ul>
           <div className="item-price" data-component-prop="price">$12.00</div>
           <div className="item-tile-actions">
-            <button className="btn btn-default btn-remove" data-component-elm="removeButton" data-component-view="orderable">-</button>
-            <button className="btn btn-default btn-add" data-component-elm="addButton" data-component-view="orderable">Add</button>
+            <button className="btn btn-default btn-remove" data-component-elm="removeButton" data-component-view="orderable">-</button><button className="btn btn-default btn-add" data-component-elm="addButton" data-component-view="orderable">Add</button>
           </div>
         </div>
       </div>
@@ -121,8 +116,7 @@ module.exports = function (Context) {
           </ul>
           <div className="item-price" data-component-prop="price">$10.90</div>
           <div className="item-tile-actions">
-            <button className="btn btn-default btn-remove" data-component-elm="removeButton" data-component-view="orderable">-</button>
-            <button className="btn btn-default btn-add" data-component-elm="addButton" data-component-view="orderable">Add</button>
+            <button className="btn btn-default btn-remove" data-component-elm="removeButton" data-component-view="orderable">-</button><button className="btn btn-default btn-add" data-component-elm="addButton" data-component-view="orderable">Add</button>
           </div>
         </div>
       </div>
@@ -141,8 +135,7 @@ module.exports = function (Context) {
           </ul>
           <div className="item-price" data-component-prop="price">$12.00</div>
           <div className="item-tile-actions">
-            <button className="btn btn-default btn-remove" data-component-elm="removeButton" data-component-view="orderable">-</button>
-            <button className="btn btn-default btn-add" data-component-elm="addButton" data-component-view="orderable">Add</button>
+            <button className="btn btn-default btn-remove" data-component-elm="removeButton" data-component-view="orderable">-</button><button className="btn btn-default btn-add" data-component-elm="addButton" data-component-view="orderable">Add</button>
           </div>
         </div>
       </div>
@@ -161,8 +154,7 @@ module.exports = function (Context) {
           </ul>
           <div className="item-price" data-component-prop="price">$12.00</div>
           <div className="item-tile-actions">
-            <button className="btn btn-default btn-remove" data-component-elm="removeButton" data-component-view="orderable">-</button>
-            <button className="btn btn-default btn-add" data-component-elm="addButton" data-component-view="orderable">Add</button>
+            <button className="btn btn-default btn-remove" data-component-elm="removeButton" data-component-view="orderable">-</button><button className="btn btn-default btn-add" data-component-elm="addButton" data-component-view="orderable">Add</button>
           </div>
         </div>
       </div>
@@ -181,8 +173,7 @@ module.exports = function (Context) {
           </ul>
           <div className="item-price" data-component-prop="price">$10.90</div>
           <div className="item-tile-actions">
-            <button className="btn btn-default btn-remove" data-component-elm="removeButton" data-component-view="orderable">-</button>
-            <button className="btn btn-default btn-add" data-component-elm="addButton" data-component-view="orderable">Add</button>
+            <button className="btn btn-default btn-remove" data-component-elm="removeButton" data-component-view="orderable">-</button><button className="btn btn-default btn-add" data-component-elm="addButton" data-component-view="orderable">Add</button>
           </div>
         </div>
       </div>
