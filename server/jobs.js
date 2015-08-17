@@ -17,6 +17,11 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
 
 			function sendEmails () {
 
+	    		if (!subscribers) {
+	    			console.log("No subscribers");
+	    			return API.Q.resolve();
+	    		}
+
 				return API.Q.all(Object.keys(subscribers).map(function (email) {
 
 					console.log("Sending menu to:", email);
@@ -31,7 +36,9 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
 			            ],
 			            "data": {
 			            	"menu": {
-			            		"url": menuData.event.get("menuUrl")
+			            		"url": menuData.event.get("menuUrl"),
+// TODO: Make this dynamic!
+			            		"restaurantName": "Trudy's"
 			            	},
 			            	"items": Object.keys(menuData.items).map(function (itemId) {
 								return menuData.items[itemId];
@@ -84,6 +91,10 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
 			                }
 			            ],
 			            "data": {
+			            	"orderHashId": ordersData[orderId].orderHashId,
+			            	"event": {
+			            		"pickupLocation": ordersData[orderId].pickupLocation
+			            	}
 			            }
 			        }).fail(function (err) {
 						console.error("Error sending email but ignoring", err.stack);
@@ -101,7 +112,12 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
 					console.log("Sending delivered SMS to:", ordersData[orderId].phone);
 
 					return SERVICES.sms.send("Order_Arrived", {
-			            "to": ordersData[orderId].phone
+			            "to": ordersData[orderId].phone,
+			            "data": {
+			            	"event": {
+			            		"pickupLocation": ordersData[orderId].pickupLocation
+			            	}
+			            }
 			        }).fail(function (err) {
 						console.error("Error sending SMS but ignoring", err.stack);
 					// TODO: Resend email
@@ -248,7 +264,7 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
 		    		API.MOMENT_TZ().tz("America/Chicago").second(0).minute(0).hour(9)
 	    		)) {
 	    			console.log("It is not yet 9am CT so we don't yet check to see if we need to send menu emails for today!");
-					return API.Q.resolve();
+//					return API.Q.resolve();
 	    		};
 
 				return fetchPendingEvents("menus").then(function (events) {
@@ -287,7 +303,7 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
 
 			function fetchOrders (eventIds) {
 				return API.Q.when(db.knex('orders')
-					.select('id', 'event_id', 'form')
+					.select('id', 'event_id', 'form', 'event', 'orderHashId')
 					.whereIn('event_id', eventIds)
 				.then(function (result) {
 					var orders = {};
@@ -297,10 +313,13 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
 						}
 						try {
 							var form = JSON.parse(row.form);
+							var event = JSON.parse(row.event);
 							orders[row.event_id][row.id] = {
 								name: form['info[name]'],
 								email: form['info[email]'],
-								phone: form['info[phone]']
+								phone: form['info[phone]'],
+								pickupLocation: event["consumerGroup.pickupLocation"],
+								orderHashId: row.orderHashId
 							}
 						} catch (err) {
 							console.error("Ignoring error:", err.stack);

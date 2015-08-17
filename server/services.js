@@ -1,4 +1,7 @@
 
+const PATH = require("path");
+const FS = require("fs");
+
 require('org.pinf.genesis.lib').forModule(require, module, function (API, exports) {
 
     exports.email = {
@@ -16,11 +19,11 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
                         "Thanks for ordering with Goodybag. You'll receive a follow-up email when your lunch arrives.",
                         "",
                         "Order ID: " + message.data.orderHashId.substring(0, 7),
-                        "Order from: <Should we still keep this if we can have items from multiple restaurants?>",
-                        "Delivery date: <Will work when HTML emails work>",
-                        "Delivery time: <Will work when HTML emails work>",
+                        "Order from: " + message.data.orderFrom,
+                        "Delivery date: " + message.data.deliveryDate,
+                        "Delivery time: " + message.data.deliveryTime,
                         "",
-                        "Deliver to: <Will work when HTML emails work>",
+                        "Deliver to: " + message.data.deliverLocation,
                         "",
                         "Items:",
                         "",
@@ -65,6 +68,9 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
             } else
             if (templateId === "Menu") {
 
+// HACK: Remove once template is fed dynamically.
+var htmlEmail = FS.readFileSync(PATH.join(__dirname, "emails/menu.htm"), "utf8");
+
                 message = API.DEEPMERGE({
                     "subject": "Daily Lunch Menu - Order by 10am",
                     "text": [
@@ -82,7 +88,8 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
                         "-Goodybot",
                         "",
                         message.data.menu.url + " https://www.goodybag.com"
-                    ].join("\n")
+                    ].join("\n"),
+                    "html": htmlEmail
                 }, message || {});
 
                 return API["mandrill-send"]["$io.pinf.service.mandrill/send/0"].sendMessage(message);
@@ -93,9 +100,7 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
                 message = API.DEEPMERGE({
                     "subject": "Your Lunchroom Order has Arrived!",
                     "text": [
-                        "Lunchroom Order #" + message.data.orderHashId.substring(0, 7) + " has arrived and is waiting for you at:",
-                        "",
-                        message.data.menu.deliveryLocation
+                        "Lunchroom Order #" + message.data.orderHashId.substring(0, 7) + " has arrived and is waiting for you " + message.data.event.pickupLocation,
                         "",
                         "Sincerely,",
                         "-Goodybot",
@@ -117,7 +122,7 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
 
             API.ASSERT.equal(typeof message.to, "string");
 
-            message.to = message.to.replace(/^\D/g, "");
+//            message.to = message.to.replace(/^\D/g, "");
 //            if (message.to.length === 10) {
 //                message.to = "1" + message.to;
 //            }
@@ -130,8 +135,8 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
                 message = API.DEEPMERGE({
                     "to": "<REPLACE>",
                     "body": [
-                        "Your Goodybag Lunchroom Order has arrived and is waiting for you at: ",
-                        message.data.menu.deliveryLocation
+                        "Your Goodybag Lunchroom Order has arrived and is waiting for you ",
+                        message.data.event.pickupLocation
                     ].join('')
                 }, message || {});
 
@@ -200,3 +205,4 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
     }
 
 });
+

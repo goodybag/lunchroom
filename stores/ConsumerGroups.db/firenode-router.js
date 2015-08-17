@@ -1,4 +1,7 @@
 
+const MOMENT = require("moment");
+
+
 exports['for'] = function (API) {
 
 	var DB = require("../../server/db/bookshelf.knex.postgresql");
@@ -51,6 +54,7 @@ exports['for'] = function (API) {
 
 			req._FireNodeContext.addLayer({
 				config: {
+// TODO: Don't default to Bazaarvoice.
 					externalRedirect: "/bazaarvoice"
 				}
 			});
@@ -59,7 +63,7 @@ exports['for'] = function (API) {
 
 		return DB.getKnex()('consumer-groups').where({
 			"alias": opts.arg
-		}).select('id').then(function (result) {
+		}).select('id', 'lunchroomLive').then(function (result) {
 
 			if (result.length === 0) {
 				req._FireNodeContext.addLayer({
@@ -68,6 +72,34 @@ exports['for'] = function (API) {
 					}
 				});
 				return false;
+			}
+
+			if (result[0].lunchroomLive) {
+
+				return DB.getKnex()('events').where({
+					"day_id": MOMENT().format("YYYY-MM-DD"),					
+				}).select('token').then(function (result) {
+
+					if (result.length === 0) {
+
+						req._FireNodeContext.addLayer({
+							session: {
+								dbfilter: {
+									consumer_group_id: result[0].id
+								}
+							}
+						});
+
+						return false;
+					}
+
+					req._FireNodeContext.addLayer({
+						config: {
+							externalRedirect: "/event-" + result[0].token
+						}
+					});
+					return false;
+				});
 			}
 
 			req._FireNodeContext.addLayer({

@@ -9,7 +9,8 @@ exports.seeds = {
       address: "7901 Cameron Rd<br/>Bldg 2, Ste. 300<br/>Austin, TX 78754",
       pickupLocation: "in the Bazaarvoice Lobby",
       deliverLocation: "Bazaarvoice Lobby",
-      orderTax: "825"
+      orderTax: "825",
+      lunchroomLive: true
     },
     "2": {
       "id": 2,
@@ -19,7 +20,8 @@ exports.seeds = {
       address: "Somewhere<br/>accross the<br/>Rainbow",
       pickupLocation: "In the clouds",
       deliverLocation: "The Clouds",
-      orderTax: "825"
+      orderTax: "825",
+      lunchroomLive: false
     },
     "3": {
       "id": 3,
@@ -29,7 +31,8 @@ exports.seeds = {
       address: "Right<br/>where it need<br/>to be",
       pickupLocation: "Hold out your hands and wiggle your nose",
       deliverLocation: "Your Hands",
-      orderTax: "825"
+      orderTax: "825",
+      lunchroomLive: false
     },
     "4": {
       "id": 4,
@@ -39,7 +42,8 @@ exports.seeds = {
       address: "7901 Cameron Rd<br/>Bldg 2, Ste. 300<br/>Austin, TX 78754",
       pickupLocation: "in the Bazaarvoice Lobby",
       deliverLocation: "Bazaarvoice Lobby",
-      orderTax: "825"
+      orderTax: "825",
+      lunchroomLive: true
     }    
   }
 };

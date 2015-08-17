@@ -38,6 +38,7 @@ store.update = function (model, params, request) {
 				if (resp.attributes['paymentToken']) {
 
 					var form = JSON.parse(resp.attributes.form);
+					var event = JSON.parse(resp.attributes.event);
 
 					SERVICES.email.send("Receipt", {
 			            "to": [
@@ -50,7 +51,11 @@ store.update = function (model, params, request) {
 			            "data": {
 			            	"items": JSON.parse(resp.attributes.items),
 			            	"summary": JSON.parse(resp.attributes.summary),
-			            	"orderHashId": resp.attributes.orderHashId
+			            	"orderHashId": resp.attributes.orderHashId,
+			            	"orderFrom": resp.attributes.orderFrom,
+			            	"deliveryDate": event["format.deliveryDate"],
+			            	"deliveryTime": event["format.deliveryTime"],
+			            	"deliverLocation": event["consumerGroup.deliverLocation"]
 			            }
 			        }).fail(function (err) {
 						console.error("Error sending receipt:", err.stack);
@@ -69,7 +74,11 @@ store.update = function (model, params, request) {
 			            "data": {
 			            	"items": JSON.parse(resp.attributes.items),
 			            	"summary": JSON.parse(resp.attributes.summary),
-			            	"orderHashId": resp.attributes.orderHashId
+			            	"orderHashId": resp.attributes.orderHashId,
+			            	"orderFrom": resp.attributes.orderFrom,
+			            	"deliveryDate": event["format.deliveryDate"],
+			            	"deliveryTime": event["format.deliveryTime"],
+			            	"deliverLocation": event["consumerGroup.deliverLocation"]
 			            }
 			        }).fail(function (err) {
 						console.error("Error sending receipt:", err.stack);
