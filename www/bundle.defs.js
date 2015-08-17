@@ -46911,8 +46911,9 @@
 	  // TODO: Remove this once we can inject 'React' automatically at build time.
 	  var React = Context.REACT;
 	  return (
-	    React.createElement("fieldset", {className: "checkout-info form-vertical", "data-component-view": "default"}, 
+	    React.createElement("div", {className: "container checkout-info-container", id: "section-checkout-info"}, 
 
+	  React.createElement("fieldset", {className: "checkout-info form-vertical", "data-component-id": "checkout-form-new", "data-component-view": "default"}, 
 	    React.createElement("div", {className: "user-info"}, 
 	      React.createElement("h3", {className: "section-title"}, "Your Info"), 
 	      React.createElement("div", {className: "form-group"}, 
@@ -46960,7 +46961,8 @@
 	          )
 	        )
 	    )
-	  )
+	  ))
+
 	    )
 	  );
 	}
