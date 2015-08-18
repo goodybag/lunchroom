@@ -1,4 +1,7 @@
 
+/*
+// NOTE: These are now managed in database.
+//       If declaring here they will REPLACE any already existing in DB at same ID!
 exports.seeds = {
   "consumer-groups": {
     "1": {
@@ -47,6 +50,7 @@ exports.seeds = {
     }    
   }
 };
+*/
 
 /*
 exports.cater = {

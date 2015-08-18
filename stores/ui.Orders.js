@@ -121,8 +121,18 @@ exports['for'] = function (context) {
 	            	return time.format("h:mm A");
 	            }
 	    	},
+	    	"format.orderPlacedDateTime": {
+	    		deps: [
+					"time"
+				],
+	            fn: function () {
+	            	var time = COMMON.API.MOMENT(this.time);
+	            	return time.format("dd Do h:mm A");
+	            }
+	    	},
 	    	"format.deliveryTime": common.makeFormatter("deliveryTime"),
 	    	"format.deliveryDate": common.makeFormatter("deliveryDate"),
+	    	"format.deliveryDay": common.makeFormatter("deliveryDay"),
 	    	"event.consumerGroup.contact": {
 	    		deps: [
 					"event"

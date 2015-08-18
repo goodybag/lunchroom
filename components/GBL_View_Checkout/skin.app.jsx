@@ -127,7 +127,7 @@ require("./component.jsx")['for'](module, {
 						};
 					});
 
-					this.renderSection("items", items, function getView (data) {
+					this.renderSection(element, "items", items, function getView (data) {
 						return 'default';
 				    }, function hookEvents(elm, data) {
 

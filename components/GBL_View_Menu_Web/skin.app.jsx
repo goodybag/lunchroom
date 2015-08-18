@@ -110,7 +110,7 @@ require("./component.jsx")['for'](module, {
 						});
 					}
 
-					self.renderSection("items", items.map(function(item) {
+					self.renderSection(element, "items", items.map(function(item) {
 						return {
 							"id": item.get('id'),
 							"item_id": item.get('item_id'),
@@ -190,29 +190,23 @@ require("./component.jsx")['for'](module, {
 							self.showViews(elm, []);
 						}
 
-/*
+
 						var tags = [];
 						try {
 							if (data.tags) tags = JSON.parse(data.tags);
 						} catch (err) {}
 
-						if (tags.length > 0) {
-							self.renderSection("diet-tags", tags.map(function(tag) {
-								if (tag === "glutenFree") tag = "gluten-free";
-								return {
-									"tag": tag
-								};
-							}), function getView (data) {
-								return 'default';
-							}, function hookEvents(elm, data) {
-								elm.removeClass("diet-tag-spicy");
-								elm.addClass("diet-tag-" + data.tag);
-
-							});
-						} else {
-							$('.diet-tag', elm).hide();
-						}
-*/						
+						self.renderSection(elm, "diet-tags", tags.map(function(tag) {
+							if (tag === "glutenFree") tag = "gluten-free";
+							return {
+								"tag": tag
+							};
+						}), function getView (data) {
+							return 'default';
+						}, function hookEvents(elm, data) {
+							elm.removeClass("diet-tag-spicy");
+							elm.addClass("diet-tag-" + data.tag);
+						});
 				    });
 				}
 			})
@@ -253,7 +247,7 @@ require("./component.jsx")['for'](module, {
 		var Panel = "";
 
 		var items = Context.items[Context.appContext.get('selectedDay')] || [];
-		
+
 		if (
 			Context.eventToday &&
 			items.length > 0

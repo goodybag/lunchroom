@@ -5,6 +5,8 @@ exports.cater = {
   "restaurants": data
 }
 
+// NOTE: If declaring here they will REPLACE any already existing in DB at same ID!
+
 data[411] = {
   title: "Rollin' Smoke BBQ",
   items:
@@ -44,7 +46,7 @@ data[411] = {
           price: 600,
           photo_url: 'https://www.filepicker.io/api/file/9LCujcUThWL2aogC6c8n',
           category_id: 11851,
-          tags: [ '' ] } ]
+          tags: [ 'vegetarian' ] } ]
 };
 
 data[24] = {

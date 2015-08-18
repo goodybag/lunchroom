@@ -94,7 +94,7 @@ require("./component.jsx")['for'](module, {
 			    	$('[data-component-elm="checkoutButton"]', element).addClass("disabled");
 			    }
 
-			    self.renderSection("tabs", data.tabs, function getView (data) {
+			    self.renderSection(element, "tabs", data.tabs, function getView (data) {
 					if (
 						Context.appContext.get('selectedDay') === data.tabDay
 					) {

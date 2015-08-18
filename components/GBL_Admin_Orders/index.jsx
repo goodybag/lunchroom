@@ -36,8 +36,8 @@ module.exports = COMPONENT.create({
               <thead>
                 <tr>
                     <th>Code</th>
-                    <th>Date</th>
-                    <th>Time</th>
+                    <th>Placed</th>
+                    <th>Delivery</th>
                     <th>Vendor</th>
                     <th>Customer</th>
                     <th>Pickup Location</th>
@@ -50,8 +50,8 @@ module.exports = COMPONENT.create({
                     var Row = (
                         <tr key={item.get('id')}>
                           <td>{item.get("referenceCode3")}</td>
-                          <td>{item.get("format.deliveryDate")}</td>
-                          <td>{item.get("format.deliveryTime")}</td>
+                          <td>{item.get("format.orderPlacedDateTime")}</td>
+                          <td>{item.get("format.deliveryDay")}</td>
                           <td>{item.get("orderFrom")}</td>
                           <td>{item.get("customer")}</td>
                           <td>{item.get("pickupLocation")}</td>

@@ -167,10 +167,10 @@ exports['for'] = function (Component) {
 		});
 	}
 
-	Template.prototype.renderSection = function (name, data, getView, hookEvents) {
+	Template.prototype.renderSection = function (element, name, data, getView, hookEvents) {
 		var self = this;
 
-		var sectionContainer = $('[data-component-section="' + name + '"]');
+		var sectionContainer = $('[data-component-section="' + name + '"]', element);
 
 		// TODO: Rather than resetting container, update changed rows only.
 		sectionContainer.html("");
@@ -189,11 +189,11 @@ exports['for'] = function (Component) {
 			self.fillProperties(elm, record);
 			self.fillElements(elm, record);
 
+			elm = elm.appendTo(sectionContainer);
+
 			if (hookEvents) {
 				hookEvents(elm, record);
 			}
-
-			elm.appendTo(sectionContainer);
 	    });
 	}
 

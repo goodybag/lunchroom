@@ -44,6 +44,17 @@ exports.forAppContext = function (appContext) {
 	            }
 		    };
 		} else
+		if (type === "deliveryDay") {
+			return {
+				deps: [
+					"deliveryStartTime"
+				],
+	            fn: function () {
+	            	var deliveryStartTime = API.MOMENT(this.deliveryStartTime);
+	            	return deliveryStartTime.format("dddd");
+	            }
+		    };
+		} else
 		if (type === "orderByTime") {
 			return {
 				deps: [
