@@ -64,7 +64,7 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
 								data = {
 									restaurantName: vendor.get('title'),
 									lunchroomUrl: event.get("menuUrl"),
-									orderByTime: event.get("format.orderByTime"),
+									orderByTime: "11 AM",// event.get("format.orderByTime"),
 									itemGrid: [
 										[]
 									]
