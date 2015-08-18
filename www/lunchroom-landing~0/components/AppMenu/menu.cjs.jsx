@@ -5,7 +5,7 @@ module.exports = function (Context) {
     <div className="container items-container">
 
   <h1 className="menu-provider-name"><span data-component-prop="restaurantTitle">Dos Batos Wood Fired Tacos</span>
-    <span className="no-tip-note">No tips. Just a flat $2.99 fee</span>
+    <span className="no-tip-note">No tips. Just a flat <span data-component-prop="goodybagFee">$2.99</span> fee</span>
   </h1>
   <div className="tiles item-tiles" data-component-section="items">
       <div className="tile item-tile" data-component-section="items" data-component-view="default">

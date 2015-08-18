@@ -322,7 +322,8 @@ module.exports = COMPONENT.create({
                 </tbody>
               </table>
 
-              <p><a href={Context.selectedEvent.get("menuUrl")}>{Context.selectedEvent.get("menuUrl")}</a></p>
+              <p>Lunchroom: <a href={Context.selectedEvent.get("menuUrl")}>{Context.selectedEvent.get("menuUrl")}</a></p>
+              <p>Menu Email: <a href={Context.selectedEvent.get("menuEmailUrl")}>{Context.selectedEvent.get("menuEmailUrl")}</a></p>
 
               <p>NOTE: Only ONE Restaurant per day!</p>
 
