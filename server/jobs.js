@@ -168,10 +168,12 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
 	    			query = query.where({
 						'menuReady': true,
 						'menuEmailsSent': false
-					}).whereBetween('orderByTime', [
-						API.MOMENT_TZ().tz("America/Chicago").second(0).minute(0).hour(0).format(),
-						API.MOMENT_TZ().tz("America/Chicago").second(0).minute(0).hour(0).add(1, 'day').format()
-					]);
+					}).where('day_id', API.MOMENT_TZ().tz("America/Chicago").format("YYYY-MM-DD"))
+//					whereBetween('orderByTime', [
+//						API.MOMENT_TZ().tz("America/Chicago").second(0).minute(0).hour(0).format(),
+//						API.MOMENT_TZ().tz("America/Chicago").second(0).minute(0).hour(0).add(1, 'day').format()
+//					])
+					.where('menuEmailTime', '<', API.MOMENT_TZ().tz("America/Chicago").format())
 	    		} else
 	    		if (type === "deliveries") {
 	    			query = query.where({
@@ -259,7 +261,8 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
 
 	    	function sendMenuEmails () {
 
-	    		// We send emails out after 9 am CT (America/Chicago).
+	    		// We NEVER send emails out before 9 am CT (America/Chicago).
+	    		// NOTE: We use the 'menuEmailTime' field to set the exact time.
 	    		if (API.MOMENT_TZ().tz("America/Chicago").isBefore(
 		    		API.MOMENT_TZ().tz("America/Chicago").second(0).minute(0).hour(9)
 	    		)) {

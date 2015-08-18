@@ -105,7 +105,8 @@ require("./component.jsx")['for'](module, {
 
 					if (Context.selectedEvent) {
 						self.fillProperties(element, {
-							"restaurantTitle": Context.vendorTitlesForEvents[Context.selectedEvent.get("id")] || ""
+							"restaurantTitle": Context.vendorTitlesForEvents[Context.selectedEvent.get("id")] || "",
+							"goodybagFee": Context.selectedEvent.get("format.goodybagFee")
 						});
 					}
 

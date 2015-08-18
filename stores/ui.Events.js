@@ -9,6 +9,12 @@ var Record = COMMON.API.BACKBONE.Model.extend({
 	idAttribute: "id"
 });
 
+
+
+function makeBaseTime () {
+  return COMMON.API.MOMENT().seconds(0).minutes(0);
+}
+
 var Store = COMMON.API.BACKBONE.Collection.extend({
 	model: Record,
 	url: ENDPOINT,
@@ -19,6 +25,37 @@ var Store = COMMON.API.BACKBONE.Collection.extend({
 			});
 		});
 	},
+
+	setPresets: function (presets) {
+		try {
+			presets = JSON.parse(JSON.stringify(presets));
+			delete presets.day_id;
+			COMMON.storeLocalValueFor("admin.events", "presets", JSON.stringify(presets));
+		} catch (err) {
+			console.error("Error setting presets");
+		}
+	},
+
+	getPresets: function () {
+        var presets = COMMON.getLocalValueFor("admin.events", "presets");
+        if (presets) {
+			try {
+				presets = JSON.parse(presets);
+			} catch (err) {
+				console.error("Error recovering presets from local storage");
+			}
+        } else {
+			presets = {
+				menuEmailTime: makeBaseTime().hours(10).format("H:mm"),
+				menuSmsTime: makeBaseTime().hours(10).format("H:mm"),
+				orderByTime: makeBaseTime().hours(11).format("H:mm"),
+				deliveryStartTime: makeBaseTime().hours(12).format("H:mm"),
+				pickupEndTime: makeBaseTime().hours(12).minutes(30).format("H:mm"),
+				goodybagFee: "2.99"
+			};
+        }
+        return presets;
+    },
 
 	setReadyForEventId: function (event_id) {
 		var self = this;
@@ -151,6 +188,13 @@ console.log("error!", err.stack);
 				data["pickupEndTime"] = COMMON.API.MOMENT(
 					data["day_id"] + ":" + data["pickupEndTime"], "YYYY-MM-DD:H:mm"
 				).format();
+				data["menuEmailTime"] = COMMON.API.MOMENT(
+					data["day_id"] + ":" + data["menuEmailTime"], "YYYY-MM-DD:H:mm"
+				).format();
+				data["menuSmsTime"] = COMMON.API.MOMENT(
+					data["day_id"] + ":" + data["menuSmsTime"], "YYYY-MM-DD:H:mm"
+				).format();
+
 
 				return data;
 			}
@@ -173,9 +217,6 @@ console.log("error!", err.stack);
 				data: JSON.stringify(payload)
 			})
 			.done(function (response) {
-
-		        self.reset();
-		        self.fetch();
 
 				return callback(null, response.data);
 			})

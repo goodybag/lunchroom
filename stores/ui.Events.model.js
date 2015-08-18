@@ -16,6 +16,8 @@ exports.forContext = function (context) {
 	        "orderByTime": "string",
 	        "deliveryStartTime": "string",
 	        "pickupEndTime": "string",
+	        "menuEmailTime": "string",
+	        "menuSmsTime": "string",
 	        "consumer_group_id": "string",
 	        "goodybagFee": "string",
 	        "tip": "string",
@@ -103,6 +105,10 @@ exports.forContext = function (context) {
 		    "format.deliveryDate": common.makeFormatter("deliveryDate"),
 		    "format.deliveryTime": common.makeFormatter("deliveryTime"),
 		    "format.orderByTime": common.makeFormatter("orderByTime"),
+		    "format.menuEmailTime": common.makeFormatter("menuEmailTime"),
+		    "format.menuSmsTime": common.makeFormatter("menuSmsTime"),
+
+
 		    "format.orderTimer": {
 				deps: [
 					"orderByTime"

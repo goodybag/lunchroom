@@ -54,6 +54,28 @@ exports.forAppContext = function (appContext) {
 	            	return orderByTime.format("h:mm A");
 	            }
 		    };
+		} else
+		if (type === "menuEmailTime") {
+			return {
+				deps: [
+					"menuEmailTime"
+				],
+	            fn: function () {
+	            	var menuEmailTime = API.MOMENT(this.menuEmailTime);
+	            	return menuEmailTime.format("h:mm A");
+	            }
+		    };
+		} else
+		if (type === "menuSmsTime") {
+			return {
+				deps: [
+					"menuSmsTime"
+				],
+	            fn: function () {
+	            	var menuSmsTime = API.MOMENT(this.menuSmsTime);
+	            	return menuSmsTime.format("h:mm A");
+	            }
+		    };
 		}
 
 		throw new Error("Formatter of type '" + type + "' not supported!");

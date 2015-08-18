@@ -18,6 +18,11 @@ module.exports = COMPONENT.create({
           'click',
           function () {
               self.props.selectedEvent = null;
+              if (self.props.selectedVendor) {
+                self.props.appContext.get('stores').items.loadForVendor(self.props.selectedVendor).then(function () {
+                  self._trigger_forceUpdate();
+                });
+              }
               self._trigger_forceUpdate();
               return false;
           }
@@ -76,7 +81,9 @@ module.exports = COMPONENT.create({
             onChange: function(value, text) {
               if (self.props.selectedConsumerGroup === value) return;
               self.props.selectedConsumerGroup = value;
-              self._trigger_forceUpdate();
+              self.props.appContext.get('stores').events.loadForConsumerGroupId(self.props.selectedConsumerGroup).then(function () {
+                self._trigger_forceUpdate();
+              });
             }
           }
         );
@@ -89,9 +96,9 @@ module.exports = COMPONENT.create({
               var value = this.get('select', 'yyyy-mm-dd');
               if (self.props.selectedDay === value) return;
               self.props.selectedDay = value;
-              self.props.appContext.get('stores').events.loadForDay(self.props.selectedDay).then(function () {
-                self._trigger_forceUpdate();
-              });
+//              self.props.appContext.get('stores').events.loadForDay(self.props.selectedDay).then(function () {
+//                self._trigger_forceUpdate();
+//              });
             }
           }
         );
@@ -144,7 +151,15 @@ module.exports = COMPONENT.create({
                 if (error) {
                   $('#form-create').addClass("error");
                 } else {
-                  Context.appContext.get('stores').events.createEvent(values);
+
+                  Context.appContext.get("stores").events.setPresets(values)
+                  Context.appContext.get('stores').events.createEvent(values).then(function () {
+
+                    return self.props.appContext.get('stores').events.loadForConsumerGroupId(self.props.selectedConsumerGroup).then(function () {
+                      self._trigger_forceUpdate();
+                    });
+
+                  });
                 }
                 return false;
             }
@@ -212,6 +227,7 @@ module.exports = COMPONENT.create({
 
 
         function fillEventCreateForm (values) {
+
           $('#form-create [data-fieldname]').each(function() {
             var elm = $(this);
             var name = elm.attr("data-fieldname");
@@ -230,14 +246,10 @@ module.exports = COMPONENT.create({
           });
         }
 
-        fillEventCreateForm({
-//          consumer_group_id: 1,
-          orderByTime: COMPONENT.API.MOMENT().add(1, 'h').format("H:mm"),
-          deliveryStartTime: COMPONENT.API.MOMENT().add(2, 'h').format("H:mm"),
-          pickupEndTime: COMPONENT.API.MOMENT().add(2, 'h').add(15, 'm').format("H:mm"),
-          tip: "0",
-          goodybagFee: "2.99"
-        });
+
+      setTimeout(function () {
+        fillEventCreateForm(Context.appContext.get("stores").events.getPresets());
+      }, 100);
 
     },
 
@@ -271,16 +283,12 @@ module.exports = COMPONENT.create({
             <div className="ui segment">
               <button className="ui button" data-link="action:deselectEvent">Back to all events</button>
 
-              <p>NOTE: 'Ready' button send out menu 9 am CT day of. 'Delivered' button sends out order arrived emails within 1 min.</p>
-
               <table className="ui celled selectable table events-table">
                 <thead>
                   <tr>
                       <th>Date</th>
-                      <th>Order Deadline</th>
-                      <th>Delivery Time</th>
                       <th>Company</th>
-                      <th>Pickup</th>
+                      <th>Pickup Location</th>
                       <th>Ready</th>
                       <th>Delivered</th>
                   </tr>
@@ -288,8 +296,6 @@ module.exports = COMPONENT.create({
                 <tbody>
                   <tr>
                     <td>{Context.selectedEvent.get("format.deliveryDate")}</td>
-                    <td>{(Context.selectedEvent.get("format.orderTimer") || "passed")}</td>
-                    <td>{Context.selectedEvent.get("format.deliveryTime")}</td>
                     <td>{Context.selectedEvent.get("consumerGroup.title")}</td>
                     <td>{Context.selectedEvent.get("consumerGroup.pickupLocation")}</td>
                     <td>{ReadyButton}</td>
@@ -297,8 +303,28 @@ module.exports = COMPONENT.create({
                   </tr>
                 </tbody>
               </table>
+              <table className="ui celled selectable table events-table">
+                <thead>
+                  <tr>
+                      <th>Menu Email (on Ready)</th>
+                      <th>Menu SMS (on Ready)</th>
+                      <th>Order Deadline</th>
+                      <th>Delivery Time</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>{Context.selectedEvent.get("format.menuEmailTime")}</td>
+                    <td>{(Context.selectedEvent.get("format.menuSmsTime"))}</td>
+                    <td>{Context.selectedEvent.get("format.orderByTime")}</td>
+                    <td>{Context.selectedEvent.get("format.deliveryTime")}</td>
+                  </tr>
+                </tbody>
+              </table>
 
               <p><a href={Context.selectedEvent.get("menuUrl")}>{Context.selectedEvent.get("menuUrl")}</a></p>
+
+              <p>NOTE: Only ONE Restaurant per day!</p>
 
 
               <div className="ui grid">
@@ -429,17 +455,17 @@ module.exports = COMPONENT.create({
                   </div>
 
                   <div className="field">
-                    <label>Order By</label>
+                    <label>Order by</label>
                     <input type="text" data-fieldname="orderByTime"/>
                   </div>
 
                   <div className="field">
-                    <label>Delivery Start</label>
+                    <label>Delivery start</label>
                     <input type="text" data-fieldname="deliveryStartTime"/>
                   </div>
 
                   <div className="field">
-                    <label>Pickup By</label>
+                    <label>Pickup by</label>
                     <input type="text" data-fieldname="pickupEndTime"/>
                   </div>
 
@@ -448,19 +474,15 @@ module.exports = COMPONENT.create({
                 <div className="fields">
 
                   <div className="field">
-                    <label>Tip</label>
-                    <div className="ui selection dropdown" data-fieldname="tip">
-                      <div className="default text">Select</div>
-                      <i className="dropdown icon"></i>
-                      <div className="menu">
-                        <div className="item" data-value="0">0%</div>
-                        <div className="item" data-value="5">5%</div>
-                        <div className="item" data-value="10">10%</div>
-                        <div className="item" data-value="15">15%</div>
-                        <div className="item" data-value="20">20%</div>
-                      </div>
-                    </div>
+                    <label>Menu Email at (min: 9 AM)</label>
+                    <input type="text" data-fieldname="menuEmailTime"/>
                   </div>
+
+                  <div className="field">
+                    <label>Menu SMS at (min: 9 AM)</label>
+                    <input type="text" data-fieldname="menuSmsTime"/>
+                  </div>
+
                   <div className="field">
                     <label>Goodybag Fee</label>
                     <input type="text" data-fieldname="goodybagFee"/>
@@ -475,15 +497,17 @@ module.exports = COMPONENT.create({
                 </div>
                   
               </form>
+              <br/>
+              <p>NOTE: Only ONE event per day!</p>
             </div>
           ), (
             <table className="ui celled selectable table events-table">
               <thead>
                 <tr>
                     <th>Date</th>
+                    <th>Email Time</th>
+                    <th>SMS Time</th>
                     <th>Delivery Time</th>
-                    <th>Company</th>
-                    <th>Pickup</th>
                     <th>Ready</th>
                     <th>Delivered</th>
                 </tr>
@@ -495,9 +519,9 @@ module.exports = COMPONENT.create({
                     var Row = (
                         <tr key={item.get('id')} data-id={item.get('id')}>
                           <td>{item.get("format.deliveryDate")}</td>
+                          <td>{item.get("format.menuEmailTime")}</td>
+                          <td>{item.get("format.menuSmsTime")}</td>
                           <td>{item.get("format.deliveryTime")}</td>
-                          <td>{item.get("consumerGroup.title")}</td>
-                          <td>{item.get("consumerGroup.pickupLocation")}</td>
                           <td>{item.get("format.menuReady")}</td>
                           <td>{item.get("format.delivered")}</td>
                         </tr>
@@ -540,15 +564,6 @@ module.exports = COMPONENT.create({
     render: function() {
         var self = this;
 
-        var days = [];
-
-        for (var day=0 ; day<=4 ; day++) {
-            days.push([
-                COMPONENT.API.MOMENT().add(day, 'days').format("YYYY-MM-DD"),
-                COMPONENT.API.MOMENT().add(day, 'days').format("dddd, MMM Do YYYY")
-            ]);
-        }
-
         var events = self.props.appContext.get('stores').events;
 
         var vendors = self.props.appContext.get('stores').vendors;
@@ -562,13 +577,17 @@ module.exports = COMPONENT.create({
 
         var eventRecords = [];
         if (
-          self.props.selectedDay &&
+//          self.props.selectedDay &&
           self.props.selectedConsumerGroup
         ) {
           eventRecords = self.modelRecordsWithStore(events, events.where({
-            day_id: self.props.selectedDay,
+//            day_id: self.props.selectedDay,
             consumer_group_id: (""+self.props.selectedConsumerGroup)
           }));
+          eventRecords = COMPONENT.API.UNDERSCORE.sortBy(eventRecords, function (record) {
+            return record.get("day_id");
+          });
+          eventRecords.reverse();
         }
 
         var selectedEvent = null;
@@ -599,8 +618,6 @@ module.exports = COMPONENT.create({
         }
 
         return {
-
-            days: days,
 
             events: eventRecords,
 

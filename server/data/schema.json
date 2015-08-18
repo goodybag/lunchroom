@@ -190,13 +190,15 @@
 					}
 				},
 				{
-					"name": "goodybagFee",
-					"constraints": {
-						"required": true
-					}
+					"name": "menuEmailTime",
+					"type": "timestamp"
 				},
 				{
-					"name": "tip",
+					"name": "menuSmsTime",
+					"type": "timestamp"
+				},
+				{
+					"name": "goodybagFee",
 					"constraints": {
 						"required": true
 					}
