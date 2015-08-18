@@ -1,5 +1,5 @@
 
-const DEV = true;
+const DEV = false;
 
 var SERVICES = require("./services");
 var EMAILS = require("./emails");
@@ -133,7 +133,7 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
 						appContext: API.appContext
 					}
 				}).then(function (EMAILS) {
-return;
+
 					return EMAILS.renderEmail("menu", {
 						menus: menus,
 						event_id: eventId
@@ -179,9 +179,6 @@ return;
 				return API.Q.when(db.knex('events').update({
 					'menuEmailsSent': true
 				}).where('id', eventId).then(function (result) {
-
-console.log("result", result);
-
 					// TODO: Check `result == 1`
 				})).then(function () {
 					// TODO: Use transactions instead of waiting to ensure out update goes
@@ -290,12 +287,12 @@ console.log("result", result);
 						'menuReady': true,
 						'menuEmailsSent': false
 					})
-//					.where('day_id', API.MOMENT_TZ().tz("America/Chicago").format("YYYY-MM-DD"))
+					.where('day_id', API.MOMENT_TZ().tz("America/Chicago").format("YYYY-MM-DD"))
 					//whereBetween('orderByTime', [
 					//	API.MOMENT_TZ().tz("America/Chicago").second(0).minute(0).hour(0).format(),
 					//	API.MOMENT_TZ().tz("America/Chicago").second(0).minute(0).hour(0).add(1, 'day').format()
 					//])
-//					.where('menuEmailTime', '<', API.MOMENT_TZ().tz("America/Chicago").format())
+					.where('menuEmailTime', '<', API.MOMENT_TZ().tz("America/Chicago").format())
 	    		} else
 	    		if (type === "deliveries") {
 	    			query = query.where({
@@ -352,7 +349,7 @@ console.log("result", result);
 		    		API.MOMENT_TZ().tz("America/Chicago").second(0).minute(0).hour(9)
 	    		)) {
 	    			console.log("It is not yet 9am CT so we don't yet check to see if we need to send menu emails for today!");
-//					return API.Q.resolve();
+					return API.Q.resolve();
 	    		};
 
 				return fetchPendingEvents("menus").then(function (events) {
@@ -424,7 +421,9 @@ console.log("result", result);
 
 					return fetchOrders(eventIds).then(function (orders) {
 						return API.Q.all(Object.keys(events).map(function (eventId) {
-							
+
+							if (!orders[eventId]) return API.Q.resolve();
+
 							return sendDeliveredEmailsForEventTo(
 								events[eventId],
 								orders[eventId]
