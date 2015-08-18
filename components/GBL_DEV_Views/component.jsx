@@ -83,6 +83,15 @@ exports['for'] = function (module, context) {
 	    render: function() {
 	    	var self = this;
 
+	    	var ready = self.props.appContext.get('ready');
+
+	    	if (!ready) {
+// TODO: Show loading splash.
+	    		return (
+	    			<div></div>
+	    		);
+	    	}
+
 	    	var views = self.props.appContext.get('views');
 
 	    	var selectedViewAlias = self.props.appContext.get('selectedView');

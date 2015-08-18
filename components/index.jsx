@@ -112,10 +112,14 @@ try {
 
 		try {
 
-			React.render(
+			var reactComponent = React.render(
 				<skin.RootView appContext={appContext}/>,
 				$("#GBL_DEV_Views").get(0)
 			);
+
+			appContext.on("change:ready", function () {
+				reactComponent._trigger_forceUpdate();
+			});
 
 		} catch (err) {
 			console.error("Error while attaching to DOM:", err.stack || err.message || err);
