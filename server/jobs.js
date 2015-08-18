@@ -11,6 +11,8 @@ SERVICES['for']({}).then(function (_SERVICES) {
 
 const Q = require("q");
 
+const MOMENT_TZ = require("moment-timezone");
+
 
 // TODO: Make this generic and use RX
 var loadMenuDataForEvents = exports.loadMenuDataForEvents = function (knex, appContext, eventIds) {
@@ -304,7 +306,7 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
 					//	API.MOMENT_TZ().tz("America/Chicago").second(0).minute(0).hour(0).format(),
 					//	API.MOMENT_TZ().tz("America/Chicago").second(0).minute(0).hour(0).add(1, 'day').format()
 					//])
-					.where('menuEmailTime', '<', API.MOMENT_TZ().tz("America/Chicago").format())
+//					.where('menuEmailTime', '<', API.MOMENT_TZ().tz("America/Chicago").format())
 	    		} else
 	    		if (type === "deliveries") {
 	    			query = query.where({
