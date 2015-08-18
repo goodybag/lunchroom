@@ -7,6 +7,12 @@ exports.forContext = function (context) {
 
 	var common = COMMON.forAppContext(context.appContext);
 
+console.log("context.MOMENT", context.MOMENT);
+
+	var MOMENT = context.MOMENT || function () {
+		return COMMON.API.MOMENT;
+	}
+
 	// @see http://ampersandjs.com/docs#ampersand-state
 	var Model = COMMON.API.AMPERSAND_STATE.extend({
 		name: "events",
@@ -42,7 +48,7 @@ exports.forContext = function (context) {
 					"day_id"
 				],
 	            fn: function () {
-	            	return COMMON.API.MOMENT(this.day_id, "YYYY-MM-DD").format("ddd");
+	            	return MOMENT()(this.day_id, "YYYY-MM-DD").format("ddd");
 	            }
 		    },
 		    "day.format.MMM": {
@@ -50,7 +56,7 @@ exports.forContext = function (context) {
 					"day_id"
 				],
 	            fn: function () {
-	            	return COMMON.API.MOMENT(this.day_id, "YYYY-MM-DD").format("MMM");
+	            	return MOMENT()(this.day_id, "YYYY-MM-DD").format("MMM");
 	            }
 		    },
 		    "day.format.D": {
@@ -58,7 +64,7 @@ exports.forContext = function (context) {
 					"day_id"
 				],
 	            fn: function () {
-	            	return COMMON.API.MOMENT(this.day_id, "YYYY-MM-DD").format("D");
+	            	return MOMENT()(this.day_id, "YYYY-MM-DD").format("D");
 	            }
 		    },
 		    "day.format.dddd-type": {
@@ -66,7 +72,7 @@ exports.forContext = function (context) {
 					"day_id"
 				],
 	            fn: function () {
-	            	var str = COMMON.API.MOMENT(this.day_id, "YYYY-MM-DD").format("dd");
+	            	var str = MOMENT()(this.day_id, "YYYY-MM-DD").format("dd");
 	            	if (str === "Sa" || str === "Su") {
 	            		return "Weekend"
 	            	} else {
@@ -80,7 +86,7 @@ exports.forContext = function (context) {
 				],
 				cache: false,
 	            fn: function () {
-	            	return COMMON.API.MOMENT().isAfter(this.orderByTime);
+	            	return MOMENT()().isAfter(this.orderByTime);
 	            }
 		    },
 		    "canOrder": {
@@ -89,12 +95,12 @@ exports.forContext = function (context) {
 				],
 				cache: false,
 	            fn: function () {
-	            	var orderByTime = COMMON.API.MOMENT(this.orderByTime);
-	            	if (!orderByTime.isSame(COMMON.API.MOMENT(), 'day')) {
+	            	var orderByTime = MOMENT()(this.orderByTime);
+	            	if (!orderByTime.isSame(MOMENT()(), 'day')) {
 	            		// Not today
 	            		return false;
 	            	}
-	            	if (orderByTime.isBefore(COMMON.API.MOMENT())) {
+	            	if (orderByTime.isBefore(MOMENT()())) {
 	            		// After deadline
 	            		return false;
 	            	}
@@ -115,12 +121,12 @@ exports.forContext = function (context) {
 				],
 				cache: false,
 	            fn: function () {
-	            	var orderByTime = COMMON.API.MOMENT(this.orderByTime);
-	            	if (orderByTime.isBefore(COMMON.API.MOMENT())) {
+	            	var orderByTime = MOMENT()(this.orderByTime);
+	            	if (orderByTime.isBefore(MOMENT()())) {
 	            		// After deadline
 	            		return false;
 	            	}
-	            	return COMMON.API.MOMENT().to(orderByTime, true)
+	            	return MOMENT()().to(orderByTime, true)
 	            		.replace(/minutes/, "min");
 	            }
 		    },
@@ -130,8 +136,8 @@ exports.forContext = function (context) {
 				],
 				cache: false,
 	            fn: function () {
-	            	var orderByTime = COMMON.API.MOMENT(this.orderByTime);
-	            	var diff = orderByTime.diff(COMMON.API.MOMENT(), 'seconds');
+	            	var orderByTime = MOMENT()(this.orderByTime);
+	            	var diff = orderByTime.diff(MOMENT()(), 'seconds');
 	            	if (diff<0) diff = 0;
 	            	return diff;
 	            }

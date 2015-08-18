@@ -16,19 +16,31 @@ const Q = require("q");
 var loadMenuDataForEvents = exports.loadMenuDataForEvents = function (knex, appContext, eventIds) {
 
 	var EventsModel = require("../stores/ui.Events.model").forContext({
-		appContext: appContext
+		appContext: appContext,
+		MOMENT: function () {
+			return MOMENT_TZ().tz("America/Chicago")
+		}
 	});
 
 	var ItemsModel = require("../stores/ui.Items.model").forContext({
-		appContext: appContext
+		appContext: appContext,
+		MOMENT: function () {
+			return MOMENT_TZ().tz("America/Chicago")
+		}
 	});
 
 	var VendorsModel = require("../stores/ui.Vendors.model").forContext({
-		appContext: appContext
+		appContext: appContext,
+		MOMENT: function () {
+			return MOMENT_TZ().tz("America/Chicago")
+		}
 	});
 
 	var ConsumerGroupsModel = require("../stores/ui.ConsumerGroups.model").forContext({
-		appContext: appContext
+		appContext: appContext,
+		MOMENT: function () {
+			return MOMENT_TZ().tz("America/Chicago")
+		}
 	});
 
 	function fetchMenus(event_ids) {
