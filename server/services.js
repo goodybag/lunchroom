@@ -67,12 +67,8 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
 
             } else
             if (templateId === "Menu") {
-
-// HACK: Remove once template is fed dynamically.
-var htmlEmail = FS.readFileSync(PATH.join(__dirname, "emails/menu.htm"), "utf8");
-
                 message = API.DEEPMERGE({
-                    "subject": "Daily Lunch Menu - Order by 10am",
+                    "subject": "Daily Lunch Menu - Order by " + message.data.menu.orderByTime,
                     "text": [
                         "Todays menu is from: " + message.data.menu.restaurantName,
                         "",
@@ -82,14 +78,13 @@ var htmlEmail = FS.readFileSync(PATH.join(__dirname, "emails/menu.htm"), "utf8")
                             return "  * " + item.title;
                         }).join("\n"),
                         "",
-                        "Goto " + message.data.menu.url + " to see the full menu.",
+                        "Goto " + message.data.menu.lunchroomUrl + " to see the full menu.",
                         "",
                         "Sincerely,",
                         "-Goodybot",
                         "",
-                        message.data.menu.url + " https://www.goodybag.com"
-                    ].join("\n"),
-                    "html": htmlEmail
+                        message.data.menu.lunchroomUrl + " https://www.goodybag.com"
+                    ].join("\n")
                 }, message || {});
 
                 return API["mandrill-send"]["$io.pinf.service.mandrill/send/0"].sendMessage(message);

@@ -1,11 +1,117 @@
 
-const DEV = false;
+const DEV = true;
 
 var SERVICES = require("./services");
+var EMAILS = require("./emails");
+
 
 SERVICES['for']({}).then(function (_SERVICES) {
 	SERVICES = _SERVICES;
 });
+
+const Q = require("q");
+
+
+// TODO: Make this generic and use RX
+var loadMenuDataForEvents = exports.loadMenuDataForEvents = function (knex, appContext, eventIds) {
+
+	var EventsModel = require("../stores/ui.Events.model").forContext({
+		appContext: appContext
+	});
+
+	var ItemsModel = require("../stores/ui.Items.model").forContext({
+		appContext: appContext
+	});
+
+	var VendorsModel = require("../stores/ui.Vendors.model").forContext({
+		appContext: appContext
+	});
+
+	var ConsumerGroupsModel = require("../stores/ui.ConsumerGroups.model").forContext({
+		appContext: appContext
+	});
+
+	function fetchMenus(event_ids) {
+
+		var menus = {
+			vendorIds: {},
+			consumerGroupIds: {},
+			vendors: {},
+			consumerGroups: {},
+			events: {}
+		};
+
+		return Q.when(knex('events').whereIn('id', event_ids).then(function (result) {
+
+			result.forEach(function (row) {
+				if (!menus.events[row.id]) {
+					menus.events[row.id] = {
+						event: {},
+						items: {}
+					};
+				}
+				menus.consumerGroupIds[row.consumer_group_id] = true;
+				menus.events[row.id].event = new EventsModel(row);
+			});
+
+			return Q.when(knex('menus').whereIn('event_id', event_ids).then(function (result) {
+
+				result.forEach(function (row) {
+					menus.events[row.event_id].items[row.item_id] = null;
+				});
+
+				return menus;
+			}));
+		}));
+	}
+
+	function augmentMenusWithItems (menus) {
+		var ids = {};
+		for (var event_id in menus.events) {
+			Object.keys(menus.events[event_id].items).forEach(function (item_id) {
+    			ids[item_id] = event_id;
+			});
+		}
+		return Q.when(knex('items').whereIn('id', Object.keys(ids)).then(function (result) {
+			result.forEach(function (row) {
+				menus.vendorIds[row.vendor_id] = true;
+				menus.events[ids[row.id]].items[row.id] = new ItemsModel(row);
+			});
+		}));
+	}
+
+	function fetchVendors (menus) {
+		return Q.when(knex('vendors').whereIn('id', Object.keys(menus.vendorIds)).then(function (result) {
+			result.forEach(function (row) {
+				menus.vendors[row.id] = new VendorsModel(row);
+			});
+		}));
+	}
+
+	function fetchConsumerGroup (menus) {
+		return Q.when(knex('consumer-groups').whereIn('id', Object.keys(menus.consumerGroupIds)).then(function (result) {
+			result.forEach(function (row) {
+				menus.consumerGroups[row.id] = new ConsumerGroupsModel(row);
+			});
+		}));
+	}
+
+	return fetchMenus(eventIds).then(function (menus) {
+
+		return augmentMenusWithItems(menus).then(function () {
+
+			return fetchVendors(menus).then(function () {
+
+				return fetchConsumerGroup(menus);
+			});
+
+		}).then(function () {
+			return menus;			
+		});
+	});
+}
+
+
 
 
 require('org.pinf.genesis.lib').forModule(require, module, function (API, exports) {
@@ -13,7 +119,7 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
     exports.monitorDatabase = function (db) {
 
 
-    	function sendMenuForEventTo (menuData, subscribers) {
+    	function sendMenuForEventTo (menus, eventId, subscribers) {
 
 			function sendEmails () {
 
@@ -22,41 +128,60 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
 	    			return API.Q.resolve();
 	    		}
 
-				return API.Q.all(Object.keys(subscribers).map(function (email) {
+				return EMAILS.for({
+					args: {
+						appContext: API.appContext
+					}
+				}).then(function (EMAILS) {
+return;
+					return EMAILS.renderEmail("menu", {
+						menus: menus,
+						event_id: eventId
+					}).then(function (html) {
 
-					console.log("Sending menu to:", email);
+						return API.Q.all(Object.keys(subscribers).map(function (email) {
 
-					return SERVICES.email.send("Menu", {
-			            "to": [
-			                {
-			                    "email": email,
-			                    "name": email,
-			                    "type": "to"
-			                }
-			            ],
-			            "data": {
-			            	"menu": {
-			            		"url": menuData.event.get("menuUrl"),
-// TODO: Make this dynamic!
-			            		"restaurantName": "Trudy's"
-			            	},
-			            	"items": Object.keys(menuData.items).map(function (itemId) {
-								return menuData.items[itemId];
-							})
-			            }
-			        }).fail(function (err) {
-						console.error("Error sending email but ignoring", err.stack);
-						// TODO: Resend email
+							console.log("Sending menu to:", email);
+
+							var event = menus.events[eventId].event;
+							// Assume only one vendor.
+							var vendor = menus.vendors[Object.keys(menus.vendors).shift()];
+
+							return SERVICES.email.send("Menu", {
+					            "to": [
+					                {
+					                    "email": email,
+					                    "name": email,
+					                    "type": "to"
+					                }
+					            ],
+					            "data": {
+					            	"menu": {
+										restaurantName: vendor.get('title'),
+										lunchroomUrl: event.get("menuUrl"),
+										orderByTime: event.get("format.orderByTime")
+					            	},
+					            	"items": Object.keys(menus.events[eventId].items).map(function (itemId) {
+										return menus.events[eventId].items[itemId].getValues();
+									})
+					            },
+					            "html": html
+					        }).fail(function (err) {
+								console.error("Error sending email but ignoring", err.stack);
+								// TODO: Resend email
+							});
+						}));
 					});
-				}));
+				});
 			}
 
 			function setMenuEmailsSent () {
 				return API.Q.when(db.knex('events').update({
 					'menuEmailsSent': true
-				}).where({
-					'id': menuData.event.get("id")
-				}).then(function (result) {
+				}).where('id', eventId).then(function (result) {
+
+console.log("result", result);
+
 					// TODO: Check `result == 1`
 				})).then(function () {
 					// TODO: Use transactions instead of waiting to ensure out update goes
@@ -156,24 +281,21 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
 
 	    	function fetchPendingEvents (type) {
 
-	    		var EventsModel = require("../stores/ui.Events.model").forContext({
-	    			appContext: API.appContext
-	    		});
-
 	    		// Find all events for today for which the notifications
 	    		// have not yet gone out.
-	    		var query = db.knex('events');
+	    		var query = db.knex('events').select('id');
 
 	    		if (type === "menus") {
 	    			query = query.where({
 						'menuReady': true,
 						'menuEmailsSent': false
-					}).where('day_id', API.MOMENT_TZ().tz("America/Chicago").format("YYYY-MM-DD"))
-//					whereBetween('orderByTime', [
-//						API.MOMENT_TZ().tz("America/Chicago").second(0).minute(0).hour(0).format(),
-//						API.MOMENT_TZ().tz("America/Chicago").second(0).minute(0).hour(0).add(1, 'day').format()
-//					])
-					.where('menuEmailTime', '<', API.MOMENT_TZ().tz("America/Chicago").format())
+					})
+//					.where('day_id', API.MOMENT_TZ().tz("America/Chicago").format("YYYY-MM-DD"))
+					//whereBetween('orderByTime', [
+					//	API.MOMENT_TZ().tz("America/Chicago").second(0).minute(0).hour(0).format(),
+					//	API.MOMENT_TZ().tz("America/Chicago").second(0).minute(0).hour(0).add(1, 'day').format()
+					//])
+//					.where('menuEmailTime', '<', API.MOMENT_TZ().tz("America/Chicago").format())
 	    		} else
 	    		if (type === "deliveries") {
 	    			query = query.where({
@@ -192,50 +314,13 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
 				return API.Q.when(query.then(function (result) {
 					var events = {};
 					result.forEach(function (row) {
-						events[row.id] = new EventsModel(row);
+						events[row.id] = true;
 					});
 					return events;
 				}));
 	    	}
 
-	    	function fetchMenus(event_ids) {
-				return API.Q.when(db.knex('menus').whereIn('event_id', event_ids).then(function (result) {
-					var menus = {};
-					result.forEach(function (row) {
-						if (!menus[row.event_id]) {
-							menus[row.event_id] = {
-								items: {}
-							};
-						}
-						menus[row.event_id].items[row.item_id] = null;
-					});
-					return menus;
-				}));
-	    	}
-
-	    	function augmentMenusWithItems (menus) {
-	    		var ids = {};
-	    		for (var event_id in menus) {
-	    			Object.keys(menus[event_id].items).forEach(function (item_id) {
-		    			ids[item_id] = event_id;
-	    			});
-	    		}
-				return API.Q.when(db.knex('items').whereIn('id', Object.keys(ids)).then(function (result) {
-					result.forEach(function (row) {
-						menus[ids[row.id]].items[row.id] = row;
-					});
-				}));
-	    	}
-
-	    	function fetchSubscribers (events) {
-	    		var ids = {
-	    			consumerGroup: {},
-	    			event: {}
-	    		};
-	    		for (var event_id in events) {
-	    			ids.event[event_id] = true;
-	    			ids.consumerGroup[events[event_id].get("consumer_group_id")] = true;
-	    		}
+	    	function fetchSubscribers (menus) {
 				return API.Q.when(db.knex('consumer-group-subscriptions')
 					.select(
 						'consumer-group-subscriptions.id',
@@ -243,8 +328,8 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
 						'events.id AS event_id'
 					)
 					.rightJoin('events', 'consumer-group-subscriptions.consumer_group_id', 'events.consumer_group_id')
-					.whereIn('consumer-group-subscriptions.consumer_group_id', Object.keys(ids.consumerGroup))
-					.whereIn('events.id', Object.keys(ids.event))
+					.whereIn('consumer-group-subscriptions.consumer_group_id', Object.keys(menus.consumerGroupIds))
+					.whereIn('events.id', Object.keys(menus.events))
 					.whereNotNull('consumer-group-subscriptions.confirmedEmail')
 				.then(function (result) {
 					var subscribers = {};
@@ -267,7 +352,7 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
 		    		API.MOMENT_TZ().tz("America/Chicago").second(0).minute(0).hour(9)
 	    		)) {
 	    			console.log("It is not yet 9am CT so we don't yet check to see if we need to send menu emails for today!");
-					return API.Q.resolve();
+//					return API.Q.resolve();
 	    		};
 
 				return fetchPendingEvents("menus").then(function (events) {
@@ -279,25 +364,19 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
 						return;
 					}
 
-		    		return fetchMenus(eventIds).then(function (menus) {
+					return loadMenuDataForEvents(db.knex, API.appContext, eventIds).then(function (menus) {
 
-						return augmentMenusWithItems(menus).then(function () {
+						return fetchSubscribers(menus).then(function (subscribers) {
 
-							return fetchSubscribers(events).then(function (subscribers) {
+							var done = API.Q.resolve();
 
-								var done = API.Q.resolve();
+							for (var eventId in menus.events) {
+								done = API.Q.when(done, function () {
+									return sendMenuForEventTo(menus, eventId, subscribers[eventId]);
+								});
+							}
 
-								for (var eventId in events) {
-									done = API.Q.when(done, function () {
-										return sendMenuForEventTo({
-											event: events[eventId],
-											items: menus[eventId].items
-										}, subscribers[eventId]);
-									});
-								}
-
-								return done;
-							});
+							return done;
 						});
 		    		});
 		    	});

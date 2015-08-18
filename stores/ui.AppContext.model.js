@@ -7,6 +7,8 @@ exports.makeContextForClient = function (overrides) {
 	overrides = overrides || {};
 
 	var config = {
+		dev: false,
+		type: "",
 		sessionToken: null,
 		context: {},
 		initialized: false,
@@ -24,16 +26,17 @@ exports.makeContextForClient = function (overrides) {
 	    forceAllowOrder: false
 	};
 
-	Object.keys(overrides).forEach(function (name) {
-		if (typeof config[name] === "undefined") {
-			throw new Error("Cannot override property '" + name + "' as it is not declared in the model!");
-		}
-	});
+//	Object.keys(overrides).forEach(function (name) {
+//		if (typeof config[name] === "undefined") {
+//			throw new Error("Cannot override property '" + name + "' as it is not declared in the model!");
+//		}
+//	});
 
 	COMMON.API.UNDERSCORE.extend(config, overrides || {});
 
 	var AppContext = makeContextModel({
 		props: {
+			dev: "boolean",
 			sessionToken: "string",
 			context: "object",
 			initialized: "boolean",

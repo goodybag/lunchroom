@@ -179,6 +179,15 @@ exports.forContext = function (context) {
 	            fn: function () {
 	            	return context.appContext.get("windowOrigin") + "/event-" + this.token;
 	            }
+		    },
+		    "menuEmailUrl": {
+		    	deps: [
+					"token"
+				],
+				cache: false,
+	            fn: function () {
+	            	return context.appContext.get("windowOrigin") + "/eventemail-" + this.token;
+	            }
 		    }
 	    }
 	});

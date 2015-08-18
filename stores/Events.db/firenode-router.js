@@ -10,6 +10,41 @@ exports['for'] = function (API) {
 
 		var session = req._FireNodeContext.session;
 
+		// For event email we just load the event id
+		if (
+			req._FireNodeContext.config.type === "email" &&
+			opts.arg
+		) {
+			return DB.getKnex()('events').where({
+				"token": opts.arg
+			}).select(
+				'id',
+				'consumer_group_id'
+			).then(function (result) {
+
+				if (result.length === 0) {
+					req._FireNodeContext.addLayer({
+						config: {
+							externalRedirect: "/"
+						}
+					});
+					return false;
+				}
+
+				req._FireNodeContext.addLayer({
+					session: {
+						dbfilter: {
+							event_id: result[0].id,
+							consumer_group_id: result[0].consumer_group_id
+						}
+					}
+				});
+
+				return false;
+			});
+		}
+
+
 		if (
 			session &&
 			session.dbfilter &&

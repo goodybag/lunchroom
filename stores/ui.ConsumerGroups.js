@@ -135,41 +135,8 @@ exports['for'] = function (context) {
 	}
 
 
-	// @see http://ampersandjs.com/docs#ampersand-state
-	var Model = store.Model = COMMON.API.AMPERSAND_STATE.extend({
-		name: "consumer-groups",
-		props: {
-			id: "string",
-	        title: "string",
-	        alias: "string",
-	        contact: "string",
-	        address: "string",
-	        pickupLocation: "string",
-	        deliverLocation: "string",
-	        orderTax: "string",
-	        lunchroomLive: "string"
-		},
-		derived: {
-		    "lunchroomUrl": {
-		    	deps: [
-					"alias"
-				],
-				cache: false,
-	            fn: function () {
-	            	return context.appContext.get("windowOrigin") + "/" + this["alias"];
-	            }
-		    },
-		    "format.lunchroomLive": {
-		    	deps: [
-					"lunchroomLive"
-				],
-				cache: false,
-	            fn: function () {
-	            	return (this.lunchroomLive ? "Yes" : "No");
-	            }
-		    }
-		}
-	});
+	store.Model = require("./ui.ConsumerGroups.model").forContext(context);
+
 
 	store.getLunchroom = function () {
 		var today = context.appContext.get("stores").events.getToday()[0];
@@ -207,7 +174,7 @@ exports['for'] = function (context) {
 				if (!records[i].has(field)) return;
 				fields[field] = records[i].get(field);
 			});
-			return store._byId[records[i].get("id")].__model = new Model(fields);
+			return store._byId[records[i].get("id")].__model = new store.Model(fields);
 		});
 	}
 

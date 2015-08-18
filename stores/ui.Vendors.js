@@ -52,16 +52,8 @@ exports['for'] = function (context) {
 	}
 
 
-	// @see http://ampersandjs.com/docs#ampersand-state
-	var Model = store.Model = COMMON.API.AMPERSAND_STATE.extend({
-		name: "vendors",
-		props: {
-			id: "string",
-	        title: "string",
-	        description: "string",
-	        adminAccessToken: "string"
-	    }
-	});
+	store.Model = require("./ui.Vendors.model").forContext(context);
+
 
 	store.idForAdminAccessToken = function (adminAccessToken) {
 		return COMMON.API.Q.denodeify(function (callback) {
@@ -97,7 +89,7 @@ exports['for'] = function (context) {
 				if (!records[i].has(field)) return;
 				fields[field] = records[i].get(field);
 			});
-			return store._byId[records[i].get("id")].__model = new Model(fields);
+			return store._byId[records[i].get("id")].__model = new store.Model(fields);
 		});
 	}
 

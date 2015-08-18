@@ -196,15 +196,21 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
 
 		var landingResources = getResourceMappingsForSkinPage("Landing");
 		var appResources = getResourceMappingsForSkinPage("AppMenu");
-/*
-		app.get(/^(\/event-email-[^\/]+)?(\/.*)$/, function (req, res, next) {
+
+		app.get(/^(\/eventemail-[^\/]+)$/, function (req, res, next) {
+
+			var contextConfig = API.config["jobAppContext"] || {};
+			contextConfig = API.DEEPMERGE(contextConfig, API.config["jobAppContext[APP_DOMAIN='" + process.env.APP_DOMAIN + "']"] || {});
 
 			return EMAILS.for({
 				args: {
+					appContext: APP_CONTEXT_MODEL.makeContextForClient(contextConfig),
 					config: req._FireNodeContext.config
 				}
 			}).then(function (EMAILS) {
-				return EMAILS.renderEmail("menu").then(function (html) {
+				return EMAILS.renderEmail("menu", {
+					event_id: req._FireNodeContext.session.dbfilter.event_id
+				}).then(function (html) {
 
 					res.writeHead(200, {
 						"Content-Type": "text/html"
@@ -213,7 +219,7 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
 				});
 			}).fail(next);
 		});
-*/
+
 		app.get(/^(\/(?:vendor|order|event)-[^\/]+)?(\/.*)$/, function (req, res, next) {
 
 			var path = req.params[1];
