@@ -14,13 +14,13 @@
             "github.com~cadorn~endpoints~0": {
                 "master": {
                     "installer": "npm",
-                    "uri": "git://git@github.com:cadorn/endpoints.git#b1b82313be03e07869aa5acf0f9b89b05815f4aa(master)"
+                    "uri": "git://git@github.com:cadorn/endpoints.git#5b32fc5ccb29769dcb3ee959198372fd72551599(master)"
                 }
             },
             "github.com~firenode~firenode-for-jsonapi~0": {
                 "master": {
                     "installer": "npm",
-                    "uri": "git://git@github.com:firenode/firenode-for-jsonapi.git#593f13532f45b8b659a26ab42d421a9fd0627be5(master)"
+                    "uri": "git://git@github.com:firenode/firenode-for-jsonapi.git#743104423944ce53f478f38bf0ef475baa36e8ec(master)"
                 }
             },
             "github.com~pinf-io~io.pinf.service.mandrill~0": {
