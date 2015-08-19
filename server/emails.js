@@ -82,6 +82,7 @@ console.log("data", data);
 									data.itemGrid[data.itemGrid.length-1].push({
 										title: item.get("title"),
 										price: item.get("format.price"),
+										description: item.get("description"),
 										photo_url: item.get("photo_url") + "/convert?w=277&h=135&fit=crop",
 										_last: ((data.itemGrid[data.itemGrid.length-1].length+1) === maxColumns)
 									});
