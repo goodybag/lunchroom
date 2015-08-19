@@ -1109,9 +1109,24 @@
 	};
 
 
-	exports.forAppContext = function (appContext) {
+	exports.forContext = function (context) {
 
 		var exports = {};
+
+		var MOMENT = exports.MOMENT = (
+			context &&
+			(
+				(context.appContext && context.appContext.MOMENT) ||
+				context.MOMENT
+			)
+		) || API.MOMENT;
+		var MOMENT_CT = exports.MOMENT_CT = (
+			context &&
+			(
+				(context.appContext && context.appContext.MOMENT_CT) ||
+				context.MOMENT_CT
+			)
+		) || API.MOMENT_CT || MOMENT;
 
 		exports.makeFormatter = function (type) {
 
@@ -1122,8 +1137,8 @@
 						"pickupEndTime"
 					],
 		            fn: function () {
-		            	var deliveryStartTime = API.MOMENT(this.deliveryStartTime);
-		            	var pickupEndTime = API.MOMENT(this.pickupEndTime);
+		            	var deliveryStartTime = MOMENT_CT(this.deliveryStartTime);
+		            	var pickupEndTime = MOMENT_CT(this.pickupEndTime);
 		            	return deliveryStartTime.format("h:mm") + "-" + pickupEndTime.format("h:mm A");
 		            }
 			    };
@@ -1134,7 +1149,7 @@
 						"deliveryStartTime"
 					],
 		            fn: function () {
-		            	var deliveryStartTime = API.MOMENT(this.deliveryStartTime);
+		            	var deliveryStartTime = MOMENT_CT(this.deliveryStartTime);
 		            	return deliveryStartTime.format("dddd, MMM Do YYYY");
 		            }
 			    };
@@ -1145,7 +1160,7 @@
 						"deliveryStartTime"
 					],
 		            fn: function () {
-		            	var deliveryStartTime = API.MOMENT(this.deliveryStartTime);
+		            	var deliveryStartTime = MOMENT_CT(this.deliveryStartTime);
 		            	return deliveryStartTime.format("dddd");
 		            }
 			    };
@@ -1156,7 +1171,7 @@
 						"orderByTime"
 					],
 		            fn: function () {
-		            	var orderByTime = API.MOMENT(this.orderByTime);
+		            	var orderByTime = MOMENT_CT(this.orderByTime);
 		            	return orderByTime.format("h:mm A");
 		            }
 			    };
@@ -1167,7 +1182,7 @@
 						"menuEmailTime"
 					],
 		            fn: function () {
-		            	var menuEmailTime = API.MOMENT(this.menuEmailTime);
+		            	var menuEmailTime = MOMENT_CT(this.menuEmailTime);
 		            	return menuEmailTime.format("h:mm A");
 		            }
 			    };
@@ -1178,7 +1193,7 @@
 						"menuSmsTime"
 					],
 		            fn: function () {
-		            	var menuSmsTime = API.MOMENT(this.menuSmsTime);
+		            	var menuSmsTime = MOMENT_CT(this.menuSmsTime);
 		            	return menuSmsTime.format("h:mm A");
 		            }
 			    };
@@ -20374,13 +20389,7 @@
 
 	exports.forContext = function (context) {
 
-		var common = COMMON.forAppContext(context.appContext);
-
-	console.log("context.MOMENT", context.MOMENT);
-
-		var MOMENT = context.MOMENT || function () {
-			return COMMON.API.MOMENT;
-		}
+		var common = COMMON.forContext(context);
 
 		// @see http://ampersandjs.com/docs#ampersand-state
 		var Model = COMMON.API.AMPERSAND_STATE.extend({
@@ -20417,7 +20426,7 @@
 						"day_id"
 					],
 		            fn: function () {
-		            	return MOMENT()(this.day_id, "YYYY-MM-DD").format("ddd");
+		            	return common.MOMENT_CT(this.day_id, "YYYY-MM-DD").format("ddd");
 		            }
 			    },
 			    "day.format.MMM": {
@@ -20425,7 +20434,7 @@
 						"day_id"
 					],
 		            fn: function () {
-		            	return MOMENT()(this.day_id, "YYYY-MM-DD").format("MMM");
+		            	return common.MOMENT_CT(this.day_id, "YYYY-MM-DD").format("MMM");
 		            }
 			    },
 			    "day.format.D": {
@@ -20433,7 +20442,7 @@
 						"day_id"
 					],
 		            fn: function () {
-		            	return MOMENT()(this.day_id, "YYYY-MM-DD").format("D");
+		            	return common.MOMENT_CT(this.day_id, "YYYY-MM-DD").format("D");
 		            }
 			    },
 			    "day.format.dddd-type": {
@@ -20441,7 +20450,7 @@
 						"day_id"
 					],
 		            fn: function () {
-		            	var str = MOMENT()(this.day_id, "YYYY-MM-DD").format("dd");
+		            	var str = common.MOMENT_CT(this.day_id, "YYYY-MM-DD").format("dd");
 		            	if (str === "Sa" || str === "Su") {
 		            		return "Weekend"
 		            	} else {
@@ -20455,7 +20464,7 @@
 					],
 					cache: false,
 		            fn: function () {
-		            	return MOMENT()().isAfter(this.orderByTime);
+		            	return common.MOMENT_CT().isAfter(this.orderByTime);
 		            }
 			    },
 			    "canOrder": {
@@ -20464,12 +20473,12 @@
 					],
 					cache: false,
 		            fn: function () {
-		            	var orderByTime = MOMENT()(this.orderByTime);
-		            	if (!orderByTime.isSame(MOMENT()(), 'day')) {
+		            	var orderByTime = common.MOMENT_CT(this.orderByTime);
+		            	if (!orderByTime.isSame(common.MOMENT_CT(), 'day')) {
 		            		// Not today
 		            		return false;
 		            	}
-		            	if (orderByTime.isBefore(MOMENT()())) {
+		            	if (orderByTime.isBefore(common.MOMENT_CT())) {
 		            		// After deadline
 		            		return false;
 		            	}
@@ -20490,12 +20499,12 @@
 					],
 					cache: false,
 		            fn: function () {
-		            	var orderByTime = MOMENT()(this.orderByTime);
-		            	if (orderByTime.isBefore(MOMENT()())) {
+		            	var orderByTime = common.MOMENT_CT(this.orderByTime);
+		            	if (orderByTime.isBefore(common.MOMENT_CT())) {
 		            		// After deadline
 		            		return false;
 		            	}
-		            	return MOMENT()().to(orderByTime, true)
+		            	return common.MOMENT_CT().to(orderByTime, true)
 		            		.replace(/minutes/, "min");
 		            }
 			    },
@@ -20505,8 +20514,8 @@
 					],
 					cache: false,
 		            fn: function () {
-		            	var orderByTime = MOMENT()(this.orderByTime);
-		            	var diff = orderByTime.diff(MOMENT()(), 'seconds');
+		            	var orderByTime = common.MOMENT_CT(this.orderByTime);
+		            	var diff = orderByTime.diff(common.MOMENT_CT(), 'seconds');
 		            	if (diff<0) diff = 0;
 		            	return diff;
 		            }
@@ -20771,7 +20780,7 @@
 
 	exports.forContext = function (context) {
 
-		var common = COMMON.forAppContext(context.appContext);
+		var common = COMMON.forContext(context);
 
 		// @see http://ampersandjs.com/docs#ampersand-state
 		var Model = COMMON.API.AMPERSAND_STATE.extend({
@@ -53065,7 +53074,9 @@
 	var COMMON = __webpack_require__(9);
 
 
-	exports.makeContextForClient = function (overrides) {
+	exports.makeContextForClient = function (overrides, API) {
+
+		var common = COMMON.forContext(API);
 
 		overrides = overrides || {};
 
@@ -53081,8 +53092,8 @@
 		    lockedView: "",
 		    selectedDay: null,
 		    selectedDayId: null,
-		    todayId: COMMON.API.MOMENT().format("YYYY-MM-DD"),
-		    today: COMMON.API.MOMENT().format("ddd"),
+		    todayId: common.MOMENT_CT().format("YYYY-MM-DD"),
+		    today: common.MOMENT_CT().format("ddd"),
 		    windowOrigin: null,
 		    stores: null,
 		    skin: null,
@@ -53168,7 +53179,12 @@
 
 		});
 
-		return new AppContext(config);
+		var appContext = new AppContext(config);
+
+		appContext.MOMENT = (API && API.MOMENT) || common.MOMENT;
+		appContext.MOMENT_CT = (API && API.MOMENT_CT) || common.MOMENT_CT;
+
+		return appContext;
 	}
 
 	exports.makeContextForServer = function (overrides) {
@@ -60628,7 +60644,7 @@
 
 	exports.forContext = function (context) {
 
-		var common = COMMON.forAppContext(context.appContext);
+		var common = COMMON.forContext(context);
 
 		// @see http://ampersandjs.com/docs#ampersand-state
 		var Model = COMMON.API.AMPERSAND_STATE.extend({
@@ -60795,7 +60811,7 @@
 
 	exports.forContext = function (context) {
 
-		var common = COMMON.forAppContext(context.appContext);
+		var common = COMMON.forContext(context);
 
 		// @see http://ampersandjs.com/docs#ampersand-state
 		var Model = COMMON.API.AMPERSAND_STATE.extend({
@@ -61630,7 +61646,7 @@
 
 	exports['for'] = function (context) {
 
-		var common = COMMON_MODEL.forAppContext(context.appContext);
+		var common = COMMON_MODEL.forContext(context);
 
 
 		function loadStatusInfoForOrder (orderHashId) {
@@ -62113,7 +62129,7 @@
 
 	exports.forContext = function (context) {
 
-		var common = COMMON.forAppContext(context.appContext);
+		var common = COMMON.forContext(context);
 
 		// @see http://ampersandjs.com/docs#ampersand-state
 		var Model = COMMON.API.AMPERSAND_STATE.extend({
@@ -62134,7 +62150,7 @@
 			};
 			records.forEach(function (record) {
 				status.history.push([
-					COMMON.API.MOMENT.utc((record.get && record.get("time")) || record.time).unix(),
+					common.MOMENT().utc((record.get && record.get("time")) || record.time).unix(),
 					record.get((record.get && record.get("status")) || record.status)
 				]);
 			});
