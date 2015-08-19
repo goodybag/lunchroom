@@ -119,6 +119,7 @@ try {
 
 			appContext.on("change:ready", function () {
 				reactComponent._trigger_forceUpdate();
+				$('#page-loading-indicator').toggleClass('show', false);
 			});
 
 		} catch (err) {

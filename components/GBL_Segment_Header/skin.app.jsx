@@ -22,6 +22,9 @@ console.log("TODO: Login");
 $('[data-component-elm="signupLink"]', element).hide();
 $('[data-component-elm="loginLink"]', element).hide();
 
+// TODO: Remove this once we call the skin app or can locate code with components.
+$('[data-toggle="tooltip"]').tooltip();
+
 			},
 			fill: function (element, data, Context) {				
 			}
