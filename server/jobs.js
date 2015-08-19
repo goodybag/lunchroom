@@ -124,7 +124,12 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
     	function qknex (tableName, query) {
     		return API.Q.fcall(function () {
     			var table = db.knex(tableName);
-    			return query(table).catch(function (err) {
+    			return query(table).then(function (resp) {
+
+console.log("RESPONSE:", resp);
+
+    				return resp;
+    			}).catch(function (err) {
     				throw err;
     			});
     		});
