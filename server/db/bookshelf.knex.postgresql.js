@@ -14,7 +14,7 @@ var bookshelf = null;
 
 exports.init = function (config, options) {
 
-	config.debug = (!!config.connection.debug);
+	config.debug = true;//(!!config.connection.debug);
 	config.client = "pg";
 
 
