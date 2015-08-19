@@ -281,7 +281,7 @@ module.exports = function (Context) {
       </div>
       <div className="modal-main-content">
         <div className="modal-main-content-body">
-          <h3 className="item-modal-title" data-component-prop="title">Fajita Torta
+          <h3 className="item-modal-title"><span data-component-prop="title">Fajita Torta</span>
             <span className="item-modal-price" data-component-prop="price">$12.00</span>
           </h3>
           <p className="item-modal-description" data-component-prop="description">Mexican sandwich with top sirloin steak, bell peppers, mushrooms, and onions. Topped with queso, avocado, tomatoes, and Mexican mayo dressing.</p>

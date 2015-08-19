@@ -44802,6 +44802,12 @@
 	/** @jsx React.DOM */
 	exports['for'] = function (Component) {
 
+		var index = 0;
+		function getNextRandomKey () {
+			index++;
+			return "key-" + index;
+		}
+
 		var Template = function (options) {
 			var self = this;
 			var Context = Component.getRenderContext();
@@ -44869,7 +44875,15 @@
 				element = self.elm;
 			}
 			self.data = data;
-			self.fillProperties(element, data);
+	//		self.fillProperties(element, data);
+			if (self._fill) {
+				var Context = Component.getRenderContext();
+				try {
+					self._fill(element, data, Context);
+				} catch (err) {
+					console.error("Error filling component!", err.stack);
+				}
+			}
 		}
 
 		// TODO: Make 'element' optional and default to 'this.elm'?
@@ -44964,6 +44978,8 @@
 				if (!self.sections[sectionName]) {
 					self.sections[sectionName] = {};
 				}
+				sectionElement.removeAttr("key");
+				sectionElement.removeAttr("data-reactid");
 				self.sections[sectionName][sectionView] = sectionElement.detach();
 			});
 		}
@@ -44974,7 +44990,7 @@
 			var sectionContainer = $('[data-component-section="' + name + '"]', element);
 
 			// TODO: Rather than resetting container, update changed rows only.
-			sectionContainer.html("");
+			sectionContainer.empty();
 
 		    data.forEach(function (record) {
 
@@ -44985,7 +45001,7 @@
 		    	}
 
 				var elm = self.sections[name][view].clone();
-				elm.attr("key", record.key || record.id);
+				elm.attr("key", record.key || record.id || getNextRandomKey());
 
 				self.fillProperties(elm, record);
 				self.fillElements(elm, record);
@@ -46101,7 +46117,6 @@
 						});
 					},
 					fill: function (element, data, Context) {
-
 						this.fillProperties(element, data)
 
 						if (
@@ -46115,6 +46130,23 @@
 						} else {
 							this.showViews(element, []);
 						}
+
+						var tags = [];
+						try {
+							if (data.tags) tags = JSON.parse(data.tags);
+						} catch (err) {}
+
+						this.renderSection(element, "diet-tags", tags.map(function(tag) {
+							if (tag === "glutenFree") tag = "gluten-free";
+							return {
+								"tag": tag
+							};
+						}), function getView (data) {
+							return 'default';
+						}, function hookEvents(elm, data) {
+							elm.removeClass("diet-tag-spicy");
+							elm.addClass("diet-tag-" + data.tag);
+						});
 					}
 				}),
 				"menu": new Context.Template({
@@ -46547,7 +46579,7 @@
 	      ), 
 	      React.createElement("div", {className: "modal-main-content"}, 
 	        React.createElement("div", {className: "modal-main-content-body"}, 
-	          React.createElement("h3", {className: "item-modal-title", "data-component-prop": "title"}, "Fajita Torta", 
+	          React.createElement("h3", {className: "item-modal-title"}, React.createElement("span", {"data-component-prop": "title"}, "Fajita Torta"), 
 	            React.createElement("span", {className: "item-modal-price", "data-component-prop": "price"}, "$12.00")
 	          ), 
 	          React.createElement("p", {className: "item-modal-description", "data-component-prop": "description"}, "Mexican sandwich with top sirloin steak, bell peppers, mushrooms, and onions. Topped with queso, avocado, tomatoes, and Mexican mayo dressing."), 
