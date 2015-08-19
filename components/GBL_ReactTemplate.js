@@ -1,6 +1,12 @@
 
 exports['for'] = function (Component) {
 
+	var index = 0;
+	function getNextRandomKey () {
+		index++;
+		return "key-" + index;
+	}
+
 	var Template = function (options) {
 		var self = this;
 		var Context = Component.getRenderContext();
@@ -68,7 +74,15 @@ exports['for'] = function (Component) {
 			element = self.elm;
 		}
 		self.data = data;
-		self.fillProperties(element, data);
+//		self.fillProperties(element, data);
+		if (self._fill) {
+			var Context = Component.getRenderContext();
+			try {
+				self._fill(element, data, Context);
+			} catch (err) {
+				console.error("Error filling component!", err.stack);
+			}
+		}
 	}
 
 	// TODO: Make 'element' optional and default to 'this.elm'?
@@ -163,6 +177,8 @@ exports['for'] = function (Component) {
 			if (!self.sections[sectionName]) {
 				self.sections[sectionName] = {};
 			}
+			sectionElement.removeAttr("key");
+			sectionElement.removeAttr("data-reactid");
 			self.sections[sectionName][sectionView] = sectionElement.detach();
 		});
 	}
@@ -173,7 +189,7 @@ exports['for'] = function (Component) {
 		var sectionContainer = $('[data-component-section="' + name + '"]', element);
 
 		// TODO: Rather than resetting container, update changed rows only.
-		sectionContainer.html("");
+		sectionContainer.empty();
 
 	    data.forEach(function (record) {
 
@@ -184,7 +200,7 @@ exports['for'] = function (Component) {
 	    	}
 
 			var elm = self.sections[name][view].clone();
-			elm.attr("key", record.key || record.id);
+			elm.attr("key", record.key || record.id || getNextRandomKey());
 
 			self.fillProperties(elm, record);
 			self.fillElements(elm, record);

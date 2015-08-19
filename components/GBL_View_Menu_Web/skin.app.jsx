@@ -77,7 +77,6 @@ require("./component.jsx")['for'](module, {
 					});
 				},
 				fill: function (element, data, Context) {
-
 					this.fillProperties(element, data)
 
 					if (
@@ -91,6 +90,23 @@ require("./component.jsx")['for'](module, {
 					} else {
 						this.showViews(element, []);
 					}
+
+					var tags = [];
+					try {
+						if (data.tags) tags = JSON.parse(data.tags);
+					} catch (err) {}
+
+					this.renderSection(element, "diet-tags", tags.map(function(tag) {
+						if (tag === "glutenFree") tag = "gluten-free";
+						return {
+							"tag": tag
+						};
+					}), function getView (data) {
+						return 'default';
+					}, function hookEvents(elm, data) {
+						elm.removeClass("diet-tag-spicy");
+						elm.addClass("diet-tag-" + data.tag);
+					});
 				}
 			}),
 			"menu": new Context.Template({
