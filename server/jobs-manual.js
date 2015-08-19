@@ -7,11 +7,32 @@ const STRIPE = require('stripe');
 var knex = KNEX({
 	'client': 'pg',
 	"connection": {
+
+/*
+// dev/local
+		"host": "github-com-goodybag-goodybag-core-0.goodybag.github.pinf.me",
+        "port": 8089,
+        "user": "lunchroom_dev_preview",
+        "password": "1E07DEEC-DE21-4E84-B47F-104C5070259A",
+        "database": "lunchroom_dev_preview",
+*/
+
+// staging
+        "host": "ec2-107-21-240-156.compute-1.amazonaws.com",
+        "port": 5732,
+        "user": "u9e5uar8mdmlqt",
+        "password": "p3m0t493t12oufb6shuj8q9saav",
+        "database": "d6da1bd7tqk7k",
+
+
+/*
+// live
 		"host": "ec2-107-21-253-234.compute-1.amazonaws.com",
         "port": 6002,
         "user": "uenn1nb98f3669",
         "password": "p5i82eo3fhl5m0etr22uimc8cmk",
         "database": "ddn7dgetbsvnkc",
+*/
         "ssl": true
     }
 });
@@ -23,14 +44,15 @@ var MOMENT = function () {
 	return require("moment")();
 }
 
-/*
+
 var day_id = MOMENT().format("YYYY-MM-DD");
 
 //knex('orders').where('form', 'like', '%jag@goodybag.com%').then(function (resp) {
-knex('events').where('id', 9).then(function (resp) {
+knex('orders').where('day_id', day_id).then(function (resp) {
 
 	console.log("resp1", resp);
 
+/*
 //	if (!resp[0].menuEmailTime) {
 		knex('events').where('id', 9).update({
 			menuEmailTime: MOMENT(
@@ -45,9 +67,9 @@ console.log("res", res);
 
 		});
 //	}
+*/
 
 });
-*/
 
 
 /*

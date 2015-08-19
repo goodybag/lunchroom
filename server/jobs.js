@@ -250,6 +250,8 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
 
 					return API.Q.all(orderIds.map(function (orderId) {
 
+console.log("ordersData[orderId]", orderId, ordersData[orderId]);
+
 						if (ordersData[orderId].deliveredEmailSent !== false) {
 							console.log("SKIP: Sending delivered email to:", ordersData[orderId].email, "(already sent based on 'deliveredEmailSent')");
 							return API.Q.resolve();
@@ -502,6 +504,7 @@ console.log("CHECK AGAINST", MOMENT_CT().second(0).minute(0).hour(9).format());
 						}
 						try {
 							var form = JSON.parse(row.form);
+console.log("form", form);
 							var event = JSON.parse(row.event);
 							orders[row.event_id][row.id] = {
 								name: form['info[name]'],
