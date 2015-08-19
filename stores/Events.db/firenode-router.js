@@ -1,4 +1,8 @@
 
+const MOMENT = require("moment");
+const MOMENT_TZ = require("moment-timezone");
+
+
 exports['for'] = function (API) {
 
 	var DB = require("../../server/db/bookshelf.knex.postgresql");
@@ -44,7 +48,7 @@ exports['for'] = function (API) {
 			});
 		}
 
-
+/*
 		if (
 			session &&
 			session.dbfilter &&
@@ -80,7 +84,7 @@ exports['for'] = function (API) {
 
 			return false;
 		}
-
+*/
 		return DB.getKnex()('events').where({
 			"token": opts.arg
 		}).select(
@@ -97,16 +101,41 @@ exports['for'] = function (API) {
 				return false;
 			}
 
-			req._FireNodeContext.addLayer({
-				session: {
-					dbfilter: {
-						event_id: result[0].id,
-						consumer_group_id: result[0].consumer_group_id
-					}
+			// Now that we have the consumer group we find today's event.
+
+console.log("Lookup event for", {
+	"day_id": MOMENT_TZ.tz("America/Chicago").format("YYYY-MM-DD"),
+	"consumer_group_id": result[0].consumer_group_id
+});
+
+			return DB.getKnex()('events').where({
+				"day_id": MOMENT_TZ.tz("America/Chicago").format("YYYY-MM-DD"),
+				"consumer_group_id": result[0].consumer_group_id
+			}).select('id').then(function (result2) {
+
+				if (result2.length === 0) {
+					req._FireNodeContext.addLayer({
+						config: {
+							externalRedirect: "/"
+						}
+					});
+					return false;
 				}
+
+
+				req._FireNodeContext.addLayer({
+					session: {
+						dbfilter: {
+							event_id: result2[0].id,
+							consumer_group_id: result[0].consumer_group_id
+						}
+					}
+				});
+
+				return false;
+
 			});
 
-			return false;
 		});
 	}
 
