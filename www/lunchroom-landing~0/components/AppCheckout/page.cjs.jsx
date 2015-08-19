@@ -16,21 +16,18 @@ module.exports = function (Context) {
         </div>
       </header>
       
-      <div className="lunchroom-header">
+      <div className="lunchroom-header" data-component-id="navbar">
   <div className="container">
     <div className="modules">
-      <div className="module">
+      <div className="module" data-component-view="menuAvailable" data-toggle="tooltip" title="" data-original-title="We text you when your food arrives">
         Deliver to: <small data-component-prop="deliverTo">Bazaarvoice</small>
       </div>
-      <div className="module">
+      <div className="module" data-component-view="menuAvailable" data-toggle="tooltip" title="" data-original-title="We text you when your food arrives">
         Delivery Time: <small data-component-prop="deliveryTime">12:00-12:30 PM</small>
       </div>
-      <div className="module">
+      <div className="module" data-component-view="orderCountdown">
         Time left to order:
         <small className="text-important" data-component-prop="timeLeftToOrder">1 hr 26min</small>
-      </div>
-      <div className="module module-right module-unpadded">
-        <a data-component-elm="checkoutButton" className="btn btn-primary" href="checkout">Checkout (<span data-component-prop="cartItemCount">1</span>)</a>
       </div>
     </div>
     <div className="tabs" data-component-section="tabs">
@@ -42,7 +39,6 @@ module.exports = function (Context) {
     </div>
   </div>
 </div>
-
 <div className="container page-nav-container" data-component-id="checkout-navbar">
   <ul className="page-nav">
     <li className="page-nav-item">
@@ -51,8 +47,6 @@ module.exports = function (Context) {
   </ul>
 </div>
 
-
-
 <div className="container" data-component-id="no-items">
   <div className="warning-section" data-component-id="warning-section">
     <img src="/lunchroom-landing~0/resources/assets/img~cupcake-shocked-9c195d3.png" alt="" className="warning-section-supporting-graphic"/>
@@ -60,7 +54,6 @@ module.exports = function (Context) {
     <p><a href="#" data-component-elm="addItemsLink">Add items</a></p>
   </div>
 </div>
-
 
 <div className="container" data-component-id="too-late">
   <div className="warning-section" data-component-id="warning-section">
@@ -387,6 +380,10 @@ module.exports = function (Context) {
         <div className="order-summary-col order-summary-key">Goodybag Fee</div>
         <div className="order-summary-col order-summary-value" data-component-prop="goodybagFee">$2.99</div>
       </div>
+      <div className="order-summary-item">
+        <div className="order-summary-col order-summary-key">Tip</div>
+        <div className="order-summary-col order-summary-value">Please, no tips!</div>
+      </div>
       <div className="order-summary-item order-summary-item-total">
         <div className="order-summary-col order-summary-key">Total</div>
         <div className="order-summary-col order-summary-value" data-component-prop="total">$12.37</div>
@@ -404,6 +401,12 @@ module.exports = function (Context) {
           <li><a href="https://www.goodybag.com/privacy">Privacy policy</a></li>
         </ul>
 
+        <div className="loading-indicator">
+          <div className="loading-indicator-graphic">
+            <div className="image"></div>
+          </div>
+          <div className="loading-indicator-text">Loading...</div>
+        </div>
         <div className="modal fade" id="contact-us-modal">
           <div className="modal-dialog">
             <div className="modal-content">

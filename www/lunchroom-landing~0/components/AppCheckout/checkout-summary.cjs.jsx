@@ -18,6 +18,10 @@ module.exports = function (Context) {
         <div className="order-summary-col order-summary-key">Goodybag Fee</div>
         <div className="order-summary-col order-summary-value" data-component-prop="goodybagFee">$2.99</div>
       </div>
+      <div className="order-summary-item">
+        <div className="order-summary-col order-summary-key">Tip</div>
+        <div className="order-summary-col order-summary-value">Please, no tips!</div>
+      </div>
       <div className="order-summary-item order-summary-item-total">
         <div className="order-summary-col order-summary-key">Total</div>
         <div className="order-summary-col order-summary-value" data-component-prop="total">$12.37</div>

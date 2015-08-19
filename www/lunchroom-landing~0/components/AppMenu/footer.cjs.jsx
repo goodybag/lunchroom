@@ -10,6 +10,12 @@ module.exports = function (Context) {
           <li><a href="https://www.goodybag.com/privacy">Privacy policy</a></li>
         </ul>
 
+        <div className="loading-indicator">
+          <div className="loading-indicator-graphic">
+            <div className="image"></div>
+          </div>
+          <div className="loading-indicator-text">Loading...</div>
+        </div>
         <div className="modal fade" id="contact-us-modal">
           <div className="modal-dialog">
             <div className="modal-content">

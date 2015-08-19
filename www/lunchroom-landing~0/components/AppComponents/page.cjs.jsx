@@ -62,7 +62,13 @@ module.exports = function (Context) {
 </section>
 
 
-
+<section className="page-section" id="section-loading-indicator">
+  <div className="container">
+    <h2 className="section-title">Loading indicator
+      <button className="btn btn-primary" id="loading-indicator-demo">Start Loading</button>
+    </h2>
+  </div>
+</section>
 
 
 <footer className="footer" data-component-id="footer">
@@ -73,6 +79,12 @@ module.exports = function (Context) {
   </ul>
 </footer>
 
+<div className="loading-indicator">
+  <div className="loading-indicator-graphic">
+    <div className="image"></div>
+  </div>
+  <div className="loading-indicator-text">Loading...</div>
+</div>
 
     
     </div>

@@ -517,6 +517,7 @@
 
 				appContext.on("change:ready", function () {
 					reactComponent._trigger_forceUpdate();
+					$('#page-loading-indicator').toggleClass('show', false);
 				});
 
 			} catch (err) {
@@ -45030,6 +45031,9 @@
 	$('[data-component-elm="signupLink"]', element).hide();
 	$('[data-component-elm="loginLink"]', element).hide();
 
+	// TODO: Remove this once we call the skin app or can locate code with components.
+	$('[data-toggle="tooltip"]').tooltip();
+
 				},
 				fill: function (element, data, Context) {				
 				}
@@ -45309,10 +45313,10 @@
 
 	  React.createElement("div", {className: "container"}, 
 	    React.createElement("div", {className: "modules"}, 
-	      React.createElement("div", {className: "module", "data-component-view": "menuAvailable"}, 
+	      React.createElement("div", {className: "module", "data-component-view": "menuAvailable", "data-toggle": "tooltip", title: "", "data-original-title": "We text you when your food arrives"}, 
 	        "Deliver to: ", React.createElement("small", {"data-component-prop": "deliverTo"}, "Bazaarvoice")
 	      ), 
-	      React.createElement("div", {className: "module", "data-component-view": "menuAvailable"}, 
+	      React.createElement("div", {className: "module", "data-component-view": "menuAvailable", "data-toggle": "tooltip", title: "", "data-original-title": "We text you when your food arrives"}, 
 	        "Delivery Time: ", React.createElement("small", {"data-component-prop": "deliveryTime"}, "12:00-12:30 PM")
 	      ), 
 	      React.createElement("div", {className: "module", "data-component-view": "orderCountdown"}, 
@@ -45457,6 +45461,12 @@
 	          React.createElement("li", null, React.createElement("a", {href: "https://www.goodybag.com/privacy"}, "Privacy policy"))
 	        ), 
 
+	        React.createElement("div", {className: "loading-indicator"}, 
+	          React.createElement("div", {className: "loading-indicator-graphic"}, 
+	            React.createElement("div", {className: "image"})
+	          ), 
+	          React.createElement("div", {className: "loading-indicator-text"}, "Loading...")
+	        ), 
 	        React.createElement("div", {className: "modal fade", id: "contact-us-modal"}, 
 	          React.createElement("div", {className: "modal-dialog"}, 
 	            React.createElement("div", {className: "modal-content"}, 
@@ -47387,6 +47397,10 @@
 	      React.createElement("div", {className: "order-summary-item"}, 
 	        React.createElement("div", {className: "order-summary-col order-summary-key"}, "Goodybag Fee"), 
 	        React.createElement("div", {className: "order-summary-col order-summary-value", "data-component-prop": "goodybagFee"}, "$2.99")
+	      ), 
+	      React.createElement("div", {className: "order-summary-item"}, 
+	        React.createElement("div", {className: "order-summary-col order-summary-key"}, "Tip"), 
+	        React.createElement("div", {className: "order-summary-col order-summary-value"}, "Please, no tips!")
 	      ), 
 	      React.createElement("div", {className: "order-summary-item order-summary-item-total"}, 
 	        React.createElement("div", {className: "order-summary-col order-summary-key"}, "Total"), 

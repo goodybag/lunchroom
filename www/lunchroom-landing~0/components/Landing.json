@@ -14,16 +14,16 @@
         {
             "tag": "SCRIPT",
             "attributes": {
-                "src": "/lunchroom-landing~0/resources/dist~lib-71d7b1f.js"
+                "src": "/lunchroom-landing~0/resources/dist~lib-5403cd8.js"
             },
-            "exportPath": "/pinf.genesis.consulting/GoodyBag/goodybag-core/07-lunchroom-landing/.sm.hoisted/lunchroom-landing~0/resources/dist~lib-71d7b1f.js"
+            "exportPath": "/pinf.genesis.consulting/GoodyBag/goodybag-core/07-lunchroom-landing/.sm.hoisted/lunchroom-landing~0/resources/dist~lib-5403cd8.js"
         },
         {
             "tag": "SCRIPT",
             "attributes": {
-                "src": "/lunchroom-landing~0/resources/dist~app-43d01cc.js"
+                "src": "/lunchroom-landing~0/resources/dist~app-0d9d8b1.js"
             },
-            "exportPath": "/pinf.genesis.consulting/GoodyBag/goodybag-core/07-lunchroom-landing/.sm.hoisted/lunchroom-landing~0/resources/dist~app-43d01cc.js"
+            "exportPath": "/pinf.genesis.consulting/GoodyBag/goodybag-core/07-lunchroom-landing/.sm.hoisted/lunchroom-landing~0/resources/dist~app-0d9d8b1.js"
         },
         {
             "tag": "IMG",

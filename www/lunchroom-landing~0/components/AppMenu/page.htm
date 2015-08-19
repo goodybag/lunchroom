@@ -21,10 +21,10 @@
       <div class="lunchroom-header" component:id="navbar">
   <div class="container">
     <div class="modules">
-      <div class="module" component:view="menuAvailable">
+      <div class="module" component:view="menuAvailable" data-toggle="tooltip" title="" data-original-title="We text you when your food arrives">
         Deliver to: <small component:prop="deliverTo">Bazaarvoice</small>
       </div>
-      <div class="module" component:view="menuAvailable">
+      <div class="module" component:view="menuAvailable" data-toggle="tooltip" title="" data-original-title="We text you when your food arrives">
         Delivery Time: <small component:prop="deliveryTime">12:00-12:30 PM</small>
       </div>
       <div class="module" component:view="orderCountdown">
@@ -44,12 +44,20 @@
     </div>
   </div>
 </div>
-
 <div class="container" component:id="menu-not-created">
   <div class="warning-section" component:id="warning-section">
     <img src="/lunchroom-landing~0/resources/assets/img~cupcake-shocked-2-4bc6fb3.png" alt="" class="warning-section-supporting-graphic">
     <h2 class="warning-section-header">This menu has not been created yet!</h2>
     <p>Either this is an error with Goodybag, or the menu hasn't been created yet. Please check again later.</p>
+  </div>
+</div>
+
+
+<div class="container" component:id="order-in-advance">
+  <div class="warning-section" component:id="warning-section">
+    <img src="/lunchroom-landing~0/resources/assets/img~cupcake-happy-9574e8b.png" alt="" class="warning-section-supporting-graphic">
+    <h2 class="warning-section-header">You can order in advance for the rest of the week!</h2>
+    <p>I'm a cupcake; I can't do it! You can, though :)</p>
   </div>
 </div>
 
@@ -300,6 +308,12 @@
           <li><a href="https://www.goodybag.com/privacy">Privacy policy</a></li>
         </ul>
 
+        <div class="loading-indicator">
+          <div class="loading-indicator-graphic">
+            <div class="image"></div>
+          </div>
+          <div class="loading-indicator-text">Loading...</div>
+        </div>
         <div class="modal fade" id="contact-us-modal">
           <div class="modal-dialog">
             <div class="modal-content">
@@ -333,6 +347,6 @@
     
     </div>
   </body>
-    <script src="/lunchroom-landing~0/resources/dist~lib-71d7b1f.js"></script>
-    <script src="/lunchroom-landing~0/resources/dist~app-43d01cc.js"></script>
+    <script src="/lunchroom-landing~0/resources/dist~lib-5403cd8.js"></script>
+    <script src="/lunchroom-landing~0/resources/dist~app-0d9d8b1.js"></script>
 </html>

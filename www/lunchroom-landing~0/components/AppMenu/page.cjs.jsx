@@ -19,10 +19,10 @@ module.exports = function (Context) {
       <div className="lunchroom-header" data-component-id="navbar">
   <div className="container">
     <div className="modules">
-      <div className="module" data-component-view="menuAvailable">
+      <div className="module" data-component-view="menuAvailable" data-toggle="tooltip" title="" data-original-title="We text you when your food arrives">
         Deliver to: <small data-component-prop="deliverTo">Bazaarvoice</small>
       </div>
-      <div className="module" data-component-view="menuAvailable">
+      <div className="module" data-component-view="menuAvailable" data-toggle="tooltip" title="" data-original-title="We text you when your food arrives">
         Delivery Time: <small data-component-prop="deliveryTime">12:00-12:30 PM</small>
       </div>
       <div className="module" data-component-view="orderCountdown">
@@ -42,12 +42,20 @@ module.exports = function (Context) {
     </div>
   </div>
 </div>
-
 <div className="container" data-component-id="menu-not-created">
   <div className="warning-section" data-component-id="warning-section">
     <img src="/lunchroom-landing~0/resources/assets/img~cupcake-shocked-2-4bc6fb3.png" alt="" className="warning-section-supporting-graphic"/>
     <h2 className="warning-section-header">This menu has not been created yet!</h2>
     <p>Either this is an error with Goodybag, or the menu hasn't been created yet. Please check again later.</p>
+  </div>
+</div>
+
+
+<div className="container" data-component-id="order-in-advance">
+  <div className="warning-section" data-component-id="warning-section">
+    <img src="/lunchroom-landing~0/resources/assets/img~cupcake-happy-9574e8b.png" alt="" className="warning-section-supporting-graphic"/>
+    <h2 className="warning-section-header">You can order in advance for the rest of the week!</h2>
+    <p>I'm a cupcake; I can't do it! You can, though :)</p>
   </div>
 </div>
 
@@ -298,6 +306,12 @@ module.exports = function (Context) {
           <li><a href="https://www.goodybag.com/privacy">Privacy policy</a></li>
         </ul>
 
+        <div className="loading-indicator">
+          <div className="loading-indicator-graphic">
+            <div className="image"></div>
+          </div>
+          <div className="loading-indicator-text">Loading...</div>
+        </div>
         <div className="modal fade" id="contact-us-modal">
           <div className="modal-dialog">
             <div className="modal-content">
