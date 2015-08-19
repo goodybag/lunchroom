@@ -444,14 +444,14 @@ console.log("NOW to compare menuEmailTime", MOMENT_CT().format());
 	    	function sendMenuEmails () {
 
 console.log("NOW", MOMENT_CT().format());
-console.log("CHECK AGAINST", MOMENT_CT().second(0).minute(0).hour(9).format());
+console.log("CHECK AGAINST", MOMENT_CT().second(0).minute(0).hour(8).format());
 
-	    		// We NEVER send emails out before 9 am CT (America/Chicago).
+	    		// We NEVER send emails out before 8 am CT (America/Chicago).
 	    		// NOTE: We use the 'menuEmailTime' field to set the exact time.
 	    		if (MOMENT_CT().isBefore(
-		    		MOMENT_CT().second(0).minute(0).hour(9)
+		    		MOMENT_CT().second(0).minute(0).hour(8)
 	    		)) {
-	    			console.log("It is not yet 9am CT so we don't yet check to see if we need to send menu emails for today!");
+	    			console.log("It is not yet 8am CT so we don't yet check to see if we need to send menu emails for today!");
 					return API.Q.resolve();
 	    		};
 

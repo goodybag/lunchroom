@@ -475,12 +475,12 @@ module.exports = COMPONENT.create({
                 <div className="fields">
 
                   <div className="field">
-                    <label>Menu Email at (min: 9 AM)</label>
+                    <label>Menu Email at (min: 8 AM)</label>
                     <input type="text" data-fieldname="menuEmailTime"/>
                   </div>
 
                   <div className="field">
-                    <label>Menu SMS at (min: 9 AM)</label>
+                    <label>Menu SMS at (min: 8 AM)</label>
                     <input type="text" data-fieldname="menuSmsTime"/>
                   </div>
 
