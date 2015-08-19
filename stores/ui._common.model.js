@@ -14,9 +14,24 @@ var API = exports.API = {
 };
 
 
-exports.forAppContext = function (appContext) {
+exports.forContext = function (context) {
 
 	var exports = {};
+
+	var MOMENT = exports.MOMENT = (
+		context &&
+		(
+			(context.appContext && context.appContext.MOMENT) ||
+			context.MOMENT
+		)
+	) || API.MOMENT;
+	var MOMENT_CT = exports.MOMENT_CT = (
+		context &&
+		(
+			(context.appContext && context.appContext.MOMENT_CT) ||
+			context.MOMENT_CT
+		)
+	) || API.MOMENT_CT || MOMENT;
 
 	exports.makeFormatter = function (type) {
 
@@ -27,8 +42,8 @@ exports.forAppContext = function (appContext) {
 					"pickupEndTime"
 				],
 	            fn: function () {
-	            	var deliveryStartTime = API.MOMENT(this.deliveryStartTime);
-	            	var pickupEndTime = API.MOMENT(this.pickupEndTime);
+	            	var deliveryStartTime = MOMENT_CT(this.deliveryStartTime);
+	            	var pickupEndTime = MOMENT_CT(this.pickupEndTime);
 	            	return deliveryStartTime.format("h:mm") + "-" + pickupEndTime.format("h:mm A");
 	            }
 		    };
@@ -39,7 +54,7 @@ exports.forAppContext = function (appContext) {
 					"deliveryStartTime"
 				],
 	            fn: function () {
-	            	var deliveryStartTime = API.MOMENT(this.deliveryStartTime);
+	            	var deliveryStartTime = MOMENT_CT(this.deliveryStartTime);
 	            	return deliveryStartTime.format("dddd, MMM Do YYYY");
 	            }
 		    };
@@ -50,7 +65,7 @@ exports.forAppContext = function (appContext) {
 					"deliveryStartTime"
 				],
 	            fn: function () {
-	            	var deliveryStartTime = API.MOMENT(this.deliveryStartTime);
+	            	var deliveryStartTime = MOMENT_CT(this.deliveryStartTime);
 	            	return deliveryStartTime.format("dddd");
 	            }
 		    };
@@ -61,7 +76,7 @@ exports.forAppContext = function (appContext) {
 					"orderByTime"
 				],
 	            fn: function () {
-	            	var orderByTime = API.MOMENT(this.orderByTime);
+	            	var orderByTime = MOMENT_CT(this.orderByTime);
 	            	return orderByTime.format("h:mm A");
 	            }
 		    };
@@ -72,7 +87,7 @@ exports.forAppContext = function (appContext) {
 					"menuEmailTime"
 				],
 	            fn: function () {
-	            	var menuEmailTime = API.MOMENT(this.menuEmailTime);
+	            	var menuEmailTime = MOMENT_CT(this.menuEmailTime);
 	            	return menuEmailTime.format("h:mm A");
 	            }
 		    };
@@ -83,7 +98,7 @@ exports.forAppContext = function (appContext) {
 					"menuSmsTime"
 				],
 	            fn: function () {
-	            	var menuSmsTime = API.MOMENT(this.menuSmsTime);
+	            	var menuSmsTime = MOMENT_CT(this.menuSmsTime);
 	            	return menuSmsTime.format("h:mm A");
 	            }
 		    };

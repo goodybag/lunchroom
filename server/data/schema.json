@@ -406,6 +406,24 @@
 				},
 				{
 					"name": "paymentCharge"
+				},
+				{
+					"name": "deliveredEmailSent",
+					"type": "boolean",
+					"default": false
+				},
+				{
+					"name": "deliveredEmailSendError",
+					"type": "string"
+				},
+				{
+					"name": "deliveredSmsSent",
+					"type": "boolean",
+					"default": false
+				},
+				{
+					"name": "deliveredSmsSendError",
+					"type": "string"
 				}
 			]
 		},

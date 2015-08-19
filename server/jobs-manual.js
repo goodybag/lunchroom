@@ -16,12 +16,39 @@ var knex = KNEX({
     }
 });
 
+
+
+var MOMENT = function () {
+//	return require("moment-timezone")().tz("America/Chicago");
+	return require("moment")();
+}
+
+/*
+var day_id = MOMENT().format("YYYY-MM-DD");
+
 //knex('orders').where('form', 'like', '%jag@goodybag.com%').then(function (resp) {
-knex('orders').then(function (resp) {
+knex('events').where('id', 9).then(function (resp) {
 
 	console.log("resp1", resp);
 
+//	if (!resp[0].menuEmailTime) {
+		knex('events').where('id', 9).update({
+			menuEmailTime: MOMENT(
+				day_id + ":" + "10:00", "YYYY-MM-DD:H:mm"
+			).format(),
+			menuSmsTime: MOMENT(
+				day_id + ":" + "10:00", "YYYY-MM-DD:H:mm"
+			).format()
+		}).then(function (res) {
+
+console.log("res", res);
+
+		});
+//	}
+
 });
+*/
+
 
 /*
 knex('orders').whereIn('id', [

@@ -1,5 +1,5 @@
 
-const DEV = false;
+const DEV = true;
 
 var SERVICES = require("./services");
 var EMAILS = require("./emails");
@@ -11,38 +11,24 @@ SERVICES['for']({}).then(function (_SERVICES) {
 
 const Q = require("q");
 
-const MOMENT_TZ = require("moment-timezone");
-
 
 // TODO: Make this generic and use RX
 var loadMenuDataForEvents = exports.loadMenuDataForEvents = function (knex, appContext, eventIds) {
 
 	var EventsModel = require("../stores/ui.Events.model").forContext({
-		appContext: appContext,
-		MOMENT: function () {
-			return MOMENT_TZ().tz("America/Chicago")
-		}
+		appContext: appContext
 	});
 
 	var ItemsModel = require("../stores/ui.Items.model").forContext({
-		appContext: appContext,
-		MOMENT: function () {
-			return MOMENT_TZ().tz("America/Chicago")
-		}
+		appContext: appContext
 	});
 
 	var VendorsModel = require("../stores/ui.Vendors.model").forContext({
-		appContext: appContext,
-		MOMENT: function () {
-			return MOMENT_TZ().tz("America/Chicago")
-		}
+		appContext: appContext
 	});
 
 	var ConsumerGroupsModel = require("../stores/ui.ConsumerGroups.model").forContext({
-		appContext: appContext,
-		MOMENT: function () {
-			return MOMENT_TZ().tz("America/Chicago")
-		}
+		appContext: appContext
 	});
 
 	function fetchMenus(event_ids) {
@@ -130,8 +116,18 @@ var loadMenuDataForEvents = exports.loadMenuDataForEvents = function (knex, appC
 
 require('org.pinf.genesis.lib').forModule(require, module, function (API, exports) {
 
-    exports.monitorDatabase = function (db) {
+    exports.monitorDatabase = function (db, appContext) {
 
+    	var MOMENT = appContext.MOMENT;
+
+    	function qknex (tableName, query) {
+    		return API.Q.fcall(function () {
+    			var table = db.knex(tableName);
+    			return query(table).catch(function (err) {
+    				throw err;
+    			});
+    		});
+    	}
 
     	function sendMenuForEventTo (menus, eventId, subscribers) {
 
@@ -155,48 +151,60 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
 
 						return API.Q.all(Object.keys(subscribers).map(function (email) {
 
-							console.log("Sending menu to:", email);
+// TODO: Track send status in consolidated subscriber record.
+// TODO: Consolidate subscriber records prior to scheduling emails for day.
 
-							var event = menus.events[eventId].event;
-							// Assume only one vendor.
-							var vendor = menus.vendors[Object.keys(menus.vendors).shift()];
+//menuEmailSent
+//menuSmsSent
+//menuEmailSendError
+//menuSmsSendError
 
-							return SERVICES.email.send("Menu", {
-					            "to": [
-					                {
-					                    "email": email,
-					                    "name": email,
-					                    "type": "to"
-					                }
-					            ],
-					            "data": {
-					            	"menu": {
-										restaurantName: vendor.get('title'),
-										lunchroomUrl: event.get("menuUrl"),
-										orderByTime: event.get("format.orderByTime")
-					            	},
-					            	"items": Object.keys(menus.events[eventId].items).map(function (itemId) {
-										return menus.events[eventId].items[itemId].getValues();
-									})
-					            },
-					            "html": html
-					        }).fail(function (err) {
+							try {
+
+								console.log("Sending menu to:", email);
+
+								var event = menus.events[eventId].event;
+								// Assume only one vendor.
+								var vendor = menus.vendors[Object.keys(menus.vendors).shift()];
+
+								return SERVICES.email.send("Menu", {
+						            "to": [
+						                {
+						                    "email": email,
+						                    "name": email,
+						                    "type": "to"
+						                }
+						            ],
+						            "data": {
+						            	"menu": {
+											restaurantName: vendor.get('title'),
+											lunchroomUrl: event.get("menuUrl"),
+											orderByTime: event.get("format.orderByTime")
+						            	},
+						            	"items": Object.keys(menus.events[eventId].items).map(function (itemId) {
+											return menus.events[eventId].items[itemId].getValues();
+										})
+						            },
+						            "html": html
+						        }).fail(function (err) {
+						        	throw err;
+								});
+							} catch (err) {
 								console.error("Error sending email but ignoring", err.stack);
 								// TODO: Resend email
-							});
+							}
 						}));
 					});
 				});
 			}
 
 			function setMenuEmailsSent () {
-				return API.Q.when(db.knex('events').update({
-					'menuEmailsSent': true
-				}).where('id', eventId).then(function (result) {
-					// TODO: Check `result == 1`
-				})).then(function () {
-					// TODO: Use transactions instead of waiting to ensure out update goes
-					//       through before the enxt job cycle?
+				return qknex('events', function (table) {
+					return table.update({
+						'menuEmailsSent': true
+					}).where('id', eventId);
+				}).then(function () {
+					// TODO: Still need this now that error are caught properly?
 					return API.Q.delay(15 * 1000);
 				});
 			}
@@ -210,67 +218,132 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
     	}
 
 
-    	function sendDeliveredEmailsForEventTo (eventData, ordersData) {
+    	function sendDeliveredEmailsForEventTo (eventId, ordersData) {
 
 			function sendEmails () {
 
-				return API.Q.all(Object.keys(ordersData).map(function (orderId) {
+				var orderIds = Object.keys(ordersData);
 
-					console.log("Sending delivered email to:", ordersData[orderId].email);
+				// NOTE: We mark emails as sent because if it errors out we assume it
+				//       was sent anyway.
+				// TODO: To re-send an email, there should be a script
+				//       that monitors the 'deliveredEmailSendError'
+				//       field and resets the 'deliveredEmailSent' field if the email
+				//       service was down. The 'deliveredEmailsSent' flag on the event
+				//       table should not be set until all emails have been
+				//       attempted to be sent/re-sent to a satisfactory tenacity.
 
-					return SERVICES.email.send("Order_Arrived", {
-			            "to": [
-			                {
-			                    "email": ordersData[orderId].email,
-			                    "name": ordersData[orderId].name || ordersData[orderId].email,
-			                    "type": "to"
-			                }
-			            ],
-			            "data": {
-			            	"orderHashId": ordersData[orderId].orderHashId,
-			            	"event": {
-			            		"pickupLocation": ordersData[orderId].pickupLocation
-			            	}
-			            }
-			        }).fail(function (err) {
-						console.error("Error sending email but ignoring", err.stack);
-						// TODO: Resend email
-					});
-				}));
+				return qknex('orders', function (table) {
+					return table.update({
+						'deliveredEmailSent': true
+					}).whereIn('id', orderIds);
+				}).fail(function (err) {
+					console.error("ERROR", err.stack);
+					console.error("ERROR setting 'deliveredEmailSent' on 'orders' table. We abort completely and let the next loop try again");
+					throw err;
+				}).then(function () {
+
+					// It is assumed that 'deliveredEmailsSent' is now set for the orders
+					// we are about to send notifications for. So if anything breaks for now on
+					// the emails will not be re-sent unless the 'deliveredEmailSendError' flag is reset.
+
+					return API.Q.all(orderIds.map(function (orderId) {
+
+						if (ordersData[orderId].deliveredEmailSent !== false) {
+							console.log("SKIP: Sending delivered email to:", ordersData[orderId].email, "(already sent based on 'deliveredEmailSent')");
+							return API.Q.resolve();
+						}
+
+						console.log("Sending delivered email to:", ordersData[orderId].email);
+
+						return SERVICES.email.send("Order_Arrived", {
+				            "to": [
+				                {
+				                    "email": ordersData[orderId].email,
+				                    "name": ordersData[orderId].name || ordersData[orderId].email,
+				                    "type": "to"
+				                }
+				            ],
+				            "data": {
+				            	"orderHashId": ordersData[orderId].orderHashId,
+				            	"event": {
+				            		"pickupLocation": ordersData[orderId].pickupLocation
+				            	}
+				            }
+				        }).fail(function (err) {
+
+							console.error("Error sending email to '" + ordersData[orderId].email + "' but ignoring:", err.stack);
+
+							return qknex('orders', function (table) {
+								return table.update({
+									'deliveredEmailSendError': err.message
+								}).where('id', orderId);
+							}).fail(function (err) {
+								console.error("ERROR", err.stack);
+								console.error("ERROR setting 'deliveredEmailSendError' on 'orders' table. We ignore error so the other emails still go out since we already flagged them has having gone out.");
+							});
+						});
+					}));
+
+				});
 			}
 
 			function sendSMSs () {
 
-				return API.Q.all(Object.keys(ordersData).map(function (orderId) {
+				// NOTE: Same logic as documented in 'sendEmails' above.
 
-					if (!ordersData[orderId].phone) return API.Q.resolve();
+				var orderIds = Object.keys(ordersData);
 
-					console.log("Sending delivered SMS to:", ordersData[orderId].phone);
+				return qknex('orders', function (table) {
+					return table.update({
+						'deliveredSmsSent': true
+					}).whereIn('id', orderIds);
+				}).fail(function (err) {
+					console.error("ERROR", err.stack);
+					console.error("ERROR setting 'deliveredSmsSent' on 'orders' table. We abort completely and let the next loop try again");
+					throw err;
+				}).then(function () {
 
-					return SERVICES.sms.send("Order_Arrived", {
-			            "to": ordersData[orderId].phone,
-			            "data": {
-			            	"event": {
-			            		"pickupLocation": ordersData[orderId].pickupLocation
-			            	}
-			            }
-			        }).fail(function (err) {
-						console.error("Error sending SMS but ignoring", err.stack);
-					// TODO: Resend email
-					});
-				}));
+					return API.Q.all(orderIds.map(function (orderId) {
+
+						if (ordersData[orderId].deliveredEmailSent !== false) {
+							console.log("SKIP: Sending delivered sms to:", ordersData[orderId].phone, "(already sent based on 'deliveredSmsSent')");
+							return API.Q.resolve();
+						}
+
+						console.log("Sending delivered sms to:", ordersData[orderId].phone);
+
+						return SERVICES.sms.send("Order_Arrived", {
+				            "to": ordersData[orderId].phone,
+				            "data": {
+				            	"event": {
+				            		"pickupLocation": ordersData[orderId].pickupLocation
+				            	}
+				            }
+				        }).fail(function (err) {
+
+							console.error("Error sending sms to '" + ordersData[orderId].phone + "' but ignoring:", err.stack);
+
+							return qknex('orders', function (table) {
+								return table.update({
+									'deliveredSmsSendError': err.message
+								}).where('id', orderId);
+							}).fail(function (err) {
+								console.error("ERROR", err.stack);
+								console.error("ERROR setting 'deliveredSmsSendError' on 'orders' table. We ignore error so the other smss still go out since we already flagged them has having gone out.");
+							});
+						});
+					}));
+				});
 			}
 
 			function setDeliveredEmailsSent () {
-				return API.Q.when(db.knex('events').update({
-					'deliveredEmailsSent': true
-				}).where({
-					'id': eventData.get("id")
-				}).then(function (result) {
-					// TODO: Check `result == 1`
-				})).then(function () {
-					// TODO: Use transactions instead of waiting to ensure out update goes
-					//       through before the enxt job cycle?
+				return qknex('events', function (table) {
+					return table.update({
+						'deliveredEmailsSent': true
+					}).where('id', eventId);
+				}).then(function () {
+					// TODO: Still need this now that error are caught properly?
 					return API.Q.delay(15 * 1000);
 				});
 			}
@@ -287,53 +360,60 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
     	}
 
 
-
     	function iterate () {
+
+//	menuEmailSendError
+//	menuEmailSent
+//	menuSmsSent
+//	menuSmsSendError
 
 	    	function fetchPendingEvents (type) {
 
-	    		// Find all events for today for which the notifications
-	    		// have not yet gone out.
-	    		var query = db.knex('events').select('id');
+				return qknex('events', function (table) {
 
-	    		if (type === "menus") {
-	    			query = query.where({
-						'menuReady': true,
-						'menuEmailsSent': false
-					})
-					.where('day_id', API.MOMENT_TZ().tz("America/Chicago").format("YYYY-MM-DD"))
-					//whereBetween('orderByTime', [
-					//	API.MOMENT_TZ().tz("America/Chicago").second(0).minute(0).hour(0).format(),
-					//	API.MOMENT_TZ().tz("America/Chicago").second(0).minute(0).hour(0).add(1, 'day').format()
-					//])
-//					.where('menuEmailTime', '<', API.MOMENT_TZ().tz("America/Chicago").format())
-	    		} else
-	    		if (type === "deliveries") {
-	    			query = query.where({
-						'menuReady': true,
-						'delivered': true,
-						'deliveredEmailsSent': false
-					});
-					//.whereBetween('deliveryStartTime', [
-					//	API.MOMENT_TZ().tz("America/Chicago").format(),
-					//	API.MOMENT_TZ().tz("America/Chicago").add(1, 'day').format()
-					//]);
-	    		} else {
-	    			throw new Error("Unknown type '" + type + "'!");
-	    		}
+					// Find all events for today for which the notifications
+		    		// have not yet gone out.
+		    		var query = table.select('id');
 
-				return API.Q.when(query.then(function (result) {
+		    		if (type === "menus") {
+		    			query = query.where({
+							'menuReady': true,
+							'menuEmailsSent': false
+						})
+						.where('day_id', MOMENT().format("YYYY-MM-DD"))
+						//whereBetween('orderByTime', [
+						//	MOMENT().second(0).minute(0).hour(0).format(),
+						//	MOMENT().second(0).minute(0).hour(0).add(1, 'day').format()
+						//])
+						.where('menuEmailTime', '<', MOMENT().format())
+		    		} else
+		    		if (type === "deliveries") {
+		    			query = query.where({
+							'menuReady': true,
+							'delivered': true,
+							'deliveredEmailsSent': false
+						});
+						//.whereBetween('deliveryStartTime', [
+						//	MOMENT().format(),
+						//	MOMENT().add(1, 'day').format()
+						//]);
+		    		} else {
+		    			throw new Error("Unknown type '" + type + "'!");
+		    		}
+
+					return query;
+				}).then(function (result) {
 					var events = {};
 					result.forEach(function (row) {
 						events[row.id] = true;
 					});
 					return events;
-				}));
+				});
 	    	}
 
 	    	function fetchSubscribers (menus) {
-				return API.Q.when(db.knex('consumer-group-subscriptions')
-					.select(
+				return qknex('consumer-group-subscriptions', function (table) {
+					return table.select(
 						'consumer-group-subscriptions.id',
 						'consumer-group-subscriptions.confirmedEmail AS email',
 						'events.id AS event_id'
@@ -341,8 +421,8 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
 					.rightJoin('events', 'consumer-group-subscriptions.consumer_group_id', 'events.consumer_group_id')
 					.whereIn('consumer-group-subscriptions.consumer_group_id', Object.keys(menus.consumerGroupIds))
 					.whereIn('events.id', Object.keys(menus.events))
-					.whereNotNull('consumer-group-subscriptions.confirmedEmail')
-				.then(function (result) {
+					.whereNotNull('consumer-group-subscriptions.confirmedEmail');
+				}).then(function (result) {
 					var subscribers = {};
 					result.forEach(function (row) {
 						if (!subscribers[row.event_id]) {
@@ -351,7 +431,7 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
 						subscribers[row.event_id][row.email] = true;
 					});
 					return subscribers;
-				}));
+				});
 	    	}
 
 
@@ -359,8 +439,8 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
 
 	    		// We NEVER send emails out before 9 am CT (America/Chicago).
 	    		// NOTE: We use the 'menuEmailTime' field to set the exact time.
-	    		if (API.MOMENT_TZ().tz("America/Chicago").isBefore(
-		    		API.MOMENT_TZ().tz("America/Chicago").second(0).minute(0).hour(9)
+	    		if (MOMENT().isBefore(
+		    		MOMENT().second(0).minute(0).hour(9)
 	    		)) {
 	    			console.log("It is not yet 9am CT so we don't yet check to see if we need to send menu emails for today!");
 					return API.Q.resolve();
@@ -395,10 +475,19 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
 
 
 			function fetchOrders (eventIds) {
-				return API.Q.when(db.knex('orders')
-					.select('id', 'event_id', 'form', 'event', 'orderHashId')
-					.whereIn('event_id', eventIds)
-				.then(function (result) {
+
+				return qknex('orders', function (table) {
+					return table.select(
+						'id',
+						'event_id',
+						'form',
+						'event',
+						'orderHashId',
+						'deliveredEmailSent',
+						'deliveredSmsSent'
+					)
+					.whereIn('event_id', eventIds);
+				}).then(function (result) {
 					var orders = {};
 					result.forEach(function (row) {
 						if (!orders[row.event_id]) {
@@ -412,14 +501,16 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
 								email: form['info[email]'],
 								phone: form['info[phone]'],
 								pickupLocation: event["consumerGroup.pickupLocation"],
-								orderHashId: row.orderHashId
+								orderHashId: row.orderHashId,
+								deliveredEmailSent: row.deliveredEmailSent,
+								deliveredSmsSent: row.deliveredSmsSent
 							}
 						} catch (err) {
 							console.error("Ignoring error:", err.stack);
 						}
 					});
 					return orders;
-				}));
+				});
 	    	}
 
 	    	function sendStatusEmails () {
@@ -439,7 +530,7 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
 							if (!orders[eventId]) return API.Q.resolve();
 
 							return sendDeliveredEmailsForEventTo(
-								events[eventId],
+								eventId,
 								orders[eventId]
 							);
 						}));
@@ -460,7 +551,7 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
 		    	console.error("Error monitoring database", err.stack);
 		    });
 
-	    }, (DEV ? 2 : 60) * 1000);
+	    }, (DEV ? 5 : 60) * 1000);
     }
 
 });

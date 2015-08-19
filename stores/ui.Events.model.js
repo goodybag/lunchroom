@@ -5,13 +5,7 @@ var COMMON = require("./ui._common.model");
 
 exports.forContext = function (context) {
 
-	var common = COMMON.forAppContext(context.appContext);
-
-console.log("context.MOMENT", context.MOMENT);
-
-	var MOMENT = context.MOMENT || function () {
-		return COMMON.API.MOMENT;
-	}
+	var common = COMMON.forContext(context);
 
 	// @see http://ampersandjs.com/docs#ampersand-state
 	var Model = COMMON.API.AMPERSAND_STATE.extend({
@@ -48,7 +42,7 @@ console.log("context.MOMENT", context.MOMENT);
 					"day_id"
 				],
 	            fn: function () {
-	            	return MOMENT()(this.day_id, "YYYY-MM-DD").format("ddd");
+	            	return common.MOMENT_CT(this.day_id, "YYYY-MM-DD").format("ddd");
 	            }
 		    },
 		    "day.format.MMM": {
@@ -56,7 +50,7 @@ console.log("context.MOMENT", context.MOMENT);
 					"day_id"
 				],
 	            fn: function () {
-	            	return MOMENT()(this.day_id, "YYYY-MM-DD").format("MMM");
+	            	return common.MOMENT_CT(this.day_id, "YYYY-MM-DD").format("MMM");
 	            }
 		    },
 		    "day.format.D": {
@@ -64,7 +58,7 @@ console.log("context.MOMENT", context.MOMENT);
 					"day_id"
 				],
 	            fn: function () {
-	            	return MOMENT()(this.day_id, "YYYY-MM-DD").format("D");
+	            	return common.MOMENT_CT(this.day_id, "YYYY-MM-DD").format("D");
 	            }
 		    },
 		    "day.format.dddd-type": {
@@ -72,7 +66,7 @@ console.log("context.MOMENT", context.MOMENT);
 					"day_id"
 				],
 	            fn: function () {
-	            	var str = MOMENT()(this.day_id, "YYYY-MM-DD").format("dd");
+	            	var str = common.MOMENT_CT(this.day_id, "YYYY-MM-DD").format("dd");
 	            	if (str === "Sa" || str === "Su") {
 	            		return "Weekend"
 	            	} else {
@@ -86,7 +80,7 @@ console.log("context.MOMENT", context.MOMENT);
 				],
 				cache: false,
 	            fn: function () {
-	            	return MOMENT()().isAfter(this.orderByTime);
+	            	return common.MOMENT_CT().isAfter(this.orderByTime);
 	            }
 		    },
 		    "canOrder": {
@@ -95,12 +89,12 @@ console.log("context.MOMENT", context.MOMENT);
 				],
 				cache: false,
 	            fn: function () {
-	            	var orderByTime = MOMENT()(this.orderByTime);
-	            	if (!orderByTime.isSame(MOMENT()(), 'day')) {
+	            	var orderByTime = common.MOMENT_CT(this.orderByTime);
+	            	if (!orderByTime.isSame(common.MOMENT_CT(), 'day')) {
 	            		// Not today
 	            		return false;
 	            	}
-	            	if (orderByTime.isBefore(MOMENT()())) {
+	            	if (orderByTime.isBefore(common.MOMENT_CT())) {
 	            		// After deadline
 	            		return false;
 	            	}
@@ -121,12 +115,12 @@ console.log("context.MOMENT", context.MOMENT);
 				],
 				cache: false,
 	            fn: function () {
-	            	var orderByTime = MOMENT()(this.orderByTime);
-	            	if (orderByTime.isBefore(MOMENT()())) {
+	            	var orderByTime = common.MOMENT_CT(this.orderByTime);
+	            	if (orderByTime.isBefore(common.MOMENT_CT())) {
 	            		// After deadline
 	            		return false;
 	            	}
-	            	return MOMENT()().to(orderByTime, true)
+	            	return common.MOMENT_CT().to(orderByTime, true)
 	            		.replace(/minutes/, "min");
 	            }
 		    },
@@ -136,8 +130,8 @@ console.log("context.MOMENT", context.MOMENT);
 				],
 				cache: false,
 	            fn: function () {
-	            	var orderByTime = MOMENT()(this.orderByTime);
-	            	var diff = orderByTime.diff(MOMENT()(), 'seconds');
+	            	var orderByTime = common.MOMENT_CT(this.orderByTime);
+	            	var diff = orderByTime.diff(common.MOMENT_CT(), 'seconds');
 	            	if (diff<0) diff = 0;
 	            	return diff;
 	            }

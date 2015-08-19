@@ -25,8 +25,42 @@ const UGLIFY = require("uglify-js");
 const JOBS = require("./server/jobs");
 const EMAILS = require("./server/emails");
 const REQUEST = require("request");
+const MOMENT = require("moment");
+const MOMENT_TZ = require("moment-timezone");
 
 const APP_CONTEXT_MODEL = require("./stores/ui.AppContext.model");
+
+
+
+
+var MOMENTS = {
+	MOMENT: function () {
+		var args = Array.prototype.slice.call(arguments);
+		return MOMENT.apply(null, args);
+	},
+	MOMENT_CT: function () {
+		var args = Array.prototype.slice.call(arguments);
+
+		if (args.length > 0) {
+
+			if (args[0]._isAMomentObject) {
+				return args[0].tz("America/Chicago")
+			} else
+			// Check if we have a 'Date' object.
+			if (typeof args[0].toISOString === "function") {
+				return MOMENT_TZ.tz(args[0].toISOString(), "America/Chicago");
+			} else {
+				args.push("America/Chicago");
+				return MOMENT.tz.apply(MOMENT, args);
+			}
+
+		} else {
+			// Create a local moment.
+			return MOMENT_TZ.tz("America/Chicago");
+		}
+	}
+}
+
 
 
 require('org.pinf.genesis.lib').forModule(require, module, function (API, exports) {
@@ -197,6 +231,7 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
 		var landingResources = getResourceMappingsForSkinPage("Landing");
 		var appResources = getResourceMappingsForSkinPage("AppMenu");
 
+
 		app.get(/^(\/eventemail-[^\/]+)$/, function (req, res, next) {
 
 			var contextConfig = API.config["jobAppContext"] || {};
@@ -204,7 +239,10 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
 
 			return EMAILS.for({
 				args: {
-					appContext: APP_CONTEXT_MODEL.makeContextForClient(contextConfig),
+					appContext: APP_CONTEXT_MODEL.makeContextForClient(contextConfig, {
+						MOMENT: MOMENTS.MOMENT,
+						MOMENT_CT: MOMENTS.MOMENT_CT
+					}),
 					config: req._FireNodeContext.config
 				}
 			}).then(function (EMAILS) {
@@ -351,13 +389,18 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
 			var contextConfig = API.config["jobAppContext"] || {};
 			contextConfig = API.DEEPMERGE(contextConfig, API.config["jobAppContext[APP_DOMAIN='" + process.env.APP_DOMAIN + "']"] || {});
 
+			var appContext = APP_CONTEXT_MODEL.makeContextForClient(contextConfig, {
+				MOMENT: MOMENTS.MOMENT,
+				MOMENT_CT: MOMENTS.MOMENT_CT
+			});
+
 			return JOBS.for({
 				args: {
-					appContext: APP_CONTEXT_MODEL.makeContextForClient(contextConfig)
+					appContext: appContext
 				}
 			}).then(function (JOBS) {
 
-				return JOBS.monitorDatabase(db);
+				return JOBS.monitorDatabase(db, appContext);
 			});
 
 		}).fail(function (err) {

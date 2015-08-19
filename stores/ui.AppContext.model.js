@@ -2,7 +2,9 @@
 var COMMON = require("./ui._common.model");
 
 
-exports.makeContextForClient = function (overrides) {
+exports.makeContextForClient = function (overrides, API) {
+
+	var common = COMMON.forContext(API);
 
 	overrides = overrides || {};
 
@@ -18,8 +20,8 @@ exports.makeContextForClient = function (overrides) {
 	    lockedView: "",
 	    selectedDay: null,
 	    selectedDayId: null,
-	    todayId: COMMON.API.MOMENT().format("YYYY-MM-DD"),
-	    today: COMMON.API.MOMENT().format("ddd"),
+	    todayId: common.MOMENT_CT().format("YYYY-MM-DD"),
+	    today: common.MOMENT_CT().format("ddd"),
 	    windowOrigin: null,
 	    stores: null,
 	    skin: null,
@@ -105,7 +107,12 @@ exports.makeContextForClient = function (overrides) {
 
 	});
 
-	return new AppContext(config);
+	var appContext = new AppContext(config);
+
+	appContext.MOMENT = (API && API.MOMENT) || common.MOMENT;
+	appContext.MOMENT_CT = (API && API.MOMENT_CT) || common.MOMENT_CT;
+
+	return appContext;
 }
 
 exports.makeContextForServer = function (overrides) {

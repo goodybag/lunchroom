@@ -5,7 +5,7 @@ var COMMON = require("./ui._common.model");
 
 exports.forContext = function (context) {
 
-	var common = COMMON.forAppContext(context.appContext);
+	var common = COMMON.forContext(context);
 
 	// @see http://ampersandjs.com/docs#ampersand-state
 	var Model = COMMON.API.AMPERSAND_STATE.extend({
@@ -26,7 +26,7 @@ exports.forContext = function (context) {
 		};
 		records.forEach(function (record) {
 			status.history.push([
-				COMMON.API.MOMENT.utc((record.get && record.get("time")) || record.time).unix(),
+				common.MOMENT().utc((record.get && record.get("time")) || record.time).unix(),
 				record.get((record.get && record.get("status")) || record.status)
 			]);
 		});

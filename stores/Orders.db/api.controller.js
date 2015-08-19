@@ -116,18 +116,7 @@ store.update = function (model, params, request) {
 
 
 					Q.denodeify(function (callback) {
-						var stripe = STRIPE("sk_live_kjAFUHK2tYc6BRHRyeMlZPON");
-
-if (
-	request &&
-	request._FireNodeContext &&
-	request._FireNodeContext.config &&
-	request._FireNodeContext.config.stripeSecretKey
-) {
-	console.log("GOT: request._FireNodeContext.config.stripeSecretKey!!");
-}
-
-//						var stripe = STRIPE(request._FireNodeContext.config.stripeSecretKey);
+						var stripe = STRIPE(request._FireNodeContext.config.stripeSecretKey);
 						var payload = {
 //							amount: summary.amount,
 							amount: summary.total,

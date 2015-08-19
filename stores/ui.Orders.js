@@ -84,7 +84,7 @@ var orderIndex = 0;
 
 exports['for'] = function (context) {
 
-	var common = COMMON_MODEL.forAppContext(context.appContext);
+	var common = COMMON_MODEL.forContext(context);
 
 
 	function loadStatusInfoForOrder (orderHashId) {
