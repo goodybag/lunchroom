@@ -119,6 +119,7 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
     exports.monitorDatabase = function (db, appContext) {
 
     	var MOMENT = appContext.MOMENT;
+    	var MOMENT_CT = appContext.MOMENT_CT;
 
     	function qknex (tableName, query) {
     		return API.Q.fcall(function () {
@@ -437,13 +438,13 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
 
 	    	function sendMenuEmails () {
 
-console.log("NOW", MOMENT().format());
-console.log("CHECK AGAINST", MOMENT().second(0).minute(0).hour(9).format());
+console.log("NOW", MOMENT_CT().format());
+console.log("CHECK AGAINST", MOMENT_CT().second(0).minute(0).hour(9).format());
 
 	    		// We NEVER send emails out before 9 am CT (America/Chicago).
 	    		// NOTE: We use the 'menuEmailTime' field to set the exact time.
-	    		if (MOMENT().isBefore(
-		    		MOMENT().second(0).minute(0).hour(9)
+	    		if (MOMENT_CT().isBefore(
+		    		MOMENT_CT().second(0).minute(0).hour(9)
 	    		)) {
 	    			console.log("It is not yet 9am CT so we don't yet check to see if we need to send menu emails for today!");
 					return API.Q.resolve();
