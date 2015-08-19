@@ -110,8 +110,14 @@ console.log("result1a", result);
 
 			if (result[0].lunchroomLive) {
 
+console.log("Lookup event for", {
+	"day_id": MOMENT().format("YYYY-MM-DD"),
+	"consumer_group_id": result[0].id
+});
+
 				return DB.getKnex()('events').where({
-					"day_id": MOMENT().format("YYYY-MM-DD"),					
+					"day_id": MOMENT().format("YYYY-MM-DD"),
+					"consumer_group_id": result[0].id
 				}).select('token').then(function (result2) {
 
 console.log("result2a", result2);
