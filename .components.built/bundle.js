@@ -50433,12 +50433,12 @@
 	                React.createElement("div", {className: "fields"}, 
 
 	                  React.createElement("div", {className: "field"}, 
-	                    React.createElement("label", null, "Menu Email at (min: 9 AM)"), 
+	                    React.createElement("label", null, "Menu Email at (min: 8 AM)"), 
 	                    React.createElement("input", {type: "text", "data-fieldname": "menuEmailTime"})
 	                  ), 
 
 	                  React.createElement("div", {className: "field"}, 
-	                    React.createElement("label", null, "Menu SMS at (min: 9 AM)"), 
+	                    React.createElement("label", null, "Menu SMS at (min: 8 AM)"), 
 	                    React.createElement("input", {type: "text", "data-fieldname": "menuSmsTime"})
 	                  ), 
 
