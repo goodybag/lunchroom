@@ -378,10 +378,11 @@ console.log("ordersData[orderId]", orderId, ordersData[orderId]);
 		    		// have not yet gone out.
 		    		var query = table.select('id');
 
-console.log("Day ID", MOMENT_CT().format("YYYY-MM-DD"));
-console.log("NOW to compare menuEmailTime", MOMENT_CT().format());
-
 		    		if (type === "menus") {
+
+console.log("Day ID", MOMENT_CT().format("YYYY-MM-DD"));
+console.log("NOW to compare menuEmailTime", MOMENT().format());
+
 		    			query = query.where({
 							'menuReady': true,
 							'menuEmailsSent': false
@@ -391,7 +392,7 @@ console.log("NOW to compare menuEmailTime", MOMENT_CT().format());
 						//	MOMENT().second(0).minute(0).hour(0).format(),
 						//	MOMENT().second(0).minute(0).hour(0).add(1, 'day').format()
 						//])
-						.where('menuEmailTime', '<', MOMENT_CT().format())
+						.where('menuEmailTime', '<', MOMENT().format())
 		    		} else
 		    		if (type === "deliveries") {
 		    			query = query.where({
