@@ -437,6 +437,9 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
 
 	    	function sendMenuEmails () {
 
+console.log("NOW", MOMENT().format());
+console.log("CHECK AGAINST", MOMENT().second(0).minute(0).hour(9).format());
+
 	    		// We NEVER send emails out before 9 am CT (America/Chicago).
 	    		// NOTE: We use the 'menuEmailTime' field to set the exact time.
 	    		if (MOMENT().isBefore(
