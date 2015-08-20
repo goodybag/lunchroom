@@ -29,6 +29,15 @@
                     "database": "d6da1bd7tqk7k"
                 }
             },
+            "services": {
+                "loggly": {
+                    "token": "75cd986d-4598-424f-bb6f-d128499b2d99",
+                    "subdomain": "goodybag",
+                    "tags": ["lunchroom-server"],
+                    "json": true,
+                    "level": "trace"
+                }
+            },            
             "jobAppContext[APP_DOMAIN='lunchroom.goodybag.com']": {
                 "windowOrigin": "http://lunchroom.goodybag.com"
             },
@@ -43,7 +52,13 @@
                     "bundleJsUrl": "/bundle.min.js",
 	                "clientContext": {
 	                    "dev": false,
-	                    "type": "lunchroom"
+	                    "type": "lunchroom",
+                        "services": {
+                            "loggly": {
+                                "logglyKey": "75cd986d-4598-424f-bb6f-d128499b2d99",
+                                "sendConsoleErrors": true
+                            }
+                        }
 	                },
 	                "db": {
 	                    "dbname": "lunchroom stage DB"

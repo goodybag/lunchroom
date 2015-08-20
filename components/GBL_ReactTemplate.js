@@ -96,7 +96,7 @@ exports['for'] = function (Component) {
 			var propertyElement = $(this);
 			var propertyName = propertyElement.attr("data-component-prop");
 			if (typeof data[propertyName] === "undefined") {
-				console.warn("Property '" + propertyName + "' not set for component: " + Context._implName);
+//				console.warn("Property '" + propertyName + "' not set for component: " + Context._implName);
 				data[propertyName] = "?";
 			}
 

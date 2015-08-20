@@ -27,6 +27,9 @@ const EMAILS = require("./server/emails");
 const REQUEST = require("request");
 const MOMENT = require("moment");
 const MOMENT_TZ = require("moment-timezone");
+const WINSTON = require("winston");
+require("winston-loggly");
+
 
 const APP_CONTEXT_MODEL = require("./stores/ui.AppContext.model");
 
@@ -64,6 +67,64 @@ var MOMENTS = {
 
 
 require('org.pinf.genesis.lib').forModule(require, module, function (API, exports) {
+
+
+
+	var transports = [
+		new (WINSTON.transports.Console)({
+			level: 'trace',
+			prettyPrint: true,
+			colorize: true,
+			silent: false,
+			timestamp: false
+	    })
+	];
+
+	if (
+		API.config.services &&
+		API.config.services.loggly
+	) {
+		transports.push(new (WINSTON.transports.Loggly)(API.config.services.loggly));
+	}
+
+	var logger = new (WINSTON.Logger)({
+		levels: {
+			trace: 0,
+			input: 1,
+			verbose: 2,
+			prompt: 3,
+			debug: 4,
+			info: 5,
+			data: 6,
+			help: 7,
+			warn: 8,
+			error: 9
+		},
+		colors: {
+			trace: 'magenta',
+			input: 'grey',
+			verbose: 'cyan',
+			prompt: 'grey',
+			debug: 'blue',
+			info: 'green',
+			data: 'grey',
+			help: 'cyan',
+			warn: 'yellow',
+			error: 'red'
+		},
+		transports: transports
+	});
+
+	console.log = function () {
+		var args = Array.prototype.slice.call(arguments);
+		logger.verbose.apply(logger, args);
+	}
+	console.error = function () {
+		var args = Array.prototype.slice.call(arguments);
+		logger.error.apply(logger, args);
+	}
+
+
 
 	function initPublicApp (app) {
 
@@ -403,7 +464,7 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
 				return JOBS.monitorDatabase(db, appContext);
 			});
 
-		}).fail(function (err) {
+		}).catch(function (err) {
 			throw err;
 		});
 

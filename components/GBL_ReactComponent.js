@@ -201,10 +201,9 @@ exports.create = function (Context, implementation) {
 	    				<div/>
 	    			);
 	    		}
-
-		    	console.info("Render component: " + implName);
+//		    	console.info("Render component: " + implName);
 	    	} else {
-		    	console.info("Render component: " + implName);
+//		    	console.info("Render component: " + implName);
 	    	}
 
 	    	self._render_Context = implementation.render.call(self);

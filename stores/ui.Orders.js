@@ -392,7 +392,7 @@ exports['for'] = function (context) {
 	        var _notify_onChange = COMMON.API.UNDERSCORE.debounce(function () {
 
 // TODO: Save in local storage.
-console.log("TODO: trigger save of order info in local storage so nothing is lost if order is not completed");
+//console.log("TODO: trigger save of order info in local storage so nothing is lost if order is not completed");
 // TODO: Leave out last four CC digits and security code.
 
 	        }, 100);
