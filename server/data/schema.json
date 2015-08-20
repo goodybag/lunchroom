@@ -334,6 +334,14 @@
 					}
 				},
 				{
+					"name": "deleted",
+					"type": "boolean",
+					"default": false,
+					"constraints": {
+						"required": true
+					}
+				},
+				{
 					"name": "orderHashId",
 					"constraints": {
 						"required": true

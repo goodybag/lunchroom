@@ -64,6 +64,7 @@ exports['for'] = function (context) {
 	store.clearAllItems = function () {
 		COMMON.storeLocalValueFor("cart", getLocalStorageNamespace(), JSON.stringify([]));
 		this.reset();
+		return COMMON.API.Q.resolve();
 	}
 
 

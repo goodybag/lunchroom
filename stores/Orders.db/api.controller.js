@@ -13,7 +13,7 @@ var DB = require("../../server/db/bookshelf.knex.postgresql");
 
 var store = EXTEND(false, {}, ENDPOINTS.Store.bookshelf);
 
-store.create = function (model, data) {
+store.create = function (model, data, request) {
 
 	return SERVICES['for']({}).then(function (SERVICES) {
 
@@ -23,70 +23,59 @@ store.create = function (model, data) {
 		// Let DB create order id
 		delete data.attributes.id;
 
-		return ENDPOINTS.Store.bookshelf.create.call(store, model, data);
-	});
-}
+console.log("data.attributes RECEIVED", data.attributes);
 
-store.update = function (model, params, request) {
+		try {
 
-	return SERVICES['for']({}).then(function (SERVICES) {
+			function chargeCard (data) {
 
-		return ENDPOINTS.Store.bookshelf.update.call(store, model, params).then(function (resp) {
+				var referenceCode = data.attributes.orderHashId.substring(0, 7).toUpperCase();
+				var paymentToken = JSON.parse(data.attributes.paymentToken);
+				var vendor_id = parseInt(data.attributes.vendor_ids);
+				if (!vendor_id) {
+					// TODO: Look at items and split up order for different vendors.
+					console.error("Error getting 'restaurant_id' from 'vendor_ids'. Looks like there were two vendors involved and e don't support that yet.");
+				}
+				var summary = JSON.parse(data.attributes.summary);
+				var form = JSON.parse(data.attributes.form);
 
-			try {
+				return Q.denodeify(function (callback) {
+					var stripe = STRIPE(request._FireNodeContext.config.stripeSecretKey);
+					var payload = {
+						amount: summary.total,
+						currency: "usd",
+						metadata: {
+							orderHashId: data.attributes.orderHashId,
+							email: form["info[email]"]
+						},
+						capture: true,
+						source: paymentToken.id,
+						description: "Lunchroom charge for order '" + referenceCode + "'"
+					};
+					console.log("Posting to stripe:", JSON.stringify(payload, null, 4));
+					stripe.charges.create(payload, function (err, paymentCharge) {
+						if (err) return callback(err);
 
-				if (resp.attributes['paymentToken']) {
-
-					var form = JSON.parse(resp.attributes.form);
-					var event = JSON.parse(resp.attributes.event);
-
-					SERVICES.email.send("Receipt", {
-			            "to": [
-			                {
-			                    "email": form["info[email]"],
-			                    "name": form["info[name]"] || form["info[email]"],
-			                    "type": "to"
-			                }
-			            ],
-			            "data": {
-			            	"items": JSON.parse(resp.attributes.items),
-			            	"summary": JSON.parse(resp.attributes.summary),
-			            	"orderHashId": resp.attributes.orderHashId,
-			            	"orderFrom": resp.attributes.orderFrom,
-			            	"deliveryDate": event["format.deliveryDate"],
-			            	"deliveryTime": event["format.deliveryTime"],
-			            	"deliverLocation": event["consumerGroup.deliverLocation"]
-			            }
-			        }).fail(function (err) {
-						console.error("Error sending receipt:", err.stack);
+						return callback(null, paymentCharge);
 					});
+				})().fail(function (err) {
 
+// TODO: Repeat on non-fatal error.
+					console.error("Error charging card:", err.stack);
+					throw err;
+				});
+			}
 
-			        // Send duplicate to goodybag just in case.
-					SERVICES.email.send("Receipt", {
-			            "to": [
-			                {
-			                    "email": "payments@goodybag.com",
-			                    "name": "payments@goodybag.com",
-			                    "type": "to"
-			                }
-			            ],
-			            "data": {
-			            	"items": JSON.parse(resp.attributes.items),
-			            	"summary": JSON.parse(resp.attributes.summary),
-			            	"orderHashId": resp.attributes.orderHashId,
-			            	"orderFrom": resp.attributes.orderFrom,
-			            	"deliveryDate": event["format.deliveryDate"],
-			            	"deliveryTime": event["format.deliveryTime"],
-			            	"deliverLocation": event["consumerGroup.deliverLocation"]
-			            }
-			        }).fail(function (err) {
-						console.error("Error sending receipt:", err.stack);
-					});
+			function storeOrder (data, paymentCharge) {
 
+				data.attributes.paymentCharge = JSON.stringify(paymentCharge);
+
+console.log("data.attributes STORE", data.attributes);
+
+				return ENDPOINTS.Store.bookshelf.create.call(store, model, data).then(function (resp) {
 
 					/*
-					resp.attributes = { id: '50',
+					data.attributes = { id: '50',
 					  orderHashId: '6cb3b3af-0fbe-4449-bc58-981e35f83d72',
 					  time: Sat Aug 15 2015 19:11:12 GMT-0700 (PDT),
 					  day_id: '2015-08-15',
@@ -103,45 +92,77 @@ store.update = function (model, params, request) {
 					  event_id: '79'
 					}
 					*/
-//console.log("resp.attributes", resp.attributes);
 
-					var referenceCode = resp.attributes.orderHashId.substring(0, 7).toUpperCase();
-					var paymentToken = JSON.parse(resp.attributes.paymentToken);
-					var vendor_id = parseInt(resp.attributes.vendor_ids);
-					if (!vendor_id) {
-						// TODO: Look at items and split up order for different vendors.
-						console.error("Error getting 'restaurant_id' from 'vendor_ids'. Looks like there were two vendors involved and e don't support that yet.");
-					}
-					var summary = JSON.parse(resp.attributes.summary);
+					return resp;
+				});
+			}
+
+			function sendNotifications (data) {
+			
+				var form = JSON.parse(data.attributes.form);
+				var event = JSON.parse(data.attributes.event);
+
+				SERVICES.email.send("Receipt", {
+		            "to": [
+		                {
+		                    "email": form["info[email]"],
+		                    "name": form["info[name]"] || form["info[email]"],
+		                    "type": "to"
+		                }
+		            ],
+		            "data": {
+		            	"items": JSON.parse(data.attributes.items),
+		            	"summary": JSON.parse(data.attributes.summary),
+		            	"orderHashId": data.attributes.orderHashId,
+		            	"orderFrom": data.attributes.orderFrom,
+		            	"deliveryDate": event["format.deliveryDate"],
+		            	"deliveryTime": event["format.deliveryTime"],
+		            	"deliverLocation": event["consumerGroup.deliverLocation"]
+		            }
+		        }).fail(function (err) {
+					console.error("Error sending receipt:", err.stack);
+				});
 
 
-					Q.denodeify(function (callback) {
-						var stripe = STRIPE(request._FireNodeContext.config.stripeSecretKey);
-						var payload = {
-//							amount: summary.amount,
-							amount: summary.total,
-							currency: "usd",
-							metadata: {
-								orderHashId: resp.attributes.orderHashId,
-								email: form["info[email]"]
-							},
-							capture: true,
-							source: paymentToken.id,
-							description: "Lunchroom charge for order '" + referenceCode + "'"
-						};
-						console.log("Posting to stripe:", JSON.stringify(payload, null, 4));
-						stripe.charges.create(payload, function (err, paymentCharge) {
-							if (err) return callback(err);
+		        // Send duplicate to goodybag just in case.
+				SERVICES.email.send("Receipt", {
+		            "to": [
+		                {
+		                    "email": "payments@goodybag.com",
+		                    "name": "payments@goodybag.com",
+		                    "type": "to"
+		                }
+		            ],
+		            "data": {
+		            	"items": JSON.parse(data.attributes.items),
+		            	"summary": JSON.parse(data.attributes.summary),
+		            	"orderHashId": data.attributes.orderHashId,
+		            	"orderFrom": data.attributes.orderFrom,
+		            	"deliveryDate": event["format.deliveryDate"],
+		            	"deliveryTime": event["format.deliveryTime"],
+		            	"deliverLocation": event["consumerGroup.deliverLocation"]
+		            }
+		        }).fail(function (err) {
+					console.error("Error sending receipt:", err.stack);
+				});
 
-							return DB.getKnex()('orders').update({
-								paymentCharge: JSON.stringify(paymentCharge)
-							}).where("id", resp.attributes.id);
-						});
-					})().fail(function (err) {
+		        return Q.resolve();
+			}
 
-// TODO: Repeat on non-fatal error.
-						console.error("Error charging card:", err.stack);
+			return chargeCard(data).then(function (paymentCharge) {
+
+				return storeOrder(data, paymentCharge).then(function (resp) {
+
+					// NOTE: We do NOT wait for notifications to be sent.
+					sendNotifications(data).fail(function (err) {
+
+						console.error("Error sending notifications but ignoring:", err.stack);
+						// TODO: Inform user of error.
 					});
+
+					return resp;
+				});
+			});
 
 /*
 					SERVICES.cater.sendPayment({
@@ -157,7 +178,7 @@ store.update = function (model, params, request) {
 		                // Amount in cents on top of base `amount` - all funds go to Goodybag account
 		                service_fee: (summary.total - summary.amount),
 		                // Arbitrary object to attach to transaction
-		                metadata: JSON.stringify(resp.attributes),
+		                metadata: JSON.stringify(data.attributes),
 		                // What will show up on bank statement
 // TODO: Where does this come from?
 		                statement_descriptor: ""
@@ -166,15 +187,12 @@ store.update = function (model, params, request) {
 						console.error("Error sending receipt:", err.stack);
 					});
 */
-				}
 
-			} catch (err) {
-				// TODO: Schedule work to re-run at a later point in time.
-				console.error("Error doing extra work after update!", err.stack);
-			}
-
-			return resp;
-		});
+		} catch (err) {
+			// TODO: Schedule work to re-run at a later point in time.
+			console.error("Error charging and saving order!", err.stack);
+			throw err;
+		}
 	});
 }
 

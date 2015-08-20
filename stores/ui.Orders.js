@@ -21,6 +21,48 @@ var Store = COMMON.API.BACKBONE.Collection.extend({
 		});
 	},
 
+	deleteOrder: function (id) {
+		var self = this;
+
+		return COMMON.API.Q.denodeify(function (callback) {
+
+			var payload = {
+				data: {
+					type: "orders",
+					id: id,
+					attributes: {
+						"deleted": true
+					}
+				}
+			};
+
+			return $.ajax({
+				method: "PATCH",
+				url: ENDPOINT + "/" + id,
+				contentType: "application/vnd.api+json",
+				headers: {
+					"Accept": "application/vnd.api+json"
+				},
+    			dataType: "json",
+				data: JSON.stringify(payload)
+			})
+			.done(function (response) {
+
+				return callback(null);
+			})
+			.fail(function(err) {
+
+// TODO: Ask user to submit again.
+console.log("error!", err.stack);
+
+				return callback(err);
+			});
+		})().then(function () {
+
+			self.remove(id);
+		});
+	},
+
 	submitOrder: function (id) {
 		var self = this;
 		return COMMON.API.Q.denodeify(function (callback) {
@@ -36,6 +78,8 @@ var Store = COMMON.API.BACKBONE.Collection.extend({
 				}
 			}
 			delete data.id;
+
+console.log("STORE DATA", data);
 
 			var payload = {
 				data: {
@@ -109,7 +153,8 @@ exports['for'] = function (context) {
 	        "pickupEndTime": "string",
 	        "orderFrom": "string",
 	        "vendor_ids": "string",
-	        "statusInfo": "object"
+	        "statusInfo": "object",
+	        "paymentToken": "object"
 	    },
 	    derived: {
 	    	"format.orderPlacedTime": {
@@ -239,6 +284,22 @@ exports['for'] = function (context) {
 		});
 	}
 
+	store.loadAllOrdersForToday = function () {
+		var self = this;
+		return COMMON.API.Q.denodeify(function (callback) {
+	        self.fetch({
+	            reset: true,
+	            remove: true,
+	            data: $.param({
+	                "filter[day_id]": context.appContext.get('todayId')
+	            }),
+	            success: function () {
+	            	return callback(null);
+	            }
+	        });
+		})();
+	}
+
 	store.loadForVendorId = function (vendorId) {
 		var self = this;
 		return COMMON.API.Q.denodeify(function (callback) {
@@ -339,7 +400,7 @@ console.log("TODO: trigger save of order info in local storage so nothing is los
 			var order =  store.getOrder(todayId, true);
 			order.on("change", _notify_onChange);
 
-			order.submit = function () {
+			order.submit = function (paymentToken) {
 
 				return COMMON.API.Q.fcall(function () {
 
@@ -372,6 +433,10 @@ console.log("TODO: trigger save of order info in local storage so nothing is los
 							order.set("pickupEndTime", today.get("pickupEndTime"));
 							order.set("event", today.getValues());
 							order.set("event_id", today.get("id"));
+							order.set("paymentToken", JSON.stringify(paymentToken));
+
+console.log("ORDER", order);
+console.log("paymentToken", paymentToken);
 
 							// TODO: Send order to server and redirect to receipt using order ID hash.
 
@@ -386,47 +451,6 @@ console.log("TODO: trigger save of order info in local storage so nothing is los
 				}).fail(function (err) {
 					// TODO: Error submitting order!
 					console.error("submit error:", err.stack);
-					throw err;
-				});
-			}
-
-			order.addPaymentToken = function (paymentToken) {
-
-				return COMMON.API.Q.denodeify(function (callback) {
-
-					order.set("paymentToken", JSON.stringify(paymentToken));
-
-					var payload = {
-						data: {
-							type: "orders",
-							id: order.get("id"),
-							attributes: {
-								"paymentToken": order.get("paymentToken")
-							}
-						}
-					};
-
-					return $.ajax({
-						method: "PATCH",
-						url: ENDPOINT + "/" + order.get("id"),
-						contentType: "application/vnd.api+json",
-						headers: {
-							"Accept": "application/vnd.api+json"
-						},
-		    			dataType: "json",
-						data: JSON.stringify(payload)
-					})
-					.done(function (response) {
-
-						return callback(null);
-					})
-					.fail(function(err) {
-						console.log("error!", err.stack);
-						return callback(err);
-					});
-				})().fail(function (err) {
-					// TODO: Error submitting order!
-					console.error("add payment confirmation error:", err.stack);
 					throw err;
 				});
 			}

@@ -1,5 +1,5 @@
 
-const DEV = true;
+const DEV = false;
 
 var SERVICES = require("./services");
 var EMAILS = require("./emails");
