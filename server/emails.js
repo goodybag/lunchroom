@@ -59,19 +59,23 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
 
 								var items = menus.events[data.event_id].items;
 
+								var subscription = data.subscription || null;
+
 //console.log("RENDER TEMPLATE items", JSON.stringify(items, null, 4));
 
-console.log("event", event);
+//console.log("event", event);
+//console.log("subscription", subscription);
 
 								data = {
 									restaurantName: vendor.get('title'),
 									lunchroomUrl: event.get("menuUrl"),
 									orderByTime: event.get("format.orderByTime"),
+									unsubscribeUrl: (subscription && subscription.get("unsubscribeUrl")) || "",
 									itemGrid: [
 										[]
 									]
 								};
-console.log("data", data);
+//console.log("data", data);
 								// TODO: The skin exporter should determine this automatically.
 								var maxColumns = 2;
 								Object.keys(items).forEach(function (itemId) {

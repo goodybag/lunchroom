@@ -52,16 +52,22 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
                     var lunchroomLink = request._FireNodeContext.config.email.actionBaseUrl + "/" + message.data.consumerGroup.alias;
 
                     message = API.DEEPMERGE({
-                        "subject": "Confirm Menu Subscription",
+                        "subject": "Confirm Your Email Address",
                         "text": [
-                            "Welcome to Lunchroom! Click the link below to start receiving daily menus.",
+                            "Hi!",
+                            "",
+                            "All that's left to do is click the link below to confirm your email address:",
                             "",
                             confirmLink,
                             "",
-                            "Thanks for signing up,",
-                            "-Goodybot",
+                            "Thanks a bunch for signing up & keep an eye out for the daily menus :)",
+                            "--",
+                            "The Goodybag Team",
                             "",
-                            lunchroomLink + " http://goodybag.com"
+                            "Have questions or concerns?",
+                            "Contact us by calling (512) 677-4224 or emailing support@goodybag.com",
+                            "We are available M-F, 7am-6pm.",
+                            "This is an automated email, replies to this email will not be received!"
                         ].join("\n")
                     }, message || {});
 
@@ -69,6 +75,7 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
 
                 } else
                 if (templateId === "Menu") {
+
                     message = API.DEEPMERGE({
                         "subject": "Daily Lunch Menu - Order by " + message.data.menu.orderByTime,
                         "text": [
@@ -85,7 +92,9 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
                             "Sincerely,",
                             "-Goodybot",
                             "",
-                            message.data.menu.lunchroomUrl + " https://www.goodybag.com"
+                            message.data.menu.lunchroomUrl + " https://www.goodybag.com",
+                            "",
+                            "Unsubscribe: " + message.data.subscription.unsubscribeUrl
                         ].join("\n")
                     }, message || {});
 

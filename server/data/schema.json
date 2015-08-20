@@ -107,6 +107,14 @@
 				},
 				{
 					"name": "subscribePhone"
+				},
+				{
+					"name": "active",
+					"type": "boolean",
+					"default": true,
+					"constraints": {
+						"required": true
+					}
 				}
 			]
 		},
