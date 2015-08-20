@@ -95,23 +95,8 @@ exports['for'] = function (context) {
 
 
 
-	// @see http://ampersandjs.com/docs#ampersand-state
-	var Model = store.Model = COMMON.API.AMPERSAND_STATE.extend({
-		name: "consumer-group-subscriptions",
-		props: {
-			id: "string",
-	        token: "string",
-	        consumer_id: "string",
-	        consumer_group_id: "string",
-	        subscribe_time: "string",
-	        confirmed_time: "string",
-	        subscribeEmail: "string",
-	        confirmedEmail: "string",
-	        subscribePhone: "string",
+	store.Model = require("./ui.ConsumerGroupSubscriptions.model").forContext(context);
 
-	        "consumerGroup.title": "string"
-		}
-	});
 
 	store.subscribeWithEmail = function (consumer_group_id, email, phone) {
 		var self = this;
@@ -190,7 +175,7 @@ console.log("error!", err.stack);
 				if (!records[i].has(field)) return;
 				fields[field] = records[i].get(field);
 			});
-			return store._byId[records[i].get("id")].__model = new Model(fields);
+			return store._byId[records[i].get("id")].__model = new store.Model(fields);
 		});
 	}
 

@@ -39,10 +39,14 @@ exports['for'] = function (API) {
 					return successResponse();
 				}
 
+				// TODO: Error out if not latest or act on latest subscription record for user
+				//       if multiple subscribe confirm links are sent/pending/present.
+
 				return DB.getKnex()('consumer-group-subscriptions').where({
 					"id": result[0].id
 				}).update({
-					"confirmedEmail": result[0].subscribeEmail
+					"confirmedEmail": result[0].subscribeEmail,
+					"active": true
 				}).then(function () {
 
 					return successResponse();
@@ -54,7 +58,7 @@ exports['for'] = function (API) {
 				return DB.getKnex()('consumer-group-subscriptions').where({
 					"id": result[0].id
 				}).update({
-					"confirmedEmail": "unsubscribed"
+					"active": false
 				}).then(function () {
 
 					return successResponse();

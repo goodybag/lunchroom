@@ -198,17 +198,13 @@ require("./component.jsx")['for'](module, {
 							});
 						}
 
-						function prepareOrder (order) {
-							return order.submit().fail(function (err) {
-								console.error("Error preparing order:", err.message);
-								throw err;
-							});
-						}
-
-						function chargeCard (order) {
+						function authorizeCard (order) {
 							return Context.Q.denodeify(function (callback) {
 								try {
 									var form = JSON.parse(order.get("form"));
+
+									console.log("Authorize card", form["card[name]"]);
+
 									Stripe.card.createToken({
 										number: form["card[number]"],
 										cvc: form["card[cvc]"],
@@ -233,13 +229,9 @@ require("./component.jsx")['for'](module, {
 							});
 						}
 
-						function finalizeOrder (order, paymentToken) {
-							return order.addPaymentToken(paymentToken).then(function () {
-
-								return Context.appContext.get('stores').cart.clearAllItems();
-
-							}).fail(function (err) {
-								console.error("Error finalizing order:", err.message);
+						function submitOrder (order, paymentToken) {
+							return order.submit(paymentToken).fail(function (err) {
+								console.error("Error submitting order:", err.message);
 								throw err;
 							});
 						}
@@ -268,11 +260,18 @@ require("./component.jsx")['for'](module, {
 									return;
 								}
 
-								return prepareOrder(Context.order).then(function (order) {
-									return chargeCard(order).then(function (paymentToken) {
-										return finalizeOrder(order, paymentToken);
-									}).then(function () {
-										return redirect(order);
+								return authorizeCard(Context.order).then(function (paymentToken) {
+
+									console.log("Authorized card", paymentToken);
+
+									return submitOrder(Context.order, paymentToken).then(function (order) {
+
+										console.log("Orders placed. Clearing cart.");
+
+										return Context.appContext.get('stores').cart.clearAllItems().then(function () {
+
+											return redirect(order);
+										});
 									});
 								});
 							});

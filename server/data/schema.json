@@ -107,6 +107,14 @@
 				},
 				{
 					"name": "subscribePhone"
+				},
+				{
+					"name": "active",
+					"type": "boolean",
+					"default": true,
+					"constraints": {
+						"required": true
+					}
 				}
 			]
 		},
@@ -323,6 +331,14 @@
 					"constraints": {
 						"unique": true,
 						"autoincrement": true
+					}
+				},
+				{
+					"name": "deleted",
+					"type": "boolean",
+					"default": false,
+					"constraints": {
+						"required": true
 					}
 				},
 				{

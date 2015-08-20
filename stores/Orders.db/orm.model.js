@@ -27,7 +27,7 @@ var classProps = {
             return qb.whereIn('vendor_ids', value);
         },
         day_id: function (qb, value) {
-            return qb.whereIn('day_id', value);
+            return qb.whereIn('day_id', value).where('deleted', false);
         }
     },
     relations: [

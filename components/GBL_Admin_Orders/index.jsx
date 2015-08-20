@@ -5,21 +5,24 @@ var COMPONENT = require("../GBL_ReactComponent");
 
 module.exports = COMPONENT.create({
 
-
     afterRender: function (Context, element) {
+        var self = this;
 
         Context.ensureForNodes(
-            $('.button[data-link]', element),
+            $('button[data-component-action="remove"]', element),
             'click',
             function () {
 
-                if ($(this).attr("data-link") === "action:set-status") {
+                var id = $(this).attr("data-component-value-id");
 
-                    Context.appContext.get('stores').orderStatus.setStatusForOrderHashId(
-                        $(this).attr("data-id"),
-                        $(this).attr("data-value")
-                    );
-                }
+                $('.modal[data-component-alias="confirm-remove"]').modal({
+                    closable: true,
+                    onApprove: function() {
+
+                        self.props.appContext.get('stores').orders.deleteOrder(id);
+
+                    }
+                }).modal('show');
             }
         );
     },
@@ -32,6 +35,33 @@ module.exports = COMPONENT.create({
           <div>
             <h1>All Orders</h1>
 
+            <div className="ui basic modal" data-component-alias="confirm-remove">
+              <i className="close icon"></i>
+              <div className="header">
+                Delete Order
+              </div>
+              <div className="image content">
+                <div className="image">
+                  <i className="archive icon"></i>
+                </div>
+                <div className="description">
+                  <p>Are you ABSOLUTELY sure you want to delete the order?</p>
+                </div>
+              </div>
+              <div className="actions">
+                <div className="two fluid ui inverted buttons">
+                  <div className="ui red basic inverted negative button">
+                    <i className="remove icon"></i>
+                    No
+                  </div>
+                  <div className="ui green basic inverted positive button">
+                    <i className="checkmark icon"></i>
+                    Yes
+                  </div>
+                </div>
+              </div>
+            </div>
+
             <table className="ui celled table">
               <thead>
                 <tr>
@@ -41,6 +71,7 @@ module.exports = COMPONENT.create({
                     <th>Vendor</th>
                     <th>Customer</th>
                     <th>Pickup Location</th>
+                    <th>Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -55,6 +86,11 @@ module.exports = COMPONENT.create({
                           <td>{item.get("orderFrom")}</td>
                           <td>{item.get("customer")}</td>
                           <td>{item.get("pickupLocation")}</td>
+                          <td>
+                            <button data-component-value-id={item.get('id')} data-component-action="remove" className="ui compact icon red button">
+                              <i className="remove icon"></i>
+                            </button>
+                          </td>
                         </tr>
                     );
 
@@ -100,19 +136,19 @@ module.exports = COMPONENT.create({
     onMount: function () {
         var self = this;
 
+        self.props.appContext.get('stores').orders.on("remove", self._trigger_forceUpdate);
         self.props.appContext.get('stores').orders.on("sync", self._trigger_forceUpdate);
 
-        self.props.appContext.get('stores').orders.reset();
-        self.props.appContext.get('stores').orders.fetch();
+        self.props.appContext.get('stores').orders.loadAllOrdersForToday();
 
         // Reload every 60 seconds.
         setInterval(function () {
-            self.props.appContext.get('stores').orders.reset();
-            self.props.appContext.get('stores').orders.fetch();
+            self.props.appContext.get('stores').orders.loadAllOrdersForToday();
         }, 60 * 1000);
     },
 
     onUnmount: function () {
+        this.props.appContext.get('stores').orders.off("remove", this._trigger_forceUpdate);
         this.props.appContext.get('stores').orders.off("sync", this._trigger_forceUpdate);
     },
 

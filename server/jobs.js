@@ -118,12 +118,22 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
 
     exports.monitorDatabase = function (db, appContext) {
 
+
+		var ConsumerGroupSubscriptionsModel = require("../stores/ui.ConsumerGroupSubscriptions.model").forContext({
+			appContext: appContext
+		});
+
+
     	var MOMENT = appContext.MOMENT;
     	var MOMENT_CT = appContext.MOMENT_CT;
 
     	function qknex (tableName, query) {
+    		if (typeof query === "undefined" && typeof tableName === "function") {
+    			query = tableName;
+    			tableName = null;
+    		}
     		return API.Q.fcall(function () {
-    			var table = db.knex(tableName);
+    			var table = ((tableName) ? db.knex(tableName) : db.knex);
     			return query(table).then(function (resp) {
 
 console.log("RESPONSE:", resp);
@@ -150,12 +160,7 @@ console.log("RESPONSE:", resp);
 					}
 				}).then(function (EMAILS) {
 
-					return EMAILS.renderEmail("menu", {
-						menus: menus,
-						event_id: eventId
-					}).then(function (html) {
-
-						return API.Q.all(Object.keys(subscribers).map(function (email) {
+					return API.Q.all(Object.keys(subscribers).map(function (email) {
 
 // TODO: Track send status in consolidated subscriber record.
 // TODO: Consolidate subscriber records prior to scheduling emails for day.
@@ -165,6 +170,12 @@ console.log("RESPONSE:", resp);
 //menuEmailSendError
 //menuSmsSendError
 
+						return EMAILS.renderEmail("menu", {
+							menus: menus,
+							event_id: eventId,
+							subscription: subscribers[email]
+						}).then(function (html) {
+
 							try {
 
 								console.log("Sending menu to:", email);
@@ -172,6 +183,8 @@ console.log("RESPONSE:", resp);
 								var event = menus.events[eventId].event;
 								// Assume only one vendor.
 								var vendor = menus.vendors[Object.keys(menus.vendors).shift()];
+
+								var subscription = subscribers[email];
 
 								return SERVICES.email.send("Menu", {
 						            "to": [
@@ -182,6 +195,9 @@ console.log("RESPONSE:", resp);
 						                }
 						            ],
 						            "data": {
+						            	"subscription": {
+						            		"unsubscribeUrl": subscription.get("unsubscribeUrl")
+						            	},
 						            	"menu": {
 											restaurantName: vendor.get('title'),
 											lunchroomUrl: event.get("menuUrl"),
@@ -199,8 +215,8 @@ console.log("RESPONSE:", resp);
 								console.error("Error sending email but ignoring", err.stack);
 								// TODO: Resend email
 							}
-						}));
-					});
+						});
+					}));
 				});
 			}
 
@@ -425,23 +441,39 @@ console.log("NOW to compare menuEmailTime", MOMENT().format());
 
 	    	function fetchSubscribers (menus) {
 				return qknex('consumer-group-subscriptions', function (table) {
+					// TODO: Only include latest subscriber record and only if active.
 					return table.select(
-						'consumer-group-subscriptions.id',
-						'consumer-group-subscriptions.confirmedEmail AS email',
+						'consumer-group-subscriptions.*',
 						'events.id AS event_id'
 					)
 					.rightJoin('events', 'consumer-group-subscriptions.consumer_group_id', 'events.consumer_group_id')
 					.whereIn('consumer-group-subscriptions.consumer_group_id', Object.keys(menus.consumerGroupIds))
 					.whereIn('events.id', Object.keys(menus.events))
-					.whereNotNull('consumer-group-subscriptions.confirmedEmail');
+					.whereNotNull('consumer-group-subscriptions.confirmedEmail')
+					.orderBy('consumer-group-subscriptions.id', 'desc');
 				}).then(function (result) {
+
+					var inactive = {};
+
 					var subscribers = {};
 					result.forEach(function (row) {
 						if (!subscribers[row.event_id]) {
 							subscribers[row.event_id] = {};
 						}
-						subscribers[row.event_id][row.email] = true;
+						if (
+							!subscribers[row.event_id][row.confirmedEmail] &&
+							!inactive[row.confirmedEmail]
+						) {
+							if (row.active) {
+								subscribers[row.event_id][row.confirmedEmail] = new ConsumerGroupSubscriptionsModel(row);
+							} else {
+								inactive[row.confirmedEmail] = true;
+							}
+						}
 					});
+
+//console.log("subscribers", subscribers);
+
 					return subscribers;
 				});
 	    	}
