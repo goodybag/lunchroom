@@ -435,9 +435,9 @@
 				consumers: __webpack_require__(274)['for'](storeContext),
 				consumerGroups: __webpack_require__(114)['for'](storeContext),
 				consumerGroupSubscriptions: __webpack_require__(275)['for'](storeContext),
-				cart: __webpack_require__(276)['for'](storeContext),
-				orders: __webpack_require__(277)['for'](storeContext),
-				orderStatus: __webpack_require__(278)['for'](storeContext)
+				cart: __webpack_require__(277)['for'](storeContext),
+				orders: __webpack_require__(278)['for'](storeContext),
+				orderStatus: __webpack_require__(279)['for'](storeContext)
 			},
 			skin: skin
 			// TODO: Inject config
@@ -46992,17 +46992,13 @@
 								});
 							}
 
-							function prepareOrder (order) {
-								return order.submit().fail(function (err) {
-									console.error("Error preparing order:", err.message);
-									throw err;
-								});
-							}
-
-							function chargeCard (order) {
+							function authorizeCard (order) {
 								return Context.Q.denodeify(function (callback) {
 									try {
 										var form = JSON.parse(order.get("form"));
+
+										console.log("Authorize card", form["card[name]"]);
+
 										Stripe.card.createToken({
 											number: form["card[number]"],
 											cvc: form["card[cvc]"],
@@ -47027,13 +47023,9 @@
 								});
 							}
 
-							function finalizeOrder (order, paymentToken) {
-								return order.addPaymentToken(paymentToken).then(function () {
-
-									return Context.appContext.get('stores').cart.clearAllItems();
-
-								}).fail(function (err) {
-									console.error("Error finalizing order:", err.message);
+							function submitOrder (order, paymentToken) {
+								return order.submit(paymentToken).fail(function (err) {
+									console.error("Error submitting order:", err.message);
 									throw err;
 								});
 							}
@@ -47062,11 +47054,18 @@
 										return;
 									}
 
-									return prepareOrder(Context.order).then(function (order) {
-										return chargeCard(order).then(function (paymentToken) {
-											return finalizeOrder(order, paymentToken);
-										}).then(function () {
-											return redirect(order);
+									return authorizeCard(Context.order).then(function (paymentToken) {
+
+										console.log("Authorized card", paymentToken);
+
+										return submitOrder(Context.order, paymentToken).then(function (order) {
+
+											console.log("Orders placed. Clearing cart.");
+
+											return Context.appContext.get('stores').cart.clearAllItems().then(function () {
+
+												return redirect(order);
+											});
 										});
 									});
 								});
@@ -48010,9 +48009,9 @@
 
 /***/ },
 /* 173 */
-[280, 174],
+[281, 174],
 /* 174 */
-[281, 175],
+[282, 175],
 /* 175 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -48042,9 +48041,9 @@
 
 /***/ },
 /* 177 */
-[280, 178],
+[281, 178],
 /* 178 */
-[281, 179],
+[282, 179],
 /* 179 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -50603,21 +50602,24 @@
 
 	module.exports = COMPONENT.create({
 
-
 	    afterRender: function (Context, element) {
+	        var self = this;
 
 	        Context.ensureForNodes(
-	            $('.button[data-link]', element),
+	            $('button[data-component-action="remove"]', element),
 	            'click',
 	            function () {
 
-	                if ($(this).attr("data-link") === "action:set-status") {
+	                var id = $(this).attr("data-component-value-id");
 
-	                    Context.appContext.get('stores').orderStatus.setStatusForOrderHashId(
-	                        $(this).attr("data-id"),
-	                        $(this).attr("data-value")
-	                    );
-	                }
+	                $('.modal[data-component-alias="confirm-remove"]').modal({
+	                    closable: true,
+	                    onApprove: function() {
+
+	                        self.props.appContext.get('stores').orders.deleteOrder(id);
+
+	                    }
+	                }).modal('show');
 	            }
 	        );
 	    },
@@ -50630,6 +50632,33 @@
 	          React.createElement("div", null, 
 	            React.createElement("h1", null, "All Orders"), 
 
+	            React.createElement("div", {className: "ui basic modal", "data-component-alias": "confirm-remove"}, 
+	              React.createElement("i", {className: "close icon"}), 
+	              React.createElement("div", {className: "header"}, 
+	                "Delete Order"
+	              ), 
+	              React.createElement("div", {className: "image content"}, 
+	                React.createElement("div", {className: "image"}, 
+	                  React.createElement("i", {className: "archive icon"})
+	                ), 
+	                React.createElement("div", {className: "description"}, 
+	                  React.createElement("p", null, "Are you ABSOLUTELY sure you want to delete the order?")
+	                )
+	              ), 
+	              React.createElement("div", {className: "actions"}, 
+	                React.createElement("div", {className: "two fluid ui inverted buttons"}, 
+	                  React.createElement("div", {className: "ui red basic inverted negative button"}, 
+	                    React.createElement("i", {className: "remove icon"}), 
+	                    "No"
+	                  ), 
+	                  React.createElement("div", {className: "ui green basic inverted positive button"}, 
+	                    React.createElement("i", {className: "checkmark icon"}), 
+	                    "Yes"
+	                  )
+	                )
+	              )
+	            ), 
+
 	            React.createElement("table", {className: "ui celled table"}, 
 	              React.createElement("thead", null, 
 	                React.createElement("tr", null, 
@@ -50638,7 +50667,8 @@
 	                    React.createElement("th", null, "Delivery"), 
 	                    React.createElement("th", null, "Vendor"), 
 	                    React.createElement("th", null, "Customer"), 
-	                    React.createElement("th", null, "Pickup Location")
+	                    React.createElement("th", null, "Pickup Location"), 
+	                    React.createElement("th", null, "Actions")
 	                )
 	              ), 
 	              React.createElement("tbody", null, 
@@ -50652,7 +50682,12 @@
 	                          React.createElement("td", null, item.get("format.deliveryDay")), 
 	                          React.createElement("td", null, item.get("orderFrom")), 
 	                          React.createElement("td", null, item.get("customer")), 
-	                          React.createElement("td", null, item.get("pickupLocation"))
+	                          React.createElement("td", null, item.get("pickupLocation")), 
+	                          React.createElement("td", null, 
+	                            React.createElement("button", {"data-component-value-id": item.get('id'), "data-component-action": "remove", className: "ui compact icon red button"}, 
+	                              React.createElement("i", {className: "remove icon"})
+	                            )
+	                          )
 	                        )
 	                    );
 
@@ -50698,19 +50733,19 @@
 	    onMount: function () {
 	        var self = this;
 
+	        self.props.appContext.get('stores').orders.on("remove", self._trigger_forceUpdate);
 	        self.props.appContext.get('stores').orders.on("sync", self._trigger_forceUpdate);
 
-	        self.props.appContext.get('stores').orders.reset();
-	        self.props.appContext.get('stores').orders.fetch();
+	        self.props.appContext.get('stores').orders.loadAllOrdersForToday();
 
 	        // Reload every 60 seconds.
 	        setInterval(function () {
-	            self.props.appContext.get('stores').orders.reset();
-	            self.props.appContext.get('stores').orders.fetch();
+	            self.props.appContext.get('stores').orders.loadAllOrdersForToday();
 	        }, 60 * 1000);
 	    },
 
 	    onUnmount: function () {
+	        this.props.appContext.get('stores').orders.off("remove", this._trigger_forceUpdate);
 	        this.props.appContext.get('stores').orders.off("sync", this._trigger_forceUpdate);
 	    },
 
@@ -61226,23 +61261,8 @@
 
 
 
-		// @see http://ampersandjs.com/docs#ampersand-state
-		var Model = store.Model = COMMON.API.AMPERSAND_STATE.extend({
-			name: "consumer-group-subscriptions",
-			props: {
-				id: "string",
-		        token: "string",
-		        consumer_id: "string",
-		        consumer_group_id: "string",
-		        subscribe_time: "string",
-		        confirmed_time: "string",
-		        subscribeEmail: "string",
-		        confirmedEmail: "string",
-		        subscribePhone: "string",
+		store.Model = __webpack_require__(276).forContext(context);
 
-		        "consumerGroup.title": "string"
-			}
-		});
 
 		store.subscribeWithEmail = function (consumer_group_id, email, phone) {
 			var self = this;
@@ -61321,7 +61341,7 @@
 					if (!records[i].has(field)) return;
 					fields[field] = records[i].get(field);
 				});
-				return store._byId[records[i].get("id")].__model = new Model(fields);
+				return store._byId[records[i].get("id")].__model = new store.Model(fields);
 			});
 		}
 
@@ -61332,6 +61352,61 @@
 
 /***/ },
 /* 276 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/** @jsx React.DOM */
+
+	var COMMON = __webpack_require__(9);
+
+
+	exports.forContext = function (context) {
+
+		var common = COMMON.forContext(context);
+
+		// @see http://ampersandjs.com/docs#ampersand-state
+		var Model = COMMON.API.AMPERSAND_STATE.extend({
+			name: "consumer-group-subscriptions",
+			props: {
+				id: "string",
+		        token: "string",
+		        consumer_id: "string",
+		        consumer_group_id: "string",
+		        subscribe_time: "string",
+		        confirmed_time: "string",
+		        subscribeEmail: "string",
+		        confirmedEmail: "string",
+		        subscribePhone: "string",
+
+		        "consumerGroup.title": "string"
+			},
+			derived: {
+			    "confirmSubscriptionUrl": {
+			    	deps: [
+						"token"
+					],
+					cache: false,
+		            fn: function () {
+		            	return context.appContext.get("windowOrigin") + "/a/cs/" + this.token;
+		            }
+			    },
+			    "unsubscribeUrl": {
+			    	deps: [
+						"alias"
+					],
+					cache: false,
+		            fn: function () {
+		            	return context.appContext.get("windowOrigin") + "/a/us/" + this.token;
+		            }
+			    }
+			}
+		});
+
+		return Model;
+	}
+
+
+/***/ },
+/* 277 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
@@ -61400,6 +61475,7 @@
 		store.clearAllItems = function () {
 			COMMON.storeLocalValueFor("cart", getLocalStorageNamespace(), JSON.stringify([]));
 			this.reset();
+			return COMMON.API.Q.resolve();
 		}
 
 
@@ -61603,7 +61679,7 @@
 
 
 /***/ },
-/* 277 */
+/* 278 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
@@ -61629,6 +61705,48 @@
 			});
 		},
 
+		deleteOrder: function (id) {
+			var self = this;
+
+			return COMMON.API.Q.denodeify(function (callback) {
+
+				var payload = {
+					data: {
+						type: "orders",
+						id: id,
+						attributes: {
+							"deleted": true
+						}
+					}
+				};
+
+				return $.ajax({
+					method: "PATCH",
+					url: ENDPOINT + "/" + id,
+					contentType: "application/vnd.api+json",
+					headers: {
+						"Accept": "application/vnd.api+json"
+					},
+	    			dataType: "json",
+					data: JSON.stringify(payload)
+				})
+				.done(function (response) {
+
+					return callback(null);
+				})
+				.fail(function(err) {
+
+	// TODO: Ask user to submit again.
+	console.log("error!", err.stack);
+
+					return callback(err);
+				});
+			})().then(function () {
+
+				self.remove(id);
+			});
+		},
+
 		submitOrder: function (id) {
 			var self = this;
 			return COMMON.API.Q.denodeify(function (callback) {
@@ -61644,6 +61762,8 @@
 					}
 				}
 				delete data.id;
+
+	console.log("STORE DATA", data);
 
 				var payload = {
 					data: {
@@ -61717,7 +61837,8 @@
 		        "pickupEndTime": "string",
 		        "orderFrom": "string",
 		        "vendor_ids": "string",
-		        "statusInfo": "object"
+		        "statusInfo": "object",
+		        "paymentToken": "object"
 		    },
 		    derived: {
 		    	"format.orderPlacedTime": {
@@ -61847,6 +61968,22 @@
 			});
 		}
 
+		store.loadAllOrdersForToday = function () {
+			var self = this;
+			return COMMON.API.Q.denodeify(function (callback) {
+		        self.fetch({
+		            reset: true,
+		            remove: true,
+		            data: $.param({
+		                "filter[day_id]": context.appContext.get('todayId')
+		            }),
+		            success: function () {
+		            	return callback(null);
+		            }
+		        });
+			})();
+		}
+
 		store.loadForVendorId = function (vendorId) {
 			var self = this;
 			return COMMON.API.Q.denodeify(function (callback) {
@@ -61947,7 +62084,7 @@
 				var order =  store.getOrder(todayId, true);
 				order.on("change", _notify_onChange);
 
-				order.submit = function () {
+				order.submit = function (paymentToken) {
 
 					return COMMON.API.Q.fcall(function () {
 
@@ -61980,6 +62117,10 @@
 								order.set("pickupEndTime", today.get("pickupEndTime"));
 								order.set("event", today.getValues());
 								order.set("event_id", today.get("id"));
+								order.set("paymentToken", JSON.stringify(paymentToken));
+
+	console.log("ORDER", order);
+	console.log("paymentToken", paymentToken);
 
 								// TODO: Send order to server and redirect to receipt using order ID hash.
 
@@ -61998,47 +62139,6 @@
 					});
 				}
 
-				order.addPaymentToken = function (paymentToken) {
-
-					return COMMON.API.Q.denodeify(function (callback) {
-
-						order.set("paymentToken", JSON.stringify(paymentToken));
-
-						var payload = {
-							data: {
-								type: "orders",
-								id: order.get("id"),
-								attributes: {
-									"paymentToken": order.get("paymentToken")
-								}
-							}
-						};
-
-						return $.ajax({
-							method: "PATCH",
-							url: ENDPOINT + "/" + order.get("id"),
-							contentType: "application/vnd.api+json",
-							headers: {
-								"Accept": "application/vnd.api+json"
-							},
-			    			dataType: "json",
-							data: JSON.stringify(payload)
-						})
-						.done(function (response) {
-
-							return callback(null);
-						})
-						.fail(function(err) {
-							console.log("error!", err.stack);
-							return callback(err);
-						});
-					})().fail(function (err) {
-						// TODO: Error submitting order!
-						console.error("add payment confirmation error:", err.stack);
-						throw err;
-					});
-				}
-
 				return order;
 			} else {
 				return orders[0];
@@ -62051,7 +62151,7 @@
 
 
 /***/ },
-/* 278 */
+/* 279 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
@@ -62083,7 +62183,7 @@
 		var store = new Store();
 
 
-		store.Model = __webpack_require__(279).forContext(context);
+		store.Model = __webpack_require__(280).forContext(context);
 
 
 		store.fetchStatusInfoForOrderHashId = function (orderHashId) {
@@ -62165,7 +62265,7 @@
 
 
 /***/ },
-/* 279 */
+/* 280 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
@@ -62218,7 +62318,7 @@
 
 
 /***/ },
-/* 280 */
+/* 281 */
 /***/ function(module, exports, __webpack_require__, __webpack_module_template_argument_0__) {
 
 	/** @jsx React.DOM */
@@ -62236,7 +62336,7 @@
 
 
 /***/ },
-/* 281 */
+/* 282 */
 /***/ function(module, exports, __webpack_require__, __webpack_module_template_argument_0__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
