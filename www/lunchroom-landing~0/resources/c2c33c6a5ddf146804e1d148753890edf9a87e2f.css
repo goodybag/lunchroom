@@ -3775,6 +3775,10 @@ fieldset .fieldset-title {
   color: #ed4242;
 }
 
+.form-group.error .error-msg a {
+  color: #ed4242;
+}
+
 .error-group {
   color: #ed4242;
   margin-bottom: 10px;
@@ -3788,6 +3792,52 @@ fieldset .fieldset-title {
   font-size: 14px;
   margin-top: 41px;
   margin-bottom: 20px;
+}
+
+.form-group-indicator {
+  position: absolute;
+  z-index: 1;
+  right: 6px;
+  width: 20px;
+  height: 20px;
+  border-radius: 5px;
+  color: #fff;
+  text-align: center;
+  margin-top: 10px;
+  line-height: 23px;
+  opacity: 0;
+  transform: scale(0);
+  -webkit-transition: all 240ms cubic-bezier(0.34, 1.61, 0.7, 1);
+  -o-transition: all 240ms cubic-bezier(0.34, 1.61, 0.7, 1);
+  transition: all 240ms cubic-bezier(0.34, 1.61, 0.7, 1);
+}
+
+.form-group-indicator.glossy {
+  border: solid 2px rgba(0, 0, 0, 0.25);
+}
+
+.form-group-indicator.glossy:after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 50%;
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 20px;
+}
+
+.form-group-indicator[class*="state-"] {
+  opacity: 0.9;
+  transform: scale(1);
+}
+
+.form-group-indicator.state-success {
+  background: #00916d;
+}
+
+.form-group-indicator.state-error {
+  background: #ed4242;
 }
 
 /**
@@ -4720,7 +4770,9 @@ body {
 /* Use the following CSS code if you want to use data attributes for inserting your icons */
 
 [data-icon]:before,
-[data-icon-after]:after {
+[data-icon-after]:after,
+.form-group-indicator.state-success:before,
+.form-group-indicator.state-error:before {
   font-family: 'gb';
   speak: none;
   font-weight: normal;
@@ -4804,12 +4856,14 @@ body {
 }
 
 .gb-icon-x-mark:before,
-[data-icon="gb-icon-x-mark"]:before {
+[data-icon="gb-icon-x-mark"]:before,
+.form-group-indicator.state-error:before {
   content: "\e612";
 }
 
 .gb-icon-checkmark:before,
-[data-icon="gb-icon-checkmark"]:before {
+[data-icon="gb-icon-checkmark"]:before,
+.form-group-indicator.state-success:before {
   content: "\e614";
 }
 
@@ -5024,6 +5078,16 @@ a:hover {
   font-weight: 500;
 }
 
+.order-reviewer + .order-summary-wrapper {
+  margin-top: 20px;
+}
+
+@media screen and (max-width: 620px) {
+  .order-reviewer + .order-summary-wrapper {
+    margin-bottom: 40px;
+  }
+}
+
 .order-reviewer .order-reviewer-items {
   display: table;
   width: 100%;
@@ -5149,6 +5213,14 @@ a:hover {
 
 .order-summary .order-summary-value {
   padding-left: 8px;
+  padding-right: 10px;
+  width: 200px;
+}
+
+@media screen and (max-width: 620px) {
+  .order-summary .order-summary-value {
+    width: 50%;
+  }
 }
 
 .item-modal .close {
@@ -5268,14 +5340,45 @@ a:hover {
 }
 
 .order-success .success-img {
+  display: inline-block;
   max-width: 100%;
   margin-bottom: 24px;
+}
+
+@media screen and (min-width: 620px) {
+  .order-success .success-img {
+    margin-right: 32px;
+  }
 }
 
 .order-success .order-success-note {
   margin: 20px 0;
   font-size: 20px;
   font-weight: 300;
+}
+
+.order-success .complete-registration {
+  margin-top: 80px;
+}
+
+.order-success .complete-registration .form-group {
+  text-align: left;
+}
+
+@media screen and (max-width: 620px) {
+  .order-success .complete-registration .complete-registration-title {
+    font-size: 1em;
+  }
+}
+
+@media screen and (min-width: 620px) {
+  .order-success .complete-registration .form-group {
+    width: 180px;
+  }
+
+  .order-success .complete-registration .form-group-actions {
+    width: auto;
+  }
 }
 
 .order-success .menu-share {
