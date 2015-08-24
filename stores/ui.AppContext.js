@@ -26,6 +26,7 @@ exports['for'] = function (overrides) {
 	var appContext = Model.makeContextForClient(config);
 
 
+
 	COMMON.init(appContext.get('sessionToken'), appContext.get('context'));
 
 
@@ -139,6 +140,25 @@ exports['for'] = function (overrides) {
 			click: false
 		});
 
+/*
+appContext.get("data").collection("page").add({
+	"id": "loaded",
+	"selectedDay": MOMENT().format("YYYY-MM-DD"),
+	"selectedEvent": context.dbfilter.event_id
+});
+*/
+
+		appContext.on("change:selectedDayId", function () {
+
+console.info("CHANEGD SELECETD DAY!", appContext.get("selectedDayId"));
+
+			appContext.get("data").collection("page").get("loaded").set(
+				"selectedDay",
+				appContext.get("selectedDayId")
+			);
+		});
+
+
 		appContext.on("change:selectedView", function () {
 
 			try {
@@ -203,7 +223,6 @@ exports['for'] = function (overrides) {
 
 				if (data.collection === "order-status") {
 
-					appContext.get('stores').orderStatus.fetchStatusInfoForOrderHashId(data.orderHashId);
 
 				}
 			});
@@ -245,6 +264,18 @@ exports['for'] = function (overrides) {
 				appContext.set('lockedView', context.lockedView);
 			}
 
+
+
+
+appContext.get("data").collection("page").add({
+	"id": "loaded",
+	"selectedDay": MOMENT().format("YYYY-MM-DD")
+//	"selectedEvent": context.dbfilter.event_id
+});
+
+
+
+
 			// We have a context ID that we should use to load
 			// data to init the UI.
 			if (context.type === "order") {
@@ -281,6 +312,13 @@ exports['for'] = function (overrides) {
 
 				if (context.dbfilter.consumer_group_id) {				
 
+					setTimeout(function () {
+
+						finalizeInit();
+
+					}, 10);
+
+/*
 					return appContext.get('stores').events.loadForConsumerGroupId(context.dbfilter.consumer_group_id).then(function (events) {
 						return appContext.get('stores').menus.loadForEvents(events.map(function (event) {
 							return event.get('id');
@@ -323,6 +361,7 @@ exports['for'] = function (overrides) {
 					}).fail(function (err) {
 						console.error("Error loading data", err.stack);
 					});
+*/
 
 	/*
 						var today = appContext.get('stores').events.modelRecords(appContext.get('stores').events.getToday())[0];

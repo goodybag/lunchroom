@@ -395,3 +395,27 @@ exports.getKnex = function () {
 	}
 	return knex;
 }
+
+
+exports.getQKnex = function () {
+	return function (tableName, query) {
+		if (typeof query === "undefined" && typeof tableName === "function") {
+			query = tableName;
+			tableName = null;
+		}
+		return Q.fcall(function () {
+			var table = ((tableName) ? knex(tableName) : knex);
+			return query(table).then(function (resp) {
+
+	console.log("RESPONSE:", resp);
+
+				return resp;
+			});
+		}).catch(function (err) {
+			console.error(err.stack);
+			throw err;
+		});
+	}
+}
+
+

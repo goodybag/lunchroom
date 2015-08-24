@@ -27,8 +27,13 @@ function getSkin () {
 
 function initAppContext (skin) {
 	var storeContext = {};
+
+	var DATA = require("../stores/ui._data");
+	DATA.setSeedData(window.appData || {});
+
 	var appContext = require("../stores/ui.AppContext")['for']({
 		stores: {
+			page: require("../stores/ui.Page")['for'](storeContext),
 			days: require("../stores/ui.Days")['for'](storeContext),
 			events: require("../stores/ui.Events")['for'](storeContext),
 			items: require("../stores/ui.Items")['for'](storeContext),
@@ -38,13 +43,13 @@ function initAppContext (skin) {
 			consumerGroups: require("../stores/ui.ConsumerGroups")['for'](storeContext),
 			consumerGroupSubscriptions: require("../stores/ui.ConsumerGroupSubscriptions")['for'](storeContext),
 			cart: require("../stores/ui.Cart")['for'](storeContext),
-			orders: require("../stores/ui.Orders")['for'](storeContext),
-			orderStatus: require("../stores/ui.OrderStatus")['for'](storeContext)
+			orders: require("../stores/ui.Orders")['for'](storeContext)
 		},
-		skin: skin
-		// TODO: Inject config
+		skin: skin,
+		data: DATA
 	});
 	storeContext.appContext = appContext;
+
 
 
 	appContext.on("change:ready", function () {

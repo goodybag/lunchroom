@@ -106,5 +106,7 @@ console.error("Error while emitting change event for '" + name + "':", err.stack
 		);
 	}
 
+	State._definition = definition;
+
 	return State;
 }

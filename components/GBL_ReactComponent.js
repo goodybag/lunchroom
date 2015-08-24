@@ -95,23 +95,79 @@ exports.create = function (Context, implementation) {
 
 	function callTemplate (component, method) {
 		// New template-based logic.
-		if (!component._render_Context._template) return;
-		if (!component._render_Context._template["_" + method]) return;
 
 		try {
 
+			function getData () {
+				if (!component._template_data_consumer) return null;
+				if (!component._render_Context._template) return null;
+				data = component._template_data_consumer.getData();
+				component._render_Context._template.setData(data);
+				return component._render_Context._template.getData();
+			}
+
 			if (method === "markup") {
+
+//console.log("MARKUP", implementation);
+
+				if (typeof Context.mapData === "function") {
+
+					var consumer = new (component._render_Context.appContext.get("data").Consumer)();
+
+					consumer.mapData(Context.mapData(consumer));
+
+					component._template_data_consumer = consumer;
+
+//console.log("MARKUP CONSUMER", implementation);
+
+					consumer.on("change", function () {
+
+//console.info("CONSUMER RESOLVED DATA CHANGED BASED on changed event from consumer (template)");
+
+
+					});
+				}
+
 				// Called once per mount.
-				component._render_Context._template["_" + method](
-					$(component.getDOMNode())
-				);
+				if (
+					component._render_Context._template &&
+					component._render_Context._template["_" + method]
+				) {
+					component._render_Context._template["_" + method](
+						$(component.getDOMNode()),
+						getData()
+					);
+				}
+
 			} else
 			if (method === "fill") {
 				// Called multiple times per mount.
-				if (implementation.getTemplateData || Context.getTemplateData) {
+
+//console.log("FILL", implementation);
+
+				if (
+					component._render_Context._template &&
+					component._render_Context._template["_" + method]
+				) {
+
+					var data = null;
+
+					if (component._template_data_consumer) {
+//	console.log("LOAD VIA CONSUMER", implementation);
+
+						data = getData();
+
+					} else
+					if (implementation.getTemplateData || Context.getTemplateData) {
+
+						console.error("DEPRECATED getTemplateData for:", implementation);
+
+						data = (implementation.getTemplateData || Context.getTemplateData).call(component, component._render_Context);
+					}
+
 					component._render_Context._template["_" + method](
 						$(component.getDOMNode()),
-						(implementation.getTemplateData || Context.getTemplateData).call(component, component._render_Context),
+						data,
 						component._render_Context
 					);
 				}
@@ -164,8 +220,11 @@ exports.create = function (Context, implementation) {
 				implementation.onUnmount.call(this);
 			}
 			this.props.appContext.off("change", this._trigger_forceUpdate);
-	    },
 
+			if (this._template_data_consumer) {
+				this._template_data_consumer.destroy();
+			}
+	    },
 
 	    modelRecordsWithStore: function (store, records) {
 
@@ -250,13 +309,37 @@ exports.create = function (Context, implementation) {
 
 	    		});
 	    	}
+
 	    	if (implementation.getTemplates || Context.getTemplates) {
+
+//console.log("GET TENMPLATEs0", Context, implementation);
 
 	    		if (!self._templateInstances) {
 					self._templateInstances = (
 			        	implementation.getTemplates ||
 			        	Context.getTemplates
 			        ).call(self, self._render_Context);
+
+//console.log("GET TENMPLATEs1", Context);
+//console.log("GET TENMPLATEs2", implementation);
+
+					if (typeof Context.mapData === "function") {
+
+						var consumer = new (self._render_Context.appContext.get("data").Consumer)();
+
+						consumer.mapData(Context.mapData(consumer));
+
+						self._template_data_consumer = consumer;
+
+	//console.log("MARKUP CONSUMER", implementation);
+
+						consumer.on("change", function () {
+
+//	console.info("CONSUMER RESOLVED DATA CHANGED BASED on changed event from consumer (templates)");
+
+
+						});
+					}
 			    }
 
 		        self._render_Context.templates = self._templateInstances;
@@ -264,10 +347,16 @@ exports.create = function (Context, implementation) {
 
 
 	    	if (implementation.getHTML || Context.getHTML) {
+
+	    		var data = {};
+	    		if (self._template_data_consumer) {
+	    			data = self._template_data_consumer.getData();
+	    		}
+
 		        var tags = (
 		        	implementation.getHTML ||
 		        	Context.getHTML
-		        ).call(self, self._render_Context);
+		        ).call(self, self._render_Context, data);
 
 		    	console.info("Hand off to react: " + implName);
 

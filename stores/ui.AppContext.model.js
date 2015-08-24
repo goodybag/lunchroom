@@ -25,7 +25,8 @@ exports.makeContextForClient = function (overrides, API) {
 	    windowOrigin: null,
 	    stores: null,
 	    skin: null,
-	    forceAllowOrder: false
+	    forceAllowOrder: false,
+	    data: null
 	};
 
 //	Object.keys(overrides).forEach(function (name) {
@@ -50,6 +51,7 @@ exports.makeContextForClient = function (overrides, API) {
 	        lockedView: "string",
 	        windowOrigin: "string",
 	        forceAllowOrder: "boolean",
+	        data: "object",
 //		},
 //	    session: {
 	        selectedView: "string",

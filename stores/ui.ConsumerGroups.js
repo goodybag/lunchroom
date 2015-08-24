@@ -1,127 +1,172 @@
 
 var COMMON = require("./ui._common");
+var DATA = require("./ui._data");
 
-var ENDPOINT = COMMON.makeEndpointUrl("consumer-groups");
-
-
-
-var Record = COMMON.API.BACKBONE.Model.extend({
-	idAttribute: "id"
-});
-
-var Store = COMMON.API.BACKBONE.Collection.extend({
-	model: Record,
-	url: ENDPOINT,
-	parse: function(data) {
-		return data.data.map(function (record) {
-			return COMMON.API.UNDERSCORE.extend(record.attributes, {
-				id: record.id
-			});
-		});
-	},
-
-	setLunchroomOpenForId: function (id) {
-		var self = this;
-
-		return COMMON.API.Q.denodeify(function (callback) {
-
-			self.get(id).set("lunchroomLive", true);
-
-			var payload = {
-				data: {
-					type: "consumer-groups",
-					id: id,
-					attributes: {
-						"lunchroomLive": true
-					}
-				}
-			};
-
-			return $.ajax({
-				method: "PATCH",
-				url: ENDPOINT + "/" + id,
-				contentType: "application/vnd.api+json",
-				headers: {
-					"Accept": "application/vnd.api+json"
-				},
-    			dataType: "json",
-				data: JSON.stringify(payload)
-			})
-			.done(function (response) {
-
-				return callback(null);
-			})
-			.fail(function(err) {
-
-// TODO: Ask user to submit again.
-console.log("error!", err.stack);
-
-				return callback(err);
-			});
-		})();
-	},
-
-	setLunchroomClosedForId: function (id) {
-		var self = this;
-
-		return COMMON.API.Q.denodeify(function (callback) {
-
-			self.get(id).set("lunchroomLive", false);
-
-			var payload = {
-				data: {
-					type: "consumer-groups",
-					id: id,
-					attributes: {
-						"lunchroomLive": false
-					}
-				}
-			};
-
-			return $.ajax({
-				method: "PATCH",
-				url: ENDPOINT + "/" + id,
-				contentType: "application/vnd.api+json",
-				headers: {
-					"Accept": "application/vnd.api+json"
-				},
-    			dataType: "json",
-				data: JSON.stringify(payload)
-			})
-			.done(function (response) {
-
-				return callback(null);
-			})
-			.fail(function(err) {
-
-// TODO: Ask user to submit again.
-console.log("error!", err.stack);
-
-				return callback(err);
-			});
-		})();
-	}
-
-});
-
-
-
-var store = new Store();
 
 exports['for'] = function (context) {
+
+	var collection = DATA.init({
+
+		name: "consumer-groups",
+
+		model: require("./ui.ConsumerGroups.model").forContext(context),
+		record: {
+// TODO: Use record and get rid of model
+		},
+
+		collection: {			
+// TODO: Clean collection
+		},
+
+		// Low-level
+		store: {
+
+// Admin
+			setLunchroomOpenForId: function (id) {
+				var self = this;
+
+				return COMMON.API.Q.denodeify(function (callback) {
+
+					self.get(id).set("lunchroomLive", true);
+
+					var payload = {
+						data: {
+							type: "consumer-groups",
+							id: id,
+							attributes: {
+								"lunchroomLive": true
+							}
+						}
+					};
+
+					return $.ajax({
+						method: "PATCH",
+						url: self.Source + "/" + id,
+						contentType: "application/vnd.api+json",
+						headers: {
+							"Accept": "application/vnd.api+json"
+						},
+		    			dataType: "json",
+						data: JSON.stringify(payload)
+					})
+					.done(function (response) {
+
+						return callback(null);
+					})
+					.fail(function(err) {
+
+		// TODO: Ask user to submit again.
+		console.log("error!", err.stack);
+
+						return callback(err);
+					});
+				})();
+			},
+
+// Admin
+			setLunchroomClosedForId: function (id) {
+				var self = this;
+
+				return COMMON.API.Q.denodeify(function (callback) {
+
+					self.get(id).set("lunchroomLive", false);
+
+					var payload = {
+						data: {
+							type: "consumer-groups",
+							id: id,
+							attributes: {
+								"lunchroomLive": false
+							}
+						}
+					};
+
+					return $.ajax({
+						method: "PATCH",
+						url: self.Source + "/" + id,
+						contentType: "application/vnd.api+json",
+						headers: {
+							"Accept": "application/vnd.api+json"
+						},
+		    			dataType: "json",
+						data: JSON.stringify(payload)
+					})
+					.done(function (response) {
+
+						return callback(null);
+					})
+					.fail(function(err) {
+
+		// TODO: Ask user to submit again.
+		console.log("error!", err.stack);
+
+						return callback(err);
+					});
+				})();
+			},
+
+// App
+			getLunchroom: function () {
+				var today = context.appContext.get("stores").events.getToday()[0];
+				return [
+					this.get(today.get("consumer_group_id"))
+				];
+			},
+// App
+			loadForId: function (consumer_group_id) {
+				var self = this;
+				return COMMON.API.Q.denodeify(function (callback) {
+			        self.fetch({
+			            reset: true,
+			            remove: true,
+			            data: $.param({
+			                "filter[id]": consumer_group_id
+			            }),
+			            success: function () {
+			            	return callback(null);
+			            }
+			        });
+				})();
+			},
+
+			modelRecords: function (records) {
+				var self = this;
+				return records.map(function (record, i) {
+
+//console.log("record", record);
+
+					// Store model on backbone row so we can re-use it on subsequent calls.
+					// NOTE: We purposfully store the model using `records[i]` instead of `record`
+					//       as `record` 
+					if (self._byId[records[i].get("id")].__model) {
+						return self._byId[records[i].get("id")].__model;
+					}
+					var fields = {};
+					self.Model.getFields().forEach(function (field) {
+						if (!records[i].has(field)) return;
+						fields[field] = records[i].get(field);
+					});
+					return self._byId[records[i].get("id")].__model = new self.Model(fields);
+				});
+			}
+
+		}
+	});
+
+
 
 	if (context.ids) {
 		var deferred = COMMON.API.Q.defer();
 		context.ids = context.ids.filter(function (id) {
-			return !store._byId[id];
+			return !collection.store._byId[id];
 		});
 		if (context.ids.length > 0) {
-			store.once("sync", function () {
-				deferred.resolve(store);
+			collection.store.once("sync", function () {
+				deferred.resolve(collection.store);
 			});
 			// TODO: Ensure new entries are added to collection
 			//       instead of removing all other entries.
-			store.fetch({
+			collection.store.fetch({
 				reset: false,
 				remove: false,
 				data: $.param({
@@ -129,55 +174,11 @@ exports['for'] = function (context) {
 				})
 			});
 		} else {
-			deferred.resolve(store);
+			deferred.resolve(collection.store);
 		}
 		return deferred.promise;
 	}
 
 
-	store.Model = require("./ui.ConsumerGroups.model").forContext(context);
-
-
-	store.getLunchroom = function () {
-		var today = context.appContext.get("stores").events.getToday()[0];
-		return [
-			store.get(today.get("consumer_group_id"))
-		];
-	}
-
-	store.loadForId = function (consumer_group_id) {
-		var self = this;
-		return COMMON.API.Q.denodeify(function (callback) {
-	        self.fetch({
-	            reset: true,
-	            remove: true,
-	            data: $.param({
-	                "filter[id]": consumer_group_id
-	            }),
-	            success: function () {
-	            	return callback(null);
-	            }
-	        });
-		})();
-	}
-
-	store.modelRecords = function (records) {
-		return records.map(function (record, i) {
-			// Store model on backbone row so we can re-use it on subsequent calls.
-			// NOTE: We purposfully store the model using `records[i]` instead of `record`
-			//       as `record` 
-			if (store._byId[records[i].get("id")].__model) {
-				return store._byId[records[i].get("id")].__model;
-			}
-			var fields = {};
-			store.Model.getFields().forEach(function (field) {
-				if (!records[i].has(field)) return;
-				fields[field] = records[i].get(field);
-			});
-			return store._byId[records[i].get("id")].__model = new store.Model(fields);
-		});
-	}
-
-	return store;
+	return collection.store;
 }
-
