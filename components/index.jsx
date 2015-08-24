@@ -111,7 +111,7 @@ try {
 	var skin = getSkin();
 	var appContext = initAppContext(skin);
 
-	console = window.console = require("../stores/ui.Logging")['for']({
+	window.console = require("../stores/ui.Logging")['for']({
 		appContext: appContext
 	}).getConsole();
 

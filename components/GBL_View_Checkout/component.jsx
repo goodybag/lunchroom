@@ -22,6 +22,8 @@ exports['for'] = function (module, Context) {
 	    render: function() {
 	    	var self = this;
 
+return {};
+
 	        var cart = self.props.appContext.get('stores').cart;
 			var order = self.props.appContext.get('stores').orders.getOrder(self.props.appContext.get('todayId'));
 

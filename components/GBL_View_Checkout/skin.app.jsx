@@ -13,6 +13,30 @@ require("./component.jsx")['for'](module, {
 
 	},
 
+
+	mapData: function (data) {
+		return {
+
+// TODO: Compute these based on items in cart 'isPastDeadline' 'hasAdvanceItems'
+
+			'canOrder': data.connect("page/loaded/selectedEvent/canOrder"),
+			'isPastDeadline': data.connect("page/loaded/selectedEvent/isPastDeadline"),
+			'summary': data.connect("cart/getSummary()"),
+			'items': data.connect("cart/*", function (data) {
+				return {
+					"id": data.connect("id"),
+					"quantity": data.connect("quantity"),
+					"title": data.connect("item_id/title"),
+					"photo": data.connect("item_id/photo_url"),
+					"price": data.connect("item_id/format.price"),
+					"amount": data.connect("item_id/format.amount")
+				};
+			})
+		};
+	},
+
+
+
 	getTemplates: function (Context) {
 
 		var copyName = {};
@@ -114,7 +138,10 @@ require("./component.jsx")['for'](module, {
 						return false;
 					});
 				},
-				fill: function (element, data, Context) {
+				fill: function (element, itemsData, Context) {
+					var self = this;
+
+console.log("itemsData", itemsData);
 
 					var items = Context.items.map(function(item) {
 						return {
@@ -127,7 +154,23 @@ require("./component.jsx")['for'](module, {
 						};
 					});
 
-					this.renderSection(element, "items", items, function getView (data) {
+
+					self.renderSection(element, "days", [
+						{
+							"dayLabel": "Our Day Label",
+							"items": []
+						}
+					], function getView (dayData) {
+						return 'default';
+				    }, function hookEvents(elm, dayData) {
+
+
+console.log("RENDER DAY", dayData);
+
+				    });
+
+/*
+					self.renderSection(element, "items", items, function getView (data) {
 						return 'default';
 				    }, function hookEvents(elm, data) {
 
@@ -137,6 +180,7 @@ require("./component.jsx")['for'](module, {
 						});
 
 				    });
+*/
 				}
 			}),
 			"summary": new Context.Template({
@@ -305,15 +349,16 @@ require("./component.jsx")['for'](module, {
 	},
 
 
-	getHTML: function (Context) {
+	getHTML: function (Context, data) {
 
 		// TODO: Remove this once we can inject 'React' automatically at build time.
 		var React = Context.REACT;
 
 		var Panel = null;
 
+console.log("CHECKOUT data", data);
+
 		if (
-			!Context.appContext.get("forceAllowOrder") &&
 			parseInt(Context.eventToday.get("format.orderTimerSeconds") || 0) <= 0
 		) {
 

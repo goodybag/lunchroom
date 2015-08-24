@@ -21,7 +21,6 @@ exports.forContext = function (context) {
 	        tags: "string",
 	        options: "string",
 	        price: "integer",
-	        quantity: "integer",
 			// TODO: Add these dynamically using foreign model.
 	        "vendor.title": "string"
 	    },

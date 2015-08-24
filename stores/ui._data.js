@@ -468,31 +468,51 @@ exports.init = function (context) {
 			get: function (name) {
 				var recordSelf = this;
 
-//console.log("GET FROM RECORD", name);
+				var nameParts = name.split("/");
+				var name = nameParts.shift();
+
+				function getValueForField () {
+					if (
+						context.record &&
+						context.record[name] &&
+						typeof context.record[name].derived === "function"
+					) {
+						var attrs = Object.create(recordSelf.attributes);
+
+						attrs.get = function (name) {
+							return recordSelf.get(name);
+						}
+
+	// TODO: If 'typeof context.record[name].connect === "function"' setup consumer and pass along so derived function can register further data connects.
+						return context.record[name].derived.call(attrs);
+					} else
+					// TODO: Use 'context.record' instead of 'Model' once we relocate field declarations.
+					if (
+						self.store.Model._definition &&
+						self.store.Model._definition.derived &&
+						self.store.Model._definition.derived[name]
+					) {
+						return self.store.Model._definition.derived[name].fn.call(recordSelf.attributes);
+					}
+					return recordSelf._super_.get.call(recordSelf, name);
+				}
+
 
 				if (
+					nameParts.length > 0 &&
 					context.record &&
 					context.record[name] &&
-					typeof context.record[name].derived === "function"
+					context.record[name].linksTo
 				) {
-					var attrs = Object.create(this.attributes);
 
-					attrs.get = function (name) {
-						return recordSelf.get(name);
-					}
+					var value = getValueForField();
 
-// TODO: If 'typeof context.record[name].connect === "function"' setup consumer and pass along so derived function can register further data connects.
-					return context.record[name].derived.call(attrs);
-				} else
-				// TODO: Use 'context.record' instead of 'Model' once we relocate field declarations.
-				if (
-					self.store.Model._definition &&
-					self.store.Model._definition.derived &&
-					self.store.Model._definition.derived[name]
-				) {
-					return self.store.Model._definition.derived[name].fn.call(this.attributes);
-				}
-				return this._super_.get.call(this, name);
+					return exports.get(context.record[name].linksTo + "/" + value + "/" + nameParts.join("/"));
+
+				} else {
+
+					return getValueForField();
+				}				
 			}
 /*
 			where: function () {

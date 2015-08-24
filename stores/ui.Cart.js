@@ -9,9 +9,16 @@ exports['for'] = function (context) {
 
 		name: "cart",
 
-		model: require("./ui.Items.model").forContext(context),
+		model: require("./ui.Cart.model").forContext(context),
 		record: {
 // TODO: Use record and get rid of model
+
+			"item_id": {
+				"linksTo": "items"
+			},
+			"event_id": {
+				"linksTo": "events"
+			}
 		},
 
 		collection: {			
@@ -19,50 +26,46 @@ exports['for'] = function (context) {
 
 			itemCount: function () {
 				return this.store.getItemCount();
-			}
-
-		},
-
-		// Low-level
-		store: {
-
-
-			clearAllItems: function () {
-				COMMON.storeLocalValueFor("cart", getLocalStorageNamespace(), JSON.stringify([]));
-				this.reset();
-				return COMMON.API.Q.resolve();
 			},
 
-
-			getSummary: function (options) {
+			getSummary: function () {
 				var self = this;
 
-				options = options || {};
-				options.tip = options.tip || 0;
+console.log("GET SUMMARY");
 
 				var amount = 0;
+
+				var daysWithItems = {};
+				var tax = null;
+				var goodybagFee = null;
 				self.where().forEach(function (record) {
-					amount += parseInt(record.get("price")) * parseInt(record.get("quantity"));
+					// NOTE: We grab the tax rate and goodybagFee from the event of the first item
+					//       and assume it is the same for all other items.
+					if (tax === null) {
+						tax = record.get("event_id/consumer_group_id/orderTax");
+					}
+					if (goodybagFee === null) {
+						goodybagFee = record.get("event_id/goodybagFee");
+					}
+					daysWithItems[record.get("event_id/day_id")] = true;
+					amount += parseInt(record.get("item_id/price")) * parseInt(record.get("quantity"));
 				});
 
-				var events = context.appContext.get('stores').events;
-				var eventToday = events.modelRecords(events.getToday()).pop();
-
-				if (!eventToday) {
-					return {};
-				}
+console.log("goodybagFee", goodybagFee);
+console.log("tax", tax);
+console.log("daysWithItems", daysWithItems);
+console.log("AMOUNT", amount);
 
 				amount = Math.round(amount);
 
 				var summary = {
 					"amount": amount,
 					"format.amount": COMMON.API.NUMERAL(amount/100).format('$0.00'),
-					"tax": parseInt(eventToday.get("consumerGroup.orderTax")) || 0,
+					"tax": parseInt(tax) || 0,
 					"taxAmount": 0,
 					"format.tax": "0%",
 					"format.taxAmount": "$0.00",
-					"goodybagFee": parseInt(eventToday.get("goodybagFee")),
-					"format.goodybagFee": eventToday.get("format.goodybagFee"),
+					"goodybagFee": parseInt(goodybagFee) * Object.keys(daysWithItems).length,
 					"total": 0,
 					"format.total": "$0.00"
 				};
@@ -81,14 +84,26 @@ exports['for'] = function (context) {
 						summary.amount
 						+ summary.taxAmount
 						+ summary.goodybagFee
-		//				+ parseInt(options.tip)
 					);
 					summary["format.total"] = COMMON.API.NUMERAL(summary.total / 100).format('$0.00');
 				}
 
-				return summary;
-			},
+console.log("summary", summary);
 
+				return summary;
+			}
+
+		},
+
+		// Low-level
+		store: {
+
+
+			clearAllItems: function () {
+				COMMON.storeLocalValueFor("cart", getLocalStorageNamespace(), JSON.stringify([]));
+				this.reset();
+				return COMMON.API.Q.resolve();
+			},
 
 			modelRecords: function (records) {
 				var self = this;
@@ -131,14 +146,34 @@ exports['for'] = function (context) {
 				return item[0].get("quantity");
 			},
 
-			removeItem: function (itemId, all) {
+			removeItemForId: function (id, all) {
+				var self = this;
+
+				var item = self.get(id);
+				if (!item) {
+					return COMMON.API.Q.resolve();
+				}
+
+				var quantity = item.get("quantity");
+				if (quantity > 1 && all !== true) {
+					item.set("quantity", quantity - 1);
+					self.trigger("change", item);
+				} else {
+					self.remove(item.get("id"));
+					self.trigger("change", null);
+				}
+				return COMMON.API.Q.resolve();
+			},
+
+			removeItemForEvent: function (event_id, item_id, all) {
 				var self = this;
 
 				var item = self.where({
-					"item_id": parseInt(itemId)
+					"event_id": parseInt(event_id),
+					"item_id": parseInt(item_id)
 				});
 				if (item.length === 0) {
-					item = self.get(itemId);
+					item = self.get(item_id);
 					if (!item) {
 						return COMMON.API.Q.resolve();
 					}
@@ -157,34 +192,29 @@ exports['for'] = function (context) {
 				return COMMON.API.Q.resolve();
 			},
 
-			addItem: function (itemId, options) {
+			addItemForEvent: function (event_id, item_id, options) {
 				var self = this;
 
 				var options = COMMON.API.CJSON(options || {});
 
 				function ensureItem () {
+					return COMMON.API.Q.fcall(function () {
 
-					var optionsHash = new COMMON.API.JSSHA("SHA-1", "TEXT");
-					optionsHash.update(options);
-					var cartItemId = itemId + "-" + optionsHash.getHash("HEX");
+						var optionsHash = new COMMON.API.JSSHA("SHA-1", "TEXT");
+						optionsHash.update(options);
+						var cartItemId = event_id + "-" + item_id + "-" + optionsHash.getHash("HEX");
 
-					if (self.get(cartItemId)) {
-						return COMMON.API.Q.resolve(self.get(cartItemId));
-					}
-					return require("./ui.Items")['for']({
-						appContext: context.appContext,
-						ids: [
-							itemId
-						]
-					}).then(function (items) {				
-						var item = items.get(itemId).toJSON();
+						if (self.get(cartItemId)) {
+							return self.get(cartItemId);
+						}
 
-						item.item_id = item.id;
-						item.id = cartItemId;
-
-						item.quantity = 0;
-						item.options = options;
-						self.add(item);
+						self.add({
+							id: cartItemId,
+							event_id: event_id,
+					        item_id: item_id,
+					        options: options,
+					        quantity: 0						
+						});
 						return self.get(cartItemId);
 					});
 				}

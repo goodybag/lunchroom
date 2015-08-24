@@ -188,7 +188,10 @@ function loadDataForConsumerGroup (DB, context, consumer_group_id) {
 	function loadEvents (consumer_group_id, dayIds) {
 		return qknex('events', function (table) {
 			return table
-				.where('consumer_group_id', consumer_group_id)
+				.where({
+					'consumer_group_id': consumer_group_id,
+					'menuReady': true
+				})
 				.whereIn('day_id', dayIds);
 		}).then(function (result) {
 			var records = {};

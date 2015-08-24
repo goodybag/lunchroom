@@ -4,6 +4,7 @@ require("./component.jsx")['for'](module, {
 
 	mapData: function (data) {
 		return {
+			'event_id': data.connect("page/loaded/selectedEvent/id"),
 			'canOrder': data.connect("page/loaded/selectedEvent/canOrder"),
 			'isPastDeadline': data.connect("page/loaded/selectedEvent/isPastDeadline"),
 			'orderBy': data.connect("page/loaded/selectedEvent/format.orderByTime"),
@@ -175,7 +176,10 @@ console.log("MENU DATA", menuData);
 
 console.log("REMOVE", itemData.item_id);
 
-							Context.appContext.get('stores').cart.removeItem(itemData.item_id).then(function () {
+							Context.appContext.get('stores').cart.removeItemForEvent(
+								menuData.event_id,
+								itemData.item_id
+							).then(function () {
 								Context.forceUpdate();
 							});
 							return false;
@@ -206,7 +210,11 @@ console.log("REMOVE", itemData.item_id);
 							Context.appContext.get('stores').cart.addItem(itemBlock.attr("data-id"), options);
 */
 
-							Context.appContext.get('stores').cart.addItem(itemData.item_id, options).then(function () {
+							Context.appContext.get('stores').cart.addItemForEvent(
+								menuData.event_id,
+								itemData.item_id,
+								options
+							).then(function () {
 								Context.forceUpdate();
 							});
 							return false;

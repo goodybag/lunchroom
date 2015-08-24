@@ -263,6 +263,7 @@ module.exports = COMPONENT.create({
 
           var ReadyButton = Context.selectedEvent.get("format.menuReady");
           var DeliveredButton = Context.selectedEvent.get("format.delivered");
+          var DeleteButton = "";
 
           if (!Context.selectedEvent.get("menuReady")) {
             ReadyButton = (
@@ -270,7 +271,12 @@ module.exports = COMPONENT.create({
                   Ready
               </button>
             );
-          } else
+            DeleteButton = (
+              <button data-link="action:delete" className="ui primary small button">
+                  Delete
+              </button>
+            );
+          }
           if (!Context.selectedEvent.get("delivered")) {
             DeliveredButton = (
               <button data-link="action:delivered" className="ui primary small button">
@@ -406,9 +412,7 @@ module.exports = COMPONENT.create({
                 </div>
               </div>
 
-              <button data-link="action:delete" className="ui primary small button">
-                  Delete
-              </button>
+              {DeleteButton}
 
             </div>
           );
