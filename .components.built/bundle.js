@@ -399,14 +399,14 @@
 	/** @jsx React.DOM */'use strict'
 
 
-	__webpack_require__(116);
+	__webpack_require__(119);
 	__webpack_require__(2);
-	__webpack_require__(118);
+	__webpack_require__(121);
 
-	var React = __webpack_require__(119);
+	var React = __webpack_require__(122);
 	var Backbone = __webpack_require__(109);
 	Backbone.$ = window.$;
-	__webpack_require__(120);
+	__webpack_require__(123);
 
 
 	// ##################################################
@@ -417,32 +417,37 @@
 		var skin = $("body").attr("skin");
 		// TODO: Do this dynamically so we don't need to pre-load views into same bundle.
 		if (skin === "app") {
-			return __webpack_require__(127);
+			return __webpack_require__(130);
 		} else {
-			return __webpack_require__(169);
+			return __webpack_require__(172);
 		}
 	}
 
 	function initAppContext (skin) {
 		var storeContext = {};
-		var appContext = __webpack_require__(211)['for']({
+
+		var DATA = __webpack_require__(113);
+		DATA.setSeedData(window.appData || {});
+
+		var appContext = __webpack_require__(214)['for']({
 			stores: {
-				days: __webpack_require__(268)['for'](storeContext),
-				events: __webpack_require__(7)['for'](storeContext),
-				items: __webpack_require__(269)['for'](storeContext),
-				vendors: __webpack_require__(271)['for'](storeContext),
-				menus: __webpack_require__(273)['for'](storeContext),
-				consumers: __webpack_require__(274)['for'](storeContext),
-				consumerGroups: __webpack_require__(114)['for'](storeContext),
-				consumerGroupSubscriptions: __webpack_require__(275)['for'](storeContext),
-				cart: __webpack_require__(277)['for'](storeContext),
-				orders: __webpack_require__(278)['for'](storeContext),
-				orderStatus: __webpack_require__(279)['for'](storeContext)
+				page: __webpack_require__(271)['for'](storeContext),
+				days: __webpack_require__(7)['for'](storeContext),
+				events: __webpack_require__(273)['for'](storeContext),
+				items: __webpack_require__(277)['for'](storeContext),
+				vendors: __webpack_require__(279)['for'](storeContext),
+				menus: __webpack_require__(281)['for'](storeContext),
+				consumers: __webpack_require__(283)['for'](storeContext),
+				consumerGroups: __webpack_require__(275)['for'](storeContext),
+				consumerGroupSubscriptions: __webpack_require__(285)['for'](storeContext),
+				cart: __webpack_require__(287)['for'](storeContext),
+				orders: __webpack_require__(288)['for'](storeContext)
 			},
-			skin: skin
-			// TODO: Inject config
+			skin: skin,
+			data: DATA
 		});
 		storeContext.appContext = appContext;
+
 
 
 		appContext.on("change:ready", function () {
@@ -504,6 +509,10 @@
 		var skin = getSkin();
 		var appContext = initAppContext(skin);
 
+		console = window.console = __webpack_require__(290)['for']({
+			appContext: appContext
+		}).getConsole();
+
 		appContext.set('initialized', true);
 
 		$(function () {
@@ -538,369 +547,77 @@
 
 	/** @jsx React.DOM */
 	var COMMON = __webpack_require__(8);
+	var DATA = __webpack_require__(113);
 
-
-	var ENDPOINT = COMMON.makeEndpointUrl("events");
-
-
-	var Record = COMMON.API.BACKBONE.Model.extend({
-		idAttribute: "id"
-	});
-
-
-
-	function makeBaseTime () {
-	  return COMMON.API.MOMENT().seconds(0).minutes(0);
-	}
-
-	var Store = COMMON.API.BACKBONE.Collection.extend({
-		model: Record,
-		url: ENDPOINT,
-		parse: function(data) {
-			return data.data.map(function (record) {
-				return COMMON.API.UNDERSCORE.extend(record.attributes, {
-					id: record.id
-				});
-			});
-		},
-
-		setPresets: function (presets) {
-			try {
-				presets = JSON.parse(JSON.stringify(presets));
-				delete presets.day_id;
-				COMMON.storeLocalValueFor("admin.events", "presets", JSON.stringify(presets));
-			} catch (err) {
-				console.error("Error setting presets");
-			}
-		},
-
-		getPresets: function () {
-	        var presets = COMMON.getLocalValueFor("admin.events", "presets");
-	        if (presets) {
-				try {
-					presets = JSON.parse(presets);
-				} catch (err) {
-					console.error("Error recovering presets from local storage");
-				}
-	        } else {
-				presets = {
-					menuEmailTime: makeBaseTime().hours(10).format("H:mm"),
-					menuSmsTime: makeBaseTime().hours(10).format("H:mm"),
-					orderByTime: makeBaseTime().hours(11).format("H:mm"),
-					deliveryStartTime: makeBaseTime().hours(12).format("H:mm"),
-					pickupEndTime: makeBaseTime().hours(12).minutes(30).format("H:mm"),
-					goodybagFee: "2.99"
-				};
-	        }
-	        return presets;
-	    },
-
-		setReadyForEventId: function (event_id) {
-			var self = this;
-
-			return COMMON.API.Q.denodeify(function (callback) {
-
-				var payload = {
-					data: {
-						type: "events",
-						id: event_id,
-						attributes: {
-							"menuReady": true
-						}
-					}
-				};
-
-				return $.ajax({
-					method: "PATCH",
-					url: ENDPOINT + "/" + event_id,
-					contentType: "application/vnd.api+json",
-					headers: {
-						"Accept": "application/vnd.api+json"
-					},
-	    			dataType: "json",
-					data: JSON.stringify(payload)
-				})
-				.done(function (response) {
-
-					return callback(null);
-				})
-				.fail(function(err) {
-
-	// TODO: Ask user to submit again.
-	console.log("error!", err.stack);
-
-					return callback(err);
-				});
-			})().then(function () {
-
-				return self.loadForId(event_id);
-			});
-		},
-
-		setDeliveredForEventId: function (event_id) {
-			var self = this;
-
-			return COMMON.API.Q.denodeify(function (callback) {
-
-				var payload = {
-					data: {
-						type: "events",
-						id: event_id,
-						attributes: {
-							"delivered": true
-						}
-					}
-				};
-
-				return $.ajax({
-					method: "PATCH",
-					url: ENDPOINT + "/" + event_id,
-					contentType: "application/vnd.api+json",
-					headers: {
-						"Accept": "application/vnd.api+json"
-					},
-	    			dataType: "json",
-					data: JSON.stringify(payload)
-				})
-				.done(function (response) {
-
-					return callback(null);
-				})
-				.fail(function(err) {
-
-	// TODO: Ask user to submit again.
-	console.log("error!", err.stack);
-
-					return callback(err);
-				});
-			})().then(function () {
-
-				return self.loadForId(event_id);
-			});
-		},
-
-		deleteForEventId: function (event_id) {
-			var self = this;
-			return COMMON.API.Q.denodeify(function (callback) {
-
-				return $.ajax({
-					method: "DELETE",
-					url: ENDPOINT + "/" + event_id
-				})
-				.done(function (response) {
-
-					self.remove(event_id);
-
-					return callback(null);
-				})
-				.fail(function(err) {
-
-	// TODO: Ask user to submit again.
-	console.log("error!", err.stack);
-
-					return callback(err);
-				});
-			})();
-		},
-
-		createEvent: function (fields) {
-			var self = this;
-
-			return COMMON.API.Q.denodeify(function (callback) {
-
-				function getDataForFields (fields) {
-					var data = {};
-					self.Model.getFields().forEach(function (name) {
-						if (typeof fields[name] !== "undefined") {
-							data[name] = "" + fields[name];
-						}
-					});
-					data["goodybagFee"] = data["goodybagFee"] * 100;
-
-					data["orderByTime"] = COMMON.API.MOMENT(
-						data["day_id"] + ":" + data["orderByTime"], "YYYY-MM-DD:H:mm"
-					).format();
-					data["deliveryStartTime"] = COMMON.API.MOMENT(
-						data["day_id"] + ":" + data["deliveryStartTime"], "YYYY-MM-DD:H:mm"
-					).format();
-					data["pickupEndTime"] = COMMON.API.MOMENT(
-						data["day_id"] + ":" + data["pickupEndTime"], "YYYY-MM-DD:H:mm"
-					).format();
-					data["menuEmailTime"] = COMMON.API.MOMENT(
-						data["day_id"] + ":" + data["menuEmailTime"], "YYYY-MM-DD:H:mm"
-					).format();
-					data["menuSmsTime"] = COMMON.API.MOMENT(
-						data["day_id"] + ":" + data["menuSmsTime"], "YYYY-MM-DD:H:mm"
-					).format();
-
-
-					return data;
-				}
-
-				var payload = {
-					data: {
-						type: "events",
-						attributes: getDataForFields(fields)
-					}
-				};
-
-				return $.ajax({
-					method: "POST",
-					url: ENDPOINT + "/",
-					contentType: "application/vnd.api+json",
-					headers: {
-						"Accept": "application/vnd.api+json"
-					},
-	    			dataType: "json",
-					data: JSON.stringify(payload)
-				})
-				.done(function (response) {
-
-					return callback(null, response.data);
-				})
-				.fail(function(err) {
-
-	// TODO: Ask user to submit again.
-	console.log("error!", err.stack);
-
-					return callback(err);
-				});
-			})();
-		}
-	});
 
 
 	exports['for'] = function (context) {
 
-		var store = new Store();
+		var collection = DATA.init({
 
+			name: "days",
 
-		store.Model = __webpack_require__(113).forContext(context);
+			model: __webpack_require__(118).forContext(context),
+			record: {
+	// TODO: Use record and get rid of model
+			},
 
+			collection: {			
+	// TODO: Clean collection
+			},
 
-		store.getToday = function () {
-			var today = store.get(context.appContext.get('context').dbfilter.event_id);
-			if (!today) return [];
-			return [
-				today
-			];
-		}
-
-		store.getModeledForDay = function (day_id) {
-			return store.modelRecords(store.where({
-				"day_id": day_id
-			}));
-		}
-
-		store.loadForDay = function (day_id) {
-			var self = this;
-			return COMMON.API.Q.denodeify(function (callback) {
-		        self.fetch({
-		            data: $.param({
-		                "filter[day_id]": day_id
-		            }),
-		            success: function () {
-		            	return callback(null);
-		            }
-		        });
-			})();
-		}
-
-		store.loadForId = function (id) {
-			var self = this;
-			return COMMON.API.Q.denodeify(function (callback) {
-		        self.fetch({
-		            data: $.param({
-		                "filter[id]": id
-		            }),
-		            success: function () {
-		            	return callback(null, store.get(id));
-		            }
-		        });
-			})();
-		}
-
-		store.loadForConsumerGroupId = function (id) {
-			var self = this;
-
-			var dayIds = context.appContext.get('stores').days.getDayIds();
-
-			return COMMON.API.Q.denodeify(function (callback) {
-		        self.fetch({
-		            data: $.param({
-		                "filter[consumer_group_id]": id,
-		                "filter[day_id]": dayIds.join(",")
-		            }),
-		            success: function () {
-		            	return callback(null, store.where({
-		            		"consumer_group_id": id
-		            	}));
-		            }
-		        });
-			})();
-		}
-
-		store.modelRecords = function (records) {
-			return COMMON.resolveForeignKeys(store, records, {
-				"consumer_group_id": {
-					store: __webpack_require__(114),
-					model: context.appContext.get('stores').consumerGroups.Model,
-					localFieldPrefix: "consumerGroup"
-				}
-			}).map(function (record, i) {
-				// Store model on backbone row so we can re-use it on subsequent calls.
-				if (store._byId[records[i].get("id")].__model) {
-					var model = store._byId[records[i].get("id")].__model;
-					store.Model.getFields().forEach(function (field) {
-						if (record.has(field) && model.get(field) !== record.get(field)) {
-							model.set(field, record.get(field));
-						}
+			// Low-level
+			store: {
+	// App
+				getDayIds: function () {
+					return this.where().map(function (day) {
+						return day.get("id");
 					});
-					return model;
-				}
-				var fields = {};
-				store.Model.getFields().forEach(function (field) {
-					if (!records[i].has(field)) return;
-					fields[field] = records[i].get(field);
-				});
-				return store._byId[records[i].get("id")].__model = new store.Model(fields);
-			});
-		}
+				},
+	// App
+				loadForEvent: function (event_id) {
+			// TODO: DEPRECATE
+			/*
+					var day_id = context.appContext.get('stores').events.get(event_id).get("day_id");
 
-		store.modelRecord = function (record) {
-			if (!Array.isArray(record)) {
-				record = [
-					record
-				];
-			}
-			return COMMON.resolveForeignKeys(store, record, {
-				"consumer_group_id": {
-					store: __webpack_require__(114),
-					model: context.appContext.get('stores').consumerGroups.Model,
-					localFieldPrefix: "consumerGroup"
-				}
-			}, true).then(function (records) {
-				return records.map(function (record, i) {
-					// Store model on backbone row so we can re-use it on subsequent calls.
-					if (store._byId[records[i].get("id")].__model) {
-						var model = store._byId[records[i].get("id")].__model;
-						store.Model.getFields().forEach(function (field) {
-							if (record.has(field) && model.get(field) !== record.get(field)) {
-								model.set(field, record.get(field));
-							}
+					if (!store.get(day_id)) {
+						store.add({
+							"id": day_id
 						});
-						return model;
 					}
-					var fields = {};
-					store.Model.getFields().forEach(function (field) {
-						if (!records[i].has(field)) return;
-						fields[field] = records[i].get(field);
+			*/
+					return COMMON.API.Q.resolve();
+				},
+
+				modelRecords: function (records) {
+					var self = this;
+
+					return records.map(function (record, i) {
+						// Store model on backbone row so we can re-use it on subsequent calls.
+						// NOTE: We purposfully store the model using `records[i]` instead of `record`
+						//       as `record`
+						if (self._byId[records[i].get("id")].__model) {
+							return self._byId[records[i].get("id")].__model;
+						}
+						var fields = {};
+						self.Model.getFields().forEach(function (field) {
+							if (!records[i].has(field)) return;
+							fields[field] = records[i].get(field);
+						});
+						return self._byId[records[i].get("id")].__model = new self.Model(fields);
 					});
-					return store._byId[records[i].get("id")].__model = new store.Model(fields);
-				})[0];
-			});
-		}
-		return store;
+				}
+				
+			}
+		});
+
+
+		collection.store.Model.getCurrentDays().forEach(function (day) {
+			collection.store.add(day);
+		});
+
+
+		return collection.store;
 	}
 
 
@@ -995,11 +712,16 @@
 			}).then(function (foreignStore) {
 				Object.keys(key_ids[key]).forEach(function (foreign_key) {
 					key_ids[key][foreign_key].forEach(function (i) {
+						
 						if (!store._byId[records[i].get(idFieldName)]) {
-							console.error("callerStack", callerStack);
+
+							console.error("key", key);
+							console.error("foreign_key", foreign_key);
 							console.log("idFieldName", idFieldName);
 							console.log("records[i].get(idFieldName)", records[i].get(idFieldName));
 							console.error("store._byId", store._byId);
+							console.error("store", store);
+							console.error("callerStack", callerStack);
 							throw new Error("Record by " + idFieldName + " '" + records[i].get(idFieldName) + "' not found!");
 						}
 						if (!records[i].__model) {
@@ -1128,6 +850,9 @@
 				context.MOMENT_CT
 			)
 		) || API.MOMENT_CT || MOMENT;
+
+		exports.MOMENT = MOMENT;
+		exports.MOMENT_CT = MOMENT_CT;
 
 		exports.makeFormatter = function (type) {
 
@@ -5790,6 +5515,8 @@
 				(definition.derived && Object.keys(definition.derived)) || []
 			);
 		}
+
+		State._definition = definition;
 
 		return State;
 	}
@@ -20384,399 +20111,1631 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
-
-	var COMMON = __webpack_require__(9);
-
-
-	exports.forContext = function (context) {
-
-		var common = COMMON.forContext(context);
-
-		// @see http://ampersandjs.com/docs#ampersand-state
-		var Model = COMMON.API.AMPERSAND_STATE.extend({
-			name: "events",
-			props: {
-				id: "string",
-		        day_id: "string",
-		        "orderByTime": "string",
-		        "deliveryStartTime": "string",
-		        "pickupEndTime": "string",
-		        "menuEmailTime": "string",
-		        "menuSmsTime": "string",
-		        "consumer_group_id": "string",
-		        "goodybagFee": "string",
-		        "tip": "string",
-		        "token": "string",
-		        "menuReady": "boolean",
-		        "menuEmailsSent": "boolean",
-		        "delivered": "boolean",
-		        "deliveredEmailsSent": "boolean",
-
-		        // TODO: Add these dynamically using foreign model.
-		        "consumerGroup.title": "string",
-		        "consumerGroup.alias": "string",
-		        "consumerGroup.contact": "string",
-		        "consumerGroup.address": "string",
-		        "consumerGroup.pickupLocation": "string",
-		        "consumerGroup.deliverLocation": "string",
-		        "consumerGroup.orderTax": "string"
-		    },
-		    derived: {
-			    "day.format.ddd": {
-					deps: [
-						"day_id"
-					],
-		            fn: function () {
-		            	return common.MOMENT_CT(this.day_id, "YYYY-MM-DD").format("ddd");
-		            }
-			    },
-			    "day.format.MMM": {
-					deps: [
-						"day_id"
-					],
-		            fn: function () {
-		            	return common.MOMENT_CT(this.day_id, "YYYY-MM-DD").format("MMM");
-		            }
-			    },
-			    "day.format.D": {
-					deps: [
-						"day_id"
-					],
-		            fn: function () {
-		            	return common.MOMENT_CT(this.day_id, "YYYY-MM-DD").format("D");
-		            }
-			    },
-			    "day.format.dddd-type": {
-					deps: [
-						"day_id"
-					],
-		            fn: function () {
-		            	var str = common.MOMENT_CT(this.day_id, "YYYY-MM-DD").format("dd");
-		            	if (str === "Sa" || str === "Su") {
-		            		return "Weekend"
-		            	} else {
-		            		return "Weekday"
-		            	}
-		            }
-			    },
-			    "ordersLocked": {
-					deps: [
-						"orderByTime"
-					],
-					cache: false,
-		            fn: function () {
-		            	return common.MOMENT_CT().isAfter(this.orderByTime);
-		            }
-			    },
-			    "canOrder": {
-					deps: [
-						"orderByTime"
-					],
-					cache: false,
-		            fn: function () {
-		            	var orderByTime = common.MOMENT_CT(this.orderByTime);
-		            	if (!orderByTime.isSame(common.MOMENT_CT(), 'day')) {
-		            		// Not today
-		            		return false;
-		            	}
-		            	if (orderByTime.isBefore(common.MOMENT_CT())) {
-		            		// After deadline
-		            		return false;
-		            	}
-		            	// TODO: Monitor quantities.
-		            	return true;
-		            }
-			    },
-			    "format.deliveryDate": common.makeFormatter("deliveryDate"),
-			    "format.deliveryTime": common.makeFormatter("deliveryTime"),
-			    "format.orderByTime": common.makeFormatter("orderByTime"),
-			    "format.menuEmailTime": common.makeFormatter("menuEmailTime"),
-			    "format.menuSmsTime": common.makeFormatter("menuSmsTime"),
+	// @source https://github.com/LogicCores/0-data
+	// NOTE: This module is UNLICENSE.org by original author ChristophDorn.com
 
 
-			    "format.orderTimer": {
-					deps: [
-						"orderByTime"
-					],
-					cache: false,
-		            fn: function () {
-		            	var orderByTime = common.MOMENT_CT(this.orderByTime);
-		            	if (orderByTime.isBefore(common.MOMENT_CT())) {
-		            		// After deadline
-		            		return false;
-		            	}
-		            	return common.MOMENT_CT().to(orderByTime, true)
-		            		.replace(/minutes/, "min");
-		            }
-			    },
-			    "format.orderTimerSeconds": {
-					deps: [
-						"orderByTime"
-					],
-					cache: false,
-		            fn: function () {
-		            	var orderByTime = common.MOMENT_CT(this.orderByTime);
-		            	var diff = orderByTime.diff(common.MOMENT_CT(), 'seconds');
-		            	if (diff<0) diff = 0;
-		            	return diff;
-		            }
-			    },		    
-			    "format.goodybagFee": {
-			    	deps: [
-						"goodybagFee"
-					],
-		            fn: function () {
-		            	return COMMON.API.NUMERAL(this.goodybagFee/100).format('$0.00');
-		            }
-			    },
-			    "format.menuReady": {
-			    	deps: [
-						"menuReady"
-					],
-					cache: false,
-		            fn: function () {
-		            	return (this.menuReady ? "Yes" : "No");
-		            }
-			    },
-			    "format.menuEmailsSent": {
-			    	deps: [
-						"menuEmailsSent"
-					],
-					cache: false,
-		            fn: function () {
-		            	return (this.menuEmailsSent ? "Yes" : "No");
-		            }
-			    },
-			    "format.delivered": {
-			    	deps: [
-						"delivered"
-					],
-					cache: false,
-		            fn: function () {
-		            	return (this.delivered ? "Yes" : "No");
-		            }
-			    },
-			    "menuUrl": {
-			    	deps: [
-						"token"
-					],
-					cache: false,
-		            fn: function () {
-		            	return context.appContext.get("windowOrigin") + "/event-" + this.token;
-		            }
-			    },
-			    "menuEmailUrl": {
-			    	deps: [
-						"token"
-					],
-					cache: false,
-		            fn: function () {
-		            	return context.appContext.get("windowOrigin") + "/eventemail-" + this.token;
-		            }
-			    }
-		    }
+	var ASSERT = __webpack_require__(114);
+	var COMMON = __webpack_require__(8);
+	var EVENTS = __webpack_require__(16);
+	// Below only works on server while above only works in browser.
+	if (EVENTS.EventEmitter2) EVENTS = EVENTS.EventEmitter2;
+
+
+
+
+	var seedData = null;
+
+	exports.setSeedData = function (data) {
+		seedData = data;
+	}
+
+
+
+	var Collections = function () {
+		var self = this;
+		var collections = {};
+		self.get = function (id) {
+			return collections[id];
+		}
+		self.set = function (id, collection) {
+			collections[id] = collection;
+		}
+	}
+
+	var collections = new Collections();
+
+
+	exports.collection = function (name) {
+		if (!collections.get(name)) {
+			throw new Error("Collection with name '" + name + "' not registered!");
+		}
+		return collections.get(name);
+	}
+
+
+	var Consumer = exports.Consumer = function (rootCollections, rootCollectionsOptions) {
+		var self = this;
+
+		rootCollections = rootCollections || collections;
+		rootCollectionsOptions = rootCollectionsOptions || {};
+
+		var listeners = [];
+
+
+		function attachListener (target, event, handler) {
+			target.on(event, handler);
+			listeners.push({
+				destroy: function () {
+					target.off(event, handler);
+				}
+			});
+		}
+
+
+
+		var connections = {};
+		var subscriptions = {};
+
+
+		self.connect = function (pointer, options, iterator) {
+
+			if (typeof iterator === "undefined" && typeof options === "function") {
+				iterator = options;
+				options = null;
+			}
+
+			options = options || {};
+
+			if (rootCollectionsOptions.pointerPrefix) {
+				pointer = rootCollectionsOptions.pointerPrefix + pointer;
+			}
+
+			try {
+
+				// 'page/loaded/selectedEvent/day_id'
+				// 'page/loaded/selectedEvent/consumer_group_id/deliverLocation'
+				// 'cart/itemCount()'
+				// 'days/*'
+
+				function buildSubscriptions (dictionary, pointerParts) {
+					// A 'dictionary' is a collection or a record
+
+					var subscriptions = [];
+
+					var pointerSegment = null;
+
+					pointerParts.forEach(function (pointerSegment, i) {
+
+						var dictionaryForSegment = dictionary;
+
+						var lastSegment = (i === pointerParts.length -1);
+
+						function getLinksToForModel (Model) {
+							var linksTo = (
+								Model &&
+								Model[pointerSegment] &&
+								Model[pointerSegment].linksTo
+							) || null;
+							if (!linksTo) return null;
+							var foreignDictionary = rootCollections.get(linksTo);
+							if (!foreignDictionary) {
+								throw new Error("Dictionary '" + linksTo + "' declared for '" + pointerSegment + "' not found!");
+							}
+							return {
+								name: linksTo,
+								dictionary: foreignDictionary
+							};
+						}
+
+						var linksTo = getLinksToForModel(dictionaryForSegment.Record._definition);
+						if (linksTo) {
+							// Our dictionary holds a value that is a key in a foreign dictionary.
+							// We continue resolving the pointer using this foreign dictionary.
+
+
+							var consumer = null
+							function getConsumer (collectionName) {
+								if (!iterator) return null;
+								if (consumer) return consumer;
+								consumer = new Consumer(rootCollections, {
+									pointerPrefix: collectionName + "/"
+								});
+								consumer.mapData(iterator(consumer));
+							}
+
+
+							subscriptions.push({
+								_name: "linkToForeign",
+								// These properties in this structure may update whenever getter chain executes							
+								dictionary: dictionaryForSegment,
+								query: pointerSegment,
+
+								get: function () {
+
+									var value = this.dictionary.get(this.query);
+
+									if (Array.isArray(value) && value.length > 0) {
+										// NOTE: We assume all records use the same model from the same collection!
+										getConsumer(value[0].collection.Collection.Name);
+									}
+
+									return {
+										query: value
+									};
+								}
+							});
+
+							subscriptions.push({
+								_name: "linkToGet",
+								dictionary: linksTo.dictionary,
+								query: null,	// Set by prior subscription.
+								get: function () {
+
+									if (Array.isArray(this.query) && this.query.length > 0) {
+
+										var records = this.query.map(function (record) {
+											return consumer.getData(record);
+										});
+
+										return {
+											dictionary: records
+										};
+									}
+
+
+									if (typeof this.dictionary.get !== "function") {
+										throw new Error("Dictionary '" + this.dictionary.toString() + "' does not implement method 'get()'");
+									}
+
+									return {
+										dictionary: this.dictionary.get(this.query)
+									};
+								}
+							});
+
+
+							dictionary = linksTo.dictionary
+
+						} else {
+							// Our dictionary holds the value.
+
+
+							// We may want to query more than one record with
+							// attribute-based filtering or get everything.
+	//console.log("pointerSegment", pointerSegment);						
+							var query = pointerSegment.match(/^(\*)?(\[([^=]+)="([^"]+)"\])?$/);
+	//console.log("query", query);						
+							if (query) {
+
+								var consumer = null
+								if (iterator) {
+									consumer = new Consumer({
+										get: function () {
+											return dictionaryForSegment;
+										}
+									}, {
+										pointerPrefix: "x/"
+									});
+
+									consumer.mapData(iterator(consumer));
+								}
+
+								var where = {};
+								if (query[2]) {
+
+									where[query[3]] = query[4];
+
+								}
+	//console.log("WHERE", where);
+
+								subscriptions.push({
+									_name: "query",
+									// These properties in this structure may update whenever getter chain executes							
+									dictionary: dictionaryForSegment,
+									query: pointerSegment,
+
+									get: function () {
+
+										var records = this.dictionary.where(where);
+
+										if (consumer) {
+											records = records.map(function (record) {
+												return consumer.getData(record);
+											});
+										}
+
+										if (query[1]) {
+											// Prefixed with '*' so we return multiple values
+										} else {
+											// Only return one value
+											if (records.length > 1) {
+												throw new Error("Query '" + pointerSegment + "' from pointer '" + pointer + "' returned more than one result!");
+											}
+
+											records = records.shift();
+										}
+	//console.log("RECORDS", records);
+										return {
+											dictionary: records
+										};
+									}
+								});
+
+							} else
+							// We may want to call a function instead of lookup a record by ID.
+							if (/\(\)$/.test(pointerSegment)) {
+
+								subscriptions.push({
+									_name: "method",
+									// These properties in this structure may update whenever getter chain executes							
+									dictionary: dictionaryForSegment,
+									query: pointerSegment,
+
+									get: function () {
+
+										var methodName = this.query.replace(/\(\)$/, "");
+
+										if (typeof this.dictionary[methodName] !== "function") {
+											throw new Error("Collection '" + this.dictionary.toString() + "' does not have method '" + methodName + "'");
+										}
+
+										return {
+											dictionary: this.dictionary[methodName].call(this.dictionary)
+										};
+									}
+								});
+
+							} else {
+
+								subscriptions.push({
+									_name: "get",
+									// These properties in this structure may update whenever getter chain executes							
+									dictionary: dictionaryForSegment,
+									query: pointerSegment,
+
+									get: function () {
+
+										if (typeof this.dictionary.get !== "function") {
+											throw new Error("Dictionary '" + this.dictionary.toString() + "' does not implement method 'get()'");
+										}
+
+										return {
+											dictionary: this.dictionary.get(this.query)
+										};
+									}
+								});
+
+							}
+						}
+					});
+
+					return subscriptions;
+				}
+
+
+
+				var pointerParts = pointer.split("/");
+
+				var rootCollection = pointerParts.shift();
+
+				var collection = rootCollections.get(rootCollection);
+				if (!collection) {
+					throw new Error("Collection '" + rootCollection + "' not found!");
+				}
+
+				var subscriptions = buildSubscriptions(collection, pointerParts);
+
+
+				var getter = function (dictionary) {
+					try {
+						var result = null;
+
+	//console.log("RESULT FOR", "subscriptions", subscriptions);
+
+						subscriptions.forEach(function (subscription, i) {
+
+							if (i === 0) {
+								// The first subscription has the root dictionary
+								// set correctly or we can override it. We query the subscription chain from here.
+								if (dictionary) {
+									subscription.dictionary = dictionary;
+								}
+							} else {
+								// All other subscriptions get the dictionary set based
+								// on the result of the previous subscription.
+								if (typeof result.dictionary !== "undefined") {
+									subscription.dictionary = result.dictionary;
+								}
+								if (typeof result.query !== "undefined") {
+									subscription.query = result.query;
+								}
+							}
+
+							result = subscription.get.call(subscription);
+
+	//console.log("RESULT FOR", result, i);
+
+						});
+						// 'dictionary' now contains the value at the end of the pointer
+						var value = result.dictionary;
+
+						if (
+							typeof options.ifUndefined !== "undefined" &&
+							typeof value === "undefined"
+						) {
+							value = options.ifUndefined;
+						}
+
+						if (
+							typeof options.ifNot !== "undefined" &&
+							!value
+						) {
+							value = options.ifNot;
+						}
+
+						if (typeof options.prefix !== "undefined") {
+							value = options.prefix + value;
+						}
+
+						if (typeof options.suffix !== "undefined") {
+							value = value + options.suffix;
+						}
+
+						return value;
+					} catch (err) {
+						console.error("Error while getting value for pointer '" + pointer + "':", err.stack);
+						throw err;
+					}
+				}
+
+				return getter;
+
+			} catch (err) {
+				console.error("Error while connecting data pointer:", pointer, options, err.stack);
+				throw err;
+			}
+		}
+
+
+
+		var dataMap = null;
+		self.mapData = function (_dataMap) {
+			dataMap = _dataMap;
+		}
+
+		self.getData = function (dictionary) {
+			if (!dataMap) {
+				throw new Error("Data has not yet been mapped!");
+			}
+			var data = {};
+			Object.keys(dataMap).forEach(function (name) {
+				if (typeof dataMap[name] !== "function") {
+					console.error("dataMap[name]", dataMap, name, dataMap[name]);
+					throw new Error("Value at '" + name + "' is not a function! Did you forget a 'linksTo' declaration?");
+				}
+				data[name] = dataMap[name](dictionary);
+			});
+			return data;
+		}
+
+
+		self.destroy = function () {
+
+	console.log("RELEASE ALL LISTENERS!");
+
+			self.removeAllListeners();
+
+			listeners.forEach(function (listener) {
+				listener.destroy();
+			});
+		}
+	}
+	Consumer.prototype = Object.create(EVENTS.prototype);
+
+
+
+
+
+	exports.get = function (pointer) {
+
+		var consumer = new Consumer(collections, {
+			trackChanges: false
 		});
 
-		return Model;
+	//console.log("pointer", pointer);
+
+		consumer.mapData({
+			"value": consumer.connect(pointer)
+		});
+
+		var data = consumer.getData();
+
+		if (typeof data.value === "undefined") {
+			console.warn("No data at pointer '" + pointer + "'!");
+		}
+
+	//console.log("GOT DATA", data, pointer);
+	//throw "STOP";
+
+		return data.value;
 	}
+
+
+	exports.init = function (context) {
+
+		function Collection (context) {
+			var self = this;
+
+			self.Name = context.name;
+
+			self.Source = COMMON.makeEndpointUrl(self.Name);
+
+			self.Record = COMMON.API.BACKBONE.Model.extend({
+				initialize: function () {
+					this._super_ = self.Record.__super__;
+				},
+	  			idAttribute: "id",
+	  			Model: context.record,
+				get: function (name) {
+					var recordSelf = this;
+
+	//console.log("GET FROM RECORD", name);
+
+					if (
+						context.record &&
+						context.record[name] &&
+						typeof context.record[name].derived === "function"
+					) {
+						var attrs = Object.create(this.attributes);
+
+						attrs.get = function (name) {
+							return recordSelf.get(name);
+						}
+
+	// TODO: If 'typeof context.record[name].connect === "function"' setup consumer and pass along so derived function can register further data connects.
+						return context.record[name].derived.call(attrs);
+					} else
+					// TODO: Use 'context.record' instead of 'Model' once we relocate field declarations.
+					if (
+						self.store.Model._definition &&
+						self.store.Model._definition.derived &&
+						self.store.Model._definition.derived[name]
+					) {
+						return self.store.Model._definition.derived[name].fn.call(this.attributes);
+					}
+					return this._super_.get.call(this, name);
+				}
+	/*
+				where: function () {
+					var args = Array.prototype.slice.call(arguments);
+
+	//				var records = 
+
+				}
+	*/
+			});
+
+			self.Record._definition = context.record || {};
+
+
+			self.Store = COMMON.API.BACKBONE.Collection.extend({
+
+				url: self.Source,
+
+				model: self.Record,
+
+				parse: function (data) {
+					return data.data.map(function (record) {
+						return COMMON.API.UNDERSCORE.extend(record.attributes, {
+							id: record.id
+						});
+					});
+				}
+			});
+
+			self.store = new self.Store();
+			self.store.Source = self.Source;
+			self.store.Collection = self;
+
+		    function emitDebounced (event) {
+		    	if (!emitDebounced._actor) {
+		    		emitDebounced._actor = {};
+		    	}
+		    	if (!emitDebounced._actor[event]) {
+		    		emitDebounced._actor[event] = COMMON.API.UNDERSCORE.debounce(function () {
+		    			self.emit(event);
+		    		}, 10);
+		    	}
+		    	emitDebounced._actor[event]();
+		    }
+
+
+			// Fires when anything has changed.
+			self.store.on("change", function () {
+				emitDebounced("change");
+			});
+			self.store.on("sync", function () {
+				emitDebounced("change");
+			});
+			self.store.on("update", function () {
+				emitDebounced("change");
+			});
+			self.store.on("remove", function () {
+				emitDebounced("change");
+			});
+
+
+			if (context.model) {
+				self.store.Model = context.model;
+			}
+
+			if (context.store) {
+				Object.keys(context.store).forEach(function (name) {				
+					self.store[name] = function () {
+						var args = Array.prototype.slice.call(arguments);
+						// Call 'context.store' registered methods in the scope of the 'store'.
+						return context.store[name].apply(self.store, args);
+					};
+				});
+			}
+		}
+		Collection.prototype = Object.create(EVENTS.prototype);
+
+		Collection.prototype.add = function (record) {
+			return this.store.add(record);
+		}
+		Collection.prototype.get = function (id) {
+			return this.store.get(id);
+		}
+		Collection.prototype.where = function (query) {
+			return this.store.where(query);
+		}
+
+
+		var collection = new Collection(context);
+
+		if (context.collection) {
+			Object.keys(context.collection).forEach(function (name) {
+				collection[name] = function () {
+					var args = Array.prototype.slice.call(arguments);
+					// Call 'context.collection' registered methods in the scope of the 'collection'.
+					return context.collection[name].apply(collection, args);
+				};
+			});
+		}
+
+
+		if (
+			seedData &&
+			seedData[collection.Name]
+		) {
+			for (var id in seedData[collection.Name]) {
+				collection.store.add(seedData[collection.Name][id]);
+			};
+		}
+
+
+		// NOTE: We only register and keep track of the first one!
+	// TODO: Throw error once we have model subkey resolving cleaned up.
+		if (!collections.get(context.name)) {
+			collections.set(collection.Name, collection);
+		}
+
+		return collection;
+	}
+
 
 
 /***/ },
 /* 114 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/** @jsx React.DOM */
-	var COMMON = __webpack_require__(8);
+	/** @jsx React.DOM */// http://wiki.commonjs.org/wiki/Unit_Testing/1.0
+	//
+	// THIS IS NOT TESTED NOR LIKELY TO WORK OUTSIDE V8!
+	//
+	// Originally from narwhal.js (http://narwhaljs.org)
+	// Copyright (c) 2009 Thomas Robinson <280north.com>
+	//
+	// Permission is hereby granted, free of charge, to any person obtaining a copy
+	// of this software and associated documentation files (the 'Software'), to
+	// deal in the Software without restriction, including without limitation the
+	// rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+	// sell copies of the Software, and to permit persons to whom the Software is
+	// furnished to do so, subject to the following conditions:
+	//
+	// The above copyright notice and this permission notice shall be included in
+	// all copies or substantial portions of the Software.
+	//
+	// THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+	// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+	// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+	// AUTHORS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+	// ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+	// WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-	var ENDPOINT = COMMON.makeEndpointUrl("consumer-groups");
+	// when used in node, this will actually load the util module we depend on
+	// versus loading the builtin util module as happens otherwise
+	// this is a bug in node module loading as far as I am concerned
+	var util = __webpack_require__(115);
 
+	var pSlice = Array.prototype.slice;
+	var hasOwn = Object.prototype.hasOwnProperty;
 
+	// 1. The assert module provides functions that throw
+	// AssertionError's when particular conditions are not met. The
+	// assert module must conform to the following interface.
 
-	var Record = COMMON.API.BACKBONE.Model.extend({
-		idAttribute: "id"
-	});
+	var assert = module.exports = ok;
 
-	var Store = COMMON.API.BACKBONE.Collection.extend({
-		model: Record,
-		url: ENDPOINT,
-		parse: function(data) {
-			return data.data.map(function (record) {
-				return COMMON.API.UNDERSCORE.extend(record.attributes, {
-					id: record.id
-				});
-			});
-		},
+	// 2. The AssertionError is defined in assert.
+	// new assert.AssertionError({ message: message,
+	//                             actual: actual,
+	//                             expected: expected })
 
-		setLunchroomOpenForId: function (id) {
-			var self = this;
+	assert.AssertionError = function AssertionError(options) {
+	  this.name = 'AssertionError';
+	  this.actual = options.actual;
+	  this.expected = options.expected;
+	  this.operator = options.operator;
+	  if (options.message) {
+	    this.message = options.message;
+	    this.generatedMessage = false;
+	  } else {
+	    this.message = getMessage(this);
+	    this.generatedMessage = true;
+	  }
+	  var stackStartFunction = options.stackStartFunction || fail;
 
-			return COMMON.API.Q.denodeify(function (callback) {
+	  if (Error.captureStackTrace) {
+	    Error.captureStackTrace(this, stackStartFunction);
+	  }
+	  else {
+	    // non v8 browsers so we can have a stacktrace
+	    var err = new Error();
+	    if (err.stack) {
+	      var out = err.stack;
 
-				self.get(id).set("lunchroomLive", true);
+	      // try to strip useless frames
+	      var fn_name = stackStartFunction.name;
+	      var idx = out.indexOf('\n' + fn_name);
+	      if (idx >= 0) {
+	        // once we have located the function frame
+	        // we need to strip out everything before it (and its line)
+	        var next_line = out.indexOf('\n', idx + 1);
+	        out = out.substring(next_line + 1);
+	      }
 
-				var payload = {
-					data: {
-						type: "consumer-groups",
-						id: id,
-						attributes: {
-							"lunchroomLive": true
-						}
-					}
-				};
+	      this.stack = out;
+	    }
+	  }
+	};
 
-				return $.ajax({
-					method: "PATCH",
-					url: ENDPOINT + "/" + id,
-					contentType: "application/vnd.api+json",
-					headers: {
-						"Accept": "application/vnd.api+json"
-					},
-	    			dataType: "json",
-					data: JSON.stringify(payload)
-				})
-				.done(function (response) {
+	// assert.AssertionError instanceof Error
+	util.inherits(assert.AssertionError, Error);
 
-					return callback(null);
-				})
-				.fail(function(err) {
-
-	// TODO: Ask user to submit again.
-	console.log("error!", err.stack);
-
-					return callback(err);
-				});
-			})();
-		},
-
-		setLunchroomClosedForId: function (id) {
-			var self = this;
-
-			return COMMON.API.Q.denodeify(function (callback) {
-
-				self.get(id).set("lunchroomLive", false);
-
-				var payload = {
-					data: {
-						type: "consumer-groups",
-						id: id,
-						attributes: {
-							"lunchroomLive": false
-						}
-					}
-				};
-
-				return $.ajax({
-					method: "PATCH",
-					url: ENDPOINT + "/" + id,
-					contentType: "application/vnd.api+json",
-					headers: {
-						"Accept": "application/vnd.api+json"
-					},
-	    			dataType: "json",
-					data: JSON.stringify(payload)
-				})
-				.done(function (response) {
-
-					return callback(null);
-				})
-				.fail(function(err) {
-
-	// TODO: Ask user to submit again.
-	console.log("error!", err.stack);
-
-					return callback(err);
-				});
-			})();
-		}
-
-	});
-
-
-
-	var store = new Store();
-
-	exports['for'] = function (context) {
-
-		if (context.ids) {
-			var deferred = COMMON.API.Q.defer();
-			context.ids = context.ids.filter(function (id) {
-				return !store._byId[id];
-			});
-			if (context.ids.length > 0) {
-				store.once("sync", function () {
-					deferred.resolve(store);
-				});
-				// TODO: Ensure new entries are added to collection
-				//       instead of removing all other entries.
-				store.fetch({
-					reset: false,
-					remove: false,
-					data: $.param({
-						"filter[id]": context.ids.join(",")
-					})
-				});
-			} else {
-				deferred.resolve(store);
-			}
-			return deferred.promise;
-		}
-
-
-		store.Model = __webpack_require__(115).forContext(context);
-
-
-		store.getLunchroom = function () {
-			var today = context.appContext.get("stores").events.getToday()[0];
-			return [
-				store.get(today.get("consumer_group_id"))
-			];
-		}
-
-		store.loadForId = function (consumer_group_id) {
-			var self = this;
-			return COMMON.API.Q.denodeify(function (callback) {
-		        self.fetch({
-		            reset: true,
-		            remove: true,
-		            data: $.param({
-		                "filter[id]": consumer_group_id
-		            }),
-		            success: function () {
-		            	return callback(null);
-		            }
-		        });
-			})();
-		}
-
-		store.modelRecords = function (records) {
-			return records.map(function (record, i) {
-				// Store model on backbone row so we can re-use it on subsequent calls.
-				// NOTE: We purposfully store the model using `records[i]` instead of `record`
-				//       as `record` 
-				if (store._byId[records[i].get("id")].__model) {
-					return store._byId[records[i].get("id")].__model;
-				}
-				var fields = {};
-				store.Model.getFields().forEach(function (field) {
-					if (!records[i].has(field)) return;
-					fields[field] = records[i].get(field);
-				});
-				return store._byId[records[i].get("id")].__model = new store.Model(fields);
-			});
-		}
-
-		return store;
+	function replacer(key, value) {
+	  if (util.isUndefined(value)) {
+	    return '' + value;
+	  }
+	  if (util.isNumber(value) && !isFinite(value)) {
+	    return value.toString();
+	  }
+	  if (util.isFunction(value) || util.isRegExp(value)) {
+	    return value.toString();
+	  }
+	  return value;
 	}
 
+	function truncate(s, n) {
+	  if (util.isString(s)) {
+	    return s.length < n ? s : s.slice(0, n);
+	  } else {
+	    return s;
+	  }
+	}
+
+	function getMessage(self) {
+	  return truncate(JSON.stringify(self.actual, replacer), 128) + ' ' +
+	         self.operator + ' ' +
+	         truncate(JSON.stringify(self.expected, replacer), 128);
+	}
+
+	// At present only the three keys mentioned above are used and
+	// understood by the spec. Implementations or sub modules can pass
+	// other keys to the AssertionError's constructor - they will be
+	// ignored.
+
+	// 3. All of the following functions must throw an AssertionError
+	// when a corresponding condition is not met, with a message that
+	// may be undefined if not provided.  All assertion methods provide
+	// both the actual and expected values to the assertion error for
+	// display purposes.
+
+	function fail(actual, expected, message, operator, stackStartFunction) {
+	  throw new assert.AssertionError({
+	    message: message,
+	    actual: actual,
+	    expected: expected,
+	    operator: operator,
+	    stackStartFunction: stackStartFunction
+	  });
+	}
+
+	// EXTENSION! allows for well behaved errors defined elsewhere.
+	assert.fail = fail;
+
+	// 4. Pure assertion tests whether a value is truthy, as determined
+	// by !!guard.
+	// assert.ok(guard, message_opt);
+	// This statement is equivalent to assert.equal(true, !!guard,
+	// message_opt);. To test strictly for the value true, use
+	// assert.strictEqual(true, guard, message_opt);.
+
+	function ok(value, message) {
+	  if (!value) fail(value, true, message, '==', assert.ok);
+	}
+	assert.ok = ok;
+
+	// 5. The equality assertion tests shallow, coercive equality with
+	// ==.
+	// assert.equal(actual, expected, message_opt);
+
+	assert.equal = function equal(actual, expected, message) {
+	  if (actual != expected) fail(actual, expected, message, '==', assert.equal);
+	};
+
+	// 6. The non-equality assertion tests for whether two objects are not equal
+	// with != assert.notEqual(actual, expected, message_opt);
+
+	assert.notEqual = function notEqual(actual, expected, message) {
+	  if (actual == expected) {
+	    fail(actual, expected, message, '!=', assert.notEqual);
+	  }
+	};
+
+	// 7. The equivalence assertion tests a deep equality relation.
+	// assert.deepEqual(actual, expected, message_opt);
+
+	assert.deepEqual = function deepEqual(actual, expected, message) {
+	  if (!_deepEqual(actual, expected)) {
+	    fail(actual, expected, message, 'deepEqual', assert.deepEqual);
+	  }
+	};
+
+	function _deepEqual(actual, expected) {
+	  // 7.1. All identical values are equivalent, as determined by ===.
+	  if (actual === expected) {
+	    return true;
+
+	  } else if (util.isBuffer(actual) && util.isBuffer(expected)) {
+	    if (actual.length != expected.length) return false;
+
+	    for (var i = 0; i < actual.length; i++) {
+	      if (actual[i] !== expected[i]) return false;
+	    }
+
+	    return true;
+
+	  // 7.2. If the expected value is a Date object, the actual value is
+	  // equivalent if it is also a Date object that refers to the same time.
+	  } else if (util.isDate(actual) && util.isDate(expected)) {
+	    return actual.getTime() === expected.getTime();
+
+	  // 7.3 If the expected value is a RegExp object, the actual value is
+	  // equivalent if it is also a RegExp object with the same source and
+	  // properties (`global`, `multiline`, `lastIndex`, `ignoreCase`).
+	  } else if (util.isRegExp(actual) && util.isRegExp(expected)) {
+	    return actual.source === expected.source &&
+	           actual.global === expected.global &&
+	           actual.multiline === expected.multiline &&
+	           actual.lastIndex === expected.lastIndex &&
+	           actual.ignoreCase === expected.ignoreCase;
+
+	  // 7.4. Other pairs that do not both pass typeof value == 'object',
+	  // equivalence is determined by ==.
+	  } else if (!util.isObject(actual) && !util.isObject(expected)) {
+	    return actual == expected;
+
+	  // 7.5 For all other Object pairs, including Array objects, equivalence is
+	  // determined by having the same number of owned properties (as verified
+	  // with Object.prototype.hasOwnProperty.call), the same set of keys
+	  // (although not necessarily the same order), equivalent values for every
+	  // corresponding key, and an identical 'prototype' property. Note: this
+	  // accounts for both named and indexed properties on Arrays.
+	  } else {
+	    return objEquiv(actual, expected);
+	  }
+	}
+
+	function isArguments(object) {
+	  return Object.prototype.toString.call(object) == '[object Arguments]';
+	}
+
+	function objEquiv(a, b) {
+	  if (util.isNullOrUndefined(a) || util.isNullOrUndefined(b))
+	    return false;
+	  // an identical 'prototype' property.
+	  if (a.prototype !== b.prototype) return false;
+	  // if one is a primitive, the other must be same
+	  if (util.isPrimitive(a) || util.isPrimitive(b)) {
+	    return a === b;
+	  }
+	  var aIsArgs = isArguments(a),
+	      bIsArgs = isArguments(b);
+	  if ((aIsArgs && !bIsArgs) || (!aIsArgs && bIsArgs))
+	    return false;
+	  if (aIsArgs) {
+	    a = pSlice.call(a);
+	    b = pSlice.call(b);
+	    return _deepEqual(a, b);
+	  }
+	  var ka = objectKeys(a),
+	      kb = objectKeys(b),
+	      key, i;
+	  // having the same number of owned properties (keys incorporates
+	  // hasOwnProperty)
+	  if (ka.length != kb.length)
+	    return false;
+	  //the same set of keys (although not necessarily the same order),
+	  ka.sort();
+	  kb.sort();
+	  //~~~cheap key test
+	  for (i = ka.length - 1; i >= 0; i--) {
+	    if (ka[i] != kb[i])
+	      return false;
+	  }
+	  //equivalent values for every corresponding key, and
+	  //~~~possibly expensive deep test
+	  for (i = ka.length - 1; i >= 0; i--) {
+	    key = ka[i];
+	    if (!_deepEqual(a[key], b[key])) return false;
+	  }
+	  return true;
+	}
+
+	// 8. The non-equivalence assertion tests for any deep inequality.
+	// assert.notDeepEqual(actual, expected, message_opt);
+
+	assert.notDeepEqual = function notDeepEqual(actual, expected, message) {
+	  if (_deepEqual(actual, expected)) {
+	    fail(actual, expected, message, 'notDeepEqual', assert.notDeepEqual);
+	  }
+	};
+
+	// 9. The strict equality assertion tests strict equality, as determined by ===.
+	// assert.strictEqual(actual, expected, message_opt);
+
+	assert.strictEqual = function strictEqual(actual, expected, message) {
+	  if (actual !== expected) {
+	    fail(actual, expected, message, '===', assert.strictEqual);
+	  }
+	};
+
+	// 10. The strict non-equality assertion tests for strict inequality, as
+	// determined by !==.  assert.notStrictEqual(actual, expected, message_opt);
+
+	assert.notStrictEqual = function notStrictEqual(actual, expected, message) {
+	  if (actual === expected) {
+	    fail(actual, expected, message, '!==', assert.notStrictEqual);
+	  }
+	};
+
+	function expectedException(actual, expected) {
+	  if (!actual || !expected) {
+	    return false;
+	  }
+
+	  if (Object.prototype.toString.call(expected) == '[object RegExp]') {
+	    return expected.test(actual);
+	  } else if (actual instanceof expected) {
+	    return true;
+	  } else if (expected.call({}, actual) === true) {
+	    return true;
+	  }
+
+	  return false;
+	}
+
+	function _throws(shouldThrow, block, expected, message) {
+	  var actual;
+
+	  if (util.isString(expected)) {
+	    message = expected;
+	    expected = null;
+	  }
+
+	  try {
+	    block();
+	  } catch (e) {
+	    actual = e;
+	  }
+
+	  message = (expected && expected.name ? ' (' + expected.name + ').' : '.') +
+	            (message ? ' ' + message : '.');
+
+	  if (shouldThrow && !actual) {
+	    fail(actual, expected, 'Missing expected exception' + message);
+	  }
+
+	  if (!shouldThrow && expectedException(actual, expected)) {
+	    fail(actual, expected, 'Got unwanted exception' + message);
+	  }
+
+	  if ((shouldThrow && actual && expected &&
+	      !expectedException(actual, expected)) || (!shouldThrow && actual)) {
+	    throw actual;
+	  }
+	}
+
+	// 11. Expected to throw an error:
+	// assert.throws(block, Error_opt, message_opt);
+
+	assert.throws = function(block, /*optional*/error, /*optional*/message) {
+	  _throws.apply(this, [true].concat(pSlice.call(arguments)));
+	};
+
+	// EXTENSION! This is annoying to write outside this module.
+	assert.doesNotThrow = function(block, /*optional*/message) {
+	  _throws.apply(this, [false].concat(pSlice.call(arguments)));
+	};
+
+	assert.ifError = function(err) { if (err) {throw err;}};
+
+	var objectKeys = Object.keys || function (obj) {
+	  var keys = [];
+	  for (var key in obj) {
+	    if (hasOwn.call(obj, key)) keys.push(key);
+	  }
+	  return keys;
+	};
 
 
 /***/ },
 /* 115 */
 /***/ function(module, exports, __webpack_require__) {
 
+	/* WEBPACK VAR INJECTION */(function(global, process) {/** @jsx React.DOM */// Copyright Joyent, Inc. and other Node contributors.
+	//
+	// Permission is hereby granted, free of charge, to any person obtaining a
+	// copy of this software and associated documentation files (the
+	// "Software"), to deal in the Software without restriction, including
+	// without limitation the rights to use, copy, modify, merge, publish,
+	// distribute, sublicense, and/or sell copies of the Software, and to permit
+	// persons to whom the Software is furnished to do so, subject to the
+	// following conditions:
+	//
+	// The above copyright notice and this permission notice shall be included
+	// in all copies or substantial portions of the Software.
+	//
+	// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+	// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+	// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
+	// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+	// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+	// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
+	// USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+	var formatRegExp = /%[sdj%]/g;
+	exports.format = function(f) {
+	  if (!isString(f)) {
+	    var objects = [];
+	    for (var i = 0; i < arguments.length; i++) {
+	      objects.push(inspect(arguments[i]));
+	    }
+	    return objects.join(' ');
+	  }
+
+	  var i = 1;
+	  var args = arguments;
+	  var len = args.length;
+	  var str = String(f).replace(formatRegExp, function(x) {
+	    if (x === '%%') return '%';
+	    if (i >= len) return x;
+	    switch (x) {
+	      case '%s': return String(args[i++]);
+	      case '%d': return Number(args[i++]);
+	      case '%j':
+	        try {
+	          return JSON.stringify(args[i++]);
+	        } catch (_) {
+	          return '[Circular]';
+	        }
+	      default:
+	        return x;
+	    }
+	  });
+	  for (var x = args[i]; i < len; x = args[++i]) {
+	    if (isNull(x) || !isObject(x)) {
+	      str += ' ' + x;
+	    } else {
+	      str += ' ' + inspect(x);
+	    }
+	  }
+	  return str;
+	};
+
+
+	// Mark that a method should not be used.
+	// Returns a modified function which warns once by default.
+	// If --no-deprecation is set, then it is a no-op.
+	exports.deprecate = function(fn, msg) {
+	  // Allow for deprecating things in the process of starting up.
+	  if (isUndefined(global.process)) {
+	    return function() {
+	      return exports.deprecate(fn, msg).apply(this, arguments);
+	    };
+	  }
+
+	  if (process.noDeprecation === true) {
+	    return fn;
+	  }
+
+	  var warned = false;
+	  function deprecated() {
+	    if (!warned) {
+	      if (process.throwDeprecation) {
+	        throw new Error(msg);
+	      } else if (process.traceDeprecation) {
+	        console.trace(msg);
+	      } else {
+	        console.error(msg);
+	      }
+	      warned = true;
+	    }
+	    return fn.apply(this, arguments);
+	  }
+
+	  return deprecated;
+	};
+
+
+	var debugs = {};
+	var debugEnviron;
+	exports.debuglog = function(set) {
+	  if (isUndefined(debugEnviron))
+	    debugEnviron = ({"NODE_ENV":"production"}).NODE_DEBUG || '';
+	  set = set.toUpperCase();
+	  if (!debugs[set]) {
+	    if (new RegExp('\\b' + set + '\\b', 'i').test(debugEnviron)) {
+	      var pid = process.pid;
+	      debugs[set] = function() {
+	        var msg = exports.format.apply(exports, arguments);
+	        console.error('%s %d: %s', set, pid, msg);
+	      };
+	    } else {
+	      debugs[set] = function() {};
+	    }
+	  }
+	  return debugs[set];
+	};
+
+
+	/**
+	 * Echos the value of a value. Trys to print the value out
+	 * in the best way possible given the different types.
+	 *
+	 * @param {Object} obj The object to print out.
+	 * @param {Object} opts Optional options object that alters the output.
+	 */
+	/* legacy: obj, showHidden, depth, colors*/
+	function inspect(obj, opts) {
+	  // default options
+	  var ctx = {
+	    seen: [],
+	    stylize: stylizeNoColor
+	  };
+	  // legacy...
+	  if (arguments.length >= 3) ctx.depth = arguments[2];
+	  if (arguments.length >= 4) ctx.colors = arguments[3];
+	  if (isBoolean(opts)) {
+	    // legacy...
+	    ctx.showHidden = opts;
+	  } else if (opts) {
+	    // got an "options" object
+	    exports._extend(ctx, opts);
+	  }
+	  // set default options
+	  if (isUndefined(ctx.showHidden)) ctx.showHidden = false;
+	  if (isUndefined(ctx.depth)) ctx.depth = 2;
+	  if (isUndefined(ctx.colors)) ctx.colors = false;
+	  if (isUndefined(ctx.customInspect)) ctx.customInspect = true;
+	  if (ctx.colors) ctx.stylize = stylizeWithColor;
+	  return formatValue(ctx, obj, ctx.depth);
+	}
+	exports.inspect = inspect;
+
+
+	// http://en.wikipedia.org/wiki/ANSI_escape_code#graphics
+	inspect.colors = {
+	  'bold' : [1, 22],
+	  'italic' : [3, 23],
+	  'underline' : [4, 24],
+	  'inverse' : [7, 27],
+	  'white' : [37, 39],
+	  'grey' : [90, 39],
+	  'black' : [30, 39],
+	  'blue' : [34, 39],
+	  'cyan' : [36, 39],
+	  'green' : [32, 39],
+	  'magenta' : [35, 39],
+	  'red' : [31, 39],
+	  'yellow' : [33, 39]
+	};
+
+	// Don't use 'blue' not visible on cmd.exe
+	inspect.styles = {
+	  'special': 'cyan',
+	  'number': 'yellow',
+	  'boolean': 'yellow',
+	  'undefined': 'grey',
+	  'null': 'bold',
+	  'string': 'green',
+	  'date': 'magenta',
+	  // "name": intentionally not styling
+	  'regexp': 'red'
+	};
+
+
+	function stylizeWithColor(str, styleType) {
+	  var style = inspect.styles[styleType];
+
+	  if (style) {
+	    return '\u001b[' + inspect.colors[style][0] + 'm' + str +
+	           '\u001b[' + inspect.colors[style][1] + 'm';
+	  } else {
+	    return str;
+	  }
+	}
+
+
+	function stylizeNoColor(str, styleType) {
+	  return str;
+	}
+
+
+	function arrayToHash(array) {
+	  var hash = {};
+
+	  array.forEach(function(val, idx) {
+	    hash[val] = true;
+	  });
+
+	  return hash;
+	}
+
+
+	function formatValue(ctx, value, recurseTimes) {
+	  // Provide a hook for user-specified inspect functions.
+	  // Check that value is an object with an inspect function on it
+	  if (ctx.customInspect &&
+	      value &&
+	      isFunction(value.inspect) &&
+	      // Filter out the util module, it's inspect function is special
+	      value.inspect !== exports.inspect &&
+	      // Also filter out any prototype objects using the circular check.
+	      !(value.constructor && value.constructor.prototype === value)) {
+	    var ret = value.inspect(recurseTimes, ctx);
+	    if (!isString(ret)) {
+	      ret = formatValue(ctx, ret, recurseTimes);
+	    }
+	    return ret;
+	  }
+
+	  // Primitive types cannot have properties
+	  var primitive = formatPrimitive(ctx, value);
+	  if (primitive) {
+	    return primitive;
+	  }
+
+	  // Look up the keys of the object.
+	  var keys = Object.keys(value);
+	  var visibleKeys = arrayToHash(keys);
+
+	  if (ctx.showHidden) {
+	    keys = Object.getOwnPropertyNames(value);
+	  }
+
+	  // IE doesn't make error fields non-enumerable
+	  // http://msdn.microsoft.com/en-us/library/ie/dww52sbt(v=vs.94).aspx
+	  if (isError(value)
+	      && (keys.indexOf('message') >= 0 || keys.indexOf('description') >= 0)) {
+	    return formatError(value);
+	  }
+
+	  // Some type of object without properties can be shortcutted.
+	  if (keys.length === 0) {
+	    if (isFunction(value)) {
+	      var name = value.name ? ': ' + value.name : '';
+	      return ctx.stylize('[Function' + name + ']', 'special');
+	    }
+	    if (isRegExp(value)) {
+	      return ctx.stylize(RegExp.prototype.toString.call(value), 'regexp');
+	    }
+	    if (isDate(value)) {
+	      return ctx.stylize(Date.prototype.toString.call(value), 'date');
+	    }
+	    if (isError(value)) {
+	      return formatError(value);
+	    }
+	  }
+
+	  var base = '', array = false, braces = ['{', '}'];
+
+	  // Make Array say that they are Array
+	  if (isArray(value)) {
+	    array = true;
+	    braces = ['[', ']'];
+	  }
+
+	  // Make functions say that they are functions
+	  if (isFunction(value)) {
+	    var n = value.name ? ': ' + value.name : '';
+	    base = ' [Function' + n + ']';
+	  }
+
+	  // Make RegExps say that they are RegExps
+	  if (isRegExp(value)) {
+	    base = ' ' + RegExp.prototype.toString.call(value);
+	  }
+
+	  // Make dates with properties first say the date
+	  if (isDate(value)) {
+	    base = ' ' + Date.prototype.toUTCString.call(value);
+	  }
+
+	  // Make error with message first say the error
+	  if (isError(value)) {
+	    base = ' ' + formatError(value);
+	  }
+
+	  if (keys.length === 0 && (!array || value.length == 0)) {
+	    return braces[0] + base + braces[1];
+	  }
+
+	  if (recurseTimes < 0) {
+	    if (isRegExp(value)) {
+	      return ctx.stylize(RegExp.prototype.toString.call(value), 'regexp');
+	    } else {
+	      return ctx.stylize('[Object]', 'special');
+	    }
+	  }
+
+	  ctx.seen.push(value);
+
+	  var output;
+	  if (array) {
+	    output = formatArray(ctx, value, recurseTimes, visibleKeys, keys);
+	  } else {
+	    output = keys.map(function(key) {
+	      return formatProperty(ctx, value, recurseTimes, visibleKeys, key, array);
+	    });
+	  }
+
+	  ctx.seen.pop();
+
+	  return reduceToSingleString(output, base, braces);
+	}
+
+
+	function formatPrimitive(ctx, value) {
+	  if (isUndefined(value))
+	    return ctx.stylize('undefined', 'undefined');
+	  if (isString(value)) {
+	    var simple = '\'' + JSON.stringify(value).replace(/^"|"$/g, '')
+	                                             .replace(/'/g, "\\'")
+	                                             .replace(/\\"/g, '"') + '\'';
+	    return ctx.stylize(simple, 'string');
+	  }
+	  if (isNumber(value))
+	    return ctx.stylize('' + value, 'number');
+	  if (isBoolean(value))
+	    return ctx.stylize('' + value, 'boolean');
+	  // For some reason typeof null is "object", so special case here.
+	  if (isNull(value))
+	    return ctx.stylize('null', 'null');
+	}
+
+
+	function formatError(value) {
+	  return '[' + Error.prototype.toString.call(value) + ']';
+	}
+
+
+	function formatArray(ctx, value, recurseTimes, visibleKeys, keys) {
+	  var output = [];
+	  for (var i = 0, l = value.length; i < l; ++i) {
+	    if (hasOwnProperty(value, String(i))) {
+	      output.push(formatProperty(ctx, value, recurseTimes, visibleKeys,
+	          String(i), true));
+	    } else {
+	      output.push('');
+	    }
+	  }
+	  keys.forEach(function(key) {
+	    if (!key.match(/^\d+$/)) {
+	      output.push(formatProperty(ctx, value, recurseTimes, visibleKeys,
+	          key, true));
+	    }
+	  });
+	  return output;
+	}
+
+
+	function formatProperty(ctx, value, recurseTimes, visibleKeys, key, array) {
+	  var name, str, desc;
+	  desc = Object.getOwnPropertyDescriptor(value, key) || { value: value[key] };
+	  if (desc.get) {
+	    if (desc.set) {
+	      str = ctx.stylize('[Getter/Setter]', 'special');
+	    } else {
+	      str = ctx.stylize('[Getter]', 'special');
+	    }
+	  } else {
+	    if (desc.set) {
+	      str = ctx.stylize('[Setter]', 'special');
+	    }
+	  }
+	  if (!hasOwnProperty(visibleKeys, key)) {
+	    name = '[' + key + ']';
+	  }
+	  if (!str) {
+	    if (ctx.seen.indexOf(desc.value) < 0) {
+	      if (isNull(recurseTimes)) {
+	        str = formatValue(ctx, desc.value, null);
+	      } else {
+	        str = formatValue(ctx, desc.value, recurseTimes - 1);
+	      }
+	      if (str.indexOf('\n') > -1) {
+	        if (array) {
+	          str = str.split('\n').map(function(line) {
+	            return '  ' + line;
+	          }).join('\n').substr(2);
+	        } else {
+	          str = '\n' + str.split('\n').map(function(line) {
+	            return '   ' + line;
+	          }).join('\n');
+	        }
+	      }
+	    } else {
+	      str = ctx.stylize('[Circular]', 'special');
+	    }
+	  }
+	  if (isUndefined(name)) {
+	    if (array && key.match(/^\d+$/)) {
+	      return str;
+	    }
+	    name = JSON.stringify('' + key);
+	    if (name.match(/^"([a-zA-Z_][a-zA-Z_0-9]*)"$/)) {
+	      name = name.substr(1, name.length - 2);
+	      name = ctx.stylize(name, 'name');
+	    } else {
+	      name = name.replace(/'/g, "\\'")
+	                 .replace(/\\"/g, '"')
+	                 .replace(/(^"|"$)/g, "'");
+	      name = ctx.stylize(name, 'string');
+	    }
+	  }
+
+	  return name + ': ' + str;
+	}
+
+
+	function reduceToSingleString(output, base, braces) {
+	  var numLinesEst = 0;
+	  var length = output.reduce(function(prev, cur) {
+	    numLinesEst++;
+	    if (cur.indexOf('\n') >= 0) numLinesEst++;
+	    return prev + cur.replace(/\u001b\[\d\d?m/g, '').length + 1;
+	  }, 0);
+
+	  if (length > 60) {
+	    return braces[0] +
+	           (base === '' ? '' : base + '\n ') +
+	           ' ' +
+	           output.join(',\n  ') +
+	           ' ' +
+	           braces[1];
+	  }
+
+	  return braces[0] + base + ' ' + output.join(', ') + ' ' + braces[1];
+	}
+
+
+	// NOTE: These type checking functions intentionally don't use `instanceof`
+	// because it is fragile and can be easily faked with `Object.create()`.
+	function isArray(ar) {
+	  return Array.isArray(ar);
+	}
+	exports.isArray = isArray;
+
+	function isBoolean(arg) {
+	  return typeof arg === 'boolean';
+	}
+	exports.isBoolean = isBoolean;
+
+	function isNull(arg) {
+	  return arg === null;
+	}
+	exports.isNull = isNull;
+
+	function isNullOrUndefined(arg) {
+	  return arg == null;
+	}
+	exports.isNullOrUndefined = isNullOrUndefined;
+
+	function isNumber(arg) {
+	  return typeof arg === 'number';
+	}
+	exports.isNumber = isNumber;
+
+	function isString(arg) {
+	  return typeof arg === 'string';
+	}
+	exports.isString = isString;
+
+	function isSymbol(arg) {
+	  return typeof arg === 'symbol';
+	}
+	exports.isSymbol = isSymbol;
+
+	function isUndefined(arg) {
+	  return arg === void 0;
+	}
+	exports.isUndefined = isUndefined;
+
+	function isRegExp(re) {
+	  return isObject(re) && objectToString(re) === '[object RegExp]';
+	}
+	exports.isRegExp = isRegExp;
+
+	function isObject(arg) {
+	  return typeof arg === 'object' && arg !== null;
+	}
+	exports.isObject = isObject;
+
+	function isDate(d) {
+	  return isObject(d) && objectToString(d) === '[object Date]';
+	}
+	exports.isDate = isDate;
+
+	function isError(e) {
+	  return isObject(e) &&
+	      (objectToString(e) === '[object Error]' || e instanceof Error);
+	}
+	exports.isError = isError;
+
+	function isFunction(arg) {
+	  return typeof arg === 'function';
+	}
+	exports.isFunction = isFunction;
+
+	function isPrimitive(arg) {
+	  return arg === null ||
+	         typeof arg === 'boolean' ||
+	         typeof arg === 'number' ||
+	         typeof arg === 'string' ||
+	         typeof arg === 'symbol' ||  // ES6 symbol
+	         typeof arg === 'undefined';
+	}
+	exports.isPrimitive = isPrimitive;
+
+	exports.isBuffer = __webpack_require__(116);
+
+	function objectToString(o) {
+	  return Object.prototype.toString.call(o);
+	}
+
+
+	function pad(n) {
+	  return n < 10 ? '0' + n.toString(10) : n.toString(10);
+	}
+
+
+	var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep',
+	              'Oct', 'Nov', 'Dec'];
+
+	// 26 Feb 16:19:34
+	function timestamp() {
+	  var d = new Date();
+	  var time = [pad(d.getHours()),
+	              pad(d.getMinutes()),
+	              pad(d.getSeconds())].join(':');
+	  return [d.getDate(), months[d.getMonth()], time].join(' ');
+	}
+
+
+	// log is just a thin wrapper to console.log that prepends a timestamp
+	exports.log = function() {
+	  console.log('%s - %s', timestamp(), exports.format.apply(exports, arguments));
+	};
+
+
+	/**
+	 * Inherit the prototype methods from one constructor into another.
+	 *
+	 * The Function.prototype.inherits from lang.js rewritten as a standalone
+	 * function (not on Function.prototype). NOTE: If this file is to be loaded
+	 * during bootstrapping this function needs to be rewritten using some native
+	 * functions as prototype setup using normal JavaScript does not work as
+	 * expected during bootstrapping (see mirror.js in r114903).
+	 *
+	 * @param {function} ctor Constructor function which needs to inherit the
+	 *     prototype.
+	 * @param {function} superCtor Constructor function to inherit prototype from.
+	 */
+	exports.inherits = __webpack_require__(117);
+
+	exports._extend = function(origin, add) {
+	  // Don't do anything if add isn't an object
+	  if (!add || !isObject(add)) return origin;
+
+	  var keys = Object.keys(add);
+	  var i = keys.length;
+	  while (i--) {
+	    origin[keys[i]] = add[keys[i]];
+	  }
+	  return origin;
+	};
+
+	function hasOwnProperty(obj, prop) {
+	  return Object.prototype.hasOwnProperty.call(obj, prop);
+	}
+
+	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }()), __webpack_require__(12)))
+
+/***/ },
+/* 116 */
+/***/ function(module, exports) {
+
+	/** @jsx React.DOM */module.exports = function isBuffer(arg) {
+	  return arg && typeof arg === 'object'
+	    && typeof arg.copy === 'function'
+	    && typeof arg.fill === 'function'
+	    && typeof arg.readUInt8 === 'function';
+	}
+
+/***/ },
+/* 117 */
+/***/ function(module, exports) {
+
+	/** @jsx React.DOM */if (typeof Object.create === 'function') {
+	  // implementation from standard node.js 'util' module
+	  module.exports = function inherits(ctor, superCtor) {
+	    ctor.super_ = superCtor
+	    ctor.prototype = Object.create(superCtor.prototype, {
+	      constructor: {
+	        value: ctor,
+	        enumerable: false,
+	        writable: true,
+	        configurable: true
+	      }
+	    });
+	  };
+	} else {
+	  // old school shim for old browsers
+	  module.exports = function inherits(ctor, superCtor) {
+	    ctor.super_ = superCtor
+	    var TempCtor = function () {}
+	    TempCtor.prototype = superCtor.prototype
+	    ctor.prototype = new TempCtor()
+	    ctor.prototype.constructor = ctor
+	  }
+	}
+
+
+/***/ },
+/* 118 */
+/***/ function(module, exports, __webpack_require__) {
+
 	/** @jsx React.DOM */
 
 	var COMMON = __webpack_require__(9);
+
+
+	var INCLUDE_PRIOR_WEEKEND = true;
+	var INCLUDE_COMING_WEEKEND = false;
 
 
 	exports.forContext = function (context) {
@@ -20785,52 +21744,76 @@
 
 		// @see http://ampersandjs.com/docs#ampersand-state
 		var Model = COMMON.API.AMPERSAND_STATE.extend({
-			name: "consumer-groups",
+			name: "days",
 			props: {
-				id: "string",
-		        title: "string",
-		        alias: "string",
-		        contact: "string",
-		        address: "string",
-		        pickupLocation: "string",
-		        deliverLocation: "string",
-		        orderTax: "string",
-		        lunchroomLive: "string"
-			},
-			derived: {
-			    "lunchroomUrl": {
-			    	deps: [
-						"alias"
+				id: "string"
+		    },
+		    derived: {
+			    "format.ddd": {
+					deps: [
+						"id"
 					],
-					cache: false,
 		            fn: function () {
-		            	return context.appContext.get("windowOrigin") + "/" + this["alias"];
+		            	return COMMON.API.MOMENT(this.id, "YYYY-MM-DD").format("ddd");
 		            }
 			    },
-			    "format.lunchroomLive": {
-			    	deps: [
-						"lunchroomLive"
+			    "format.MMM-D": {
+					deps: [
+						"id"
 					],
-					cache: false,
 		            fn: function () {
-		            	return (this.lunchroomLive ? "Yes" : "No");
+		            	return COMMON.API.MOMENT(this.id, "YYYY-MM-DD").format("MMM D");
 		            }
 			    }
 			}
 		});
+
+
+		Model.getCurrentDays = function () {
+
+			// Initialize without loading data from server for now.
+			function makeStartOfWeek () {
+				var startOfWeek = common.MOMENT().startOf('week');
+				// If Saturday or Sunday, jump to next week.
+				if (
+					common.MOMENT().day() === 6
+	//				common.MOMENT().day() === 0
+				) {
+					startOfWeek.add(7, 'days');
+				}
+				return startOfWeek;
+			}
+			var dayStart = 1;
+			var dayCount = 5;
+			if (INCLUDE_PRIOR_WEEKEND) {
+				dayStart -= 2;
+			} else
+			if (INCLUDE_COMING_WEEKEND) {
+				dayCount += 2;
+			}
+			var days = [];
+			for (var day = dayStart; day<=dayCount ; day++) {
+				days.push({
+					"id": makeStartOfWeek().add(day, 'days').format("YYYY-MM-DD")
+				});
+			}
+
+			return days;
+		}
+
 
 		return Model;
 	}
 
 
 /***/ },
-/* 116 */
+/* 119 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(117);
+	var content = __webpack_require__(120);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(5)(content, {});
@@ -20850,14 +21833,14 @@
 	}
 
 /***/ },
-/* 117 */
+/* 120 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(4)();
 	exports.push([module.id, "", ""]);
 
 /***/ },
-/* 118 */
+/* 121 */
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM */ /*
@@ -41763,13 +42746,13 @@
 	})( jQuery, window , document );
 
 /***/ },
-/* 119 */
+/* 122 */
 /***/ function(module, exports) {
 
 	module.exports = React;
 
 /***/ },
-/* 120 */
+/* 123 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/** @jsx React.DOM *//*!
@@ -41798,7 +42781,7 @@
 	 */
 	(function(main) {
 	    if (true) {
-	        !(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(121), __webpack_require__(123), __webpack_require__(119), __webpack_require__(109), __webpack_require__(14), __webpack_require__(125)], __WEBPACK_AMD_DEFINE_RESULT__ = function(ReactMixinManager, ReactEvents, React, Backbone, _) {
+	        !(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(124), __webpack_require__(126), __webpack_require__(122), __webpack_require__(109), __webpack_require__(14), __webpack_require__(128)], __WEBPACK_AMD_DEFINE_RESULT__ = function(ReactMixinManager, ReactEvents, React, Backbone, _) {
 	            // AMD
 	            return main(ReactMixinManager, ReactEvents, React, Backbone, _);
 	        }.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
@@ -42811,13 +43794,13 @@
 
 
 /***/ },
-/* 121 */
+/* 124 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/** @jsx React.DOM */module.exports = __webpack_require__(122);
+	/** @jsx React.DOM */module.exports = __webpack_require__(125);
 
 /***/ },
-/* 122 */
+/* 125 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/** @jsx React.DOM *//*!
@@ -42847,7 +43830,7 @@
 	 */
 	(function(main) {
 	    if (true) {
-	        !(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(119)], __WEBPACK_AMD_DEFINE_RESULT__ = function(React) {
+	        !(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(122)], __WEBPACK_AMD_DEFINE_RESULT__ = function(React) {
 	            // AMD
 	            return main(React);
 	        }.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
@@ -43248,13 +44231,13 @@
 
 
 /***/ },
-/* 123 */
+/* 126 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/** @jsx React.DOM */module.exports = __webpack_require__(124);
+	/** @jsx React.DOM */module.exports = __webpack_require__(127);
 
 /***/ },
-/* 124 */
+/* 127 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/** @jsx React.DOM *//*!
@@ -43284,7 +44267,7 @@
 	 */
 	(function(main) {
 	    if (true) {
-	        !(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(121)], __WEBPACK_AMD_DEFINE_RESULT__ = function(ReactMixinManager) {
+	        !(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(124)], __WEBPACK_AMD_DEFINE_RESULT__ = function(ReactMixinManager) {
 	            // AMD
 	            return main(ReactMixinManager);
 	        }.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
@@ -43864,14 +44847,14 @@
 
 
 /***/ },
-/* 125 */
+/* 128 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/** @jsx React.DOM */module.exports = __webpack_require__(126);
+	/** @jsx React.DOM */module.exports = __webpack_require__(129);
 
 
 /***/ },
-/* 126 */
+/* 129 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/** @jsx React.DOM *//*!
@@ -44243,44 +45226,44 @@
 
 
 /***/ },
-/* 127 */
+/* 130 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
 	var WEB_COMPONENTS = {
-		"Header": __webpack_require__(133),
-		"Menu": __webpack_require__(136),
-		"Footer": __webpack_require__(139)
+		"Header": __webpack_require__(136),
+		"Menu": __webpack_require__(139),
+		"Footer": __webpack_require__(142)
 	};
 
-	exports.RootView = __webpack_require__(142);
+	exports.RootView = __webpack_require__(145);
 
 	exports.views = {
 		"Landing": {
-			"component": __webpack_require__(144),
+			"component": __webpack_require__(147),
 			"config": {}
 		},
 		"Menu_Email": {
-			"component": __webpack_require__(128),
+			"component": __webpack_require__(131),
 			"config": {}
 		},
 		"Menu_Web": {
-			"component": __webpack_require__(148),
+			"component": __webpack_require__(151),
 			"config": {},
 			"components": WEB_COMPONENTS
 		},
 		"Checkout": {
-			"component": __webpack_require__(156),
+			"component": __webpack_require__(159),
 			"config": {},
 			"components": WEB_COMPONENTS
 		},
 		"Order_Placed": {
-			"component": __webpack_require__(164),
+			"component": __webpack_require__(167),
 			"config": {},
 			"components": WEB_COMPONENTS
 		},
 		"Receipt": {
-			"component": __webpack_require__(167),
+			"component": __webpack_require__(170),
 			"config": {}
 		}
 	};
@@ -44288,11 +45271,11 @@
 
 
 /***/ },
-/* 128 */
+/* 131 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(module) {/** @jsx React.DOM */
-	__webpack_require__(129)['for'](module, {
+	__webpack_require__(132)['for'](module, {
 		getHTML: function (Context) {
 
 			// TODO: Remove this once we can inject 'React' automatically at build time.
@@ -44307,11 +45290,11 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(18)(module)))
 
 /***/ },
-/* 129 */
+/* 132 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
-	var COMPONENT = __webpack_require__(130);
+	var COMPONENT = __webpack_require__(133);
 
 	exports['for'] = function (module, Context) {
 
@@ -44387,18 +45370,18 @@
 
 
 /***/ },
-/* 130 */
+/* 133 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
 
 	var API = exports.API = {
 		UNDERSCORE: __webpack_require__(14),
-		REACT: __webpack_require__(119),
-		EXTEND: __webpack_require__(131),
+		REACT: __webpack_require__(122),
+		EXTEND: __webpack_require__(134),
 		MOMENT: __webpack_require__(17),
 		Q: __webpack_require__(11),
-		GBL_TEMPLATE: __webpack_require__(132)
+		GBL_TEMPLATE: __webpack_require__(135)
 	};
 
 
@@ -44487,23 +45470,79 @@
 
 		function callTemplate (component, method) {
 			// New template-based logic.
-			if (!component._render_Context._template) return;
-			if (!component._render_Context._template["_" + method]) return;
 
 			try {
 
+				function getData () {
+					if (!component._template_data_consumer) return null;
+					if (!component._render_Context._template) return null;
+					data = component._template_data_consumer.getData();
+					component._render_Context._template.setData(data);
+					return component._render_Context._template.getData();
+				}
+
 				if (method === "markup") {
+
+	//console.log("MARKUP", implementation);
+
+					if (typeof Context.mapData === "function") {
+
+						var consumer = new (component._render_Context.appContext.get("data").Consumer)();
+
+						consumer.mapData(Context.mapData(consumer));
+
+						component._template_data_consumer = consumer;
+
+	//console.log("MARKUP CONSUMER", implementation);
+
+						consumer.on("change", function () {
+
+	//console.info("CONSUMER RESOLVED DATA CHANGED BASED on changed event from consumer (template)");
+
+
+						});
+					}
+
 					// Called once per mount.
-					component._render_Context._template["_" + method](
-						$(component.getDOMNode())
-					);
+					if (
+						component._render_Context._template &&
+						component._render_Context._template["_" + method]
+					) {
+						component._render_Context._template["_" + method](
+							$(component.getDOMNode()),
+							getData()
+						);
+					}
+
 				} else
 				if (method === "fill") {
 					// Called multiple times per mount.
-					if (implementation.getTemplateData || Context.getTemplateData) {
+
+	//console.log("FILL", implementation);
+
+					if (
+						component._render_Context._template &&
+						component._render_Context._template["_" + method]
+					) {
+
+						var data = null;
+
+						if (component._template_data_consumer) {
+	//	console.log("LOAD VIA CONSUMER", implementation);
+
+							data = getData();
+
+						} else
+						if (implementation.getTemplateData || Context.getTemplateData) {
+
+							console.error("DEPRECATED getTemplateData for:", implementation);
+
+							data = (implementation.getTemplateData || Context.getTemplateData).call(component, component._render_Context);
+						}
+
 						component._render_Context._template["_" + method](
 							$(component.getDOMNode()),
-							(implementation.getTemplateData || Context.getTemplateData).call(component, component._render_Context),
+							data,
 							component._render_Context
 						);
 					}
@@ -44556,8 +45595,11 @@
 					implementation.onUnmount.call(this);
 				}
 				this.props.appContext.off("change", this._trigger_forceUpdate);
-		    },
 
+				if (this._template_data_consumer) {
+					this._template_data_consumer.destroy();
+				}
+		    },
 
 		    modelRecordsWithStore: function (store, records) {
 
@@ -44593,10 +45635,9 @@
 		    				React.createElement("div", null)
 		    			);
 		    		}
-
-			    	console.info("Render component: " + implName);
+	//		    	console.info("Render component: " + implName);
 		    	} else {
-			    	console.info("Render component: " + implName);
+	//		    	console.info("Render component: " + implName);
 		    	}
 
 		    	self._render_Context = implementation.render.call(self);
@@ -44643,13 +45684,37 @@
 
 		    		});
 		    	}
+
 		    	if (implementation.getTemplates || Context.getTemplates) {
+
+	//console.log("GET TENMPLATEs0", Context, implementation);
 
 		    		if (!self._templateInstances) {
 						self._templateInstances = (
 				        	implementation.getTemplates ||
 				        	Context.getTemplates
 				        ).call(self, self._render_Context);
+
+	//console.log("GET TENMPLATEs1", Context);
+	//console.log("GET TENMPLATEs2", implementation);
+
+						if (typeof Context.mapData === "function") {
+
+							var consumer = new (self._render_Context.appContext.get("data").Consumer)();
+
+							consumer.mapData(Context.mapData(consumer));
+
+							self._template_data_consumer = consumer;
+
+		//console.log("MARKUP CONSUMER", implementation);
+
+							consumer.on("change", function () {
+
+	//	console.info("CONSUMER RESOLVED DATA CHANGED BASED on changed event from consumer (templates)");
+
+
+							});
+						}
 				    }
 
 			        self._render_Context.templates = self._templateInstances;
@@ -44657,10 +45722,16 @@
 
 
 		    	if (implementation.getHTML || Context.getHTML) {
+
+		    		var data = {};
+		    		if (self._template_data_consumer) {
+		    			data = self._template_data_consumer.getData();
+		    		}
+
 			        var tags = (
 			        	implementation.getHTML ||
 			        	Context.getHTML
-			        ).call(self, self._render_Context);
+			        ).call(self, self._render_Context, data);
 
 			    	console.info("Hand off to react: " + implName);
 
@@ -44704,7 +45775,7 @@
 
 
 /***/ },
-/* 131 */
+/* 134 */
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM */'use strict';
@@ -44796,7 +45867,7 @@
 
 
 /***/ },
-/* 132 */
+/* 135 */
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM */
@@ -44812,6 +45883,15 @@
 			var self = this;
 			var Context = Component.getRenderContext();
 			self.impl = options.impl(Context);
+
+			function getTemplateDataForComponent () {
+				if (!Component._template_data_consumer) {
+					return null;
+				}
+				self.setData(Component._template_data_consumer.getData());
+				return self.getData();
+			}
+
 			self.comp = Context.REACT.createClass({
 				componentDidMount: function () {
 					self.elm = $(this.getDOMNode());
@@ -44823,15 +45903,18 @@
 					});
 					if (self._markup) {
 						try {
-							self._markup(self.elm);
+							self._markup(self.elm, getTemplateDataForComponent());
 						} catch (err) {
 							console.error("Error marking up component!", err.stack);
 						}
 					}
 					if (self._fill) {
-						var Context = Component.getRenderContext();
 						try {
-							self._fill(self.elm, Context, Context);
+							self._fill(
+								self.elm,
+								getTemplateDataForComponent(),
+								Component.getRenderContext()
+							);
 						} catch (err) {
 							console.error("Error filling component!", err.stack);
 						}
@@ -44840,9 +45923,12 @@
 				componentDidUpdate: function () {
 					self.elm = $(this.getDOMNode());			
 					if (self._fill) {
-						var Context = Component.getRenderContext();
 						try {
-							self._fill(self.elm, Context, Context);
+							self._fill(
+								self.elm,
+								getTemplateDataForComponent(),
+								Component.getRenderContext()
+							);
 						} catch (err) {
 							console.error("Error filling component!", err.stack);
 						}
@@ -44860,6 +45946,15 @@
 			self.sections = {};
 
 			self.data = null;
+		}
+
+		Template.prototype.setData = function (data) {
+			if (!this.data) this.data = {};
+			// NOTE: We update the properties so that anyone who has a reference gets updates as well
+			for (var name in data) {
+				this.data[name] = data[name];
+			}
+			// TODO: Remove properties that no longer exist
 		}
 
 		Template.prototype.getData = function () {
@@ -44897,7 +45992,7 @@
 				var propertyElement = $(this);
 				var propertyName = propertyElement.attr("data-component-prop");
 				if (typeof data[propertyName] === "undefined") {
-					console.warn("Property '" + propertyName + "' not set for component: " + Context._implName);
+	//				console.warn("Property '" + propertyName + "' not set for component: " + Context._implName);
 					data[propertyName] = "?";
 				}
 
@@ -45020,16 +46115,16 @@
 
 
 /***/ },
-/* 133 */
+/* 136 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(module) {/** @jsx React.DOM */
-	__webpack_require__(134)['for'](module, {
+	__webpack_require__(137)['for'](module, {
 
 		getTemplate: function (Context) {
 
 			return new Context.Template({
-				impl: __webpack_require__(135),
+				impl: __webpack_require__(138),
 				markup: function (element) {
 					var self = this;
 
@@ -45060,11 +46155,11 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(18)(module)))
 
 /***/ },
-/* 134 */
+/* 137 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
-	var COMPONENT = __webpack_require__(130);
+	var COMPONENT = __webpack_require__(133);
 
 	exports['for'] = function (module, Context) {
 
@@ -45083,7 +46178,7 @@
 
 
 /***/ },
-/* 135 */
+/* 138 */
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM */module.exports = function (Context) {
@@ -45107,7 +46202,7 @@
 	}
 
 /***/ },
-/* 136 */
+/* 139 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(module) {/** @jsx React.DOM */
@@ -45147,48 +46242,45 @@
 	}
 
 
-	__webpack_require__(137)['for'](module, {
+	__webpack_require__(140)['for'](module, {
 
-		getTemplateData: function (Context) {
 
-			var data = {};
-
-			var event = Context.appContext.get('stores').events.getModeledForDay(Context.appContext.get('selectedDayId'));
-			if (event.length > 0) {
-				if (event.length > 1) {
-					throw new Error("Only one event should be found!");
-				}
-				event = event[0];
-				data['deliveryTime'] = event.get("format.deliveryTime");
-				data['timeLeftToOrder'] = event.get("format.orderTimer") || "Too late for today!";
-				data['secondsLeftToOrder'] = parseInt(event.get("format.orderTimerSeconds") || 0);
-				data['deliverTo'] = event.get("consumerGroup.deliverLocation");
-				data['cartItemCount'] = Context.cartItemCount;
-				data['day_id'] = event.get("day_id");
-			}
-
-			data["tabs"] = Context.days.map(function (item) {
-				return {
-					"id": item.get('id'),
-					"tabDay": item.get("format.ddd"),
-					"tabDate": item.get("format.MMM-D")
-				};
-			});
-
-			return data;
+		mapData: function (data) {
+			return {
+				'canOrder': data.connect("page/loaded/selectedEvent/canOrder"),
+				'isPastDeadline': data.connect("page/loaded/selectedEvent/isPastDeadline"),
+				'deliveryTime': data.connect("page/loaded/selectedEvent/format.deliveryTime"),
+				'timeLeftToOrder': data.connect("page/loaded/selectedEvent/format.orderTimer", {
+					ifNot: "Too late for today!"
+				}),
+				'secondsLeftToOrder': data.connect("page/loaded/selectedEvent/format.orderTimerSeconds", {
+					ifNot: 0
+				}),
+				'deliverTo': data.connect("page/loaded/selectedEvent/consumer_group_id/deliverLocation"),
+				'cartItemCount': data.connect("cart/itemCount()"),
+				'day_id': data.connect("page/loaded/selectedEvent/day_id"),
+				'tabs': data.connect("days/*", function (data) {
+					return {
+						"id": data.connect("id"),
+						"tabDay": data.connect("format.ddd"),
+						"tabDate": data.connect("format.MMM-D")
+					};
+				})
+			};
 		},
 
 		getTemplate: function (Context) {
 
 			return new Context.Template({
-				impl: __webpack_require__(138),
-				markup: function (element) {
+				impl: __webpack_require__(141),
+				markup: function (element, data) {
 					var self = this;
 
 					self.liftSections(element);
 
 					$('[data-component-elm="checkoutButton"]', element).click(function () {
-					    if (Context.appContext.get('stores').cart.getItemCount() > 0) {
+
+					    if (data.cartItemCount > 0) {
 							Context.appContext.set('selectedView', "Checkout");
 						}
 						return false;
@@ -45225,26 +46317,27 @@
 
 
 				    var views = [];
-			    	if (Context.appContext.get("forceAllowOrder")) {
-			    		views.push("not-on-checkout");
-			    	}
+
+				    if (data.cartItemCount > 0) {
+				    	views.push("offer-checkout");
+				    }
 				    if (data['day_id']) {
 				    	views.push("menuAvailable");
-				    	if (
-				    		data['day_id'] === Context.appContext.get('todayId')
-				    	) {
+
+				    	if (data['day_id'] === Context.appContext.get('todayId')) {
 				    		views.push("orderCountdown");
-							if (
-								Context.appContext.get('selectedView') !== "Checkout" &&
-				    			data['secondsLeftToOrder'] > 0
-				    		) {
-								views.push("not-on-checkout");
-							}
 				    	}
-						self.showViews(element, views);
-				    } else {
-						self.showViews(element, views);
+
+				    	if (
+				    		data.canOrder &&
+				    		!data.isPastDeadline
+				    	) {
+					    	views.push("offer-checkout");
+				    	}
 				    }
+
+					self.showViews(element, views);
+
 
 				    if (
 				    	data['secondsLeftToOrder'] > 0 &&
@@ -45260,11 +46353,11 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(18)(module)))
 
 /***/ },
-/* 137 */
+/* 140 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
-	var COMPONENT = __webpack_require__(130);
+	var COMPONENT = __webpack_require__(133);
 
 	exports['for'] = function (module, Context) {
 
@@ -45274,21 +46367,19 @@
 
 		    onMount: function () {
 				this.props.appContext.get('stores').cart.on("update", this._trigger_forceUpdate);
-				this.props.appContext.get('stores').events.on("update", this._trigger_forceUpdate);
+	//			this.props.appContext.get('stores').events.on("update", this._trigger_forceUpdate);
 		    },
 
 		    onUnmount: function () {
-		    	if (this.eventsCheckInterval) {
-		    		clearInterval(this.eventsCheckInterval);
-		    		this.eventsCheckInterval = null;
-		    	}
 				this.props.appContext.get('stores').cart.off("update", this._trigger_forceUpdate);
-				this.props.appContext.get('stores').events.off("update", this._trigger_forceUpdate);
+	//			this.props.appContext.get('stores').events.off("update", this._trigger_forceUpdate);
 		    },
 
 		    render: function () {
 		    	var self = this;
 
+	return {};
+	/*
 		        var days = self.props.appContext.get('stores').days;
 		        var cart = self.props.appContext.get('stores').cart;
 		        var events = self.props.appContext.get('stores').events;
@@ -45310,6 +46401,7 @@
 
 		        	eventToday: self.modelRecordsWithStore(events, events.getToday()).pop()
 		        };
+	*/
 		    }
 
 		});
@@ -45318,7 +46410,7 @@
 
 
 /***/ },
-/* 138 */
+/* 141 */
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM */module.exports = function (Context) {
@@ -45340,7 +46432,7 @@
 	        React.createElement("small", {className: "text-important", "data-component-prop": "timeLeftToOrder"}, "1 hr 26min")
 	      ), 
 	      React.createElement("div", {className: "module module-right module-unpadded module-checkout"}, 
-	        React.createElement("a", {"data-component-elm": "checkoutButton", "data-component-view": "not-on-checkout", className: "btn btn-primary", href: "checkout"}, "Checkout (", React.createElement("span", {"data-component-prop": "cartItemCount"}, "1"), ")")
+	        React.createElement("a", {"data-component-elm": "checkoutButton", "data-component-view": "offer-checkout", className: "btn btn-primary", href: "checkout"}, "Checkout (", React.createElement("span", {"data-component-prop": "cartItemCount"}, "1"), ")")
 	      )
 	    ), 
 	    React.createElement("div", {className: "tabs", "data-component-section": "tabs"}, 
@@ -45357,16 +46449,16 @@
 	}
 
 /***/ },
-/* 139 */
+/* 142 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(module) {/** @jsx React.DOM */
-	__webpack_require__(140)['for'](module, {
+	__webpack_require__(143)['for'](module, {
 
 		getTemplate: function (Context) {
 
 			return new Context.Template({
-				impl: __webpack_require__(141),
+				impl: __webpack_require__(144),
 				markup: function (element) {
 					var self = this;
 
@@ -45436,11 +46528,11 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(18)(module)))
 
 /***/ },
-/* 140 */
+/* 143 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
-	var COMPONENT = __webpack_require__(130);
+	var COMPONENT = __webpack_require__(133);
 
 	exports['for'] = function (module, Context) {
 
@@ -45451,9 +46543,6 @@
 		    render: function () {
 		    	var self = this;
 
-
-	console.log("render footer comp");
-
 		        return {};
 		    }
 		});
@@ -45462,7 +46551,7 @@
 
 
 /***/ },
-/* 141 */
+/* 144 */
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM */module.exports = function (Context) {
@@ -45518,11 +46607,11 @@
 	}
 
 /***/ },
-/* 142 */
+/* 145 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(module) {/** @jsx React.DOM */
-	__webpack_require__(143)['for'](module, {
+	__webpack_require__(146)['for'](module, {
 		getHTML: function (Context) {
 
 			// TODO: Remove this once we can inject 'React' automatically at build time.
@@ -45537,13 +46626,13 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(18)(module)))
 
 /***/ },
-/* 143 */
+/* 146 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM *//** @jsx React.DOM */
 	'use strict'
 
-	var COMPONENT = __webpack_require__(130);
+	var COMPONENT = __webpack_require__(133);
 
 	exports['for'] = function (module, context) {
 
@@ -45551,7 +46640,7 @@
 		// # Load and configure libraries
 		// ##################################################
 
-		var React = __webpack_require__(119);
+		var React = __webpack_require__(122);
 
 
 		// TODO: Get base path via config.
@@ -45690,17 +46779,17 @@
 
 
 /***/ },
-/* 144 */
+/* 147 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(module) {/** @jsx React.DOM */
-	__webpack_require__(145)['for'](module, {
+	__webpack_require__(148)['for'](module, {
 
 		getTemplates: function (Context) {
 
 			return {
 				"landing":  new Context.Template({
-					impl: __webpack_require__(146),
+					impl: __webpack_require__(149),
 					markup: function (element) {
 
 
@@ -45807,7 +46896,7 @@
 				}),
 	// TODO: Put subscription logic here and use this template instead of adding it to 'page' above.			
 				"subscribe": new Context.Template({
-					impl: __webpack_require__(147),
+					impl: __webpack_require__(150),
 					markup: function (element) {
 					},
 					fill: function (element, data, Context) {
@@ -45830,11 +46919,11 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(18)(module)))
 
 /***/ },
-/* 145 */
+/* 148 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
-	var COMPONENT = __webpack_require__(130);
+	var COMPONENT = __webpack_require__(133);
 
 	exports['for'] = function (module, Context) {
 
@@ -45882,7 +46971,7 @@
 
 
 /***/ },
-/* 146 */
+/* 149 */
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM */module.exports = function (Context) {
@@ -46011,7 +47100,7 @@
 	}
 
 /***/ },
-/* 147 */
+/* 150 */
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM */module.exports = function (Context) {
@@ -46035,16 +47124,45 @@
 	}
 
 /***/ },
-/* 148 */
+/* 151 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(module) {/** @jsx React.DOM */
-	__webpack_require__(149)['for'](module, {
+	__webpack_require__(152)['for'](module, {
+
+
+		mapData: function (data) {
+			return {
+				'canOrder': data.connect("page/loaded/selectedEvent/canOrder"),
+				'isPastDeadline': data.connect("page/loaded/selectedEvent/isPastDeadline"),
+				'orderBy': data.connect("page/loaded/selectedEvent/format.orderByTime"),
+				'goodybagFee': data.connect("page/loaded/selectedEvent/format.goodybagFee"),
+				'restaurantTitle': data.connect("page/loaded/selectedEvent/vendor/title"),
+				'items': data.connect("page/loaded/selectedEventItems", function (data) {
+					return {
+						"id": data.connect("id"),
+						"item_id": data.connect("item_id/id"),
+						"photoUrl": data.connect("item_id/photo_url", {
+							suffix: "/convert?w=400&h=195&fit=crop"
+						}),
+						"modalPhotoUrl": data.connect("item_id/photo_url", {
+							suffix: "/convert?w=430&h=400&fit=crop"
+						}),
+						"title": data.connect("item_id/title"),
+						"price": data.connect("item_id/format.price"),
+						"description": data.connect("item_id/description"),
+						"tags": data.connect("item_id/tags"),
+						"quantity": data.connect("cartQuantity")
+					};
+				})
+			};
+		},
+
 
 		getTemplates: function (Context) {
 			return {
 				"menu_signup": new Context.Template({
-					impl: __webpack_require__(150),
+					impl: __webpack_require__(153),
 					markup: function (element) {
 
 						$('[data-component-elm="signupButton"]', element).click(function () {
@@ -46076,32 +47194,34 @@
 					}
 				}),
 				"feedback": new Context.Template({
-					impl: __webpack_require__(151),
+					impl: __webpack_require__(154),
 					markup: function (element) {
 					},
 					fill: function (element, data, Context) {
 					}
 				}),
 				"too_late": new Context.Template({
-					impl: __webpack_require__(152),
+					impl: __webpack_require__(155),
 					markup: function (element) {
 					},
 					fill: function (element, data, Context) {
 
+	console.log("TOO_LATE DATA", data);
+
 						this.fillProperties(element, {
-							"orderBy": Context.eventToday.get('format.orderByTime')
+							"orderBy": data.orderBy
 						});
 					}
 				}),
 				"menu_not_created": new Context.Template({
-					impl: __webpack_require__(153),
+					impl: __webpack_require__(156),
 					markup: function (element) {
 					},
 					fill: function (element, data, Context) {
 					}
 				}),
 				"popup": new Context.Template({
-					impl: __webpack_require__(154),
+					impl: __webpack_require__(157),
 					markup: function (element) {
 						var self = this;
 
@@ -46117,6 +47237,7 @@
 						});
 					},
 					fill: function (element, data, Context) {
+
 						this.fillProperties(element, data)
 
 						if (
@@ -46150,51 +47271,40 @@
 					}
 				}),
 				"menu": new Context.Template({
-					impl: __webpack_require__(155),
+					impl: __webpack_require__(158),
 					markup: function (element) {
 						this.liftSections(element);
 					},
-					fill: function (element, data, Context) {
+					fill: function (element, menuData, Context) {
 						var self = this;
 
-						var items = Context.items[Context.appContext.get('selectedDay')] || [];
+	console.log("MENU DATA", menuData);
 
-						if (Context.selectedEvent) {
-							self.fillProperties(element, {
-								"restaurantTitle": Context.vendorTitlesForEvents[Context.selectedEvent.get("id")] || "",
-								"goodybagFee": Context.selectedEvent.get("format.goodybagFee")
-							});
-						}
+						self.fillProperties(element, {
+							"restaurantTitle": menuData.restaurantTitle,
+							"goodybagFee": menuData.goodybagFee
+						});
 
-						self.renderSection(element, "items", items.map(function(item) {
-							return {
-								"id": item.get('id'),
-								"item_id": item.get('item_id'),
-								"photoUrl": item.get("item.photo_url") + "/convert?w=400&h=195&fit=crop",
-								"modalPhotoUrl": item.get("item.photo_url") + "/convert?w=430&h=400&fit=crop",
-								"title": item.get("item.title"),
-								"price": item.get("item.format.price"),
-								"description": item.get("item.description"),
-								"tags": item.get("item.tags"),
-								"quantity": item.get("cartQuantity")
-							};
-						}), function getView (data) {
+						self.renderSection(element, "items", menuData.items, function getView (data) {
 							return 'default';
-					    }, function hookEvents(elm, data) {
+					    }, function hookEvents(elm, itemData) {
 
-					    	if (data.quantity > 0) {
+					    	if (itemData.quantity > 0) {
 					    		elm.addClass("is-in-cart");
 					    	} else {
 					    		elm.removeClass("is-in-cart");
 					    	}
 
 							$('[data-component-elm="showDetailsLink"]', elm).click(function () {
-								Context.templates.popup.fill(data);
+								Context.templates.popup.fill(itemData);
 							});
 
 
 							$('[data-component-elm="removeButton"]', elm).click(function () {
-								Context.appContext.get('stores').cart.removeItem(data.item_id).then(function () {
+
+	console.log("REMOVE", itemData.item_id);
+
+								Context.appContext.get('stores').cart.removeItem(itemData.item_id).then(function () {
 									Context.forceUpdate();
 								});
 								return false;
@@ -46225,20 +47335,13 @@
 								Context.appContext.get('stores').cart.addItem(itemBlock.attr("data-id"), options);
 	*/
 
-								Context.appContext.get('stores').cart.addItem(data.item_id, options).then(function () {
+								Context.appContext.get('stores').cart.addItem(itemData.item_id, options).then(function () {
 									Context.forceUpdate();
 								});
 								return false;
 							});
 
-							if (
-								Context.appContext.get("forceAllowOrder") ||
-								(
-									Context.selectedEvent &&
-									Context.selectedEvent.get("day_id") === Context.appContext.get('todayId') &&
-									parseInt(Context.selectedEvent.get("format.orderTimerSeconds") || 0)
-								)
-							) {
+							if (menuData.canOrder) {
 								self.showViews(elm, [
 									"orderable"
 								]);
@@ -46249,7 +47352,7 @@
 
 							var tags = [];
 							try {
-								if (data.tags) tags = JSON.parse(data.tags);
+								if (itemData.tags) tags = JSON.parse(itemData.tags);
 							} catch (err) {}
 
 							self.renderSection(elm, "diet-tags", tags.map(function(tag) {
@@ -46268,51 +47371,17 @@
 				})
 			};
 		},
-	/*
-		afterRender: function (Context, element) {
 
-			$('.tab', element).removeClass('active');
-		    $('.tab[data-tab="' + Context.appContext.get('selectedDay') + '"]', element).addClass('active');
-
-		    Context.ensureForNodes(
-		    	$('a[data-link="action:show-detail"]', element),
-		    	'click',
-		    	function () {
-
-		    		var itemBlock = $(this).parentsUntil(element, '.item-block');
-
-			        $('.ui.modal[data-id="' + itemBlock.attr("data-id") + '"][data-day="' + itemBlock.attr("data-day") + '"]').modal({
-						onDeny: function() {
-							return true;
-						},
-						onApprove : function() {
-							return false;
-						}
-			        }).modal('show');
-		    	}
-		    );
-
-		},
-	*/
-		getHTML: function (Context) {
-
+		getHTML: function (Context, data) {
 
 			// TODO: Remove this once we can inject 'React' automatically at build time.
 			var React = Context.REACT;
 
 			var Panel = "";
 
-			var items = Context.items[Context.appContext.get('selectedDay')] || [];
+			if (data.items) {
 
-			if (
-				Context.eventToday &&
-				items.length > 0
-			) {
-
-				if (
-					Context.appContext.get('selectedDayId') === Context.appContext.get('todayId') &&
-					parseInt(Context.eventToday.get("format.orderTimerSeconds") || 0) <= 0
-				) {
+				if (data.canOrder && data.isPastDeadline) {
 
 					Panel = (
 						React.createElement("div", null, 
@@ -46360,11 +47429,11 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(18)(module)))
 
 /***/ },
-/* 149 */
+/* 152 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
-	var COMPONENT = __webpack_require__(130);
+	var COMPONENT = __webpack_require__(133);
 
 	exports['for'] = function (module, Context) {
 
@@ -46470,7 +47539,7 @@
 
 
 /***/ },
-/* 150 */
+/* 153 */
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM */module.exports = function (Context) {
@@ -46504,7 +47573,7 @@
 	}
 
 /***/ },
-/* 151 */
+/* 154 */
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM */module.exports = function (Context) {
@@ -46520,7 +47589,7 @@
 	}
 
 /***/ },
-/* 152 */
+/* 155 */
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM */module.exports = function (Context) {
@@ -46540,7 +47609,7 @@
 	}
 
 /***/ },
-/* 153 */
+/* 156 */
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM */module.exports = function (Context) {
@@ -46560,7 +47629,7 @@
 	}
 
 /***/ },
-/* 154 */
+/* 157 */
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM */module.exports = function (Context) {
@@ -46600,7 +47669,7 @@
 	}
 
 /***/ },
-/* 155 */
+/* 158 */
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM */module.exports = function (Context) {
@@ -46789,11 +47858,11 @@
 	}
 
 /***/ },
-/* 156 */
+/* 159 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(module) {/** @jsx React.DOM */
-	__webpack_require__(157)['for'](module, {
+	__webpack_require__(160)['for'](module, {
 
 		singleton: function (Context) {
 
@@ -46813,7 +47882,7 @@
 
 			return {			
 				"too_late": new Context.Template({
-					impl: __webpack_require__(158),
+					impl: __webpack_require__(161),
 					markup: function (element) {
 					},
 					fill: function (element, data, Context) {
@@ -46824,7 +47893,7 @@
 					}
 				}),
 				"no_items": new Context.Template({
-					impl: __webpack_require__(159),
+					impl: __webpack_require__(162),
 					markup: function (element) {
 
 						$('[data-component-elm="addItemsLink"]', element).click(function () {
@@ -46836,7 +47905,7 @@
 					}
 				}),
 				"navbar": new Context.Template({
-					impl: __webpack_require__(160),
+					impl: __webpack_require__(163),
 					markup: function (element) {
 
 						$('[data-component-elm="addItemsLink"]', element).click(function () {
@@ -46848,7 +47917,7 @@
 					}
 				}),
 				"form": new Context.Template({
-					impl: __webpack_require__(161),
+					impl: __webpack_require__(164),
 					markup: function (element) {
 
 						this.liftSections(element);
@@ -46898,7 +47967,7 @@
 					}
 				}),
 				"items": new Context.Template({
-					impl: __webpack_require__(162),
+					impl: __webpack_require__(165),
 					markup: function (element) {
 
 						this.liftSections(element);
@@ -46934,7 +48003,7 @@
 					}
 				}),
 				"summary": new Context.Template({
-					impl: __webpack_require__(163),
+					impl: __webpack_require__(166),
 					markup: function (element) {
 
 						$('[data-component-elm="placeOrderButton"]', element).click(function () {
@@ -47154,11 +48223,11 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(18)(module)))
 
 /***/ },
-/* 157 */
+/* 160 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
-	var COMPONENT = __webpack_require__(130);
+	var COMPONENT = __webpack_require__(133);
 
 	exports['for'] = function (module, Context) {
 
@@ -47217,7 +48286,7 @@
 
 
 /***/ },
-/* 158 */
+/* 161 */
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM */module.exports = function (Context) {
@@ -47237,7 +48306,7 @@
 	}
 
 /***/ },
-/* 159 */
+/* 162 */
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM */module.exports = function (Context) {
@@ -47257,7 +48326,7 @@
 	}
 
 /***/ },
-/* 160 */
+/* 163 */
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM */module.exports = function (Context) {
@@ -47277,7 +48346,7 @@
 	}
 
 /***/ },
-/* 161 */
+/* 164 */
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM */module.exports = function (Context) {
@@ -47341,7 +48410,7 @@
 	}
 
 /***/ },
-/* 162 */
+/* 165 */
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM */module.exports = function (Context) {
@@ -47406,7 +48475,7 @@
 	}
 
 /***/ },
-/* 163 */
+/* 166 */
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM */module.exports = function (Context) {
@@ -47446,17 +48515,17 @@
 	}
 
 /***/ },
-/* 164 */
+/* 167 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(module) {/** @jsx React.DOM */
-	__webpack_require__(165)['for'](module, {
+	__webpack_require__(168)['for'](module, {
 
 		getTemplates: function (Context) {
 
 			return {
 				"orderPlaced": new Context.Template({
-					impl: __webpack_require__(166),
+					impl: __webpack_require__(169),
 					markup: function (element) {
 
 					},
@@ -47497,11 +48566,11 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(18)(module)))
 
 /***/ },
-/* 165 */
+/* 168 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
-	var COMPONENT = __webpack_require__(130);
+	var COMPONENT = __webpack_require__(133);
 
 	exports['for'] = function (module, Context) {
 
@@ -47548,7 +48617,7 @@
 
 
 /***/ },
-/* 166 */
+/* 169 */
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM */module.exports = function (Context) {
@@ -47576,11 +48645,11 @@
 	}
 
 /***/ },
-/* 167 */
+/* 170 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(module) {/** @jsx React.DOM */
-	__webpack_require__(168)['for'](module, {
+	__webpack_require__(171)['for'](module, {
 		getHTML: function (Context) {
 
 			// TODO: Remove this once we can inject 'React' automatically at build time.
@@ -47595,11 +48664,11 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(18)(module)))
 
 /***/ },
-/* 168 */
+/* 171 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
-	var COMPONENT = __webpack_require__(130);
+	var COMPONENT = __webpack_require__(133);
 
 	exports['for'] = function (module, Context) {
 
@@ -47653,168 +48722,168 @@
 
 
 /***/ },
-/* 169 */
+/* 172 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
 	var WEB_COMPONENTS = {
-		"Header": __webpack_require__(170),
-		"Menu": __webpack_require__(171),
-		"Footer": __webpack_require__(172)
+		"Header": __webpack_require__(173),
+		"Menu": __webpack_require__(174),
+		"Footer": __webpack_require__(175)
 	};
 
 	var EMAIL_COMPONENTS = {
 		CORRESPONDENCE: {
-			"Header": __webpack_require__(173),
-			"Footer": __webpack_require__(176)
+			"Header": __webpack_require__(176),
+			"Footer": __webpack_require__(179)
 		},
 		LIST: {
-			"Header": __webpack_require__(177),
-			"Footer": __webpack_require__(180)
+			"Header": __webpack_require__(180),
+			"Footer": __webpack_require__(183)
 		}
 	};
 
 
-	exports.RootView = __webpack_require__(181);
+	exports.RootView = __webpack_require__(184);
 
 	exports.views = {
 		"Landing": {
-			"component": __webpack_require__(182),
+			"component": __webpack_require__(185),
 			"config": {}
 		},
 		"Menu_Email": {
-			"component": __webpack_require__(183),
+			"component": __webpack_require__(186),
 			"config": {},
 			"components": EMAIL_COMPONENTS.LIST
 		},
 		"Menu_Web": {
-			"component": __webpack_require__(184),
+			"component": __webpack_require__(187),
 			"config": {},
 			"components": WEB_COMPONENTS
 		},
 		"Checkout": {
-			"component": __webpack_require__(185),
+			"component": __webpack_require__(188),
 			"config": {},
 			"components": WEB_COMPONENTS
 		},
 		"Order_Placed": {
-			"component": __webpack_require__(186),
+			"component": __webpack_require__(189),
 			"config": {},
 			"components": WEB_COMPONENTS
 		},
 		"Receipt": {
-			"component": __webpack_require__(187),
+			"component": __webpack_require__(190),
 			"config": {},
 			"components": EMAIL_COMPONENTS.CORRESPONDENCE
 		},
 		"Order_Arrived": {
-			"component": __webpack_require__(188),
+			"component": __webpack_require__(191),
 			"config": {},
 			"components": WEB_COMPONENTS.CORRESPONDENCE
 		},
 		"ContactUs": {
-			"component": __webpack_require__(190),
+			"component": __webpack_require__(193),
 			"config": {},
 			"components": WEB_COMPONENTS
 		},
 		"PrivacyPolicy": {
-			"component": __webpack_require__(192),
+			"component": __webpack_require__(195),
 			"config": {},
 			"components": WEB_COMPONENTS
 		},
 		"TermsOfService": {
-			"component": __webpack_require__(194),
+			"component": __webpack_require__(197),
 			"config": {},
 			"components": WEB_COMPONENTS
 		},
 		"Admin_Events": {
 			"group": "admin",
 			"container": "iframe",
-			"component": __webpack_require__(196),
+			"component": __webpack_require__(199),
 			"config": {}
 		},
 		"Admin_Orders": {
 			"group": "admin",
 			"container": "iframe",
-			"component": __webpack_require__(197),
+			"component": __webpack_require__(200),
 			"config": {}
 		},
 		"Admin_Restaurant": {
 			"group": "admin",
 			"container": "iframe",
-			"component": __webpack_require__(198),
+			"component": __webpack_require__(201),
 			"config": {}
 		},
 		"Admin_Company": {
 			"group": "admin",
 			"container": "iframe",
-			"component": __webpack_require__(199),
+			"component": __webpack_require__(202),
 			"config": {}
 		},	
 		"Model_Days": {
 			"group": "model",
-			"component": __webpack_require__(200),
+			"component": __webpack_require__(203),
 			"config": {}
 		},
 		"Model_Events": {
 			"group": "model",
-			"component": __webpack_require__(201),
+			"component": __webpack_require__(204),
 			"config": {}
 		},
 		"Model_Vendors": {
 			"group": "model",
-			"component": __webpack_require__(202),
+			"component": __webpack_require__(205),
 			"config": {}
 		},
 		"Model_Items": {
 			"group": "model",
-			"component": __webpack_require__(203),
+			"component": __webpack_require__(206),
 			"config": {}
 		},
 		"Model_Menus": {
 			"group": "model",
-			"component": __webpack_require__(204),
+			"component": __webpack_require__(207),
 			"config": {}
 		},
 		"Model_ConsumerGroups": {
 			"group": "model",
-			"component": __webpack_require__(205),
+			"component": __webpack_require__(208),
 			"config": {}
 		},
 		"Model_Consumers": {
 			"group": "model",
-			"component": __webpack_require__(206),
+			"component": __webpack_require__(209),
 			"config": {}
 		},
 		"Model_ConsumerGroupSubscriptions": {
 			"group": "model",
-			"component": __webpack_require__(207),
+			"component": __webpack_require__(210),
 			"config": {}
 		},
 		"Model_Cart": {
 			"group": "model",
-			"component": __webpack_require__(208),
+			"component": __webpack_require__(211),
 			"config": {}
 		},
 		"Model_Orders": {
 			"group": "model",
-			"component": __webpack_require__(209),
+			"component": __webpack_require__(212),
 			"config": {}
 		},
 		"Model_OrderStatus": {
 			"group": "model",
-			"component": __webpack_require__(210),
+			"component": __webpack_require__(213),
 			"config": {}
 		}
 	};
 
 
 /***/ },
-/* 170 */
+/* 173 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(module) {/** @jsx React.DOM */
-	__webpack_require__(134)['for'](module, {
+	__webpack_require__(137)['for'](module, {
 		getHTML: function (Context) {
 
 			// TODO: Remove this once we can inject 'React' automatically at build time.
@@ -47833,11 +48902,11 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(18)(module)))
 
 /***/ },
-/* 171 */
+/* 174 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(module) {/** @jsx React.DOM */
-	__webpack_require__(137)['for'](module, {
+	__webpack_require__(140)['for'](module, {
 
 
 		afterRender: function (Context, element) {
@@ -47983,11 +49052,11 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(18)(module)))
 
 /***/ },
-/* 172 */
+/* 175 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(module) {/** @jsx React.DOM */
-	__webpack_require__(140)['for'](module, {
+	__webpack_require__(143)['for'](module, {
 		getHTML: function (Context) {
 
 			// TODO: Remove this once we can inject 'React' automatically at build time.
@@ -48008,22 +49077,22 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(18)(module)))
 
 /***/ },
-/* 173 */
-[281, 174],
-/* 174 */
-[282, 175],
-/* 175 */
+/* 176 */
+[291, 177],
+/* 177 */
+[292, 178],
+/* 178 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(4)();
 	exports.push([module.id, "", ""]);
 
 /***/ },
-/* 176 */
+/* 179 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
-	var React = __webpack_require__(119);
+	var React = __webpack_require__(122);
 
 	module.exports = (
 		React.createElement("div", {className: "sixteen wide column"}, 
@@ -48040,22 +49109,22 @@
 
 
 /***/ },
-/* 177 */
-[281, 178],
-/* 178 */
-[282, 179],
-/* 179 */
+/* 180 */
+[291, 181],
+/* 181 */
+[292, 182],
+/* 182 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(4)();
 	exports.push([module.id, "\n.ui.basic.table.GBL_Skin_invisibleTable td {\n\tborder-top: 0px !important;\n}\n.ui.basic.table.GBL_Skin_lessPadding td {\n\tpadding-top: 3px;\n\tpadding-bottom: 3px;\n}\n\n.ui.table tr.GBL_Skin_invisibleRowBorder td {\n\tborder-top: 0px !important;\n}\n.ui.table tr.GBL_Skin_lessPadding td {\n\tpadding-top: 3px !important;\n\tpadding-bottom: 3px !important;\n}\n", ""]);
 
 /***/ },
-/* 180 */
+/* 183 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
-	var React = __webpack_require__(119);
+	var React = __webpack_require__(122);
 
 	module.exports = (
 		React.createElement("div", {className: "sixteen wide column"}, 
@@ -48078,11 +49147,11 @@
 
 
 /***/ },
-/* 181 */
+/* 184 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(module) {/** @jsx React.DOM */
-	__webpack_require__(143)['for'](module, {
+	__webpack_require__(146)['for'](module, {
 		getViewTabHTML: function (Context) {
 			return (
 			  React.createElement("div", {className: "item", onClick: Context.onClick}, 
@@ -48220,11 +49289,11 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(18)(module)))
 
 /***/ },
-/* 182 */
+/* 185 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(module) {/** @jsx React.DOM */
-	__webpack_require__(145)['for'](module, {
+	__webpack_require__(148)['for'](module, {
 
 		afterRender: function (Context, element) {
 			var self = this;
@@ -48557,11 +49626,11 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(18)(module)))
 
 /***/ },
-/* 183 */
+/* 186 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(module) {/** @jsx React.DOM */
-	__webpack_require__(129)['for'](module, {
+	__webpack_require__(132)['for'](module, {
 		getHTML: function (Context) {
 
 
@@ -48677,11 +49746,11 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(18)(module)))
 
 /***/ },
-/* 184 */
+/* 187 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(module) {/** @jsx React.DOM */
-	__webpack_require__(149)['for'](module, {
+	__webpack_require__(152)['for'](module, {
 		afterRender: function (Context, element) {
 
 			$('.tab', element).removeClass('active');
@@ -48918,11 +49987,11 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(18)(module)))
 
 /***/ },
-/* 185 */
+/* 188 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(module) {/** @jsx React.DOM */
-	__webpack_require__(157)['for'](module, {
+	__webpack_require__(160)['for'](module, {
 
 		afterRender: function (Context, element) {
 
@@ -49258,11 +50327,11 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(18)(module)))
 
 /***/ },
-/* 186 */
+/* 189 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(module) {/** @jsx React.DOM */
-	__webpack_require__(165)['for'](module, {
+	__webpack_require__(168)['for'](module, {
 
 		afterRender: function (Context, element) {
 		},
@@ -49338,11 +50407,11 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(18)(module)))
 
 /***/ },
-/* 187 */
+/* 190 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(module) {/** @jsx React.DOM */
-	__webpack_require__(168)['for'](module, {
+	__webpack_require__(171)['for'](module, {
 
 		afterRender: function (Context, element) {
 		},
@@ -49490,11 +50559,11 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(18)(module)))
 
 /***/ },
-/* 188 */
+/* 191 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(module) {/** @jsx React.DOM */
-	__webpack_require__(189)['for'](module, {
+	__webpack_require__(192)['for'](module, {
 
 		afterRender: function (Context, element) {
 		},
@@ -49551,11 +50620,11 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(18)(module)))
 
 /***/ },
-/* 189 */
+/* 192 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
-	var COMPONENT = __webpack_require__(130);
+	var COMPONENT = __webpack_require__(133);
 
 	exports['for'] = function (module, Context) {
 
@@ -49595,11 +50664,11 @@
 
 
 /***/ },
-/* 190 */
+/* 193 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(module) {/** @jsx React.DOM */
-	__webpack_require__(191)['for'](module, {
+	__webpack_require__(194)['for'](module, {
 
 		afterRender: function (Context, element) {
 			var self = this;
@@ -49731,11 +50800,11 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(18)(module)))
 
 /***/ },
-/* 191 */
+/* 194 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
-	var COMPONENT = __webpack_require__(130);
+	var COMPONENT = __webpack_require__(133);
 
 	exports['for'] = function (module, Context) {
 
@@ -49755,11 +50824,11 @@
 
 
 /***/ },
-/* 192 */
+/* 195 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(module) {/** @jsx React.DOM */
-	__webpack_require__(193)['for'](module, {
+	__webpack_require__(196)['for'](module, {
 
 		getHTML: function (Context) {
 
@@ -49826,11 +50895,11 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(18)(module)))
 
 /***/ },
-/* 193 */
+/* 196 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
-	var COMPONENT = __webpack_require__(130);
+	var COMPONENT = __webpack_require__(133);
 
 	exports['for'] = function (module, Context) {
 
@@ -49850,11 +50919,11 @@
 
 
 /***/ },
-/* 194 */
+/* 197 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(module) {/** @jsx React.DOM */
-	__webpack_require__(195)['for'](module, {
+	__webpack_require__(198)['for'](module, {
 
 		getHTML: function (Context) {
 
@@ -49928,11 +50997,11 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(18)(module)))
 
 /***/ },
-/* 195 */
+/* 198 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
-	var COMPONENT = __webpack_require__(130);
+	var COMPONENT = __webpack_require__(133);
 
 	exports['for'] = function (module, Context) {
 
@@ -49952,13 +51021,13 @@
 
 
 /***/ },
-/* 196 */
+/* 199 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM *//** @jsx React.DOM */
 	'use strict'
 
-	var COMPONENT = __webpack_require__(130);
+	var COMPONENT = __webpack_require__(133);
 
 	module.exports = COMPONENT.create({
 
@@ -50592,13 +51661,13 @@
 
 
 /***/ },
-/* 197 */
+/* 200 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM *//** @jsx React.DOM */
 	'use strict'
 
-	var COMPONENT = __webpack_require__(130);
+	var COMPONENT = __webpack_require__(133);
 
 	module.exports = COMPONENT.create({
 
@@ -50764,13 +51833,13 @@
 
 
 /***/ },
-/* 198 */
+/* 201 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM *//** @jsx React.DOM */
 	'use strict'
 
-	var COMPONENT = __webpack_require__(130);
+	var COMPONENT = __webpack_require__(133);
 
 	module.exports = COMPONENT.create({
 
@@ -51055,13 +52124,13 @@
 
 
 /***/ },
-/* 199 */
+/* 202 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM *//** @jsx React.DOM */
 	'use strict'
 
-	var COMPONENT = __webpack_require__(130);
+	var COMPONENT = __webpack_require__(133);
 
 	module.exports = COMPONENT.create({
 
@@ -51182,13 +52251,13 @@
 
 
 /***/ },
-/* 200 */
+/* 203 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM *//** @jsx React.DOM */
 	'use strict'
 
-	var React = __webpack_require__(119)
+	var React = __webpack_require__(122)
 
 	module.exports = React.createClass({displayName: "module.exports",
 
@@ -51228,13 +52297,13 @@
 
 
 /***/ },
-/* 201 */
+/* 204 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM *//** @jsx React.DOM */
 	'use strict'
 
-	var COMPONENT = __webpack_require__(130);
+	var COMPONENT = __webpack_require__(133);
 
 	module.exports = COMPONENT.create({
 
@@ -51283,13 +52352,13 @@
 
 
 /***/ },
-/* 202 */
+/* 205 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM *//** @jsx React.DOM */
 	'use strict'
 
-	var React = __webpack_require__(119)
+	var React = __webpack_require__(122)
 
 	module.exports = React.createClass({displayName: "module.exports",
 
@@ -51326,11 +52395,11 @@
 
 
 /***/ },
-/* 203 */
+/* 206 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
-	var COMPONENT = __webpack_require__(130);
+	var COMPONENT = __webpack_require__(133);
 
 	module.exports = COMPONENT.create({
 
@@ -51395,14 +52464,14 @@
 
 
 /***/ },
-/* 204 */
+/* 207 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM *//** @jsx React.DOM */
 	'use strict'
 
 	var UNDERSCORE = __webpack_require__(14);
-	var React = __webpack_require__(119)
+	var React = __webpack_require__(122)
 
 	module.exports = React.createClass({displayName: "module.exports",
 
@@ -51562,13 +52631,13 @@
 
 
 /***/ },
-/* 205 */
+/* 208 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM *//** @jsx React.DOM */
 	'use strict'
 
-	var React = __webpack_require__(119)
+	var React = __webpack_require__(122)
 
 	module.exports = React.createClass({displayName: "module.exports",
 
@@ -51605,13 +52674,13 @@
 
 
 /***/ },
-/* 206 */
+/* 209 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM *//** @jsx React.DOM */
 	'use strict'
 
-	var React = __webpack_require__(119)
+	var React = __webpack_require__(122)
 
 	module.exports = React.createClass({displayName: "module.exports",
 
@@ -51648,11 +52717,11 @@
 
 
 /***/ },
-/* 207 */
+/* 210 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
-	var COMPONENT = __webpack_require__(130);
+	var COMPONENT = __webpack_require__(133);
 
 	module.exports = COMPONENT.create({
 
@@ -51723,14 +52792,14 @@
 
 
 /***/ },
-/* 208 */
+/* 211 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM *//** @jsx React.DOM */
 	'use strict'
 
 	var UNDERSCORE = __webpack_require__(14);
-	var React = __webpack_require__(119)
+	var React = __webpack_require__(122)
 
 	module.exports = React.createClass({displayName: "module.exports",
 
@@ -51781,13 +52850,13 @@
 
 
 /***/ },
-/* 209 */
+/* 212 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM *//** @jsx React.DOM */
 	'use strict'
 
-	var React = __webpack_require__(119)
+	var React = __webpack_require__(122)
 
 	module.exports = React.createClass({displayName: "module.exports",
 
@@ -51830,13 +52899,13 @@
 
 
 /***/ },
-/* 210 */
+/* 213 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM *//** @jsx React.DOM */
 	'use strict'
 
-	var React = __webpack_require__(119)
+	var React = __webpack_require__(122)
 
 	module.exports = React.createClass({displayName: "module.exports",
 
@@ -51873,18 +52942,18 @@
 
 
 /***/ },
-/* 211 */
+/* 214 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
 	var COMMON = __webpack_require__(8);
 	var UNDERSCORE = __webpack_require__(14);
-	var PAGE = __webpack_require__(212);
+	var PAGE = __webpack_require__(215);
 	var MOMENT = __webpack_require__(17);
 	var Q = __webpack_require__(11);
 	var HEAD = head;
 
-	var Model = __webpack_require__(215);
+	var Model = __webpack_require__(218);
 
 
 	exports['for'] = function (overrides) {
@@ -51902,6 +52971,7 @@
 
 
 		var appContext = Model.makeContextForClient(config);
+
 
 
 		COMMON.init(appContext.get('sessionToken'), appContext.get('context'));
@@ -52017,6 +53087,25 @@
 				click: false
 			});
 
+	/*
+	appContext.get("data").collection("page").add({
+		"id": "loaded",
+		"selectedDay": MOMENT().format("YYYY-MM-DD"),
+		"selectedEvent": context.dbfilter.event_id
+	});
+	*/
+
+			appContext.on("change:selectedDayId", function () {
+
+	console.info("CHANEGD SELECETD DAY!", appContext.get("selectedDayId"));
+
+				appContext.get("data").collection("page").get("loaded").set(
+					"selectedDay",
+					appContext.get("selectedDayId")
+				);
+			});
+
+
 			appContext.on("change:selectedView", function () {
 
 				try {
@@ -52069,7 +53158,7 @@
 		function initLiveNotify () {
 			try {
 
-				var client = __webpack_require__(216);
+				var client = __webpack_require__(219);
 				var socket = client.connect(appContext.get("windowOrigin"));
 
 				// TODO: Handle re-connects by re-sending init.
@@ -52081,7 +53170,6 @@
 
 					if (data.collection === "order-status") {
 
-						appContext.get('stores').orderStatus.fetchStatusInfoForOrderHashId(data.orderHashId);
 
 					}
 				});
@@ -52123,6 +53211,18 @@
 					appContext.set('lockedView', context.lockedView);
 				}
 
+
+
+
+	appContext.get("data").collection("page").add({
+		"id": "loaded",
+		"selectedDay": MOMENT().format("YYYY-MM-DD")
+	//	"selectedEvent": context.dbfilter.event_id
+	});
+
+
+
+
 				// We have a context ID that we should use to load
 				// data to init the UI.
 				if (context.type === "order") {
@@ -52159,6 +53259,13 @@
 
 					if (context.dbfilter.consumer_group_id) {				
 
+						setTimeout(function () {
+
+							finalizeInit();
+
+						}, 10);
+
+	/*
 						return appContext.get('stores').events.loadForConsumerGroupId(context.dbfilter.consumer_group_id).then(function (events) {
 							return appContext.get('stores').menus.loadForEvents(events.map(function (event) {
 								return event.get('id');
@@ -52201,6 +53308,7 @@
 						}).fail(function (err) {
 							console.error("Error loading data", err.stack);
 						});
+	*/
 
 		/*
 							var today = appContext.get('stores').events.modelRecords(appContext.get('stores').events.getToday())[0];
@@ -52302,7 +53410,7 @@
 
 
 /***/ },
-/* 212 */
+/* 215 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/** @jsx React.DOM */  /* globals require, module */
@@ -52313,7 +53421,7 @@
 	   * Module dependencies.
 	   */
 
-	  var pathtoRegexp = __webpack_require__(213);
+	  var pathtoRegexp = __webpack_require__(216);
 
 	  /**
 	   * Module exports.
@@ -52931,10 +54039,10 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(12)))
 
 /***/ },
-/* 213 */
+/* 216 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/** @jsx React.DOM */var isArray = __webpack_require__(214);
+	/** @jsx React.DOM */var isArray = __webpack_require__(217);
 
 	/**
 	 * Expose `pathToRegexp`.
@@ -53139,7 +54247,7 @@
 
 
 /***/ },
-/* 214 */
+/* 217 */
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM */module.exports = Array.isArray || function (arr) {
@@ -53148,7 +54256,7 @@
 
 
 /***/ },
-/* 215 */
+/* 218 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
@@ -53178,7 +54286,8 @@
 		    windowOrigin: null,
 		    stores: null,
 		    skin: null,
-		    forceAllowOrder: false
+		    forceAllowOrder: false,
+		    data: null
 		};
 
 	//	Object.keys(overrides).forEach(function (name) {
@@ -53203,6 +54312,7 @@
 		        lockedView: "string",
 		        windowOrigin: "string",
 		        forceAllowOrder: "boolean",
+		        data: "object",
 	//		},
 	//	    session: {
 		        selectedView: "string",
@@ -53299,7 +54409,7 @@
 
 
 /***/ },
-/* 216 */
+/* 219 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
@@ -53307,10 +54417,10 @@
 	 * Module dependencies.
 	 */
 
-	var url = __webpack_require__(218);
-	var parser = __webpack_require__(220);
-	var Manager = __webpack_require__(228);
-	var debug = __webpack_require__(217)('socket.io-client');
+	var url = __webpack_require__(221);
+	var parser = __webpack_require__(223);
+	var Manager = __webpack_require__(231);
+	var debug = __webpack_require__(220)('socket.io-client');
 
 	/**
 	 * Module exports.
@@ -53387,12 +54497,12 @@
 	 * @api public
 	 */
 
-	exports.Manager = __webpack_require__(228);
-	exports.Socket = __webpack_require__(260);
+	exports.Manager = __webpack_require__(231);
+	exports.Socket = __webpack_require__(263);
 
 
 /***/ },
-/* 217 */
+/* 220 */
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM */
@@ -53535,7 +54645,7 @@
 
 
 /***/ },
-/* 218 */
+/* 221 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {/** @jsx React.DOM */
@@ -53543,8 +54653,8 @@
 	 * Module dependencies.
 	 */
 
-	var parseuri = __webpack_require__(219);
-	var debug = __webpack_require__(217)('socket.io-client:url');
+	var parseuri = __webpack_require__(222);
+	var debug = __webpack_require__(220)('socket.io-client:url');
 
 	/**
 	 * Module exports.
@@ -53615,7 +54725,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 219 */
+/* 222 */
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM *//**
@@ -53646,7 +54756,7 @@
 
 
 /***/ },
-/* 220 */
+/* 223 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
@@ -53654,12 +54764,12 @@
 	 * Module dependencies.
 	 */
 
-	var debug = __webpack_require__(222)('socket.io-parser');
-	var json = __webpack_require__(223);
-	var isArray = __webpack_require__(225);
-	var Emitter = __webpack_require__(221);
-	var binary = __webpack_require__(226);
-	var isBuf = __webpack_require__(227);
+	var debug = __webpack_require__(225)('socket.io-parser');
+	var json = __webpack_require__(226);
+	var isArray = __webpack_require__(228);
+	var Emitter = __webpack_require__(224);
+	var binary = __webpack_require__(229);
+	var isBuf = __webpack_require__(230);
 
 	/**
 	 * Protocol version.
@@ -54052,7 +55162,7 @@
 
 
 /***/ },
-/* 221 */
+/* 224 */
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM */
@@ -54222,9 +55332,9 @@
 
 
 /***/ },
-/* 222 */
-217,
-/* 223 */
+/* 225 */
+220,
+/* 226 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_RESULT__;/** @jsx React.DOM *//*! JSON v3.2.6 | http://bestiejs.github.io/json3 | Copyright 2012-2013, Kit Cambridge | http://kit.mit-license.org */
@@ -54234,7 +55344,7 @@
 
 	  // Detect the `define` function exposed by asynchronous module loaders. The
 	  // strict `define` check is necessary for compatibility with `r.js`.
-	  var isLoader = "function" === "function" && __webpack_require__(224);
+	  var isLoader = "function" === "function" && __webpack_require__(227);
 
 	  // Detect native implementations.
 	  var nativeJSON = typeof JSON == "object" && JSON;
@@ -55091,7 +56201,7 @@
 
 
 /***/ },
-/* 224 */
+/* 227 */
 /***/ function(module, exports) {
 
 	/* WEBPACK VAR INJECTION */(function(__webpack_amd_options__) {module.exports = __webpack_amd_options__;
@@ -55099,9 +56209,9 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, {}))
 
 /***/ },
-/* 225 */
-214,
-/* 226 */
+/* 228 */
+217,
+/* 229 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {/** @jsx React.DOM *//*global Blob,File*/
@@ -55110,8 +56220,8 @@
 	 * Module requirements
 	 */
 
-	var isArray = __webpack_require__(225);
-	var isBuf = __webpack_require__(227);
+	var isArray = __webpack_require__(228);
+	var isBuf = __webpack_require__(230);
 
 	/**
 	 * Replaces every Buffer | ArrayBuffer in packet with a numbered placeholder.
@@ -55249,7 +56359,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 227 */
+/* 230 */
 /***/ function(module, exports) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {/** @jsx React.DOM */
@@ -55269,7 +56379,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 228 */
+/* 231 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
@@ -55277,17 +56387,17 @@
 	 * Module dependencies.
 	 */
 
-	var url = __webpack_require__(218);
-	var eio = __webpack_require__(229);
-	var Socket = __webpack_require__(260);
-	var Emitter = __webpack_require__(249);
-	var parser = __webpack_require__(220);
-	var on = __webpack_require__(262);
-	var bind = __webpack_require__(263);
-	var object = __webpack_require__(266);
-	var debug = __webpack_require__(217)('socket.io-client:manager');
-	var indexOf = __webpack_require__(257);
-	var Backoff = __webpack_require__(267);
+	var url = __webpack_require__(221);
+	var eio = __webpack_require__(232);
+	var Socket = __webpack_require__(263);
+	var Emitter = __webpack_require__(252);
+	var parser = __webpack_require__(223);
+	var on = __webpack_require__(265);
+	var bind = __webpack_require__(266);
+	var object = __webpack_require__(269);
+	var debug = __webpack_require__(220)('socket.io-client:manager');
+	var indexOf = __webpack_require__(260);
+	var Backoff = __webpack_require__(270);
 
 	/**
 	 * Module exports
@@ -55778,19 +56888,19 @@
 
 
 /***/ },
-/* 229 */
+/* 232 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
-	module.exports =  __webpack_require__(230);
+	module.exports =  __webpack_require__(233);
 
 
 /***/ },
-/* 230 */
+/* 233 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
-	module.exports = __webpack_require__(231);
+	module.exports = __webpack_require__(234);
 
 	/**
 	 * Exports parser
@@ -55798,25 +56908,25 @@
 	 * @api public
 	 *
 	 */
-	module.exports.parser = __webpack_require__(240);
+	module.exports.parser = __webpack_require__(243);
 
 
 /***/ },
-/* 231 */
+/* 234 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {/** @jsx React.DOM *//**
 	 * Module dependencies.
 	 */
 
-	var transports = __webpack_require__(232);
-	var Emitter = __webpack_require__(249);
-	var debug = __webpack_require__(251)('engine.io-client:socket');
-	var index = __webpack_require__(257);
-	var parser = __webpack_require__(240);
-	var parseuri = __webpack_require__(258);
-	var parsejson = __webpack_require__(259);
-	var parseqs = __webpack_require__(250);
+	var transports = __webpack_require__(235);
+	var Emitter = __webpack_require__(252);
+	var debug = __webpack_require__(254)('engine.io-client:socket');
+	var index = __webpack_require__(260);
+	var parser = __webpack_require__(243);
+	var parseuri = __webpack_require__(261);
+	var parsejson = __webpack_require__(262);
+	var parseqs = __webpack_require__(253);
 
 	/**
 	 * Module exports.
@@ -55931,9 +57041,9 @@
 	 */
 
 	Socket.Socket = Socket;
-	Socket.Transport = __webpack_require__(239);
-	Socket.transports = __webpack_require__(232);
-	Socket.parser = __webpack_require__(240);
+	Socket.Transport = __webpack_require__(242);
+	Socket.transports = __webpack_require__(235);
+	Socket.parser = __webpack_require__(243);
 
 	/**
 	 * Creates transport of the given type.
@@ -56514,17 +57624,17 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 232 */
+/* 235 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {/** @jsx React.DOM *//**
 	 * Module dependencies
 	 */
 
-	var XMLHttpRequest = __webpack_require__(233);
-	var XHR = __webpack_require__(236);
-	var JSONP = __webpack_require__(254);
-	var websocket = __webpack_require__(255);
+	var XMLHttpRequest = __webpack_require__(236);
+	var XHR = __webpack_require__(239);
+	var JSONP = __webpack_require__(257);
+	var websocket = __webpack_require__(258);
 
 	/**
 	 * Export transports.
@@ -56574,11 +57684,11 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 233 */
+/* 236 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */// browser shim for xmlhttprequest module
-	var hasCORS = __webpack_require__(234);
+	var hasCORS = __webpack_require__(237);
 
 	module.exports = function(opts) {
 	  var xdomain = opts.xdomain;
@@ -56616,7 +57726,7 @@
 
 
 /***/ },
-/* 234 */
+/* 237 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
@@ -56624,7 +57734,7 @@
 	 * Module dependencies.
 	 */
 
-	var global = __webpack_require__(235);
+	var global = __webpack_require__(238);
 
 	/**
 	 * Module exports.
@@ -56645,7 +57755,7 @@
 
 
 /***/ },
-/* 235 */
+/* 238 */
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM */
@@ -56659,18 +57769,18 @@
 
 
 /***/ },
-/* 236 */
+/* 239 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {/** @jsx React.DOM *//**
 	 * Module requirements.
 	 */
 
-	var XMLHttpRequest = __webpack_require__(233);
-	var Polling = __webpack_require__(237);
-	var Emitter = __webpack_require__(249);
-	var inherit = __webpack_require__(238);
-	var debug = __webpack_require__(251)('engine.io-client:polling-xhr');
+	var XMLHttpRequest = __webpack_require__(236);
+	var Polling = __webpack_require__(240);
+	var Emitter = __webpack_require__(252);
+	var inherit = __webpack_require__(241);
+	var debug = __webpack_require__(254)('engine.io-client:polling-xhr');
 
 	/**
 	 * Module exports.
@@ -57050,18 +58160,18 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 237 */
+/* 240 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM *//**
 	 * Module dependencies.
 	 */
 
-	var Transport = __webpack_require__(239);
-	var parseqs = __webpack_require__(250);
-	var parser = __webpack_require__(240);
-	var inherit = __webpack_require__(238);
-	var debug = __webpack_require__(251)('engine.io-client:polling');
+	var Transport = __webpack_require__(242);
+	var parseqs = __webpack_require__(253);
+	var parser = __webpack_require__(243);
+	var inherit = __webpack_require__(241);
+	var debug = __webpack_require__(254)('engine.io-client:polling');
 
 	/**
 	 * Module exports.
@@ -57074,7 +58184,7 @@
 	 */
 
 	var hasXHR2 = (function() {
-	  var XMLHttpRequest = __webpack_require__(233);
+	  var XMLHttpRequest = __webpack_require__(236);
 	  var xhr = new XMLHttpRequest({ xdomain: false });
 	  return null != xhr.responseType;
 	})();
@@ -57301,7 +58411,7 @@
 
 
 /***/ },
-/* 238 */
+/* 241 */
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM */
@@ -57313,15 +58423,15 @@
 	};
 
 /***/ },
-/* 239 */
+/* 242 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM *//**
 	 * Module dependencies.
 	 */
 
-	var parser = __webpack_require__(240);
-	var Emitter = __webpack_require__(249);
+	var parser = __webpack_require__(243);
+	var Emitter = __webpack_require__(252);
 
 	/**
 	 * Module exports.
@@ -57478,19 +58588,19 @@
 
 
 /***/ },
-/* 240 */
+/* 243 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {/** @jsx React.DOM *//**
 	 * Module dependencies.
 	 */
 
-	var keys = __webpack_require__(241);
-	var hasBinary = __webpack_require__(242);
-	var sliceBuffer = __webpack_require__(244);
-	var base64encoder = __webpack_require__(245);
-	var after = __webpack_require__(246);
-	var utf8 = __webpack_require__(247);
+	var keys = __webpack_require__(244);
+	var hasBinary = __webpack_require__(245);
+	var sliceBuffer = __webpack_require__(247);
+	var base64encoder = __webpack_require__(248);
+	var after = __webpack_require__(249);
+	var utf8 = __webpack_require__(250);
 
 	/**
 	 * Check if we are running an android browser. That requires us to use
@@ -57547,7 +58657,7 @@
 	 * Create a blob api even for blob builder when vendor prefixes exist
 	 */
 
-	var Blob = __webpack_require__(248);
+	var Blob = __webpack_require__(251);
 
 	/**
 	 * Encodes a packet.
@@ -58079,7 +59189,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 241 */
+/* 244 */
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM */
@@ -58104,7 +59214,7 @@
 
 
 /***/ },
-/* 242 */
+/* 245 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {/** @jsx React.DOM */
@@ -58112,7 +59222,7 @@
 	 * Module requirements.
 	 */
 
-	var isArray = __webpack_require__(243);
+	var isArray = __webpack_require__(246);
 
 	/**
 	 * Module exports.
@@ -58169,9 +59279,9 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 243 */
-214,
-/* 244 */
+/* 246 */
+217,
+/* 247 */
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM *//**
@@ -58206,7 +59316,7 @@
 
 
 /***/ },
-/* 245 */
+/* 248 */
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM *//*
@@ -58271,7 +59381,7 @@
 
 
 /***/ },
-/* 246 */
+/* 249 */
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM */module.exports = after
@@ -58305,7 +59415,7 @@
 
 
 /***/ },
-/* 247 */
+/* 250 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_RESULT__;/* WEBPACK VAR INJECTION */(function(module, global) {/** @jsx React.DOM *//*! http://mths.be/utf8js v2.0.0 by @mathias */
@@ -58549,7 +59659,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(18)(module), (function() { return this; }())))
 
 /***/ },
-/* 248 */
+/* 251 */
 /***/ function(module, exports) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {/** @jsx React.DOM *//**
@@ -58605,9 +59715,9 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 249 */
-221,
-/* 250 */
+/* 252 */
+224,
+/* 253 */
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM *//**
@@ -58650,7 +59760,7 @@
 
 
 /***/ },
-/* 251 */
+/* 254 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
@@ -58660,7 +59770,7 @@
 	 * Expose `debug()` as the module.
 	 */
 
-	exports = module.exports = __webpack_require__(252);
+	exports = module.exports = __webpack_require__(255);
 	exports.log = log;
 	exports.formatArgs = formatArgs;
 	exports.save = save;
@@ -58803,7 +59913,7 @@
 
 
 /***/ },
-/* 252 */
+/* 255 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
@@ -58819,7 +59929,7 @@
 	exports.disable = disable;
 	exports.enable = enable;
 	exports.enabled = enabled;
-	exports.humanize = __webpack_require__(253);
+	exports.humanize = __webpack_require__(256);
 
 	/**
 	 * The currently active debug mode names, and names to skip.
@@ -59006,7 +60116,7 @@
 
 
 /***/ },
-/* 253 */
+/* 256 */
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM *//**
@@ -59123,7 +60233,7 @@
 
 
 /***/ },
-/* 254 */
+/* 257 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {/** @jsx React.DOM */
@@ -59131,8 +60241,8 @@
 	 * Module requirements.
 	 */
 
-	var Polling = __webpack_require__(237);
-	var inherit = __webpack_require__(238);
+	var Polling = __webpack_require__(240);
+	var inherit = __webpack_require__(241);
 
 	/**
 	 * Module exports.
@@ -59363,18 +60473,18 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 255 */
+/* 258 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM *//**
 	 * Module dependencies.
 	 */
 
-	var Transport = __webpack_require__(239);
-	var parser = __webpack_require__(240);
-	var parseqs = __webpack_require__(250);
-	var inherit = __webpack_require__(238);
-	var debug = __webpack_require__(251)('engine.io-client:websocket');
+	var Transport = __webpack_require__(242);
+	var parser = __webpack_require__(243);
+	var parseqs = __webpack_require__(253);
+	var inherit = __webpack_require__(241);
+	var debug = __webpack_require__(254)('engine.io-client:websocket');
 
 	/**
 	 * `ws` exposes a WebSocket-compatible interface in
@@ -59382,7 +60492,7 @@
 	 * in the browser.
 	 */
 
-	var WebSocket = __webpack_require__(256);
+	var WebSocket = __webpack_require__(259);
 
 	/**
 	 * Module exports.
@@ -59607,7 +60717,7 @@
 
 
 /***/ },
-/* 256 */
+/* 259 */
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM */
@@ -59656,7 +60766,7 @@
 
 
 /***/ },
-/* 257 */
+/* 260 */
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM */
@@ -59671,7 +60781,7 @@
 	};
 
 /***/ },
-/* 258 */
+/* 261 */
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM *//**
@@ -59716,7 +60826,7 @@
 
 
 /***/ },
-/* 259 */
+/* 262 */
 /***/ function(module, exports) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {/** @jsx React.DOM *//**
@@ -59754,7 +60864,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 260 */
+/* 263 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
@@ -59762,13 +60872,13 @@
 	 * Module dependencies.
 	 */
 
-	var parser = __webpack_require__(220);
-	var Emitter = __webpack_require__(249);
-	var toArray = __webpack_require__(261);
-	var on = __webpack_require__(262);
-	var bind = __webpack_require__(263);
-	var debug = __webpack_require__(217)('socket.io-client:socket');
-	var hasBin = __webpack_require__(264);
+	var parser = __webpack_require__(223);
+	var Emitter = __webpack_require__(252);
+	var toArray = __webpack_require__(264);
+	var on = __webpack_require__(265);
+	var bind = __webpack_require__(266);
+	var debug = __webpack_require__(220)('socket.io-client:socket');
+	var hasBin = __webpack_require__(267);
 
 	/**
 	 * Module exports.
@@ -60145,7 +61255,7 @@
 
 
 /***/ },
-/* 261 */
+/* 264 */
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM */module.exports = toArray
@@ -60164,7 +61274,7 @@
 
 
 /***/ },
-/* 262 */
+/* 265 */
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM */
@@ -60194,7 +61304,7 @@
 
 
 /***/ },
-/* 263 */
+/* 266 */
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM *//**
@@ -60223,7 +61333,7 @@
 
 
 /***/ },
-/* 264 */
+/* 267 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {/** @jsx React.DOM */
@@ -60231,7 +61341,7 @@
 	 * Module requirements.
 	 */
 
-	var isArray = __webpack_require__(265);
+	var isArray = __webpack_require__(268);
 
 	/**
 	 * Module exports.
@@ -60288,9 +61398,9 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 265 */
-214,
-/* 266 */
+/* 268 */
+217,
+/* 269 */
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM */
@@ -60379,7 +61489,7 @@
 	};
 
 /***/ },
-/* 267 */
+/* 270 */
 /***/ function(module, exports) {
 
 	/** @jsx React.DOM */
@@ -60470,163 +61580,893 @@
 
 
 /***/ },
-/* 268 */
+/* 271 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
 	var COMMON = __webpack_require__(8);
+	var DATA = __webpack_require__(113);
 
-
-
-	var Record = COMMON.API.BACKBONE.Model.extend({
-		idAttribute: "id"
-	});
-
-	var Store = COMMON.API.BACKBONE.Collection.extend({
-		model: Record
-	});
-
-
-	var INCLUDE_PRIOR_WEEKEND = false;
-
-
-	var store = new Store();
-
-	function makeStartOfWeek () {
-		var startOfWeek = COMMON.API.MOMENT().startOf('week');
-		// If Saturday or Sunday, jump to next week.
-		if (
-			COMMON.API.MOMENT().day() === 6// ||
-	//		COMMON.API.MOMENT().day() === 0
-		) {
-			startOfWeek.add(7, 'days');
-		}
-		return startOfWeek;
-	}
-
-	var day = 1;
-	if (INCLUDE_PRIOR_WEEKEND) {
-		day -= 2;
-	}
-	for (; day<=5 ; day++) {
-		store.add({
-			"id": makeStartOfWeek().add(day, 'days').format("YYYY-MM-DD")
-		});
-	}
 
 	exports['for'] = function (context) {
 
-		// @see http://ampersandjs.com/docs#ampersand-state
-		var Model = store.Model = COMMON.API.AMPERSAND_STATE.extend({
-			name: "days",
-			props: {
-				id: "string"
-		    },
-		    derived: {
-			    "format.ddd": {
-					deps: [
-						"id"
-					],
-		            fn: function () {
-		            	return COMMON.API.MOMENT(this.id, "YYYY-MM-DD").format("ddd");
-		            }
-			    },
-			    "format.MMM-D": {
-					deps: [
-						"id"
-					],
-		            fn: function () {
-		            	return COMMON.API.MOMENT(this.id, "YYYY-MM-DD").format("MMM D");
-		            }
-			    }
+		var collection = DATA.init({
+
+			name: "page",
+
+			model: __webpack_require__(272).forContext(context),
+			record: {
+	// TODO: Use record and get rid of model
+
+				"selectedDay": {
+					"linksTo": "days"
+				},
+				"selectedEvent": {
+					"linksTo": "events",
+					// TODO: Implement
+					/*
+					"connect": function (data) {
+						return data.connect('events/[day_id="' + this.selectedDay + '"]/id');
+					}
+					*/
+					"derived": function () {
+
+	//console.log("GET SEECTED EVENT FOR SELECTE DAY", this);
+
+						return DATA.get('events/[day_id="' + this.selectedDay + '"]/id');
+					}
+				},
+				"selectedEventItems": {
+					"linksTo": "menus",
+					"derived": function () {
+
+	//console.log("GET SEECTED MENU ITEMS FOR SELECTE DAY", this);
+
+						var records = DATA.get('menus/*[event_id="' + this.get("selectedEvent") + '"]');
+
+	//console.log("GET SEECTED MENU ITEMS FOR SELECTE DAY records", records);
+
+						return records;
+
+					}
+				}
+			},
+
+			collection: {
+
+			},
+
+			// Low-level
+			store: {
+
+
 			}
 		});
 
-		store.getDayIds = function () {
-			return store.where().map(function (day) {
-				return day.get("id");
-			});
-		}
+		return collection.store;
+	}
 
-		store.loadForEvent = function (event_id) {
-	// TODO: DEPRECATE
-	/*
-			var day_id = context.appContext.get('stores').events.get(event_id).get("day_id");
 
-			if (!store.get(day_id)) {
-				store.add({
-					"id": day_id
-				});
-			}
-	*/
-			return COMMON.API.Q.resolve();
-		}
 
-		store.modelRecords = function (records) {
-			return records.map(function (record, i) {
-				// Store model on backbone row so we can re-use it on subsequent calls.
-				// NOTE: We purposfully store the model using `records[i]` instead of `record`
-				//       as `record`
-				if (store._byId[records[i].get("id")].__model) {
-					return store._byId[records[i].get("id")].__model;
-				}
-				var fields = {};
-				store.Model.getFields().forEach(function (field) {
-					if (!records[i].has(field)) return;
-					fields[field] = records[i].get(field);
-				});
-				return store._byId[records[i].get("id")].__model = new store.Model(fields);
-			});
-		}
+/***/ },
+/* 272 */
+/***/ function(module, exports, __webpack_require__) {
 
-		return store;
+	/** @jsx React.DOM */
+
+	var COMMON = __webpack_require__(9);
+
+
+	exports.forContext = function (context) {
+
+		var common = COMMON.forContext(context);
+
+		// @see http://ampersandjs.com/docs#ampersand-state
+		var Model = COMMON.API.AMPERSAND_STATE.extend({
+			name: "context",
+			props: {
+				"selectedDay": "string"
+		    }
+		});
+
+		return Model;
 	}
 
 
 /***/ },
-/* 269 */
+/* 273 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
 	var COMMON = __webpack_require__(8);
+	var DATA = __webpack_require__(113);
 
-	var ENDPOINT = COMMON.makeEndpointUrl("items");
-
-
-
-	var Record = COMMON.API.BACKBONE.Model.extend({
-		idAttribute: "id"
-	});
-
-	var Store = COMMON.API.BACKBONE.Collection.extend({
-		model: Record,
-		url: ENDPOINT,
-		parse: function(data) {
-			return data.data.map(function (record) {
-				return COMMON.API.UNDERSCORE.extend(record.attributes, {
-					id: record.id
-				});
-			});
-		}
-	});
-
-
-	var store = new Store();
 
 	exports['for'] = function (context) {
+
+		function makeBaseTime () {
+		  return COMMON.API.MOMENT().seconds(0).minutes(0);
+		}
+
+		var collection = DATA.init({
+
+			name: "events",
+
+			model: __webpack_require__(274).forContext(context),
+			record: {
+	// TODO: Use record and get rid of model
+
+				"consumer_group_id": {
+					"linksTo": "consumer-groups"
+				},
+
+
+			    "vendor": {
+			    	"derived": function () {
+		            	// We use the vendor of the first item in this event.
+						var records = DATA.get('menus/*[event_id="' + this.id + '"]');
+						if (records.length === 0) {
+							return (undefined);
+						}
+						return DATA.get('vendors/' + records[0].get("vendor_id"));
+		            }
+			    }
+
+			},
+
+			collection: {			
+	// TODO: Clean collection
+			},
+
+			// Low-level
+			store: {
+	// Admin
+				setPresets: function (presets) {
+					try {
+						presets = JSON.parse(JSON.stringify(presets));
+						delete presets.day_id;
+						COMMON.storeLocalValueFor("admin.events", "presets", JSON.stringify(presets));
+					} catch (err) {
+						console.error("Error setting presets");
+					}
+				},
+
+	// Admin
+				getPresets: function () {
+			        var presets = COMMON.getLocalValueFor("admin.events", "presets");
+			        if (presets) {
+						try {
+							presets = JSON.parse(presets);
+						} catch (err) {
+							console.error("Error recovering presets from local storage");
+						}
+			        } else {
+						presets = {
+							menuEmailTime: makeBaseTime().hours(10).format("H:mm"),
+							menuSmsTime: makeBaseTime().hours(10).format("H:mm"),
+							orderByTime: makeBaseTime().hours(11).format("H:mm"),
+							deliveryStartTime: makeBaseTime().hours(12).format("H:mm"),
+							pickupEndTime: makeBaseTime().hours(12).minutes(30).format("H:mm"),
+							goodybagFee: "2.99"
+						};
+			        }
+			        return presets;
+			    },
+
+	// Admin
+				setReadyForEventId: function (event_id) {
+					var self = this;
+
+					return COMMON.API.Q.denodeify(function (callback) {
+
+						var payload = {
+							data: {
+								type: "events",
+								id: event_id,
+								attributes: {
+									"menuReady": true
+								}
+							}
+						};
+
+						return $.ajax({
+							method: "PATCH",
+							url: self.Source + "/" + event_id,
+							contentType: "application/vnd.api+json",
+							headers: {
+								"Accept": "application/vnd.api+json"
+							},
+			    			dataType: "json",
+							data: JSON.stringify(payload)
+						})
+						.done(function (response) {
+
+							return callback(null);
+						})
+						.fail(function(err) {
+
+			// TODO: Ask user to submit again.
+			console.log("error!", err.stack);
+
+							return callback(err);
+						});
+					})().then(function () {
+
+						return self.loadForId(event_id);
+					});
+				},
+
+	// Admin
+				setDeliveredForEventId: function (event_id) {
+					var self = this;
+
+					return COMMON.API.Q.denodeify(function (callback) {
+
+						var payload = {
+							data: {
+								type: "events",
+								id: event_id,
+								attributes: {
+									"delivered": true
+								}
+							}
+						};
+
+						return $.ajax({
+							method: "PATCH",
+							url: self.Source + "/" + event_id,
+							contentType: "application/vnd.api+json",
+							headers: {
+								"Accept": "application/vnd.api+json"
+							},
+			    			dataType: "json",
+							data: JSON.stringify(payload)
+						})
+						.done(function (response) {
+
+							return callback(null);
+						})
+						.fail(function(err) {
+
+			// TODO: Ask user to submit again.
+			console.log("error!", err.stack);
+
+							return callback(err);
+						});
+					})().then(function () {
+
+						return self.loadForId(event_id);
+					});
+				},
+
+	// Admin
+				deleteForEventId: function (event_id) {
+					var self = this;
+					return COMMON.API.Q.denodeify(function (callback) {
+
+						return $.ajax({
+							method: "DELETE",
+							url: self.Source + "/" + event_id
+						})
+						.done(function (response) {
+
+							self.remove(event_id);
+
+							return callback(null);
+						})
+						.fail(function(err) {
+
+			// TODO: Ask user to submit again.
+			console.log("error!", err.stack);
+
+							return callback(err);
+						});
+					})();
+				},
+
+	// Admin
+				createEvent: function (fields) {
+					var self = this;
+
+					return COMMON.API.Q.denodeify(function (callback) {
+
+						function getDataForFields (fields) {
+							var data = {};
+							self.Model.getFields().forEach(function (name) {
+								if (typeof fields[name] !== "undefined") {
+									data[name] = "" + fields[name];
+								}
+							});
+							data["goodybagFee"] = data["goodybagFee"] * 100;
+
+							data["orderByTime"] = COMMON.API.MOMENT(
+								data["day_id"] + ":" + data["orderByTime"], "YYYY-MM-DD:H:mm"
+							).format();
+							data["deliveryStartTime"] = COMMON.API.MOMENT(
+								data["day_id"] + ":" + data["deliveryStartTime"], "YYYY-MM-DD:H:mm"
+							).format();
+							data["pickupEndTime"] = COMMON.API.MOMENT(
+								data["day_id"] + ":" + data["pickupEndTime"], "YYYY-MM-DD:H:mm"
+							).format();
+							data["menuEmailTime"] = COMMON.API.MOMENT(
+								data["day_id"] + ":" + data["menuEmailTime"], "YYYY-MM-DD:H:mm"
+							).format();
+							data["menuSmsTime"] = COMMON.API.MOMENT(
+								data["day_id"] + ":" + data["menuSmsTime"], "YYYY-MM-DD:H:mm"
+							).format();
+
+
+							return data;
+						}
+
+						var payload = {
+							data: {
+								type: "events",
+								attributes: getDataForFields(fields)
+							}
+						};
+
+						return $.ajax({
+							method: "POST",
+							url: self.Source + "/",
+							contentType: "application/vnd.api+json",
+							headers: {
+								"Accept": "application/vnd.api+json"
+							},
+			    			dataType: "json",
+							data: JSON.stringify(payload)
+						})
+						.done(function (response) {
+
+							return callback(null, response.data);
+						})
+						.fail(function(err) {
+
+			// TODO: Ask user to submit again.
+			console.log("error!", err.stack);
+
+							return callback(err);
+						});
+					})();
+				},
+
+
+	// App
+				getToday: function () {
+					var today = this.get(context.appContext.get('context').dbfilter.event_id);
+					if (!today) return [];
+					return [
+						today
+					];
+				},
+
+	// App
+				getModeledForDay: function (day_id) {
+					return this.modelRecords(this.where({
+						"day_id": day_id
+					}));
+				},
+	// Admin
+				loadForDay: function (day_id) {
+					var self = this;
+					return COMMON.API.Q.denodeify(function (callback) {
+				        self.fetch({
+				            data: $.param({
+				                "filter[day_id]": day_id
+				            }),
+				            success: function () {
+				            	return callback(null);
+				            }
+				        });
+					})();
+				},
+	// App
+				loadForId: function (id) {
+					var self = this;
+					return COMMON.API.Q.denodeify(function (callback) {
+				        self.fetch({
+				            data: $.param({
+				                "filter[id]": id
+				            }),
+				            success: function () {
+				            	return callback(null, self.get(id));
+				            }
+				        });
+					})();
+				},
+	// Admin
+				loadForConsumerGroupId: function (id) {
+					var self = this;
+
+					var dayIds = context.appContext.get('stores').days.getDayIds();
+
+					return COMMON.API.Q.denodeify(function (callback) {
+				        self.fetch({
+				            data: $.param({
+				                "filter[consumer_group_id]": id,
+				                "filter[day_id]": dayIds.join(",")
+				            }),
+				            success: function () {
+				            	return callback(null, self.where({
+				            		"consumer_group_id": id
+				            	}));
+				            }
+				        });
+					})();
+				},
+
+				modelRecords: function (records) {
+					var self = this;
+					return COMMON.resolveForeignKeys(self, records, {
+						"consumer_group_id": {
+							store: __webpack_require__(275),
+							model: context.appContext.get('stores').consumerGroups.Model,
+							localFieldPrefix: "consumerGroup"
+						}
+					}).map(function (record, i) {
+						// Store model on backbone row so we can re-use it on subsequent calls.
+						if (self._byId[records[i].get("id")].__model) {
+							var model = self._byId[records[i].get("id")].__model;
+							self.Model.getFields().forEach(function (field) {
+								if (record.has(field) && model.get(field) !== record.get(field)) {
+									model.set(field, record.get(field));
+								}
+							});
+							return model;
+						}
+						var fields = {};
+						self.Model.getFields().forEach(function (field) {
+							if (!records[i].has(field)) return;
+							fields[field] = records[i].get(field);
+						});
+						return self._byId[records[i].get("id")].__model = new self.Model(fields);
+					});
+				},
+
+				modelRecord: function (record) {
+					var self = this;
+					if (!Array.isArray(record)) {
+						record = [
+							record
+						];
+					}
+					return COMMON.resolveForeignKeys(self, record, {
+						"consumer_group_id": {
+							store: __webpack_require__(275),
+							model: context.appContext.get('stores').consumerGroups.Model,
+							localFieldPrefix: "consumerGroup"
+						}
+					}, true).then(function (records) {
+						return records.map(function (record, i) {
+							// Store model on backbone row so we can re-use it on subsequent calls.
+							if (self._byId[records[i].get("id")].__model) {
+								var model = self._byId[records[i].get("id")].__model;
+								self.Model.getFields().forEach(function (field) {
+									if (record.has(field) && model.get(field) !== record.get(field)) {
+										model.set(field, record.get(field));
+									}
+								});
+								return model;
+							}
+							var fields = {};
+							self.Model.getFields().forEach(function (field) {
+								if (!records[i].has(field)) return;
+								fields[field] = records[i].get(field);
+							});
+							return self._byId[records[i].get("id")].__model = new self.Model(fields);
+						})[0];
+					});
+				}
+
+			}
+		});
+
+		return collection.store;
+	}
+
+
+
+/***/ },
+/* 274 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/** @jsx React.DOM */
+
+	var COMMON = __webpack_require__(9);
+
+
+	exports.forContext = function (context) {
+
+		var common = COMMON.forContext(context);
+
+		// @see http://ampersandjs.com/docs#ampersand-state
+		var Model = COMMON.API.AMPERSAND_STATE.extend({
+			name: "events",
+			props: {
+				id: "string",
+		        day_id: "string",
+		        "orderByTime": "string",
+		        "deliveryStartTime": "string",
+		        "pickupEndTime": "string",
+		        "menuEmailTime": "string",
+		        "menuSmsTime": "string",
+		        "consumer_group_id": "string",
+		        "goodybagFee": "string",
+		        "tip": "string",
+		        "token": "string",
+		        "menuReady": "boolean",
+		        "menuEmailsSent": "boolean",
+		        "delivered": "boolean",
+		        "deliveredEmailsSent": "boolean",
+
+		        // TODO: Add these dynamically using foreign model.
+		        "consumerGroup.title": "string",
+		        "consumerGroup.alias": "string",
+		        "consumerGroup.contact": "string",
+		        "consumerGroup.address": "string",
+		        "consumerGroup.pickupLocation": "string",
+		        "consumerGroup.deliverLocation": "string",
+		        "consumerGroup.orderTax": "string"
+		    },
+		    derived: {
+			    "day.format.ddd": {
+					deps: [
+						"day_id"
+					],
+		            fn: function () {
+		            	return common.MOMENT_CT(this.day_id, "YYYY-MM-DD").format("ddd");
+		            }
+			    },
+			    "day.format.MMM": {
+					deps: [
+						"day_id"
+					],
+		            fn: function () {
+		            	return common.MOMENT_CT(this.day_id, "YYYY-MM-DD").format("MMM");
+		            }
+			    },
+			    "day.format.D": {
+					deps: [
+						"day_id"
+					],
+		            fn: function () {
+		            	return common.MOMENT_CT(this.day_id, "YYYY-MM-DD").format("D");
+		            }
+			    },
+			    "day.format.dddd-type": {
+					deps: [
+						"day_id"
+					],
+		            fn: function () {
+		            	var str = common.MOMENT_CT(this.day_id, "YYYY-MM-DD").format("dd");
+		            	if (str === "Sa" || str === "Su") {
+		            		return "Weekend"
+		            	} else {
+		            		return "Weekday"
+		            	}
+		            }
+			    },
+			    "ordersLocked": {
+					deps: [
+						"orderByTime"
+					],
+					cache: false,
+		            fn: function () {
+		            	return common.MOMENT_CT().isAfter(this.orderByTime);
+		            }
+			    },
+			    "isPastDeadline": {
+					deps: [
+						"orderByTime"
+					],
+					cache: false,
+		            fn: function () {
+		            	var orderByTime = common.MOMENT_CT(this.orderByTime);
+		            	if (orderByTime.format("ddd") === common.MOMENT_CT().format("ddd")) {
+		            		// Event for today. Now see if order deadline has passed.
+			            	if (orderByTime.isBefore(common.MOMENT_CT())) {
+			            		// After deadline
+			            		return true;
+			            	}
+			            	return false;
+		            	} else
+		            	// Check if before today
+		            	if (orderByTime.isBefore(common.MOMENT_CT().subtract(1, 'day').endOf('day'))) {
+			            	return true;
+		            	}
+		            	return false;
+		            }
+			    },
+			    "canOrder": {
+					deps: [
+						"orderByTime"
+					],
+					cache: false,
+		            fn: function () {
+		            	var orderByTime = common.MOMENT_CT(this.orderByTime);
+		            	if (orderByTime.format("ddd") === common.MOMENT_CT().format("ddd")) {
+		            		// Event for today. Now see if order deadline has passed.
+			            	if (orderByTime.isBefore(common.MOMENT_CT())) {
+			            		// After deadline
+			            		return false;
+			            	}
+			            	return true;
+		            	} else
+		            	// Check if before today
+		            	if (orderByTime.isBefore(common.MOMENT_CT().subtract(1, 'day').endOf('day'))) {
+			            	return false;
+		            	}
+		            	return true;
+		            }
+			    },
+
+			    "format.deliveryDate": common.makeFormatter("deliveryDate"),
+			    "format.deliveryTime": common.makeFormatter("deliveryTime"),
+			    "format.orderByTime": common.makeFormatter("orderByTime"),
+			    "format.menuEmailTime": common.makeFormatter("menuEmailTime"),
+			    "format.menuSmsTime": common.makeFormatter("menuSmsTime"),
+
+
+			    "format.orderTimer": {
+					deps: [
+						"orderByTime"
+					],
+					cache: false,
+		            fn: function () {
+		            	var orderByTime = common.MOMENT_CT(this.orderByTime);
+		            	if (orderByTime.isBefore(common.MOMENT_CT())) {
+		            		// After deadline
+		            		return false;
+		            	}
+		            	return common.MOMENT_CT().to(orderByTime, true)
+		            		.replace(/minutes/, "min");
+		            }
+			    },
+			    "format.orderTimerSeconds": {
+					deps: [
+						"orderByTime"
+					],
+					cache: false,
+		            fn: function () {
+		            	var orderByTime = common.MOMENT_CT(this.orderByTime);
+		            	var diff = orderByTime.diff(common.MOMENT_CT(), 'seconds');
+		            	if (diff<0) diff = 0;
+		            	return diff;
+		            }
+			    },		    
+			    "format.goodybagFee": {
+			    	deps: [
+						"goodybagFee"
+					],
+		            fn: function () {
+		            	return COMMON.API.NUMERAL(this.goodybagFee/100).format('$0.00');
+		            }
+			    },
+			    "format.menuReady": {
+			    	deps: [
+						"menuReady"
+					],
+					cache: false,
+		            fn: function () {
+		            	return (this.menuReady ? "Yes" : "No");
+		            }
+			    },
+			    "format.menuEmailsSent": {
+			    	deps: [
+						"menuEmailsSent"
+					],
+					cache: false,
+		            fn: function () {
+		            	return (this.menuEmailsSent ? "Yes" : "No");
+		            }
+			    },
+			    "format.delivered": {
+			    	deps: [
+						"delivered"
+					],
+					cache: false,
+		            fn: function () {
+		            	return (this.delivered ? "Yes" : "No");
+		            }
+			    },
+			    "menuUrl": {
+			    	deps: [
+						"token"
+					],
+					cache: false,
+		            fn: function () {
+		            	return context.appContext.get("windowOrigin") + "/event-" + this.token;
+		            }
+			    },
+			    "menuEmailUrl": {
+			    	deps: [
+						"token"
+					],
+					cache: false,
+		            fn: function () {
+		            	return context.appContext.get("windowOrigin") + "/eventemail-" + this.token;
+		            }
+			    }
+		    }
+		});
+
+		return Model;
+	}
+
+
+/***/ },
+/* 275 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/** @jsx React.DOM */
+	var COMMON = __webpack_require__(8);
+	var DATA = __webpack_require__(113);
+
+
+	exports['for'] = function (context) {
+
+		var collection = DATA.init({
+
+			name: "consumer-groups",
+
+			model: __webpack_require__(276).forContext(context),
+			record: {
+	// TODO: Use record and get rid of model
+			},
+
+			collection: {			
+	// TODO: Clean collection
+			},
+
+			// Low-level
+			store: {
+
+	// Admin
+				setLunchroomOpenForId: function (id) {
+					var self = this;
+
+					return COMMON.API.Q.denodeify(function (callback) {
+
+						self.get(id).set("lunchroomLive", true);
+
+						var payload = {
+							data: {
+								type: "consumer-groups",
+								id: id,
+								attributes: {
+									"lunchroomLive": true
+								}
+							}
+						};
+
+						return $.ajax({
+							method: "PATCH",
+							url: self.Source + "/" + id,
+							contentType: "application/vnd.api+json",
+							headers: {
+								"Accept": "application/vnd.api+json"
+							},
+			    			dataType: "json",
+							data: JSON.stringify(payload)
+						})
+						.done(function (response) {
+
+							return callback(null);
+						})
+						.fail(function(err) {
+
+			// TODO: Ask user to submit again.
+			console.log("error!", err.stack);
+
+							return callback(err);
+						});
+					})();
+				},
+
+	// Admin
+				setLunchroomClosedForId: function (id) {
+					var self = this;
+
+					return COMMON.API.Q.denodeify(function (callback) {
+
+						self.get(id).set("lunchroomLive", false);
+
+						var payload = {
+							data: {
+								type: "consumer-groups",
+								id: id,
+								attributes: {
+									"lunchroomLive": false
+								}
+							}
+						};
+
+						return $.ajax({
+							method: "PATCH",
+							url: self.Source + "/" + id,
+							contentType: "application/vnd.api+json",
+							headers: {
+								"Accept": "application/vnd.api+json"
+							},
+			    			dataType: "json",
+							data: JSON.stringify(payload)
+						})
+						.done(function (response) {
+
+							return callback(null);
+						})
+						.fail(function(err) {
+
+			// TODO: Ask user to submit again.
+			console.log("error!", err.stack);
+
+							return callback(err);
+						});
+					})();
+				},
+
+	// App
+				getLunchroom: function () {
+					var today = context.appContext.get("stores").events.getToday()[0];
+					return [
+						this.get(today.get("consumer_group_id"))
+					];
+				},
+	// App
+				loadForId: function (consumer_group_id) {
+					var self = this;
+					return COMMON.API.Q.denodeify(function (callback) {
+				        self.fetch({
+				            reset: true,
+				            remove: true,
+				            data: $.param({
+				                "filter[id]": consumer_group_id
+				            }),
+				            success: function () {
+				            	return callback(null);
+				            }
+				        });
+					})();
+				},
+
+				modelRecords: function (records) {
+					var self = this;
+					return records.map(function (record, i) {
+
+	//console.log("record", record);
+
+						// Store model on backbone row so we can re-use it on subsequent calls.
+						// NOTE: We purposfully store the model using `records[i]` instead of `record`
+						//       as `record` 
+						if (self._byId[records[i].get("id")].__model) {
+							return self._byId[records[i].get("id")].__model;
+						}
+						var fields = {};
+						self.Model.getFields().forEach(function (field) {
+							if (!records[i].has(field)) return;
+							fields[field] = records[i].get(field);
+						});
+						return self._byId[records[i].get("id")].__model = new self.Model(fields);
+					});
+				}
+
+			}
+		});
+
+
 
 		if (context.ids) {
 			var deferred = COMMON.API.Q.defer();
 			context.ids = context.ids.filter(function (id) {
-				return !store._byId[id];
+				return !collection.store._byId[id];
 			});
 			if (context.ids.length > 0) {
-				store.once("sync", function () {
-					deferred.resolve(store);
+				collection.store.once("sync", function () {
+					deferred.resolve(collection.store);
 				});
 				// TODO: Ensure new entries are added to collection
 				//       instead of removing all other entries.
-				store.fetch({
+				collection.store.fetch({
 					reset: false,
 					remove: false,
 					data: $.param({
@@ -60634,88 +62474,201 @@
 					})
 				});
 			} else {
-				deferred.resolve(store);
+				deferred.resolve(collection.store);
 			}
 			return deferred.promise;
 		}
 
 
-
-		store.Model = __webpack_require__(270).forContext(context);
-
-		
-		store.modelRecords = function (records) {
-			return COMMON.resolveForeignKeys(store, records, {
-				"vendor_id": {
-					store: __webpack_require__(271),
-					model: context.appContext.get('stores').vendors.Model,
-					localFieldPrefix: "vendor"
-				}
-			}).map(function (record, i) {
-				// Store model on backbone row so we can re-use it on subsequent calls.
-				// NOTE: We purposfully store the model using `records[i]` instead of `record`
-				//       as `record` 
-				if (store._byId[records[i].get("id")].__model) {
-					return store._byId[records[i].get("id")].__model;
-				}
-				var fields = {};
-				store.Model.getFields().forEach(function (field) {
-					if (!records[i].has(field)) return;
-					fields[field] = records[i].get(field);
-				});
-				return store._byId[records[i].get("id")].__model = new store.Model(fields);
-			});
-		}
-
-		store.loadForVendor = function (vendor_id) {
-			var self = this;
-			return COMMON.API.Q.denodeify(function (callback) {
-		        self.fetch({
-		            data: $.param({
-		                "filter[vendor_id]": ""+vendor_id
-		            }),
-		            success: function () {
-		            	return callback(null);
-		            }
-		        });
-			})();
-		}
-
-		store.resolveRecordsAndWait = function (records, options) {
-
-			return COMMON.resolveForeignKeys(store, records, {
-				"vendor_id": {
-					store: __webpack_require__(271),
-					model: context.appContext.get('stores').vendors.Model,
-					localFieldPrefix: "vendor"
-				}
-			}, true, options).then(function (records) {
-
-				var idFieldName = (options && options.useIdField) || "id";
-
-				return records.map(function (record, i) {
-					// Store model on backbone row so we can re-use it on subsequent calls.
-					// NOTE: We purposfully store the model using `records[i]` instead of `record`
-					//       as `record`
-					if (records[i].__model) {
-						return records[i].__model;
-					}
-					var fields = {};
-					store.Model.getFields().forEach(function (field) {
-						if (!records[i].has(field)) return;
-						fields[field] = records[i].get(field);
-					});
-					return records[i].__model = new store.Model(fields);
-				});
-			});
-		}
-
-		return store;
+		return collection.store;
 	}
 
 
 /***/ },
-/* 270 */
+/* 276 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/** @jsx React.DOM */
+
+	var COMMON = __webpack_require__(9);
+
+
+	exports.forContext = function (context) {
+
+		var common = COMMON.forContext(context);
+
+		// @see http://ampersandjs.com/docs#ampersand-state
+		var Model = COMMON.API.AMPERSAND_STATE.extend({
+			name: "consumer-groups",
+			props: {
+				id: "string",
+		        title: "string",
+		        alias: "string",
+		        contact: "string",
+		        address: "string",
+		        pickupLocation: "string",
+		        deliverLocation: "string",
+		        orderTax: "string",
+		        lunchroomLive: "string"
+			},
+			derived: {
+			    "lunchroomUrl": {
+			    	deps: [
+						"alias"
+					],
+					cache: false,
+		            fn: function () {
+		            	return context.appContext.get("windowOrigin") + "/" + this["alias"];
+		            }
+			    },
+			    "format.lunchroomLive": {
+			    	deps: [
+						"lunchroomLive"
+					],
+					cache: false,
+		            fn: function () {
+		            	return (this.lunchroomLive ? "Yes" : "No");
+		            }
+			    }
+			}
+		});
+
+		return Model;
+	}
+
+
+/***/ },
+/* 277 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/** @jsx React.DOM */
+	var COMMON = __webpack_require__(8);
+	var DATA = __webpack_require__(113);
+
+
+	exports['for'] = function (context) {
+
+		var collection = DATA.init({
+
+			name: "items",
+
+			model: __webpack_require__(278).forContext(context),
+			record: {
+	// TODO: Use record and get rid of model
+			},
+
+			collection: {			
+	// TODO: Clean collection
+			},
+
+			// Low-level
+			store: {
+							
+				modelRecords: function (records) {
+					var self = this;
+
+					return COMMON.resolveForeignKeys(self, records, {
+						"vendor_id": {
+							store: __webpack_require__(279),
+							model: context.appContext.get('stores').vendors.Model,
+							localFieldPrefix: "vendor"
+						}
+					}).map(function (record, i) {
+						// Store model on backbone row so we can re-use it on subsequent calls.
+						// NOTE: We purposfully store the model using `records[i]` instead of `record`
+						//       as `record` 
+						if (self._byId[records[i].get("id")].__model) {
+							return self._byId[records[i].get("id")].__model;
+						}
+						var fields = {};
+						self.Model.getFields().forEach(function (field) {
+							if (!records[i].has(field)) return;
+							fields[field] = records[i].get(field);
+						});
+						return self._byId[records[i].get("id")].__model = new self.Model(fields);
+					});
+				},
+	// Admin
+				loadForVendor: function (vendor_id) {
+					var self = this;
+					return COMMON.API.Q.denodeify(function (callback) {
+				        self.fetch({
+				            data: $.param({
+				                "filter[vendor_id]": ""+vendor_id
+				            }),
+				            success: function () {
+				            	return callback(null);
+				            }
+				        });
+					})();
+				},
+	// App: Order placement
+				resolveRecordsAndWait: function (records, options) {
+					var self = this;
+
+					return COMMON.resolveForeignKeys(self, records, {
+						"vendor_id": {
+							store: __webpack_require__(279),
+							model: context.appContext.get('stores').vendors.Model,
+							localFieldPrefix: "vendor"
+						}
+					}, true, options).then(function (records) {
+
+						var idFieldName = (options && options.useIdField) || "id";
+
+						return records.map(function (record, i) {
+							// Store model on backbone row so we can re-use it on subsequent calls.
+							// NOTE: We purposfully store the model using `records[i]` instead of `record`
+							//       as `record`
+							if (records[i].__model) {
+								return records[i].__model;
+							}
+							var fields = {};
+							self.Model.getFields().forEach(function (field) {
+								if (!records[i].has(field)) return;
+								fields[field] = records[i].get(field);
+							});
+							return records[i].__model = new self.Model(fields);
+						});
+					});
+				}
+			}
+		});
+
+		if (context.ids) {
+
+			var deferred = COMMON.API.Q.defer();
+			context.ids = context.ids.filter(function (id) {
+				return !collection.store._byId[id];
+			});
+			if (context.ids.length > 0) {
+	//			collection.store.once("sync", function () {
+	//				deferred.resolve(collection.store);
+	//			});
+				// TODO: Ensure new entries are added to collection
+				//       instead of removing all other entries.
+				collection.store.fetch({
+					reset: false,
+					remove: false,
+					data: $.param({
+						"filter[id]": context.ids.join(",")
+					}),
+		            success: function () {
+						deferred.resolve(collection.store);
+		            }
+				});
+			} else {
+				deferred.resolve(collection.store);
+			}
+			return deferred.promise;
+		}
+
+		return collection.store;
+	}
+
+
+/***/ },
+/* 278 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
@@ -60779,50 +62732,91 @@
 
 
 /***/ },
-/* 271 */
+/* 279 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
+
 	var COMMON = __webpack_require__(8);
-	var NUMERAL = __webpack_require__(10);
+	var DATA = __webpack_require__(113);
 
-	var ENDPOINT = COMMON.makeEndpointUrl("vendors");
-
-
-
-	var Record = COMMON.API.BACKBONE.Model.extend({
-		idAttribute: "id"
-	});
-
-	var Store = COMMON.API.BACKBONE.Collection.extend({
-		model: Record,
-		url: ENDPOINT,
-		parse: function(data) {
-			return data.data.map(function (record) {
-				return COMMON.API.UNDERSCORE.extend(record.attributes, {
-					id: record.id
-				});
-			});
-		}
-	});
-
-
-	var store = new Store();
 
 	exports['for'] = function (context) {
 
+
+		var collection = DATA.init({
+
+			name: "vendors",
+
+			model: __webpack_require__(280).forContext(context),
+			record: {
+	// TODO: Use record and get rid of model
+			},
+
+			collection: {			
+	// TODO: Clean collection
+			},
+
+			// Low-level
+			store: {
+	// Admin
+				idForAdminAccessToken: function (adminAccessToken) {
+					var self = this;
+					return COMMON.API.Q.denodeify(function (callback) {
+						self.fetch({
+							reset: false,
+							remove: false,
+							data: $.param({
+								"filter[adminAccessToken]": adminAccessToken
+							}),
+							success: function () {
+								var vendor = self.findWhere({
+									adminAccessToken: adminAccessToken
+								});
+								if (!vendor) {
+									return callback(null);
+								}
+								return callback(null, vendor.get("id"));
+							}
+						});
+					})();
+				},
+
+				modelRecords: function (records) {
+					var self = this;
+					return records.map(function (record, i) {
+						// Store model on backbone row so we can re-use it on subsequent calls.
+						// NOTE: We purposfully store the model using `records[i]` instead of `record`
+						//       as `record` 
+						if (self._byId[records[i].get("id")].__model) {
+							return self._byId[records[i].get("id")].__model;
+						}
+						var fields = {};
+						self.Model.getFields().forEach(function (field) {
+							if (!records[i].has(field)) return;
+							fields[field] = records[i].get(field);
+						});
+						return self._byId[records[i].get("id")].__model = new self.Model(fields);
+					});
+				}
+				
+
+			}
+		});
+
 		if (context.ids) {
+
 			var deferred = COMMON.API.Q.defer();
 			context.ids = context.ids.filter(function (id) {
-				return !store._byId[id];
+				return !collection.store._byId[id];
 			});
 			if (context.ids.length > 0) {
-				store.once("sync", function () {
-					deferred.resolve(store);
+				collection.store.once("sync", function () {
+					deferred.resolve(collection.store);
 				});
 				// TODO: Ensure new entries are added to collection
 				//       instead of removing all other entries.
-				store.fetch({
+				collection.store.fetch({
 					reset: false,
 					remove: false,
 					data: $.param({
@@ -60830,59 +62824,17 @@
 					})
 				});
 			} else {
-				deferred.resolve(store);
+				deferred.resolve(collection.store);
 			}
 			return deferred.promise;
 		}
 
-
-		store.Model = __webpack_require__(272).forContext(context);
-
-
-		store.idForAdminAccessToken = function (adminAccessToken) {
-			return COMMON.API.Q.denodeify(function (callback) {
-				store.fetch({
-					reset: false,
-					remove: false,
-					data: $.param({
-						"filter[adminAccessToken]": adminAccessToken
-					}),
-					success: function () {
-						var vendor = store.findWhere({
-							adminAccessToken: adminAccessToken
-						});
-						if (!vendor) {
-							return callback(null);
-						}
-						return callback(null, vendor.get("id"));
-					}
-				});
-			})();
-		}
-
-		store.modelRecords = function (records) {
-			return records.map(function (record, i) {
-				// Store model on backbone row so we can re-use it on subsequent calls.
-				// NOTE: We purposfully store the model using `records[i]` instead of `record`
-				//       as `record` 
-				if (store._byId[records[i].get("id")].__model) {
-					return store._byId[records[i].get("id")].__model;
-				}
-				var fields = {};
-				store.Model.getFields().forEach(function (field) {
-					if (!records[i].has(field)) return;
-					fields[field] = records[i].get(field);
-				});
-				return store._byId[records[i].get("id")].__model = new store.Model(fields);
-			});
-		}
-
-		return store;
+		return collection.store;
 	}
 
 
 /***/ },
-/* 272 */
+/* 280 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
@@ -60910,40 +62862,194 @@
 
 
 /***/ },
-/* 273 */
+/* 281 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
 	var COMMON = __webpack_require__(8);
-
-
-	var ENDPOINT = COMMON.makeEndpointUrl("menus");
-
-
-	var Record = COMMON.API.BACKBONE.Model.extend({
-		idAttribute: "id"
-	});
-
-	var Store = COMMON.API.BACKBONE.Collection.extend({
-		model: Record,
-		url: ENDPOINT,
-		parse: function(data) {
-			return data.data.map(function (record) {
-				return COMMON.API.UNDERSCORE.extend(record.attributes, {
-					id: record.id
-				});
-			});
-		}
-	});
+	var DATA = __webpack_require__(113);
 
 
 	exports['for'] = function (context) {
 
-		var store = new Store();
+		var collection = DATA.init({
+
+			name: "menus",
+
+			model: __webpack_require__(282).forContext(context),
+			record: {
+	// TODO: Use record and get rid of model
+
+				"item_id": {
+					"linksTo": "items"
+				},
+				"vendor_id": {
+					"linksTo": "vendors"
+				},
+				"cartQuantity": {
+					"derived": function () {
+
+						// TODO: Use data connect string with summary function.
+
+						return context.appContext.get('stores').cart.getQuantityForItemId(this.item_id);
+					}
+				}
+
+			},
+
+			collection: {			
+	// TODO: Clean collection
+			},
+
+			// Low-level
+			store: {
+
+	// App
+				getForEventIds: function (ids) {
+					this.where();
+					return this.models.filter(function (model) {
+						return (typeof ids[model.get('event_id')] !== "undefined");
+					});
+				},
+	// App
+				loadForEvent: function (event_id) {
+					var self = this;
+					return COMMON.API.Q.denodeify(function (callback) {
+				        self.fetch({
+				            data: $.param({
+				                "filter[event_id]": ""+event_id
+				            }),
+				            success: function () {
+				            	return callback(null);
+				            }
+				        });
+					})();
+				},
+	// App
+				loadForEvents: function (event_ids) {
+					var self = this;
+					return COMMON.API.Q.denodeify(function (callback) {
+				        self.fetch({
+				            data: $.param({
+				                "filter[event_id]": event_ids.join(",")
+				            }),
+				            success: function () {
+				            	return callback(null);
+				            }
+				        });
+					})();
+				},
+	// Admin
+				addItem: function (event_id, vendor_id, item_id) {
+					var self = this;
+					return COMMON.API.Q.denodeify(function (callback) {
+
+						var payload = {
+							data: {
+								type: "menus",
+								attributes: {
+									event_id: event_id,
+									vendor_id: vendor_id,
+									item_id: item_id
+								}
+							}
+						};
+
+						return $.ajax({
+							method: "POST",
+							url: self.Source + "/",
+							contentType: "application/vnd.api+json",
+							headers: {
+								"Accept": "application/vnd.api+json"
+							},
+			    			dataType: "json",
+							data: JSON.stringify(payload)
+						})
+						.done(function (response) {
+							return callback(null, response.data.id);
+						})
+						.fail(function(err) {
+
+			// TODO: Ask user to submit again.
+			console.log("error!", err.stack);
+
+							return callback(err);
+						});
+					})();
+				},
+	// Admin
+				removeAtId: function (id) {
+					var self = this;
+					return COMMON.API.Q.denodeify(function (callback) {
+
+						return $.ajax({
+							method: "DELETE",
+							url: self.Source + "/" + id
+						})
+						.done(function (response) {
+							return callback(null);
+						})
+						.fail(function(err) {
+
+			// TODO: Ask user to submit again.
+			console.log("error!", err.stack);
+
+							return callback(err);
+						});
+					})();
+				},
+
+				modelRecords: function (records) {
+					var self = this;
+					return COMMON.resolveForeignKeys(self, records, {
+						"vendor_id": {
+							store: __webpack_require__(279),
+							model: context.appContext.get('stores').vendors.Model,
+							localFieldPrefix: "vendor"
+						},
+						"item_id": {
+							store: __webpack_require__(277),
+							model: context.appContext.get('stores').items.Model,
+							localFieldPrefix: "item"
+						}
+					}).map(function (record, i) {
+						// Store model on backbone row so we can re-use it on subsequent calls.
+						if (self._byId[records[i].get("id")].__model) {
+							return self._byId[records[i].get("id")].__model;
+						}
+						var fields = {};
+						self.Model.getFields().forEach(function (field) {
+
+			//console.log("COPY FIELD", records[i]);
+
+							if (!records[i].has(field)) return;
+
+							fields[field] = records[i].get(field);
+						});
+						return self._byId[records[i].get("id")].__model = new self.Model(fields);
+					});
+				}
 
 
-	//	store.fetch();
+			}
+		});
 
+		return collection.store;
+	}
+
+
+/***/ },
+/* 282 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/** @jsx React.DOM */
+
+	var COMMON = __webpack_require__(9);
+
+
+	exports.forContext = function (context) {
+
+		var common = COMMON.forContext(context);
 
 		// @see http://ampersandjs.com/docs#ampersand-state
 		var Model = COMMON.API.AMPERSAND_STATE.extend({
@@ -60975,253 +63081,192 @@
 			}
 		});
 
-		store.getForEventIds = function (ids) {
-			this.where();
-			return this.models.filter(function (model) {
-				return (typeof ids[model.get('event_id')] !== "undefined");
-			});
-		}
-
-		store.loadForEvent = function (event_id) {
-			var self = this;
-			return COMMON.API.Q.denodeify(function (callback) {
-		        self.fetch({
-		            data: $.param({
-		                "filter[event_id]": ""+event_id
-		            }),
-		            success: function () {
-		            	return callback(null);
-		            }
-		        });
-			})();
-		}
-
-		store.loadForEvents = function (event_ids) {
-			var self = this;
-			return COMMON.API.Q.denodeify(function (callback) {
-		        self.fetch({
-		            data: $.param({
-		                "filter[event_id]": event_ids.join(",")
-		            }),
-		            success: function () {
-		            	return callback(null);
-		            }
-		        });
-			})();
-		}
-
-		store.addItem = function (event_id, vendor_id, item_id) {
-			var self = this;
-			return COMMON.API.Q.denodeify(function (callback) {
-
-				var payload = {
-					data: {
-						type: "menus",
-						attributes: {
-							event_id: event_id,
-							vendor_id: vendor_id,
-							item_id: item_id
-						}
-					}
-				};
-
-				return $.ajax({
-					method: "POST",
-					url: ENDPOINT + "/",
-					contentType: "application/vnd.api+json",
-					headers: {
-						"Accept": "application/vnd.api+json"
-					},
-	    			dataType: "json",
-					data: JSON.stringify(payload)
-				})
-				.done(function (response) {
-					return callback(null, response.data.id);
-				})
-				.fail(function(err) {
-
-	// TODO: Ask user to submit again.
-	console.log("error!", err.stack);
-
-					return callback(err);
-				});
-			})();
-		}
-
-		store.removeAtId = function (id) {
-			var self = this;
-			return COMMON.API.Q.denodeify(function (callback) {
-
-				return $.ajax({
-					method: "DELETE",
-					url: ENDPOINT + "/" + id
-				})
-				.done(function (response) {
-					return callback(null);
-				})
-				.fail(function(err) {
-
-	// TODO: Ask user to submit again.
-	console.log("error!", err.stack);
-
-					return callback(err);
-				});
-			})();
-		}
-
-		store.modelRecords = function (records) {
-			return COMMON.resolveForeignKeys(store, records, {
-				"vendor_id": {
-					store: __webpack_require__(271),
-					model: context.appContext.get('stores').vendors.Model,
-					localFieldPrefix: "vendor"
-				},
-				"item_id": {
-					store: __webpack_require__(269),
-					model: context.appContext.get('stores').items.Model,
-					localFieldPrefix: "item"
-				}
-			}).map(function (record, i) {
-				// Store model on backbone row so we can re-use it on subsequent calls.
-				if (store._byId[records[i].get("id")].__model) {
-					return store._byId[records[i].get("id")].__model;
-				}
-				var fields = {};
-				Model.getFields().forEach(function (field) {
-
-	//console.log("COPY FIELD", records[i]);
-
-					if (!records[i].has(field)) return;
-
-					fields[field] = records[i].get(field);
-				});
-				return store._byId[records[i].get("id")].__model = new Model(fields);
-			});
-		}
-
-		return store;
+		return Model;
 	}
 
 
-
 /***/ },
-/* 274 */
+/* 283 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
 	var COMMON = __webpack_require__(8);
-
-	var BACKBONE = __webpack_require__(109);
-	var UNDERSCORE = __webpack_require__(14);
-
-
-	var ENDPOINT = COMMON.makeEndpointUrl("consumers");
-
-
-	var Entity = BACKBONE.Model.extend({
-		idAttribute: "id"
-	});
-
-	var Entities = BACKBONE.Collection.extend({
-		model: Entity,
-		url: ENDPOINT,
-		parse: function(data) {
-			return data.data.map(function (record) {
-				return UNDERSCORE.extend(record.attributes, {
-					id: record.id
-				});
-			});
-		}
-	});
-
-
-	exports['for'] = function () {
-
-		var entities = new Entities();
-
-	/*
-	entities.on("all", function(eventName) {
-
-		console.log("eventName", eventName);
-
-		if (eventName === "sync") {
-
-			console.log("list entities", entities.where());
-			console.log("ITEM 5", entities.get(5));
-
-		}
-	});
-	*/
-
-	//	entities.fetch();
-
-		return entities;
-	}
-
-
-
-/***/ },
-/* 275 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/** @jsx React.DOM */
-	var COMMON = __webpack_require__(8);
-
-	var ENDPOINT = COMMON.makeEndpointUrl("consumer-group-subscriptions");
-
-
-
-	var Record = COMMON.API.BACKBONE.Model.extend({
-		idAttribute: "id"
-	});
-
-	var Store = COMMON.API.BACKBONE.Collection.extend({
-		model: Record,
-		url: ENDPOINT,
-		parse: function(data) {
-			return data.data.map(function (record) {
-				return COMMON.API.UNDERSCORE.extend(record.attributes, {
-					id: record.id
-				});
-			});
-		}
-	});
+	var DATA = __webpack_require__(113);
 
 
 	exports['for'] = function (context) {
 
-		var store = new Store();
+		var collection = DATA.init({
+
+			name: "consumers",
+
+			model: __webpack_require__(284).forContext(context),
+			record: {
+	// TODO: Use record and get rid of model
+			},
+
+			collection: {			
+	// TODO: Clean collection
+			},
+
+			// Low-level
+			store: {
+
+
+			}
+		});
+
+		return collection.store;
+	}
+
+
+
+/***/ },
+/* 284 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/** @jsx React.DOM */
+
+	var COMMON = __webpack_require__(9);
+
+
+	exports.forContext = function (context) {
+
+		var common = COMMON.forContext(context);
+
+		// @see http://ampersandjs.com/docs#ampersand-state
+		var Model = COMMON.API.AMPERSAND_STATE.extend({
+			name: "consumers",
+			props: {
+				id: "string"
+		    }
+		});
+
+		return Model;
+	}
+
+
+/***/ },
+/* 285 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/** @jsx React.DOM */
+	var COMMON = __webpack_require__(8);
+	var DATA = __webpack_require__(113);
+
+
+	exports['for'] = function (context) {
+
+		var collection = DATA.init({
+
+			name: "consumer-group-subscriptions",
+
+			model: __webpack_require__(286).forContext(context),
+			record: {
+	// TODO: Use record and get rid of model
+			},
+
+			collection: {			
+	// TODO: Clean collection
+			},
+
+			// Low-level
+			store: {
+
+	// App
+				subscribeWithEmail: function (consumer_group_id, email, phone) {
+					var self = this;
+					return COMMON.API.Q.denodeify(function (callback) {
+
+						var payload = {
+							data: {
+								type: "consumer-group-subscriptions",
+								attributes: {
+									consumer_group_id: consumer_group_id,
+									subscribeEmail: email || "",
+									subscribePhone: phone || ""
+								}
+							}
+						};
+
+						return $.ajax({
+							method: "POST",
+							url: self.Source + "/",
+							contentType: "application/vnd.api+json",
+							headers: {
+								"Accept": "application/vnd.api+json"
+							},
+			    			dataType: "json",
+							data: JSON.stringify(payload)
+						})
+						.done(function (response) {
+
+							return callback(null);
+						})
+						.fail(function(err) {
+
+			// TODO: Ask user to submit again.
+			console.log("error!", err.stack);
+
+							return callback(err);
+						});
+					})().then(function () {
+
+						return self.loadForEmail(email);
+					});
+				},
+
+	// App
+				loadForEmail: function (email) {
+					var self = this;
+					return COMMON.API.Q.denodeify(function (callback) {
+				        self.fetch({
+				            reset: true,
+				            remove: true,
+				            data: $.param({
+				                "filter[email]": email
+				            }),
+				            success: function () {
+				            	return callback(null);
+				            }
+				        });
+					})();
+				},
+
+				modelRecords: function (records) {
+					var self = this;
+					return COMMON.resolveForeignKeys(self, records, {
+						"consumer_group_id": {
+							store: __webpack_require__(275),
+							model: context.appContext.get('stores').consumerGroups.Model,
+							localFieldPrefix: "consumerGroup"
+						}
+					}).map(function (record, i) {
+						// Store model on backbone row so we can re-use it on subsequent calls.
+						// NOTE: We purposfully store the model using `records[i]` instead of `record`
+						//       as `record` 
+						if (self._byId[records[i].get("id")].__model) {
+							return self._byId[records[i].get("id")].__model;
+						}
+						var fields = {};
+						self.Model.getFields().forEach(function (field) {
+							if (!records[i].has(field)) return;
+							fields[field] = records[i].get(field);
+						});
+						return self._byId[records[i].get("id")].__model = new self.Model(fields);
+					});
+				}
+
+
+			}
+		});
+
+
+
+		var store = collection.store;
+
 
 		store.keepInLocalStorage = true;
-
-	/*
-		if (context.ids) {
-			var deferred = COMMON.API.Q.defer();
-			context.ids = context.ids.filter(function (id) {
-				return !store._byId[id];
-			});
-			if (context.ids.length > 0) {
-				store.once("sync", function () {
-					deferred.resolve(store);
-				});
-				// TODO: Ensure new entries are added to collection
-				//       instead of removing all other entries.
-				store.fetch({
-					reset: false,
-					remove: false,
-					data: $.param({
-						"filter[token]": context.ids.join(",")
-					})
-				});
-			} else {
-				deferred.resolve(store);
-			}
-			return deferred.promise;
-		}
-	*/
-
-
-
 
 		function getLocalStorageNamespace () {
 			var ctx = context.appContext.get("context");
@@ -61259,99 +63304,13 @@
 
 
 
-
-
-		store.Model = __webpack_require__(276).forContext(context);
-
-
-		store.subscribeWithEmail = function (consumer_group_id, email, phone) {
-			var self = this;
-			return COMMON.API.Q.denodeify(function (callback) {
-
-				var payload = {
-					data: {
-						type: "consumer-group-subscriptions",
-						attributes: {
-							consumer_group_id: consumer_group_id,
-							subscribeEmail: email || "",
-							subscribePhone: phone || ""
-						}
-					}
-				};
-
-				return $.ajax({
-					method: "POST",
-					url: ENDPOINT + "/",
-					contentType: "application/vnd.api+json",
-					headers: {
-						"Accept": "application/vnd.api+json"
-					},
-	    			dataType: "json",
-					data: JSON.stringify(payload)
-				})
-				.done(function (response) {
-
-					return callback(null);
-				})
-				.fail(function(err) {
-
-	// TODO: Ask user to submit again.
-	console.log("error!", err.stack);
-
-					return callback(err);
-				});
-			})().then(function () {
-
-				return store.loadForEmail(email);
-			});
-		}
-
-		store.loadForEmail = function (email) {
-			var self = this;
-			return COMMON.API.Q.denodeify(function (callback) {
-		        self.fetch({
-		            reset: true,
-		            remove: true,
-		            data: $.param({
-		                "filter[email]": email
-		            }),
-		            success: function () {
-		            	return callback(null);
-		            }
-		        });
-			})();
-		}
-
-		store.modelRecords = function (records) {
-			return COMMON.resolveForeignKeys(store, records, {
-				"consumer_group_id": {
-					store: __webpack_require__(114),
-					model: context.appContext.get('stores').consumerGroups.Model,
-					localFieldPrefix: "consumerGroup"
-				}
-			}).map(function (record, i) {
-				// Store model on backbone row so we can re-use it on subsequent calls.
-				// NOTE: We purposfully store the model using `records[i]` instead of `record`
-				//       as `record` 
-				if (store._byId[records[i].get("id")].__model) {
-					return store._byId[records[i].get("id")].__model;
-				}
-				var fields = {};
-				store.Model.getFields().forEach(function (field) {
-					if (!records[i].has(field)) return;
-					fields[field] = records[i].get(field);
-				});
-				return store._byId[records[i].get("id")].__model = new store.Model(fields);
-			});
-		}
-
-		return store;
+		return collection.store;
 	}
 
 
 
 /***/ },
-/* 276 */
+/* 286 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
@@ -61406,37 +63365,248 @@
 
 
 /***/ },
-/* 277 */
+/* 287 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
 	var COMMON = __webpack_require__(8);
-
-
-	//var ENDPOINT = COMMON.makeEndpointUrl("items");
-
-
-
-	var Record = COMMON.API.BACKBONE.Model.extend({
-		idAttribute: "id"
-	});
-
-	var Store = COMMON.API.BACKBONE.Collection.extend({
-		model: Record,
-	//	url: ENDPOINT,
-		parse: function(data) {
-			return data.data.map(function (record) {
-				return COMMON.API.UNDERSCORE.extend(record.attributes, {
-					id: record.id
-				});
-			});
-		}
-	});
+	var DATA = __webpack_require__(113);
 
 
 	exports['for'] = function (context) {
 
-		var store = new Store();
+		var collection = DATA.init({
+
+			name: "cart",
+
+			model: __webpack_require__(278).forContext(context),
+			record: {
+	// TODO: Use record and get rid of model
+			},
+
+			collection: {			
+	// TODO: Clean collection
+
+				itemCount: function () {
+					return this.store.getItemCount();
+				}
+
+			},
+
+			// Low-level
+			store: {
+
+
+				clearAllItems: function () {
+					COMMON.storeLocalValueFor("cart", getLocalStorageNamespace(), JSON.stringify([]));
+					this.reset();
+					return COMMON.API.Q.resolve();
+				},
+
+
+				getSummary: function (options) {
+					var self = this;
+
+					options = options || {};
+					options.tip = options.tip || 0;
+
+					var amount = 0;
+					self.where().forEach(function (record) {
+						amount += parseInt(record.get("price")) * parseInt(record.get("quantity"));
+					});
+
+					var events = context.appContext.get('stores').events;
+					var eventToday = events.modelRecords(events.getToday()).pop();
+
+					if (!eventToday) {
+						return {};
+					}
+
+					amount = Math.round(amount);
+
+					var summary = {
+						"amount": amount,
+						"format.amount": COMMON.API.NUMERAL(amount/100).format('$0.00'),
+						"tax": parseInt(eventToday.get("consumerGroup.orderTax")) || 0,
+						"taxAmount": 0,
+						"format.tax": "0%",
+						"format.taxAmount": "$0.00",
+						"goodybagFee": parseInt(eventToday.get("goodybagFee")),
+						"format.goodybagFee": eventToday.get("format.goodybagFee"),
+						"total": 0,
+						"format.total": "$0.00"
+					};
+
+					if (
+						summary.amount &&
+						summary.tax
+					) {
+						summary["taxAmount"] = Math.round(summary.amount * summary.tax/100 / 100);
+						summary["format.tax"] = summary.tax/100 + "%";
+						summary["format.taxAmount"] = COMMON.API.NUMERAL(summary["taxAmount"] / 100).format('$0.00');
+					}
+
+					if (summary.amount) {
+						summary.total = Math.round(
+							summary.amount
+							+ summary.taxAmount
+							+ summary.goodybagFee
+			//				+ parseInt(options.tip)
+						);
+						summary["format.total"] = COMMON.API.NUMERAL(summary.total / 100).format('$0.00');
+					}
+
+					return summary;
+				},
+
+
+				modelRecords: function (records) {
+					var self = this;
+
+					return records.map(function (record, i) {
+						// Store model on backbone row so we can re-use it on subsequent calls.
+						// NOTE: We purposfully store the model using `records[i]` instead of `record`
+						//       as `record` 
+						if (self._byId[records[i].get("id")].__model) {
+							return self._byId[records[i].get("id")].__model;
+						}
+						var fields = {};
+						self.Model.getFields().forEach(function (field) {
+							if (!records[i].has(field)) return;
+							fields[field] = records[i].get(field);
+						});
+						var model = self._byId[records[i].get("id")].__model = new self.Model(fields);
+						record.on("change", function (record) {
+							for (var name in record.changed) {
+								model.set(name, record.changed[name]);
+							}
+						});
+						return model;
+					});
+				},
+
+				getItemCount: function () {
+					var count = 0;
+					this.where().map(function (item) {
+			    		count += item.get("quantity");
+			    	});
+			    	return count;
+				},
+
+				getQuantityForItemId: function (itemId) {
+					var item = this.where({
+						"item_id": parseInt(itemId)
+					});
+					if (item.length === 0) return 0;
+					return item[0].get("quantity");
+				},
+
+				removeItem: function (itemId, all) {
+					var self = this;
+
+					var item = self.where({
+						"item_id": parseInt(itemId)
+					});
+					if (item.length === 0) {
+						item = self.get(itemId);
+						if (!item) {
+							return COMMON.API.Q.resolve();
+						}
+					} else {
+						item = item[0];
+					}
+
+					var quantity = item.get("quantity");
+					if (quantity > 1 && all !== true) {
+						item.set("quantity", quantity - 1);
+						self.trigger("change", item);
+					} else {
+						self.remove(item.get("id"));
+						self.trigger("change", null);
+					}
+					return COMMON.API.Q.resolve();
+				},
+
+				addItem: function (itemId, options) {
+					var self = this;
+
+					var options = COMMON.API.CJSON(options || {});
+
+					function ensureItem () {
+
+						var optionsHash = new COMMON.API.JSSHA("SHA-1", "TEXT");
+						optionsHash.update(options);
+						var cartItemId = itemId + "-" + optionsHash.getHash("HEX");
+
+						if (self.get(cartItemId)) {
+							return COMMON.API.Q.resolve(self.get(cartItemId));
+						}
+						return __webpack_require__(277)['for']({
+							appContext: context.appContext,
+							ids: [
+								itemId
+							]
+						}).then(function (items) {				
+							var item = items.get(itemId).toJSON();
+
+							item.item_id = item.id;
+							item.id = cartItemId;
+
+							item.quantity = 0;
+							item.options = options;
+							self.add(item);
+							return self.get(cartItemId);
+						});
+					}
+
+					return ensureItem().then(function (item) {
+						item.set("quantity", item.get("quantity") + 1);
+						self.trigger("change", item);
+					});
+				},
+
+				getSerializedModels: function () {
+					var self = this;
+
+					var records = self.where();
+					return context.appContext.get('stores').items.resolveRecordsAndWait(
+						records,
+						{
+							useIdField: "item_id"
+						}
+					).then(function (models) {
+
+						return models.map(function (model) {
+
+							return model.getValues();
+						});
+					});
+				},
+
+				resetToSerializedModels: function (models) {
+					var self = this;
+
+					return COMMON.API.Q.fcall(function () {
+
+						models.forEach(function (model) {
+							var record = {};
+							self.Model.getFields().forEach(function (name) {
+								if (typeof model[name] !== "undefined") {
+									record[name] = model[name];
+								}
+							});
+							self.add(record);
+						});
+					});
+				}
+
+
+			}
+		});
+
+
+
+		var store = collection.store;
 
 		store.keepInLocalStorage = true;
 
@@ -61472,356 +63642,399 @@
 		}, 100);
 
 
-		store.clearAllItems = function () {
-			COMMON.storeLocalValueFor("cart", getLocalStorageNamespace(), JSON.stringify([]));
-			this.reset();
-			return COMMON.API.Q.resolve();
-		}
 
-
-		store.getSummary = function (options) {
-
-			options = options || {};
-			options.tip = options.tip || 0;
-
-			var amount = 0;
-			store.where().forEach(function (record) {
-				amount += parseInt(record.get("price")) * parseInt(record.get("quantity"));
-			});
-
-			var events = context.appContext.get('stores').events;
-			var eventToday = events.modelRecords(events.getToday()).pop();
-
-			if (!eventToday) {
-				return {};
-			}
-
-			amount = Math.round(amount);
-
-			var summary = {
-				"amount": amount,
-				"format.amount": COMMON.API.NUMERAL(amount/100).format('$0.00'),
-				"tax": parseInt(eventToday.get("consumerGroup.orderTax")) || 0,
-				"taxAmount": 0,
-				"format.tax": "0%",
-				"format.taxAmount": "$0.00",
-				"goodybagFee": parseInt(eventToday.get("goodybagFee")),
-				"format.goodybagFee": eventToday.get("format.goodybagFee"),
-				"total": 0,
-				"format.total": "$0.00"
-			};
-
-			if (
-				summary.amount &&
-				summary.tax
-			) {
-				summary["taxAmount"] = Math.round(summary.amount * summary.tax/100 / 100);
-				summary["format.tax"] = summary.tax/100 + "%";
-				summary["format.taxAmount"] = COMMON.API.NUMERAL(summary["taxAmount"] / 100).format('$0.00');
-			}
-
-			if (summary.amount) {
-				summary.total = Math.round(
-					summary.amount
-					+ summary.taxAmount
-					+ summary.goodybagFee
-	//				+ parseInt(options.tip)
-				);
-				summary["format.total"] = COMMON.API.NUMERAL(summary.total / 100).format('$0.00');
-			}
-
-			return summary;
-		}
-
-
-		store.modelRecords = function (records) {
-
-			var Model = context.appContext.get('stores').items.Model;
-
-			return records.map(function (record, i) {
-				// Store model on backbone row so we can re-use it on subsequent calls.
-				// NOTE: We purposfully store the model using `records[i]` instead of `record`
-				//       as `record` 
-				if (store._byId[records[i].get("id")].__model) {
-					return store._byId[records[i].get("id")].__model;
-				}
-				var fields = {};
-				Model.getFields().forEach(function (field) {
-					if (!records[i].has(field)) return;
-					fields[field] = records[i].get(field);
-				});
-				var model = store._byId[records[i].get("id")].__model = new Model(fields);
-				record.on("change", function (record) {
-					for (var name in record.changed) {
-						model.set(name, record.changed[name]);
-					}
-				});
-				return model;
-			});
-		}
-
-		store.getItemCount = function () {
-			var count = 0;
-			this.where().map(function (item) {
-	    		count += item.get("quantity");
-	    	});
-	    	return count;
-		}
-
-		store.getQuantityForItemId = function (itemId) {
-			var item = store.where({
-				"item_id": itemId
-			});
-			if (item.length === 0) return 0;
-			return item[0].get("quantity");
-		}
-
-		store.removeItem = function (itemId, all) {
-			var self = this;
-
-			var item = store.where({
-				"item_id": itemId
-			});
-			if (item.length === 0) {
-				item = store.get(itemId);
-				if (!item) {
-					return COMMON.API.Q.resolve();
-				}
-			} else {
-				item = item[0];
-			}
-
-			var quantity = item.get("quantity");
-			if (quantity > 1 && all !== true) {
-				item.set("quantity", quantity - 1);
-				store.trigger("change", item);
-			} else {
-				store.remove(item.get("id"));
-				store.trigger("change", null);
-			}
-			return COMMON.API.Q.resolve();
-		}
-
-		store.addItem = function (itemId, options) {
-			var self = this;
-
-			var options = COMMON.API.CJSON(options || {});
-
-			function ensureItem () {
-
-				var optionsHash = new COMMON.API.JSSHA("SHA-1", "TEXT");
-				optionsHash.update(options);
-				var cartItemId = itemId + "-" + optionsHash.getHash("HEX");
-
-				if (self.get(cartItemId)) {
-					return COMMON.API.Q.resolve(self.get(cartItemId));
-				}
-				return __webpack_require__(269)['for']({
-					appContext: context.appContext,
-					ids: [
-						itemId
-					]
-				}).then(function (items) {				
-					var item = items.get(itemId).toJSON();
-
-					item.item_id = item.id;
-					item.id = cartItemId;
-
-					item.quantity = 0;
-					item.options = options;
-					self.add(item);
-					return self.get(cartItemId);
-				});
-			}
-
-			return ensureItem().then(function (item) {
-				item.set("quantity", item.get("quantity") + 1);
-				store.trigger("change", item);
-			});
-		}
-
-		store.getSerializedModels = function () {
-			var self = this;
-
-			var records = store.where();
-			return context.appContext.get('stores').items.resolveRecordsAndWait(
-				records,
-				{
-					useIdField: "item_id"
-				}
-			).then(function (models) {
-
-				return models.map(function (model) {
-
-					return model.getValues();
-				});
-			});
-		}
-
-		store.resetToSerializedModels = function (models) {
-
-			return COMMON.API.Q.fcall(function () {
-
-				models.forEach(function (model) {
-					var record = {};
-					context.appContext.get('stores').items.Model.getFields().forEach(function (name) {
-						if (typeof model[name] !== "undefined") {
-							record[name] = model[name];
-						}
-					});
-					store.add(record);
-				});
-			});
-		}
-
-		return store;
+		return collection.store;
 	}
 
 
+
 /***/ },
-/* 278 */
+/* 288 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
 	var COMMON = __webpack_require__(8);
-	var COMMON_MODEL = __webpack_require__(9);
+	var DATA = __webpack_require__(113);
 
-	var ENDPOINT = COMMON.makeEndpointUrl("orders");
-
-
-
-	var Record = COMMON.API.BACKBONE.Model.extend({
-		idAttribute: "id"
-	});
-
-	var Store = COMMON.API.BACKBONE.Collection.extend({
-		model: Record,
-		url: ENDPOINT,
-		parse: function(data) {
-			return data.data.map(function (record) {
-				return COMMON.API.UNDERSCORE.extend(record.attributes, {
-					id: record.id
-				});
-			});
-		},
-
-		deleteOrder: function (id) {
-			var self = this;
-
-			return COMMON.API.Q.denodeify(function (callback) {
-
-				var payload = {
-					data: {
-						type: "orders",
-						id: id,
-						attributes: {
-							"deleted": true
-						}
-					}
-				};
-
-				return $.ajax({
-					method: "PATCH",
-					url: ENDPOINT + "/" + id,
-					contentType: "application/vnd.api+json",
-					headers: {
-						"Accept": "application/vnd.api+json"
-					},
-	    			dataType: "json",
-					data: JSON.stringify(payload)
-				})
-				.done(function (response) {
-
-					return callback(null);
-				})
-				.fail(function(err) {
-
-	// TODO: Ask user to submit again.
-	console.log("error!", err.stack);
-
-					return callback(err);
-				});
-			})().then(function () {
-
-				self.remove(id);
-			});
-		},
-
-		submitOrder: function (id) {
-			var self = this;
-			return COMMON.API.Q.denodeify(function (callback) {
-
-				var order = self.get(id);
-
-				// @see http://jsonapi.org/format/#crud
-
-				var data = order.toJSON();
-				for (var name in data) {
-					if (typeof data[name] === "object") {
-						data[name] = JSON.stringify(data[name]);
-					}
-				}
-				delete data.id;
-
-	console.log("STORE DATA", data);
-
-				var payload = {
-					data: {
-						type: "orders",
-						attributes: data
-					}
-				};
-
-				return $.ajax({
-					method: "POST",
-					url: ENDPOINT + "/",
-					contentType: "application/vnd.api+json",
-					headers: {
-						"Accept": "application/vnd.api+json"
-					},
-	    			dataType: "json",
-					data: JSON.stringify(payload)
-				})
-				.done(function (response) {
-
-					self.Model.getFields().forEach(function (name) {
-						if (typeof response.data.attributes[name] !== "undefined") {
-							order.set(name, response.data.attributes[name]);
-						}
-					});
-					order.set("id", response.data.id);
-
-					return callback(null, order);
-				})
-				.fail(function(err) {
-
-	// TODO: Ask user to submit again.
-	console.log("error!", err.stack);
-
-					return callback(err);
-				});
-			})();
-		}
-	});
-
-
-	var store = new Store();
-
-
-	var orderIndex = 0;
 
 	exports['for'] = function (context) {
 
-		var common = COMMON_MODEL.forContext(context);
 
 
-		function loadStatusInfoForOrder (orderHashId) {
-			return context.appContext.get('stores').orderStatus.fetchStatusInfoForOrderHashId(orderHashId);
+		var collection = DATA.init({
+
+			name: "orders",
+
+			model: __webpack_require__(289).forContext(context),
+			record: {
+	// TODO: Use record and get rid of model
+			},
+
+			collection: {			
+	// TODO: Clean collection
+			},
+
+			// Low-level
+			store: {
+	// Admin
+				deleteOrder: function (id) {
+					var self = this;
+
+					return COMMON.API.Q.denodeify(function (callback) {
+
+						var payload = {
+							data: {
+								type: "orders",
+								id: id,
+								attributes: {
+									"deleted": true
+								}
+							}
+						};
+
+						return $.ajax({
+							method: "PATCH",
+							url: self.Source + "/" + id,
+							contentType: "application/vnd.api+json",
+							headers: {
+								"Accept": "application/vnd.api+json"
+							},
+			    			dataType: "json",
+							data: JSON.stringify(payload)
+						})
+						.done(function (response) {
+
+							return callback(null);
+						})
+						.fail(function(err) {
+
+			// TODO: Ask user to submit again.
+			console.log("error!", err.stack);
+
+							return callback(err);
+						});
+					})().then(function () {
+
+						self.remove(id);
+					});
+				},
+	// App
+				submitOrder: function (id) {
+					var self = this;
+					return COMMON.API.Q.denodeify(function (callback) {
+
+						var order = self.get(id);
+
+						// @see http://jsonapi.org/format/#crud
+
+						var data = order.toJSON();
+						for (var name in data) {
+							if (typeof data[name] === "object") {
+								data[name] = JSON.stringify(data[name]);
+							}
+						}
+						delete data.id;
+
+			console.log("STORE DATA", data);
+
+						var payload = {
+							data: {
+								type: "orders",
+								attributes: data
+							}
+						};
+
+						return $.ajax({
+							method: "POST",
+							url: self.Source + "/",
+							contentType: "application/vnd.api+json",
+							headers: {
+								"Accept": "application/vnd.api+json"
+							},
+			    			dataType: "json",
+							data: JSON.stringify(payload)
+						})
+						.done(function (response) {
+
+							self.Model.getFields().forEach(function (name) {
+								if (typeof response.data.attributes[name] !== "undefined") {
+									order.set(name, response.data.attributes[name]);
+								}
+							});
+							order.set("id", response.data.id);
+
+							return callback(null, order);
+						})
+						.fail(function(err) {
+
+			// TODO: Ask user to submit again.
+			console.log("error!", err.stack);
+
+							return callback(err);
+						});
+					})();
+				},
+
+
+				modelRecords: function (records) {
+					var self = this;
+					return records.map(function (record, i) {
+						// Store model on backbone row so we can re-use it on subsequent calls.
+						// NOTE: We purposfully store the model using `records[i]` instead of `record`
+						//       as `record` 
+						if (self._byId[records[i].get("id")].__model) {
+							return self._byId[records[i].get("id")].__model;
+						}
+						var fields = {};
+						self.Model.getFields().forEach(function (field) {
+							if (!records[i].has(field)) return;
+							fields[field] = records[i].get(field);
+						});
+						var model = self._byId[records[i].get("id")].__model = new self.Model(fields);
+						record.on("change", function (record) {
+							for (var name in record.changed) {
+								model.set(name, record.changed[name]);
+							}
+						});
+						return model;
+					});
+				},
+	// Admin
+				loadAllOrdersForToday: function () {
+					var self = this;
+					return COMMON.API.Q.denodeify(function (callback) {
+				        self.fetch({
+				            reset: true,
+				            remove: true,
+				            data: $.param({
+				                "filter[day_id]": context.appContext.get('todayId')
+				            }),
+				            success: function () {
+				            	return callback(null);
+				            }
+				        });
+					})();
+				},
+	// Admin
+				loadForVendorId: function (vendorId) {
+					var self = this;
+					return COMMON.API.Q.denodeify(function (callback) {
+				        self.fetch({
+				            reset: true,
+				            remove: true,
+				            data: $.param({
+				                "filter[vendor_ids]": vendorId
+				            }),
+				            success: function () {
+				            	return callback(null);
+				            }
+				        });
+					})();
+			    },
+	// Admin
+				loadForVendorIdAndDayId: function (vendorId, dayId) {
+					var self = this;
+					return COMMON.API.Q.denodeify(function (callback) {
+				        self.fetch({
+				            reset: true,
+				            remove: true,
+				            data: $.param({
+				                "filter[vendor_ids]": vendorId,
+				                "filter[day_id]": dayId
+				            }),
+				            success: function () {
+				            	return callback(null);
+				            }
+				        });
+					})();
+			    },
+
+	// App (receipt)
+				loadOrderByHashId: function (orderHashId) {
+					var self = this;
+					return COMMON.API.Q.fcall(function () {
+						var deferred = COMMON.API.Q.defer();
+						// TODO: Ensure new entries are added to collection
+						//       instead of removing all other entries.
+						self.fetch({
+							reset: false,
+							remove: false,
+							data: $.param({
+								"filter[orderHashId]": orderHashId
+							}),
+							success: function () {
+								var order = self.findWhere({
+									orderHashId: orderHashId
+								});
+								if (!order) {
+									return deferred.resolve(self);
+								}
+			//					return context.appContext.get('stores').events.loadForId(
+			//						JSON.parse(order.get("event")).id
+			//					).then(function () {
+								return context.appContext.get('stores').cart.resetToSerializedModels(
+									JSON.parse(order.get("items"))
+								).then(function () {
+									return deferred.resolve(order);
+								}).fail(deferred.reject);
+							}
+						});
+						return deferred.promise;
+					});
+				},
+	// App
+				getActiveOrder: function () {
+					var record = this.findWhere({
+						orderHashId: context.appContext.get('context').id
+					});
+					return record;
+				},
+	// App
+				getOrder: function (todayId, verify) {
+					var self = this;
+
+					var orders = this.models.filter(function (model) {
+						return (model.get('day_id') === todayId);
+					});
+
+					if (orders.length === 0) {
+
+						self.add({
+							id: COMMON.API.UUID.v4(),
+							day_id: todayId
+						});
+
+						if (verify) {
+							throw new Error("Verify loop!");
+						}
+
+				        var _notify_onChange = COMMON.API.UNDERSCORE.debounce(function () {
+
+			// TODO: Save in local storage.
+			//console.log("TODO: trigger save of order info in local storage so nothing is lost if order is not completed");
+			// TODO: Leave out last four CC digits and security code.
+
+				        }, 100);
+
+						var order =  self.getOrder(todayId, true);
+						order.on("change", _notify_onChange);
+
+						order.submit = function (paymentToken) {
+
+							return COMMON.API.Q.fcall(function () {
+
+								// Serialize cart item models into order so we can display order later
+								// without having original item data in DB. This makes the order timeless.
+
+								return context.appContext.get('stores').cart.getSerializedModels().then(function (serializedItems) {
+
+									var form = order.get("form");
+									if (!form) {
+										order.set("form", JSON.stringify({}));
+									}
+
+									order.set("items", serializedItems);
+									order.set("summary", JSON.stringify(context.appContext.get('stores').cart.getSummary()));
+
+									var orderFrom = {};
+									var vendor_ids = {};
+									serializedItems.forEach(function (item) {
+										orderFrom[item["vendor.title"]] = true;
+										vendor_ids[item.vendor_id] = true;
+									});
+									order.set("orderFrom", Object.keys(orderFrom).join("<br/>"));
+									order.set("vendor_ids", Object.keys(vendor_ids).join(","));
+
+									var today = context.appContext.get('stores').events.getToday();
+									return context.appContext.get('stores').events.modelRecord(today).then(function (today) {
+
+										order.set("deliveryStartTime", today.get("deliveryStartTime"));
+										order.set("pickupEndTime", today.get("pickupEndTime"));
+										order.set("event", today.getValues());
+										order.set("event_id", today.get("id"));
+										order.set("paymentToken", JSON.stringify(paymentToken));
+
+			console.log("ORDER", order);
+			console.log("paymentToken", paymentToken);
+
+										// TODO: Send order to server and redirect to receipt using order ID hash.
+
+										return self.submitOrder(order.get("id")).then(function () {
+
+											return order;
+										});
+									});
+
+								});
+
+							}).fail(function (err) {
+								// TODO: Error submitting order!
+								console.error("submit error:", err.stack);
+								throw err;
+							});
+						}
+
+						return order;
+					} else {
+						return orders[0];
+					}
+				}
+
+
+			}
+		});
+
+		return collection.store;
+	}
+
+
+	/*
+
+		Model.latestStatusForRecords = function (records) {
+
+			var status = {
+				active: null,
+				activeTime: null,
+				history: []
+			};
+			records.forEach(function (record) {
+				status.history.push([
+					common.MOMENT().utc((record.get && record.get("time")) || record.time).unix(),
+					record.get((record.get && record.get("status")) || record.status)
+				]);
+			});
+			status.history.sort(function (a, b) {
+				if (a[0] === b[0]) return 0;
+				if (a[0] > b[0]) return -1;
+				return 1;
+			});
+			if (status.history.length > 0) {
+				status.activeTime = status.history[0][0];
+				status.active = status.history[0][1];
+			}
+
+			return status;
 		}
 
+	*/
+
+
+
+/***/ },
+/* 289 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/** @jsx React.DOM */
+
+	var COMMON = __webpack_require__(9);
+
+
+	exports.forContext = function (context) {
+
+		var common = COMMON.forContext(context);
 
 		// @see http://ampersandjs.com/docs#ampersand-state
-		var Model = store.Model = COMMON.API.AMPERSAND_STATE.extend({
+		var Model = COMMON.API.AMPERSAND_STATE.extend({
 			name: "orders",
 			props: {
 				id: "string",
@@ -61945,386 +64158,94 @@
 		    }
 		});
 
-		store.modelRecords = function (records) {
-			return records.map(function (record, i) {
-				// Store model on backbone row so we can re-use it on subsequent calls.
-				// NOTE: We purposfully store the model using `records[i]` instead of `record`
-				//       as `record` 
-				if (store._byId[records[i].get("id")].__model) {
-					return store._byId[records[i].get("id")].__model;
-				}
-				var fields = {};
-				store.Model.getFields().forEach(function (field) {
-					if (!records[i].has(field)) return;
-					fields[field] = records[i].get(field);
-				});
-				var model = store._byId[records[i].get("id")].__model = new Model(fields);
-				record.on("change", function (record) {
-					for (var name in record.changed) {
-						model.set(name, record.changed[name]);
-					}
-				});
-				return model;
-			});
-		}
-
-		store.loadAllOrdersForToday = function () {
-			var self = this;
-			return COMMON.API.Q.denodeify(function (callback) {
-		        self.fetch({
-		            reset: true,
-		            remove: true,
-		            data: $.param({
-		                "filter[day_id]": context.appContext.get('todayId')
-		            }),
-		            success: function () {
-		            	return callback(null);
-		            }
-		        });
-			})();
-		}
-
-		store.loadForVendorId = function (vendorId) {
-			var self = this;
-			return COMMON.API.Q.denodeify(function (callback) {
-		        self.fetch({
-		            reset: true,
-		            remove: true,
-		            data: $.param({
-		                "filter[vendor_ids]": vendorId
-		            }),
-		            success: function () {
-		            	return callback(null);
-		            }
-		        });
-			})();
-	    }
-
-		store.loadForVendorIdAndDayId = function (vendorId, dayId) {
-			var self = this;
-			return COMMON.API.Q.denodeify(function (callback) {
-		        self.fetch({
-		            reset: true,
-		            remove: true,
-		            data: $.param({
-		                "filter[vendor_ids]": vendorId,
-		                "filter[day_id]": dayId
-		            }),
-		            success: function () {
-		            	return callback(null);
-		            }
-		        });
-			})();
-	    }
-
-		store.loadOrderByHashId = function (orderHashId) {
-			return COMMON.API.Q.fcall(function () {
-				var deferred = COMMON.API.Q.defer();
-				// TODO: Ensure new entries are added to collection
-				//       instead of removing all other entries.
-				store.fetch({
-					reset: false,
-					remove: false,
-					data: $.param({
-						"filter[orderHashId]": orderHashId
-					}),
-					success: function () {
-						var order = store.findWhere({
-							orderHashId: orderHashId
-						});
-						if (!order) {
-							return deferred.resolve(store);
-						}
-	//					return context.appContext.get('stores').events.loadForId(
-	//						JSON.parse(order.get("event")).id
-	//					).then(function () {
-						return context.appContext.get('stores').cart.resetToSerializedModels(
-							JSON.parse(order.get("items"))
-						).then(function () {
-							return deferred.resolve(order);
-						}).fail(deferred.reject);
-					}
-				});
-				return deferred.promise;
-			});
-		}
-
-		store.getActiveOrder = function () {
-			var record = store.findWhere({
-				orderHashId: context.appContext.get('context').id
-			});
-			return record;
-		}
-
-		store.getOrder = function (todayId, verify) {
-
-			var orders = this.models.filter(function (model) {
-				return (model.get('day_id') === todayId);
-			});
-
-			if (orders.length === 0) {
-
-				this.add({
-					id: COMMON.API.UUID.v4(),
-					day_id: todayId
-				});
-
-				if (verify) {
-					throw new Error("Verify loop!");
-				}
-
-		        var _notify_onChange = COMMON.API.UNDERSCORE.debounce(function () {
-
-	// TODO: Save in local storage.
-	console.log("TODO: trigger save of order info in local storage so nothing is lost if order is not completed");
-	// TODO: Leave out last four CC digits and security code.
-
-		        }, 100);
-
-				var order =  store.getOrder(todayId, true);
-				order.on("change", _notify_onChange);
-
-				order.submit = function (paymentToken) {
-
-					return COMMON.API.Q.fcall(function () {
-
-						// Serialize cart item models into order so we can display order later
-						// without having original item data in DB. This makes the order timeless.
-
-						return context.appContext.get('stores').cart.getSerializedModels().then(function (serializedItems) {
-
-							var form = order.get("form");
-							if (!form) {
-								order.set("form", JSON.stringify({}));
-							}
-
-							order.set("items", serializedItems);
-							order.set("summary", JSON.stringify(context.appContext.get('stores').cart.getSummary()));
-
-							var orderFrom = {};
-							var vendor_ids = {};
-							serializedItems.forEach(function (item) {
-								orderFrom[item["vendor.title"]] = true;
-								vendor_ids[item.vendor_id] = true;
-							});
-							order.set("orderFrom", Object.keys(orderFrom).join("<br/>"));
-							order.set("vendor_ids", Object.keys(vendor_ids).join(","));
-
-							var today = context.appContext.get('stores').events.getToday();
-							return context.appContext.get('stores').events.modelRecord(today).then(function (today) {
-
-								order.set("deliveryStartTime", today.get("deliveryStartTime"));
-								order.set("pickupEndTime", today.get("pickupEndTime"));
-								order.set("event", today.getValues());
-								order.set("event_id", today.get("id"));
-								order.set("paymentToken", JSON.stringify(paymentToken));
-
-	console.log("ORDER", order);
-	console.log("paymentToken", paymentToken);
-
-								// TODO: Send order to server and redirect to receipt using order ID hash.
-
-								return store.submitOrder(order.get("id")).then(function () {
-
-									return order;
-								});
-							});
-
-						});
-
-					}).fail(function (err) {
-						// TODO: Error submitting order!
-						console.error("submit error:", err.stack);
-						throw err;
-					});
-				}
-
-				return order;
-			} else {
-				return orders[0];
-			}
-		}
-
-		return store;
-	}
-
-
-
-/***/ },
-/* 279 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/** @jsx React.DOM */
-	var COMMON = __webpack_require__(8);
-
-
-	var ENDPOINT = COMMON.makeEndpointUrl("order-status");
-
-
-	var Record = COMMON.API.BACKBONE.Model.extend({
-		idAttribute: "id"
-	});
-
-	var Store = COMMON.API.BACKBONE.Collection.extend({
-		model: Record,
-		url: ENDPOINT,
-		parse: function(data) {
-			return data.data.map(function (record) {
-				return COMMON.API.UNDERSCORE.extend(record.attributes, {
-					id: record.id
-				});
-			});
-		}
-	});
-
-
-	exports['for'] = function (context) {
-
-		var store = new Store();
-
-
-		store.Model = __webpack_require__(280).forContext(context);
-
-
-		store.fetchStatusInfoForOrderHashId = function (orderHashId) {
-
-			var deferred = COMMON.API.Q.defer();
-
-			// TODO: Ensure new entries are added to collection
-			//       instead of removing all other entries.
-			store.fetch({
-				reset: false,
-				remove: false,
-				data: $.param({
-					"filter[orderHashId]": orderHashId
-				}),
-				success: function () {
-
-					var status = store.Model.latestStatusForRecords(store.where({
-						orderHashId: orderHashId
-					}));
-
-					var order = context.appContext.get('stores').orders.findWhere({
-						orderHashId: orderHashId
-					});
-
-					if (order) {
-				    	order.set("statusInfo", status);
-					}
-
-					return deferred.resolve(status);
-				}
-			});
-
-			return deferred.promise;
-		}
-
-		store.setStatusForOrderHashId = function (orderHashId, statusId) {
-
-			var self = this;
-			return COMMON.API.Q.denodeify(function (callback) {
-
-				var payload = {
-					data: {
-						type: "order-status",
-						attributes: {
-							orderHashId: orderHashId,
-							status: statusId
-						}
-					}
-				};
-
-				return $.ajax({
-					method: "POST",
-					url: ENDPOINT + "/",
-					contentType: "application/vnd.api+json",
-					headers: {
-						"Accept": "application/vnd.api+json"
-					},
-	    			dataType: "json",
-					data: JSON.stringify(payload)
-				})
-				.done(function (response) {
-
-					store.fetchStatusInfoForOrderHashId(orderHashId);
-
-				})
-				.fail(function(err) {
-
-	// TODO: Ask user to submit again.
-	console.log("error!", err.stack);
-
-					return callback(err);
-				});
-			})();
-		}
-
-		return store;
-	}
-
-
-
-/***/ },
-/* 280 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/** @jsx React.DOM */
-
-	var COMMON = __webpack_require__(9);
-
-
-	exports.forContext = function (context) {
-
-		var common = COMMON.forContext(context);
-
-		// @see http://ampersandjs.com/docs#ampersand-state
-		var Model = COMMON.API.AMPERSAND_STATE.extend({
-			name: "order-status",
-			props: {
-				id: "string",
-				orderHashId: "string",
-				status: "string"
-		    }
-		});
-
-		Model.latestStatusForRecords = function (records) {
-
-			var status = {
-				active: null,
-				activeTime: null,
-				history: []
-			};
-			records.forEach(function (record) {
-				status.history.push([
-					common.MOMENT().utc((record.get && record.get("time")) || record.time).unix(),
-					record.get((record.get && record.get("status")) || record.status)
-				]);
-			});
-			status.history.sort(function (a, b) {
-				if (a[0] === b[0]) return 0;
-				if (a[0] > b[0]) return -1;
-				return 1;
-			});
-			if (status.history.length > 0) {
-				status.activeTime = status.history[0][0];
-				status.active = status.history[0][1];
-			}
-
-			return status;
-		}
-
 		return Model;
 	}
 
 
 /***/ },
-/* 281 */
+/* 290 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/** @jsx React.DOM */
+	exports['for'] = function (context) {
+
+		var dev = context.appContext.get("context").dev;
+		var services = context.appContext.get("context").services;
+
+		var browserConsole = window.console;
+
+		var Q = __webpack_require__(11);
+
+		var exports = {};
+
+		function getLogger () {
+			if (!getLogger._logger) {
+				getLogger._logger = Q.denodeify(function (callback) {
+					var checkInterval = setInterval(function () {
+						if (!window._LTracker) return;
+
+						clearInterval(checkInterval);
+						if (
+							services &&
+							services.loggly
+						) {
+							window._LTracker.push(services.loggly);
+							return callback(null, window._LTracker);
+						}
+
+						return callback(null, null);
+					}, 100);
+				})();
+			}
+			return getLogger._logger;
+		}
+
+		exports.getConsole = function () {
+
+			var console = {};
+			[
+				"log",
+				"info",
+				"warn",
+				"error",
+				"trace"
+			].forEach(function (type) {
+				console[type] = function () {
+					var args = Array.prototype.slice.call(arguments);
+					getLogger().then(function (logger) {
+
+						browserConsole[type].apply(browserConsole, args);
+
+						if (
+							logger &&
+							(
+								type === "error" ||
+								type === "log"
+							)
+						) {
+							logger.push({
+								"app": "lunchroom-client",
+								"args": args
+							});
+						}
+					});
+				};
+			});
+			return console;
+		}
+
+		return exports;
+	}
+
+
+/***/ },
+/* 291 */
 /***/ function(module, exports, __webpack_require__, __webpack_module_template_argument_0__) {
 
 	/** @jsx React.DOM */
 	__webpack_require__(__webpack_module_template_argument_0__);
 
-	var React = __webpack_require__(119);
+	var React = __webpack_require__(122);
 
 	module.exports = (
 	    React.createElement("div", {className: "sixteen wide column"}, 
@@ -62336,7 +64257,7 @@
 
 
 /***/ },
-/* 282 */
+/* 292 */
 /***/ function(module, exports, __webpack_require__, __webpack_module_template_argument_0__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
