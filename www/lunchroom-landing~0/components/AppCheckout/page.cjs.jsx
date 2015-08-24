@@ -382,6 +382,18 @@ module.exports = function (Context) {
 
     </div>
 
+    <div data-component-section="days" data-component-view="too-late">
+
+      <div className="order-reviewer">
+        <h3 className="order-reviewer-header"><span data-component-prop="dayLabel">Today's</span> order</h3>
+
+        <div className="order-reviewer-items" data-component-section="items">
+          Too late to order for today
+        </div>
+      </div>
+
+    </div>
+
   </div>
 
 
