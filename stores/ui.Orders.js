@@ -18,6 +18,13 @@ exports['for'] = function (context) {
 
 		collection: {			
 // TODO: Clean collection
+
+
+			// App
+			getPending: function () {
+
+				return this.store.getOrder(context.appContext.get('todayId'));
+			}
 		},
 
 		// Low-level

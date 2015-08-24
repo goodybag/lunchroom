@@ -38,7 +38,7 @@ function startTimer (duration, display) {
 require("./component.jsx")['for'](module, {
 
 
-	mapData: function (data) {
+	mapData: function (Context, data) {
 		return {
 			'canOrder': data.connect("page/loaded/selectedEvent/canOrder"),
 			'isPastDeadline': data.connect("page/loaded/selectedEvent/isPastDeadline"),

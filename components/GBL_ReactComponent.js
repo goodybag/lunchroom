@@ -5,6 +5,7 @@ var API = exports.API = {
 	REACT: require("react"),
 	EXTEND: require("extend"),
 	MOMENT: require("moment"),
+	NUMERAL: require("numeral"),
 	Q: require("q"),
 	GBL_TEMPLATE: require('./GBL_ReactTemplate')
 };
@@ -114,7 +115,7 @@ exports.create = function (Context, implementation) {
 
 					var consumer = new (component._render_Context.appContext.get("data").Consumer)();
 
-					consumer.mapData(Context.mapData(consumer));
+					consumer.mapData(Context.mapData(component._render_Context, consumer));
 
 					component._template_data_consumer = consumer;
 
@@ -275,6 +276,8 @@ exports.create = function (Context, implementation) {
 
 	    	self._render_Context.Template = API.GBL_TEMPLATE.for(self);
 
+	    	self._render_Context.MOMENT = API.MOMENT;
+	    	self._render_Context.NUMERAL = API.NUMERAL;
 	    	self._render_Context.REACT = API.REACT;
 	    	self._render_Context.Q = API.Q;
 	    	self._render_Context.appContext = self.props.appContext;
@@ -327,7 +330,7 @@ exports.create = function (Context, implementation) {
 
 						var consumer = new (self._render_Context.appContext.get("data").Consumer)();
 
-						consumer.mapData(Context.mapData(consumer));
+						consumer.mapData(Context.mapData(self._render_Context, consumer));
 
 						self._template_data_consumer = consumer;
 

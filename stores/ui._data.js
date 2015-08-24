@@ -198,12 +198,8 @@ var Consumer = exports.Consumer = function (rootCollections, rootCollectionsOpti
 
 							var consumer = null
 							if (iterator) {
-								consumer = new Consumer({
-									get: function () {
-										return dictionaryForSegment;
-									}
-								}, {
-									pointerPrefix: "x/"
+								consumer = new Consumer(rootCollections, {
+									pointerPrefix: dictionaryForSegment.Name + "/"
 								});
 
 								consumer.mapData(iterator(consumer));
@@ -389,6 +385,13 @@ var Consumer = exports.Consumer = function (rootCollections, rootCollectionsOpti
 
 	var dataMap = null;
 	self.mapData = function (_dataMap) {
+
+		if (!_dataMap["@map"]) {
+			_dataMap = {
+				"@map": _dataMap
+			};
+		}
+
 		dataMap = _dataMap;
 	}
 
@@ -397,13 +400,16 @@ var Consumer = exports.Consumer = function (rootCollections, rootCollectionsOpti
 			throw new Error("Data has not yet been mapped!");
 		}
 		var data = {};
-		Object.keys(dataMap).forEach(function (name) {
-			if (typeof dataMap[name] !== "function") {
-				console.error("dataMap[name]", dataMap, name, dataMap[name]);
+		Object.keys(dataMap["@map"]).forEach(function (name) {
+			if (typeof dataMap["@map"][name] !== "function") {
+				console.error("dataMap[name]", dataMap["@map"], name, dataMap["@map"][name]);
 				throw new Error("Value at '" + name + "' is not a function! Did you forget a 'linksTo' declaration?");
 			}
-			data[name] = dataMap[name](dictionary);
+			data[name] = dataMap["@map"][name](dictionary);
 		});
+		if (typeof dataMap["@postprocess"] === "function") {
+			data = dataMap["@postprocess"](data);
+		}
 		return data;
 	}
 

@@ -2,7 +2,7 @@
 require("./component.jsx")['for'](module, {
 
 
-	mapData: function (data) {
+	mapData: function (Context, data) {
 		return {
 			'event_id': data.connect("page/loaded/selectedEvent/id"),
 			'canOrder': data.connect("page/loaded/selectedEvent/canOrder"),
@@ -252,7 +252,7 @@ console.log("REMOVE", itemData.item_id);
 	},
 
 	getHTML: function (Context, data) {
-
+		
 		// TODO: Remove this once we can inject 'React' automatically at build time.
 		var React = Context.REACT;
 

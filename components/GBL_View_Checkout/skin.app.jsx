@@ -1,6 +1,9 @@
 
 require("./component.jsx")['for'](module, {
 
+
+	// TODO: Move into docs at: https://github.com/LogicCores/0-singleton
+	// Called ONCE per page load
 	singleton: function (Context) {
 
 		// @see https://stripe.com/docs/stripe.js
@@ -10,33 +13,105 @@ require("./component.jsx")['for'](module, {
 				Context.appContext.get('context').stripePublishableKey
 			);
 		});
-
 	},
 
 
-	mapData: function (data) {
+	// TODO: Move into docs at: https://github.com/LogicCores/0-data
+	// Called ONCE per component instanciation (which may contain more than one template).
+	// Here you map data from collections and records to local properties that can be used
+	// with minimal further manipulation in the templates.
+	// All summary states should be computed here so that templates can simply react
+	// to immutable data.
+	// If ANY of the data changes in the connected collections or records, change notifications
+	// are debounced and then ONE event is triggered to re-get the data and posprocess it
+	// for all properties as mapped below. i.e. Individual field updates will trigger
+	// the entire data structure to be re-constructed. This is efficient enough as all method
+	// calls involve local cached data and we are dealing with data that changes at a LOW frequency.
+	// The component (and all its templates) are only re-rendered if the final data structure
+	// has changed from the previous iteration.
+	// If you have high-frequency data changes (> 1 every 500 ms) that need to be rendered
+	// you should be setting up dedicated components that act at a lower level than
+	// this component architecture that uses a virtual dom diffing layer.
+	mapData: function (Context, data) {
+
+		var LODASH = require("lodash");
+
 		return {
+			"@map": {
+				'order': data.connect("orders/getPending()"),
+				'summary': data.connect("cart/getSummary()"),
+				'items': data.connect("cart/*", function (data) {
+					return {
+						"id": data.connect("id"),
+						"quantity": data.connect("quantity"),
+						"title": data.connect("item_id/title"),
+						"photo": data.connect("item_id/photo_url"),
+						"priceRaw": data.connect("item_id/price"),
+						"price": data.connect("item_id/format.price"),
+						"day_id": data.connect("event_id/day_id"),
+						"canOrder": data.connect("event_id/canOrder"),
+						"isPastDeadline": data.connect("event_id/isPastDeadline"),
+						"goodybagFee": data.connect("event_id/goodybagFee")						
+					};
+				})
+			},
+			"@postprocess": function (data) {
 
-// TODO: Compute these based on items in cart 'isPastDeadline' 'hasAdvanceItems'
+				// We go through the items, group them into days and sort them
+				// and get other summary info to drive templates.
 
-			'canOrder': data.connect("page/loaded/selectedEvent/canOrder"),
-			'isPastDeadline': data.connect("page/loaded/selectedEvent/isPastDeadline"),
-			'summary': data.connect("cart/getSummary()"),
-			'items': data.connect("cart/*", function (data) {
-				return {
-					"id": data.connect("id"),
-					"quantity": data.connect("quantity"),
-					"title": data.connect("item_id/title"),
-					"photo": data.connect("item_id/photo_url"),
-					"price": data.connect("item_id/format.price"),
-					"amount": data.connect("item_id/format.amount")
-				};
-			})
+				var itemsByDays = {};
+				data.onlyItemsForTodayAndTooLate = false;
+				if (data.items) {
+					data.items.forEach(function (item) {
+						if (!itemsByDays[item.day_id]) {
+							itemsByDays[item.day_id] = {
+								dayLabel: Context.MOMENT(item.day_id, "YYYY-MM-DD").format("dddd") + "'s",
+								goodybagFee: Context.NUMERAL(item.goodybagFee/100).format('$0.00'),
+								day_id: item.day_id,
+								canOrder: item.canOrder,
+								isPastDeadline: item.isPastDeadline,
+								items: []
+							};
+						}
+						item.amount = Context.NUMERAL(item.priceRaw * item.quantity / 100).format('$0.00');
+						itemsByDays[item.day_id].items.push(item);
+						if (item.day_id === Context.appContext.get('todayId')) {
+							itemsByDays[item.day_id].dayLabel = "Today's";
+							if (
+								item.canOrder &&
+								item.isPastDeadline
+							) {
+								data.onlyItemsForTodayAndTooLate = true;
+							}
+						} else {
+							data.onlyItemsForTodayAndTooLate = false;
+						}
+					});
+				}
+				data.itemsByDays = Object.keys(itemsByDays).map(function (day_id) {
+					LODASH.sortBy(itemsByDays[day_id].items, 'price');
+					return itemsByDays[day_id];
+				});
+				LODASH.sortBy(data.itemsByDays, 'day_id');
+
+				data.noItems = (data.itemsByDays.length === 0);
+
+				data.orderForm = JSON.parse(data.order.get("form"));
+
+				return data;
+			}
 		};
 	},
 
 
-
+	// TODO: Move into docs at: https://github.com/LogicCores/0-template
+	// The templates involved in rendering this component.
+	// Data provided in template methods comes from 'mapData' above.
+	// This method is only called ONCE per component instanciation to instanciate
+	// the templates, the 'markup' method is called once per template after the DOM
+	// for the template has loaded and the 'fill' method is called whenever
+	// 'mapData' above generates a new changed data structure.
 	getTemplates: function (Context) {
 
 		var copyName = {};
@@ -112,12 +187,9 @@ require("./component.jsx")['for'](module, {
 
 				},
 				fill: function (element, data, Context) {
-			    	var values = Context.order.get("form");
-			    	if (values) {
-			    		values = JSON.parse(values);
-						this.fillProperties(element, values);
-						this.fillElements(element, values);
-					}
+
+					this.fillProperties(element, data.orderForm);
+					this.fillElements(element, data.orderForm);
 
 					this.showViews(element, [
 						"default"
@@ -138,11 +210,11 @@ require("./component.jsx")['for'](module, {
 						return false;
 					});
 				},
-				fill: function (element, itemsData, Context) {
+				fill: function (element, checkoutData, Context) {
 					var self = this;
 
-console.log("itemsData", itemsData);
-
+console.log("checkoutData", checkoutData);
+/*
 					var items = Context.items.map(function(item) {
 						return {
 							"id": item.get('id'),
@@ -153,34 +225,42 @@ console.log("itemsData", itemsData);
 							"amount": item.get("format.amount")
 						};
 					});
+*/
 
-
-					self.renderSection(element, "days", [
-						{
-							"dayLabel": "Our Day Label",
-							"items": []
+					self.renderSection(element, "days", checkoutData.itemsByDays, function getView (dayData) {
+						if (
+							!dayData.canOrder ||
+							dayData.isPastDeadline
+						) {
+							return 'too-late';
 						}
-					], function getView (dayData) {
 						return 'default';
-				    }, function hookEvents(elm, dayData) {
+				    }, function hookEvents(dayElement, dayData) {
 
+						$('[data-component-elm="addItemsLink"]', dayElement).click(function () {
 
-console.log("RENDER DAY", dayData);
+console.log("TODO: ADD ITEMS TO DAY", dayData.day_id);
 
-				    });
-
-/*
-					self.renderSection(element, "items", items, function getView (data) {
-						return 'default';
-				    }, function hookEvents(elm, data) {
-
-						$('[data-component-elm="removeLink"]', elm).click(function () {
-				    		Context.appContext.get('stores').cart.removeItem(data.id);
+//							Context.appContext.set('selectedView', "Menu_Web");
 							return false;
 						});
 
+//console.log("RENDER DAY DATA", dayData);
+
+						self.renderSection(dayElement, "items", dayData.items, function getView (data) {
+							return 'default';
+					    }, function hookEvents(elm, data) {
+
+console.log("ITEM DATA", data);
+
+
+							$('[data-component-elm="removeLink"]', elm).click(function () {
+					    		Context.appContext.get('stores').cart.removeItemForEvent(dayData.event_id, data.id);
+								return false;
+							});
+
+					    });
 				    });
-*/
 				}
 			}),
 			"summary": new Context.Template({
@@ -333,22 +413,34 @@ console.log("RENDER DAY", dayData);
 
 				},
 				fill: function (element, data, Context) {
-
-					var values = {
-						"subtotal": Context.summary["format.amount"],
-						"taxRate": Context.summary["format.tax"],
-						"taxAmount": Context.summary["format.taxAmount"],
-						"goodybagFee": Context.summary["format.goodybagFee"],
-						"total": Context.summary["format.total"]
-					};
-
-					this.fillProperties(element, values);
+					this.fillProperties(element, {
+						"subtotal": data.summary["format.amount"],
+						"taxRate": data.summary["format.tax"],
+						"taxAmount": data.summary["format.taxAmount"],
+						"goodybagFee": data.summary["format.goodybagFee"],
+						"total": data.summary["format.total"]
+					});
 				}
 			})
 		};
 	},
 
 
+	// TODO: Move into docs at: https://github.com/LogicCores/0-component
+	// This method is called EVERY TIME the component updates with new data.
+	// It serves to layout the templates supplied with 'getTemplates' for the component.
+	// You can bypass using templates completely and just generate HTML code here
+	// that will get diffed and chanegs applied to DOM.
+	// If a template is used, the 'markup' method of the template will fire
+	// after the template has been redered to the DOM the FIRST time. The 'fill' method
+	// of the template will fire every time the data changes. i.e. If this method
+	// always returns the same HTML, the entire diffing step is skipped and the only
+	// thing that is called for every new 'data' structure is the 'fill' method in
+	// the templates.
+	// TODO: Add optimization to instruct component that HTML layout only needs to
+	//       be fetched once. This can be done if all data-based view manipulation
+	//       happens in templates and NOT below. i.e. only if below will always
+	//       generate EXACT SAME HTML.
 	getHTML: function (Context, data) {
 
 		// TODO: Remove this once we can inject 'React' automatically at build time.
@@ -356,24 +448,19 @@ console.log("RENDER DAY", dayData);
 
 		var Panel = null;
 
-console.log("CHECKOUT data", data);
+console.log("CHECKOUT data", JSON.stringify(data, null, 4));
 
-		if (
-			parseInt(Context.eventToday.get("format.orderTimerSeconds") || 0) <= 0
-		) {
-
-			Panel = (
-				<Context.templates.too_late.comp />
-			);
-
-		} else
-		if (
-			!Context.eventToday ||
-			Context.items.length === 0
-		) {
+		if (data.noItems) {
 
 			Panel = (
 				<Context.templates.no_items.comp />
+			);
+
+		} else
+		if (data.onlyItemsForTodayAndTooLate) {
+
+			Panel = (
+				<Context.templates.too_late.comp />
 			);
 
 		} else {
