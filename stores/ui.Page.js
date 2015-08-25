@@ -13,6 +13,19 @@ exports['for'] = function (context) {
 		record: {
 // TODO: Use record and get rid of model
 
+			"todaysEvent": {
+				"linksTo": "events",
+				// TODO: Implement
+				/*
+				"connect": function (data) {
+					return data.connect('events/[day_id="' + this.selectedDay + '"]/id');
+				}
+				*/
+				"derived": function () {
+					return DATA.get('events/[day_id="' + context.appContext.get("todayId") + '"]/id');
+				}
+			},
+
 			"selectedDay": {
 				"linksTo": "days"
 			},
@@ -25,9 +38,6 @@ exports['for'] = function (context) {
 				}
 				*/
 				"derived": function () {
-
-//console.log("GET SEECTED EVENT FOR SELECTE DAY", this);
-
 					return DATA.get('events/[day_id="' + this.selectedDay + '"]/id');
 				}
 			},

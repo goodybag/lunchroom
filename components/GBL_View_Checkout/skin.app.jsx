@@ -3,7 +3,9 @@ require("./component.jsx")['for'](module, {
 
 
 	// TODO: Move into docs at: https://github.com/LogicCores/0-singleton
-	// Called ONCE per page load
+	// Called ONCE per page load.
+	// There is NO data available for this component yet and it is NOT yet attatched to DOM.
+	// Intended to initiate the loading of all resources the component needs.
 	singleton: function (Context) {
 
 		// @see https://stripe.com/docs/stripe.js
@@ -16,260 +18,26 @@ require("./component.jsx")['for'](module, {
 	},
 
 
-	// TODO: Move into docs at: https://github.com/LogicCores/0-data
-	// Called ONCE per component instanciation (which may contain more than one template).
-	// Here you map data from collections and records to local properties that can be used
-	// with minimal further manipulation in the templates.
-	// All summary states should be computed here so that templates can simply react
-	// to immutable data.
-	// If ANY of the data changes in the connected collections or records, change notifications
-	// are debounced and then ONE event is triggered to re-get the data and posprocess it
-	// for all properties as mapped below. i.e. Individual field updates will trigger
-	// the entire data structure to be re-constructed. This is efficient enough as all method
-	// calls involve local cached data and we are dealing with data that changes at a LOW frequency.
-	// The component (and all its templates) are only re-rendered if the final data structure
-	// has changed from the previous iteration.
-	// If you have high-frequency data changes (> 1 every 500 ms) that need to be rendered
-	// you should be setting up dedicated components that act at a lower level than
-	// this component architecture that uses a virtual dom diffing layer.
-	mapData: function (Context, data) {
+	// TODO: Move into docs at: https://github.com/LogicCores/0-component
+	// Called ONCE per component instanciation.
+	// We can attach methods to 'Context' that will be available to all calls below.
+	component: function (Context, data) {
 
-		var LODASH = require("lodash");
+		Context.saveForm = function () {
+        	var values = {};
+			$(':input[data-component-elm]', Context.componentElement).each(function() {
+				values[$(this).attr("data-component-elm")] = $(this).val();
+			});
+			data.order.set("form", JSON.stringify(values));
+		}
 
-		return {
-			"@map": {
-				'order': data.connect("orders/getPending()"),
-				'summary': data.connect("cart/getSummary()"),
-				'items': data.connect("cart/*", function (data) {
-					return {
-						"id": data.connect("id"),
-						"quantity": data.connect("quantity"),
-						"title": data.connect("item_id/title"),
-						"photo": data.connect("item_id/photo_url"),
-						"priceRaw": data.connect("item_id/price"),
-						"price": data.connect("item_id/format.price"),
-						"day_id": data.connect("event_id/day_id"),
-						"canOrder": data.connect("event_id/canOrder"),
-						"isPastDeadline": data.connect("event_id/isPastDeadline"),
-						"goodybagFee": data.connect("event_id/goodybagFee")						
-					};
-				})
-			},
-			"@postprocess": function (data) {
+		Context.placeOrder = function () {
 
-				// We go through the items, group them into days and sort them
-				// and get other summary info to drive templates.
+console.log("PLACE ORDER");
 
-				var itemsByDays = {};
-				data.onlyItemsForTodayAndTooLate = false;
-				if (data.items) {
-					data.items.forEach(function (item) {
-						if (!itemsByDays[item.day_id]) {
-							itemsByDays[item.day_id] = {
-								dayLabel: Context.MOMENT(item.day_id, "YYYY-MM-DD").format("dddd") + "'s",
-								goodybagFee: Context.NUMERAL(item.goodybagFee/100).format('$0.00'),
-								day_id: item.day_id,
-								canOrder: item.canOrder,
-								isPastDeadline: item.isPastDeadline,
-								items: []
-							};
-						}
-						item.amount = Context.NUMERAL(item.priceRaw * item.quantity / 100).format('$0.00');
-						itemsByDays[item.day_id].items.push(item);
-						if (item.day_id === Context.appContext.get('todayId')) {
-							itemsByDays[item.day_id].dayLabel = "Today's";
-							if (
-								item.canOrder &&
-								item.isPastDeadline
-							) {
-								data.onlyItemsForTodayAndTooLate = true;
-							}
-						} else {
-							data.onlyItemsForTodayAndTooLate = false;
-						}
-					});
-				}
-				data.itemsByDays = Object.keys(itemsByDays).map(function (day_id) {
-					LODASH.sortBy(itemsByDays[day_id].items, 'price');
-					return itemsByDays[day_id];
-				});
-				LODASH.sortBy(data.itemsByDays, 'day_id');
-
-				data.noItems = (data.itemsByDays.length === 0);
-
-				data.orderForm = JSON.parse(data.order.get("form"));
-
-				return data;
-			}
-		};
-	},
-
-
-	// TODO: Move into docs at: https://github.com/LogicCores/0-template
-	// The templates involved in rendering this component.
-	// Data provided in template methods comes from 'mapData' above.
-	// This method is only called ONCE per component instanciation to instanciate
-	// the templates, the 'markup' method is called once per template after the DOM
-	// for the template has loaded and the 'fill' method is called whenever
-	// 'mapData' above generates a new changed data structure.
-	getTemplates: function (Context) {
-
-		var copyName = {};
-
-		return {			
-			"too_late": new Context.Template({
-				impl: require("../../www/lunchroom-landing~0/components/AppCheckout/too-late.cjs.jsx"),
-				markup: function (element) {
-				},
-				fill: function (element, data, Context) {
-
-					this.fillProperties(element, {
-						"orderBy": Context.eventToday.get('format.orderByTime')
-					});
-				}
-			}),
-			"no_items": new Context.Template({
-				impl: require("../../www/lunchroom-landing~0/components/AppCheckout/no-items.cjs.jsx"),
-				markup: function (element) {
-
-					$('[data-component-elm="addItemsLink"]', element).click(function () {
-						Context.appContext.set('selectedView', "Menu_Web");
-						return false;
-					});
-				},
-				fill: function (element, data, Context) {
-				}
-			}),
-			"navbar": new Context.Template({
-				impl: require("../../www/lunchroom-landing~0/components/AppCheckout/checkout-navbar.cjs.jsx"),
-				markup: function (element) {
-
-					$('[data-component-elm="addItemsLink"]', element).click(function () {
-						Context.appContext.set('selectedView', "Menu_Web");
-						return false;
-					});
-				},
-				fill: function (element, data, Context) {
-				}
-			}),
-			"form": new Context.Template({
-				impl: require("../../www/lunchroom-landing~0/components/AppCheckout/checkout-form-new.cjs.jsx"),
-				markup: function (element) {
-
-					this.liftSections(element);
-
-				    // Save form on change to any order field.
-			    	$('input', element).on('keyup', function () {
-						var values = {};
-						$(':input[data-component-elm]', element).each(function() {
-							values[$(this).attr("data-component-elm")] = $(this).val();
-						});
-						Context.order.set("form", JSON.stringify(values));
-					});
-
-			    	// Copy name to name on card
-			    	$('[data-component-elm="info[name]"]', element).on('keyup', function () {
-			    		var newValue = $(this).val();
-			    		var existingValue = $('[data-component-elm="card[name]"]', element).val();
-			    		if (
-			    			newValue === existingValue ||
-			    			// 'card[name]' was changed so we should no longer sync it.
-			    			(
-			    				copyName.lastValue &&
-				    			existingValue !== copyName.lastValue
-				    		)
-			    		) {
-			    			return;
-			    		}
-			    		copyName.lastValue = newValue;
-						$('[data-component-elm="card[name]"]', element).val(copyName.lastValue);
-				    });
-
-				},
-				fill: function (element, data, Context) {
-
-					this.fillProperties(element, data.orderForm);
-					this.fillElements(element, data.orderForm);
-
-					this.showViews(element, [
-						"default"
-					]);
-
-// TODO: Enable this once phone number validation works.
-//					window.attachSkinApp();
-				}
-			}),
-			"items": new Context.Template({
-				impl: require("../../www/lunchroom-landing~0/components/AppCheckout/checkout-items.cjs.jsx"),
-				markup: function (element) {
-
-					this.liftSections(element);
-
-					$('[data-component-elm="addItemsLink"]', element).click(function () {
-						Context.appContext.set('selectedView', "Menu_Web");
-						return false;
-					});
-				},
-				fill: function (element, checkoutData, Context) {
-					var self = this;
-
-console.log("checkoutData", checkoutData);
 /*
-					var items = Context.items.map(function(item) {
-						return {
-							"id": item.get('id'),
-							"title": item.get("title"),
-							"photo": item.get("photo_url"),
-							"quantity": item.get("quantity"),
-							"price": item.get("format.price"),
-							"amount": item.get("format.amount")
-						};
-					});
-*/
 
-					self.renderSection(element, "days", checkoutData.itemsByDays, function getView (dayData) {
-						if (
-							!dayData.canOrder ||
-							dayData.isPastDeadline
-						) {
-							return 'too-late';
-						}
-						return 'default';
-				    }, function hookEvents(dayElement, dayData) {
-
-						$('[data-component-elm="addItemsLink"]', dayElement).click(function () {
-
-console.log("TODO: ADD ITEMS TO DAY", dayData.day_id);
-
-//							Context.appContext.set('selectedView', "Menu_Web");
-							return false;
-						});
-
-//console.log("RENDER DAY DATA", dayData);
-
-						self.renderSection(dayElement, "items", dayData.items, function getView (data) {
-							return 'default';
-					    }, function hookEvents(elm, data) {
-
-console.log("ITEM DATA", data);
-
-
-							$('[data-component-elm="removeLink"]', elm).click(function () {
-					    		Context.appContext.get('stores').cart.removeItemForEvent(dayData.event_id, data.id);
-								return false;
-							});
-
-					    });
-				    });
-				}
-			}),
-			"summary": new Context.Template({
-				impl: require("../../www/lunchroom-landing~0/components/AppCheckout/checkout-summary.cjs.jsx"),
-				markup: function (element) {
-
-					$('[data-component-elm="placeOrderButton"]', element).click(function () {
-
-						var orderInfoElm = $('.checkout-info');
+var orderInfoElm = $('.checkout-info');
 						$('[name="will_add_new_card"]', orderInfoElm).prop('checked', true);
 						var checkoutValidator = validators.createCheckoutValidator(orderInfoElm);
 						function showError (error) {
@@ -408,11 +176,251 @@ console.log("ITEM DATA", data);
 							});
 						});
 
+*/
+
+		}
+
+	},
+
+
+	// TODO: Move into docs at: https://github.com/LogicCores/0-data
+	// Called ONCE per component instanciation (which may contain more than one template).
+	// Here you map data from collections and records to local properties that can be used
+	// with minimal further manipulation in the templates.
+	// All summary states should be computed here so that templates can simply react
+	// to immutable data.
+	// If ANY of the data changes in the connected collections or records, change notifications
+	// are debounced and then ONE event is triggered to re-get the data and posprocess it
+	// for all properties as mapped below. i.e. Individual field updates will trigger
+	// the entire data structure to be re-constructed. This is efficient enough as all method
+	// calls involve local cached data and we are dealing with data that changes at a LOW frequency.
+	// The component (and all its templates) are only re-rendered if the final data structure
+	// has changed from the previous iteration.
+	// If you have high-frequency data changes (> 1 every 500 ms) that need to be rendered
+	// you should be setting up dedicated components that act at a lower level than
+	// this component architecture that uses a virtual dom diffing layer.
+	mapData: function (Context, data) {
+
+		var LODASH = require("lodash");
+
+		return {
+			"@map": {
+				'orderByForToday': data.connect("page/loaded/todaysEvent/format.orderByTime"),				
+				'order': data.connect("orders/getPending()"),
+				'summary': data.connect("cart/getSummary()"),
+				'items': data.connect("cart/*", function (data) {
+					return {
+						"id": data.connect("id"),
+						"quantity": data.connect("quantity"),
+						"title": data.connect("item_id/title"),
+						"photo": data.connect("item_id/photo_url"),
+						"priceRaw": data.connect("item_id/price"),
+						"price": data.connect("item_id/format.price"),
+						"day_id": data.connect("event_id/day_id"),
+						"canOrder": data.connect("event_id/canOrder"),
+						"isPastDeadline": data.connect("event_id/isPastDeadline"),
+						"goodybagFee": data.connect("event_id/goodybagFee")
+					};
+				})
+			},
+			"@postprocess": function (data) {
+
+				// We go through the items, group them into days and sort them
+				// and get other summary info to drive templates.
+
+				var itemsByDays = {};
+				data.onlyItemsForTodayAndTooLate = false;
+				if (data.items) {
+					data.items.forEach(function (item) {
+						if (!itemsByDays[item.day_id]) {
+							itemsByDays[item.day_id] = {
+								dayLabel: Context.MOMENT(item.day_id, "YYYY-MM-DD").format("dddd") + "'s",
+								goodybagFee: Context.NUMERAL(item.goodybagFee/100).format('$0.00'),
+								day_id: item.day_id,
+								canOrder: item.canOrder,
+								isPastDeadline: item.isPastDeadline,
+								items: []
+							};
+						}
+						item.amount = Context.NUMERAL(item.priceRaw * item.quantity / 100).format('$0.00');
+						itemsByDays[item.day_id].items.push(item);
+						if (item.day_id === Context.appContext.get('todayId')) {
+							itemsByDays[item.day_id].dayLabel = "Today's";
+							if (
+								item.canOrder &&
+								item.isPastDeadline
+							) {
+								data.onlyItemsForTodayAndTooLate = true;
+							}
+						} else {
+							data.onlyItemsForTodayAndTooLate = false;
+						}
+					});
+				}
+				data.itemsByDays = Object.keys(itemsByDays).map(function (day_id) {
+					LODASH.sortBy(itemsByDays[day_id].items, 'price');
+					return itemsByDays[day_id];
+				});
+				LODASH.sortBy(data.itemsByDays, 'day_id');
+
+				data.noItems = (data.itemsByDays.length === 0);
+
+				data.orderForm = JSON.parse(data.order.get("form"));
+
+				return data;
+			}
+		};
+	},
+
+
+	// TODO: Move into docs at: https://github.com/LogicCores/0-template
+	// The templates involved in rendering this component.
+	// Data provided in template methods comes from 'mapData' above.
+	// This method is only called ONCE per component instanciation to instanciate
+	// the templates, the 'markup' method is called once per template after the DOM
+	// for the template has loaded and the 'fill' method is called whenever
+	// 'mapData' above generates a new changed data structure.
+	getTemplates: function (Context) {
+
+		var copyName = {};
+
+		return {			
+			"too_late": new Context.Template({
+				impl: require("../../www/lunchroom-landing~0/components/AppCheckout/too-late.cjs.jsx"),
+				markup: function (element) {
+				},
+				fill: function (element, data, Context) {
+
+					this.fillProperties(element, {
+						"orderBy": data.orderByForToday
+					});
+				}
+			}),
+			"no_items": new Context.Template({
+				impl: require("../../www/lunchroom-landing~0/components/AppCheckout/no-items.cjs.jsx"),
+				markup: function (element) {
+
+					$('[data-component-elm="addItemsLink"]', element).click(function () {
+						Context.appContext.set('selectedView', "Menu_Web");
 						return false;
 					});
+				},
+				fill: function (element, data, Context) {
+				}
+			}),
+			"navbar": new Context.Template({
+				impl: require("../../www/lunchroom-landing~0/components/AppCheckout/checkout-navbar.cjs.jsx"),
+				markup: function (element) {
+
+					$('[data-component-elm="addItemsLink"]', element).click(function () {
+						Context.appContext.set('selectedView', "Menu_Web");
+						return false;
+					});
+				},
+				fill: function (element, data, Context) {
+				}
+			}),
+			"form": new Context.Template({
+				impl: require("../../www/lunchroom-landing~0/components/AppCheckout/checkout-form-new.cjs.jsx"),
+				markup: function (element, data) {
+
+					this.liftSections(element);
+
+
+				    // Save form on change to any field after 250 ms debounce.
+			    	$('input', element).on('keyup', Context.UNDERSCORE.debounce(function () {
+	    	        	Context.saveForm();
+	    	        }, 250));
+
+
+			    	// Copy name to name on card
+			    	$('[data-component-elm="info[name]"]', element).on('keyup', function () {
+			    		var newValue = $(this).val();
+			    		var existingValue = $('[data-component-elm="card[name]"]', element).val();
+			    		if (
+			    			newValue === existingValue ||
+			    			// 'card[name]' was changed so we should no longer sync it.
+			    			(
+			    				copyName.lastValue &&
+				    			existingValue !== copyName.lastValue
+				    		)
+			    		) {
+			    			return;
+			    		}
+			    		copyName.lastValue = newValue;
+						$('[data-component-elm="card[name]"]', element).val(copyName.lastValue);
+				    });
 
 				},
 				fill: function (element, data, Context) {
+
+					this.fillProperties(element, data.orderForm);
+					this.fillElements(element, data.orderForm);
+
+					this.showViews(element, [
+						"default"
+					]);
+
+// TODO: Enable this once phone number validation works.
+//					window.attachSkinApp();
+				}
+			}),
+			"items": new Context.Template({
+				impl: require("../../www/lunchroom-landing~0/components/AppCheckout/checkout-items.cjs.jsx"),
+				markup: function (element) {
+
+					this.liftSections(element);
+
+					$('[data-component-elm="addItemsLink"]', element).click(function () {
+						Context.appContext.set('selectedView', "Menu_Web");
+						return false;
+					});
+				},
+				fill: function (element, checkoutData, Context) {
+					var self = this;
+
+					self.renderSection(element, "days", checkoutData.itemsByDays, function getView (dayData) {
+						if (
+							!dayData.canOrder ||
+							dayData.isPastDeadline
+						) {
+							return 'too-late';
+						}
+						return 'default';
+				    }, function hookEvents(dayElement, dayData) {
+
+						$('[data-component-elm="addItemsLink"]', dayElement).click(function () {
+
+							Context.appContext.set('selectedDayId', dayData.day_id);
+							Context.appContext.set('selectedDay', Context.MOMENT(dayData.day_id, "YYYY-MM-DD").format("ddd"));
+							Context.appContext.set('selectedView', "Menu_Web");
+
+							return false;
+						});
+
+						self.renderSection(dayElement, "items", dayData.items, function getView (data) {
+							return 'default';
+					    }, function hookEvents (elm, data) {
+
+							$('[data-component-elm="removeLink"]', elm).click(function () {
+					    		Context.appContext.get('stores').cart.removeItemForEvent(dayData.event_id, data.id);
+								return false;
+							});
+					    });
+				    });
+				}
+			}),
+			"summary": new Context.Template({
+				impl: require("../../www/lunchroom-landing~0/components/AppCheckout/checkout-summary.cjs.jsx"),
+				markup: function (element) {
+
+					$('[data-component-elm="placeOrderButton"]', element).click(function () {
+						Context.placeOrder();
+						return false;
+					});
+				},
+				fill: function (element, data, Context) {
+
 					this.fillProperties(element, {
 						"subtotal": data.summary["format.amount"],
 						"taxRate": data.summary["format.tax"],

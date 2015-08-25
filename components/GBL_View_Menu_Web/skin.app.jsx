@@ -85,6 +85,13 @@ console.log("TOO_LATE DATA", data);
 					});
 				}
 			}),
+			"order_in_advance": new Context.Template({
+				impl: require("../../www/lunchroom-landing~0/components/AppMenu/order-in-advance.cjs.jsx"),
+				markup: function (element) {
+				},
+				fill: function (element, data, Context) {
+				}
+			}),
 			"menu_not_created": new Context.Template({
 				impl: require("../../www/lunchroom-landing~0/components/AppMenu/menu-not-created.cjs.jsx"),
 				markup: function (element) {
@@ -252,7 +259,7 @@ console.log("REMOVE", itemData.item_id);
 	},
 
 	getHTML: function (Context, data) {
-		
+
 		// TODO: Remove this once we can inject 'React' automatically at build time.
 		var React = Context.REACT;
 
@@ -260,11 +267,12 @@ console.log("REMOVE", itemData.item_id);
 
 		if (data.items) {
 
-			if (data.canOrder && data.isPastDeadline) {
+			if (data.isPastDeadline) {
 
 				Panel = (
 					<div>
 						<Context.templates.too_late.comp />
+						<Context.templates.order_in_advance.comp />
 						<Context.templates.popup.comp />
 						<Context.templates.menu.comp />
 						<Context.templates.menu_signup.comp />

@@ -3,7 +3,7 @@
 var COMMON = require("./ui._common.model");
 
 
-var INCLUDE_PRIOR_WEEKEND = true;
+var INCLUDE_PRIOR_WEEKEND = false;
 var INCLUDE_COMING_WEEKEND = false;
 
 

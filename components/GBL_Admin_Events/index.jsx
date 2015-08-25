@@ -271,6 +271,11 @@ module.exports = COMPONENT.create({
                   Ready
               </button>
             );
+          }
+          if (
+            !Context.selectedEvent.get("menuReady") ||
+            Context.appContext.get("context").dev
+          ) {
             DeleteButton = (
               <button data-link="action:delete" className="ui primary small button">
                   Delete

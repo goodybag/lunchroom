@@ -73,6 +73,8 @@ exports.create = function (Context, implementation) {
 
 		var element = $(component.getDOMNode());
 
+		component._render_Context.componentElement = element;
+
 		function universalMarkup (element) {
 
 			ctx.ensureForNodes(
@@ -266,7 +268,16 @@ exports.create = function (Context, implementation) {
 //		    	console.info("Render component: " + implName);
 	    	}
 
-	    	self._render_Context = implementation.render.call(self);
+	    	var renderContext = implementation.render.call(self);
+	    	// NOTE: We update the object if it already exists so that anyone who was given
+	    	//       a reference to the context gets the updated properties.
+	    	if (self._render_Context) {
+	    		for (var name in renderContext) {
+		    		self._render_Context[name] = renderContext[name];
+	    		}
+	    	} else {
+	    		self._render_Context = renderContext;
+	    	}
 
 	    	self._render_Context.forceUpdate = function () {
 	    		self._trigger_forceUpdate();
@@ -276,6 +287,7 @@ exports.create = function (Context, implementation) {
 
 	    	self._render_Context.Template = API.GBL_TEMPLATE.for(self);
 
+	    	self._render_Context.UNDERSCORE = API.UNDERSCORE;
 	    	self._render_Context.MOMENT = API.MOMENT;
 	    	self._render_Context.NUMERAL = API.NUMERAL;
 	    	self._render_Context.REACT = API.REACT;
@@ -301,7 +313,6 @@ exports.create = function (Context, implementation) {
 	    		});
 	    	}
 
-
 	    	// New sub-template logic.
 	    	if (implementation.singleton || Context.singleton) {
 	    		callOnceForId(self._render_Context._implName, function () {
@@ -309,8 +320,19 @@ exports.create = function (Context, implementation) {
 			        	implementation.singleton ||
 			        	Context.singleton
 			        ).call(self, self._render_Context);
-
 	    		});
+	    	}
+
+			var data = {};
+
+	    	if (implementation.component || Context.component) {
+	    		if (!self._render_Context._componentInstanciated) {
+	    			self._render_Context._componentInstanciated = true;
+		    		(
+			        	implementation.component ||
+			        	Context.component
+			        ).call(self, self._render_Context, data);
+			    }
 	    	}
 
 	    	if (implementation.getTemplates || Context.getTemplates) {
@@ -351,9 +373,13 @@ exports.create = function (Context, implementation) {
 
 	    	if (implementation.getHTML || Context.getHTML) {
 
-	    		var data = {};
 	    		if (self._template_data_consumer) {
-	    			data = self._template_data_consumer.getData();
+	    			var dataSnapshot = self._template_data_consumer.getData();
+	    			// NOTE: We update the data object so that anyone who already has
+	    			//       a reference gets the updated properties.
+	    			for (var name in dataSnapshot) {
+		    			data[name] = dataSnapshot[name];
+	    			}
 	    		}
 
 		        var tags = (
