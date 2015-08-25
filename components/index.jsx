@@ -110,11 +110,11 @@ try {
 
 	var skin = getSkin();
 	var appContext = initAppContext(skin);
-
+/*
 	window.console = require("../stores/ui.Logging")['for']({
 		appContext: appContext
 	}).getConsole();
-
+*/
 	appContext.set('initialized', true);
 
 	$(function () {
