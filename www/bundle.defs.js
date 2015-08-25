@@ -61791,16 +61791,18 @@
 				);
 			}
 
-			DaysTabs = (
-			    React.createElement("div", {className: "seven wide column"}, 
-					React.createElement("div", {className: "ui top attached tabular menu"}, 
-						Context.days.map(function (item) {
-				        	return React.createElement("div", {key: item.get('id'), className: "item", "data-tab": item.get("format.ddd")}, item.get("format.ddd"));
-						})		
-					), 
-					SneakPeak
-			    )
-			);
+			if (Context.days) {
+				DaysTabs = (
+				    React.createElement("div", {className: "seven wide column"}, 
+						React.createElement("div", {className: "ui top attached tabular menu"}, 
+							Context.days.map(function (item) {
+					        	return React.createElement("div", {key: item.get('id'), className: "item", "data-tab": item.get("format.ddd")}, item.get("format.ddd"));
+							})		
+						), 
+						SneakPeak
+				    )
+				);
+			}
 
 			var DeliveryTime = "";
 			var TimeLeft = "";
