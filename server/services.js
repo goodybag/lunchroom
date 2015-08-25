@@ -32,12 +32,12 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
                                     message.data.itemsByDay[dayId].items.map(function (item) {
                                         return "  * " + item.title + " (" + item.quantity + " x " + item['format.price'] + " = " + item['format.amount'] + ")";
                                     }).join("\n"),
+                                    "   (Goodybag Fee: " + message.data.summary["format.goodybagFee"] + ")",
                                     ""
                                 ].join("\n");
                             }).join("\n"),
                             "Subtotal: " + message.data.summary["format.amount"],
                             "Tax (" + message.data.summary["format.tax"] + "): " + message.data.summary["format.taxAmount"],
-                            "Goodybag Fee: " + message.data.summary["format.goodybagFee"],
                             "Total: " + message.data.summary["format.total"],
                             "",
                             "If you have any questions, please contact us at (512) 677-4224 or support@goodybag.com",

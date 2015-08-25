@@ -74,16 +74,18 @@ require("./component.jsx")['for'](module, {
 			);
 		}
 
-		DaysTabs = (
-		    <div className="seven wide column">
-				<div className="ui top attached tabular menu">
-					{Context.days.map(function (item) {
-			        	return <div key={item.get('id')} className="item" data-tab={item.get("format.ddd")}>{item.get("format.ddd")}</div>;
-					})}		
-				</div>
-				{SneakPeak}
-		    </div>
-		);
+		if (Context.days) {
+			DaysTabs = (
+			    <div className="seven wide column">
+					<div className="ui top attached tabular menu">
+						{Context.days.map(function (item) {
+				        	return <div key={item.get('id')} className="item" data-tab={item.get("format.ddd")}>{item.get("format.ddd")}</div>;
+						})}		
+					</div>
+					{SneakPeak}
+			    </div>
+			);
+		}
 
 		var DeliveryTime = "";
 		var TimeLeft = "";
