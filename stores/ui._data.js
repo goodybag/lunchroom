@@ -386,7 +386,7 @@ var Consumer = exports.Consumer = function (rootCollections, rootCollectionsOpti
 	var dataMap = null;
 	self.mapData = function (_dataMap) {
 
-		if (!_dataMap["@map"]) {
+		if (!_dataMap["@map"] && !_dataMap["@postprocess"]) {
 			_dataMap = {
 				"@map": _dataMap
 			};
@@ -461,16 +461,36 @@ exports.init = function (context) {
 	function Collection (context) {
 		var self = this;
 
+		if (!context.record["@fields"] && !context.record["@methods"]) {
+			context.record = {
+				"@fields": context.record
+			};
+		}
+
 		self.Name = context.name;
 
 		self.Source = COMMON.makeEndpointUrl(self.Name);
 
-		self.Record = COMMON.API.BACKBONE.Model.extend({
+		var recordPrototype = {
 			initialize: function () {
 				this._super_ = self.Record.__super__;
 			},
   			idAttribute: "id",
-  			Model: context.record,
+  			Model: context.record["@fields"],
+  			getAll: function (extraFields) {
+  				if (!context.model) return null;
+  				var self = this;
+  				var record = {};
+  				context.model.getFields().forEach(function (name) {
+  					record[name] = self.get(name);
+  				});
+  				if (extraFields) {
+  					for (var name in extraFields) {
+	  					record[name] = self.get(extraFields[name]);
+  					}
+  				}
+  				return record;
+  			},
 			get: function (name) {
 				var recordSelf = this;
 
@@ -479,9 +499,9 @@ exports.init = function (context) {
 
 				function getValueForField () {
 					if (
-						context.record &&
-						context.record[name] &&
-						typeof context.record[name].derived === "function"
+						context.record["@fields"] &&
+						context.record["@fields"][name] &&
+						typeof context.record["@fields"][name].derived === "function"
 					) {
 						var attrs = Object.create(recordSelf.attributes);
 
@@ -490,7 +510,7 @@ exports.init = function (context) {
 						}
 
 	// TODO: If 'typeof context.record[name].connect === "function"' setup consumer and pass along so derived function can register further data connects.
-						return context.record[name].derived.call(attrs);
+						return context.record["@fields"][name].derived.call(attrs);
 					} else
 					// TODO: Use 'context.record' instead of 'Model' once we relocate field declarations.
 					if (
@@ -506,14 +526,14 @@ exports.init = function (context) {
 
 				if (
 					nameParts.length > 0 &&
-					context.record &&
-					context.record[name] &&
-					context.record[name].linksTo
+					context.record["@fields"] &&
+					context.record["@fields"][name] &&
+					context.record["@fields"][name].linksTo
 				) {
 
 					var value = getValueForField();
 
-					return exports.get(context.record[name].linksTo + "/" + value + "/" + nameParts.join("/"));
+					return exports.get(context.record["@fields"][name].linksTo + "/" + value + "/" + nameParts.join("/"));
 
 				} else {
 
@@ -528,9 +548,17 @@ exports.init = function (context) {
 
 			}
 */
-		});
+		};
 
-		self.Record._definition = context.record || {};
+		if (context.record["@methods"]) {
+			for (var name in context.record["@methods"]) {
+				recordPrototype[name] = context.record["@methods"][name];
+			}
+		}
+
+		self.Record = COMMON.API.BACKBONE.Model.extend(recordPrototype);
+
+		self.Record._definition = context.record["@fields"] || {};
 
 
 		self.Store = COMMON.API.BACKBONE.Collection.extend({

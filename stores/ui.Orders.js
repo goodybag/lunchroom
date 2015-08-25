@@ -6,7 +6,6 @@ var DATA = require("./ui._data");
 exports['for'] = function (context) {
 
 
-
 	var collection = DATA.init({
 
 		name: "orders",
@@ -14,11 +13,104 @@ exports['for'] = function (context) {
 		model: require("./ui.Orders.model").forContext(context),
 		record: {
 // TODO: Use record and get rid of model
+
+			"@methods": {
+
+				submit: function (paymentToken) {
+					var self = this;
+
+					return COMMON.API.Q.fcall(function () {
+
+						if (!self.get("form")) self.set("form", JSON.stringify({}));
+						self.set("items", DATA.get("cart/getSerializedForOrder()"));
+						self.set("summary", JSON.stringify(DATA.get("cart/getSummary()")));
+						self.set("paymentToken", JSON.stringify(paymentToken));
+
+console.log("ORDER", self);
+
+						return COMMON.API.Q.denodeify(function (callback) {
+
+							var data = self.toJSON();
+							for (var name in data) {
+								if (typeof data[name] === "object") {
+									data[name] = JSON.stringify(data[name]);
+								}
+							}
+							delete data.id;
+
+							var payload = {
+								data: {
+									type: "orders",
+									attributes: data
+								}
+							};
+
+console.log("Sending order payload:", payload);
+							// @see http://jsonapi.org/format/#crud
+							return $.ajax({
+								method: "POST",
+								url: self.collection.Collection.Source + "/",
+								contentType: "application/vnd.api+json",
+								headers: {
+									"Accept": "application/vnd.api+json"
+								},
+				    			dataType: "json",
+								data: JSON.stringify(payload),
+
+								success: function (data, textStatus, jqXHR) {
+
+console.log("SUCCESS data", data);									
+console.log("SUCCESS textStatus", textStatus);									
+console.log("SUCCESS jqXHR", jqXHR);									
+
+									self.collection.Model.getFields().forEach(function (name) {
+										if (typeof data.data.attributes[name] !== "undefined") {
+											self.set(name, data.data.attributes[name]);
+										}
+									});
+									self.set("id", data.data.id);
+
+									return callback(null);
+								},
+
+								error: function (jqXHR, textStatus, errorThrown) {
+
+console.error("Error submitting order");
+
+console.error("jqXHR", jqXHR);
+console.error("textStatus", textStatus);
+console.error("errorThrown", errorThrown);
+
+									return callback(new Error("Error submitting order. Please try again! (code: S05)"));
+
+			/*
+									if (err.status === 200) {
+										// This happens on IE 8 & 9.
+										// We had success after all.
+										return;
+									}
+									for (var name in err) {
+										console.error("ERR " + name + ": " + err[name]);
+									}
+									console.error("Error status code: " + err.statusCode);
+									console.log("Error sending message to server!" + err.stack || err.message || err);
+			// TODO: Display error.
+			*/
+								}
+							});
+						})();
+
+					}).fail(function (err) {
+						// TODO: Error submitting order!
+						console.error("submit error:", err.stack);
+						throw err;
+					});
+				}
+			}
 		},
 
 		collection: {			
 // TODO: Clean collection
-
 
 			// App
 			getPending: function () {
@@ -70,62 +162,6 @@ exports['for'] = function (context) {
 
 					self.remove(id);
 				});
-			},
-// App
-			submitOrder: function (id) {
-				var self = this;
-				return COMMON.API.Q.denodeify(function (callback) {
-
-					var order = self.get(id);
-
-					// @see http://jsonapi.org/format/#crud
-
-					var data = order.toJSON();
-					for (var name in data) {
-						if (typeof data[name] === "object") {
-							data[name] = JSON.stringify(data[name]);
-						}
-					}
-					delete data.id;
-
-		console.log("STORE DATA", data);
-
-					var payload = {
-						data: {
-							type: "orders",
-							attributes: data
-						}
-					};
-
-					return $.ajax({
-						method: "POST",
-						url: self.Source + "/",
-						contentType: "application/vnd.api+json",
-						headers: {
-							"Accept": "application/vnd.api+json"
-						},
-		    			dataType: "json",
-						data: JSON.stringify(payload)
-					})
-					.done(function (response) {
-
-						self.Model.getFields().forEach(function (name) {
-							if (typeof response.data.attributes[name] !== "undefined") {
-								order.set(name, response.data.attributes[name]);
-							}
-						});
-						order.set("id", response.data.id);
-
-						return callback(null, order);
-					})
-					.fail(function(err) {
-
-		// TODO: Ask user to submit again.
-		console.log("error!", err.stack);
-
-						return callback(err);
-					});
-				})();
 			},
 
 
@@ -269,63 +305,8 @@ exports['for'] = function (context) {
 
 			        }, 100);
 
-					var order =  self.getOrder(todayId, true);
+					var order = self.getOrder(todayId, true);
 					order.on("change", _notify_onChange);
-
-					order.submit = function (paymentToken) {
-
-						return COMMON.API.Q.fcall(function () {
-
-							// Serialize cart item models into order so we can display order later
-							// without having original item data in DB. This makes the order timeless.
-
-							return context.appContext.get('stores').cart.getSerializedModels().then(function (serializedItems) {
-
-								var form = order.get("form");
-								if (!form) {
-									order.set("form", JSON.stringify({}));
-								}
-
-								order.set("items", serializedItems);
-								order.set("summary", JSON.stringify(context.appContext.get('stores').cart.getSummary()));
-
-								var orderFrom = {};
-								var vendor_ids = {};
-								serializedItems.forEach(function (item) {
-									orderFrom[item["vendor.title"]] = true;
-									vendor_ids[item.vendor_id] = true;
-								});
-								order.set("orderFrom", Object.keys(orderFrom).join("<br/>"));
-								order.set("vendor_ids", Object.keys(vendor_ids).join(","));
-
-								var today = context.appContext.get('stores').events.getToday();
-								return context.appContext.get('stores').events.modelRecord(today).then(function (today) {
-
-									order.set("deliveryStartTime", today.get("deliveryStartTime"));
-									order.set("pickupEndTime", today.get("pickupEndTime"));
-									order.set("event", today.getValues());
-									order.set("event_id", today.get("id"));
-									order.set("paymentToken", JSON.stringify(paymentToken));
-
-		console.log("ORDER", order);
-		console.log("paymentToken", paymentToken);
-
-									// TODO: Send order to server and redirect to receipt using order ID hash.
-
-									return self.submitOrder(order.get("id")).then(function () {
-
-										return order;
-									});
-								});
-
-							});
-
-						}).fail(function (err) {
-							// TODO: Error submitting order!
-							console.error("submit error:", err.stack);
-							throw err;
-						});
-					}
 
 					return order;
 				} else {

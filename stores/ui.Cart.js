@@ -13,16 +13,17 @@ exports['for'] = function (context) {
 		record: {
 // TODO: Use record and get rid of model
 
-			"item_id": {
-				"linksTo": "items"
-			},
-			"event_id": {
-				"linksTo": "events"
+			"@fields": {
+				"item_id": {
+					"linksTo": "items"
+				},
+				"event_id": {
+					"linksTo": "events"
+				}
 			}
 		},
 
 		collection: {			
-// TODO: Clean collection
 
 			itemCount: function () {
 				return this.store.getItemCount();
@@ -30,8 +31,6 @@ exports['for'] = function (context) {
 
 			getSummary: function () {
 				var self = this;
-
-console.log("GET SUMMARY");
 
 				var amount = 0;
 
@@ -51,11 +50,6 @@ console.log("GET SUMMARY");
 					amount += parseInt(record.get("item_id/price")) * parseInt(record.get("quantity"));
 				});
 
-console.log("goodybagFee", goodybagFee);
-console.log("tax", tax);
-console.log("daysWithItems", daysWithItems);
-console.log("AMOUNT", amount);
-
 				amount = Math.round(amount);
 
 				var summary = {
@@ -69,6 +63,8 @@ console.log("AMOUNT", amount);
 					"total": 0,
 					"format.total": "$0.00"
 				};
+
+				summary["format.goodybagFee"] = COMMON.API.NUMERAL(summary.goodybagFee).format('$0.00');
 
 				if (
 					summary.amount &&
@@ -88,16 +84,24 @@ console.log("AMOUNT", amount);
 					summary["format.total"] = COMMON.API.NUMERAL(summary.total / 100).format('$0.00');
 				}
 
-console.log("summary", summary);
-
 				return summary;
+			},
+
+			getSerializedForOrder: function () {
+				return this.store.where().map(function (record) {
+					return record.getAll({
+						day_id: "event_id/day_id",
+						vendor_id: "item_id/vendor_id",
+						title: "item_id/title",
+						price: "item_id/price"
+					});
+				});
 			}
 
 		},
 
 		// Low-level
 		store: {
-
 
 			clearAllItems: function () {
 				COMMON.storeLocalValueFor("cart", getLocalStorageNamespace(), JSON.stringify([]));
@@ -225,24 +229,6 @@ console.log("summary", summary);
 				});
 			},
 
-			getSerializedModels: function () {
-				var self = this;
-
-				var records = self.where();
-				return context.appContext.get('stores').items.resolveRecordsAndWait(
-					records,
-					{
-						useIdField: "item_id"
-					}
-				).then(function (models) {
-
-					return models.map(function (model) {
-
-						return model.getValues();
-					});
-				});
-			},
-
 			resetToSerializedModels: function (models) {
 				var self = this;
 
@@ -259,7 +245,6 @@ console.log("summary", summary);
 					});
 				});
 			}
-
 
 		}
 	});

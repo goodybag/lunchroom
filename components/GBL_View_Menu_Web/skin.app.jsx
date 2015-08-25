@@ -78,8 +78,6 @@ require("./component.jsx")['for'](module, {
 				},
 				fill: function (element, data, Context) {
 
-console.log("TOO_LATE DATA", data);
-
 					this.fillProperties(element, {
 						"orderBy": data.orderBy
 					});
@@ -157,8 +155,6 @@ console.log("TOO_LATE DATA", data);
 				fill: function (element, menuData, Context) {
 					var self = this;
 
-console.log("MENU DATA", menuData);
-
 					self.fillProperties(element, {
 						"restaurantTitle": menuData.restaurantTitle,
 						"goodybagFee": menuData.goodybagFee
@@ -180,8 +176,6 @@ console.log("MENU DATA", menuData);
 
 
 						$('[data-component-elm="removeButton"]', elm).click(function () {
-
-console.log("REMOVE", itemData.item_id);
 
 							Context.appContext.get('stores').cart.removeItemForEvent(
 								menuData.event_id,
@@ -280,10 +274,12 @@ console.log("REMOVE", itemData.item_id);
 					</div>
 				);
 
-			} else {
+			} else
+			if (data.canOrder) {
 
 				Panel = (
 					<div>
+						<Context.templates.order_in_advance.comp />
 						<Context.templates.popup.comp />
 						<Context.templates.menu.comp />
 						<Context.templates.menu_signup.comp />

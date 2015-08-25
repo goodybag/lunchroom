@@ -29,157 +29,157 @@ require("./component.jsx")['for'](module, {
 				values[$(this).attr("data-component-elm")] = $(this).val();
 			});
 			data.order.set("form", JSON.stringify(values));
+			return values;
 		}
 
 		Context.placeOrder = function () {
 
-console.log("PLACE ORDER");
+			// NOTE: We deal with user input validation and Stripe in the component here
+			//       and then hand things off to the order record to send the completed
+			//       and validated order to the server.
 
-/*
+			var form = Context.saveForm();
 
-var orderInfoElm = $('.checkout-info');
-						$('[name="will_add_new_card"]', orderInfoElm).prop('checked', true);
-						var checkoutValidator = validators.createCheckoutValidator(orderInfoElm);
-						function showError (error) {
+console.log("PLACE ORDER", form);
+
+			// Setup validator which we use to show any errors.
+			var orderInfoElm = $('.checkout-info', Context.componentElement);
+			$('[name="will_add_new_card"]', orderInfoElm).prop('checked', true);
+			var checkoutValidator = validators.createCheckoutValidator(orderInfoElm);
+			function showError (error) {
 // TODO: Don't highlight card field by default?
 //       We need to set field right now or message does not show up.
-							error.field = error.field || 'card_number';
-							checkoutValidator.displayError(error);
-						}
+				error.field = error.field || 'card_number';
+				checkoutValidator.displayError(error);
+				window.scrollTo(0, 0);
+			}
 
-						function validateOrder (order) {
+			function validateOrder (order) {
 
-							return Context.Q.fcall(function () {
+				return Context.Q.fcall(function () {
 
-								checkoutValidator.validate();
-								if (checkoutValidator.getErrors().length > 0) {
-									window.scrollTo(0, 0);
-									return false;
-								}
+					checkoutValidator.validate();
+					if (checkoutValidator.getErrors().length > 0) {
+						window.scrollTo(0, 0);
+						return false;
+					}
 
-								var form = JSON.parse(order.get("form"));
-
-								if (!Stripe.card.validateCardNumber(form["card[number]"])) {
-									showError({
-										field: "card_number",
-										message: "Card number format not valid!"
-									});
-									throw new Error("Card number format not valid!");
-								}
-								if (!Stripe.card.validateExpiry(form["card[expire-month]"], form["card[expire-year]"])) {
-									showError({
-										field: "card_expiration_year",
+					if (!Stripe.card.validateCardNumber(form["card[number]"])) {
+						showError({
+							field: "card_number",
+							message: "Card number format not valid!"
+						});
+						throw new Error("Card number format not valid!");
+					}
+					if (!Stripe.card.validateExpiry(form["card[expire-month]"], form["card[expire-year]"])) {
+						showError({
+							field: "card_expiration_year",
 // TODO: Add second field to highlight
 //										field: "card_expiration_month",
-										message: "Card expiry format not valid!"
-									});
-									throw new Error("Card expiry format not valid!");
-								}
-								if (!Stripe.card.validateCVC(form["card[cvc]"])) {
-									showError({
-										field: "card_cvv",
-										message: "Card CVC not valid!"
-									});
-									throw new Error("Card CVC not valid!");
-								}
+							message: "Card expiry format not valid!"
+						});
+						throw new Error("Card expiry format not valid!");
+					}
+					if (!Stripe.card.validateCVC(form["card[cvc]"])) {
+						showError({
+							field: "card_cvv",
+							message: "Card CVC not valid!"
+						});
+						throw new Error("Card CVC not valid!");
+					}
 
-								return true;
-							}).fail(function (err) {
-								console.error("Error validating order:", err.message);
-								return false;
-							});
-						}
+					return true;
+				}).fail(function (err) {
+					console.error("Error validating order:", err.message);
+					return false;
+				});
+			}
 
-						function authorizeCard (order) {
-							return Context.Q.denodeify(function (callback) {
-								try {
-									var form = JSON.parse(order.get("form"));
+			function authorizeCard (order) {
+				return Context.Q.denodeify(function (callback) {
+					try {
 
-									console.log("Authorize card", form["card[name]"]);
+						console.log("Authorize card", form["card[name]"]);
 
-									Stripe.card.createToken({
-										number: form["card[number]"],
-										cvc: form["card[cvc]"],
-										exp_month: form["card[expire-month]"],
-										exp_year: form["card[expire-year]"],
-										name: form["card[name]"]
-									}, function (status, response) {
-										if (status !== 200) {
-											return callback(new Error("Got status '" + status + "' while calling 'stripe.com'"));
-										}
-										if (response.error) {
-											return callback(new Error(response.error.message));
-										}
-										return callback(null, response);
-									});
-								} catch (err) {
-									return callback(err);
-								}
-							})().fail(function (err) {
-								console.error("Error charging card:", err.message);
-								throw err;
-							});
-						}
-
-						function submitOrder (order, paymentToken) {
-							return order.submit(paymentToken).fail(function (err) {
-								console.error("Error submitting order:", err.message);
-								throw err;
-							});
-						}
-
-						function redirect (order) {
-							try {
-
-								Context.appContext.set("selectedView", "Order_Placed");
-
-								return Context.Q.resolve();
-							} catch (err) {
-								console.error("Error redirecting after order:", err.message);
-								return Context.Q.reject(err);
+						Stripe.card.createToken({
+							number: form["card[number]"],
+							cvc: form["card[cvc]"],
+							exp_month: form["card[expire-month]"],
+							exp_year: form["card[expire-year]"],
+							name: form["card[name]"]
+						}, function (status, response) {
+							if (status !== 200) {
+								return callback(new Error("Got status '" + status + "' while calling 'stripe.com'"));
 							}
+							if (response.error) {
+								return callback(new Error(response.error.message));
+							}
+							return callback(null, response);
+						});
+					} catch (err) {
+						return callback(err);
+					}
+				})().fail(function (err) {
+					console.error("Error charging card:", err.message);
+					throw err;
+				});
+			}
 
-							//return Context.appContext.redirectTo(
-							//	"order-" + order.get("orderHashId") + "/placed"
-							//);
-						}
+			function submitOrder (order, paymentToken) {
+				return order.submit(paymentToken).fail(function (err) {
+					console.error("Error submitting order:", err.message);
+					throw err;
+				});
+			}
 
-						Context.Q.fcall(function () {
-							return validateOrder(Context.order).then(function (valid) {
+			function redirect (order) {
+				try {
 
-								if (!valid) {
-									// User must fix form.
-									return;
-								}
+					Context.appContext.set("selectedView", "Order_Placed");
 
-								return authorizeCard(Context.order).then(function (paymentToken) {
+					return Context.Q.resolve();
+				} catch (err) {
+					console.error("Error redirecting after order:", err.message);
+					return Context.Q.reject(err);
+				}
 
-									console.log("Authorized card", paymentToken);
+				//return Context.appContext.redirectTo(
+				//	"order-" + order.get("orderHashId") + "/placed"
+				//);
+			}
 
-									return submitOrder(Context.order, paymentToken).then(function (order) {
+			Context.Q.fcall(function () {
+				return validateOrder(data.order).then(function (valid) {
 
-										console.log("Orders placed. Clearing cart.");
+					if (!valid) {
+						// User must fix form.
+						return;
+					}
 
-										return Context.appContext.get('stores').cart.clearAllItems().then(function () {
+					return authorizeCard(data.order).then(function (paymentToken) {
 
-											return redirect(order);
-										});
-									});
-								});
-							});
-						}).fail(function (err) {
+						console.log("Authorized card", paymentToken);
 
-							console.error("Error submitting order:", err.message);
+						return submitOrder(data.order, paymentToken).then(function () {
 
-							showError({
-								message: err.message
+							console.log("Orders placed. Clearing cart.");
+
+							return Context.appContext.get('stores').cart.clearAllItems().then(function () {
+
+								return redirect(data.order);
 							});
 						});
+					});
+				});
+			}).fail(function (err) {
 
-*/
+				console.error("Error submitting order:", err.message);
 
+				showError({
+					message: err.message
+				});
+			});
 		}
-
 	},
 
 

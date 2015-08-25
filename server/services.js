@@ -21,18 +21,20 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
                             "Thanks for ordering with Goodybag. You'll receive a follow-up email when your lunch arrives.",
                             "",
                             "Order ID: " + message.data.orderHashId.substring(0, 7),
-                            "Order from: " + message.data.orderFrom,
-                            "Delivery date: " + message.data.deliveryDate,
-                            "Delivery time: " + message.data.deliveryTime,
                             "",
+                            "Delivery time: " + message.data.deliveryTime,
                             "Deliver to: " + message.data.deliverLocation,
                             "",
-                            "Items:",
-                            "",
-                            message.data.items.map(function (item) {
-                                return "  * " + item.title + " (" + item.quantity + " x " + item['format.price'] + " = " + item['format.amount'] + ")";
+                            Object.keys(message.data.itemsByDay).map(function (dayId) {
+                                return [
+                                    "Items for " + message.data.itemsByDay[dayId].deliveryDate + " from " + message.data.itemsByDay[dayId].orderFrom + ":",
+                                    "",
+                                    message.data.itemsByDay[dayId].items.map(function (item) {
+                                        return "  * " + item.title + " (" + item.quantity + " x " + item['format.price'] + " = " + item['format.amount'] + ")";
+                                    }).join("\n"),
+                                    ""
+                                ].join("\n");
                             }).join("\n"),
-                            "",
                             "Subtotal: " + message.data.summary["format.amount"],
                             "Tax (" + message.data.summary["format.tax"] + "): " + message.data.summary["format.taxAmount"],
                             "Goodybag Fee: " + message.data.summary["format.goodybagFee"],
@@ -106,7 +108,7 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
                     message = API.DEEPMERGE({
                         "subject": "Your Lunchroom Order has Arrived!",
                         "text": [
-                            "Lunchroom Order #" + message.data.orderHashId.substring(0, 7) + " has arrived and is waiting for you " + message.data.event.pickupLocation,
+                            "Lunchroom Order #" + message.data.orderHashId.substring(0, 7) + " has arrived and is waiting for you " + message.data.event.pickupLocation + ".",
                             "",
                             "Sincerely,",
                             "-Goodybot",

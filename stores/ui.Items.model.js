@@ -34,7 +34,20 @@ exports.forContext = function (context) {
 	            	if (this.price) {
 	            		number = this.price / 100;
 	            	}
-	            	return COMMON.API.NUMERAL(number).format('0.00');
+	            	return COMMON.API.NUMERAL(number).format('$0.00');
+	            }
+		    },
+		    "format.amount": {
+				deps: [
+					"price",
+					"quantity"
+				],
+	            fn: function () {
+	            	var number = 0;
+	            	if (this.price && this.quantity) {
+	            		number = this.price * this.quantity / 100;
+	            	}
+	            	return COMMON.API.NUMERAL(number).format('$0.00');
 	            }
 		    }
 		}

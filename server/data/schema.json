@@ -293,6 +293,75 @@
 				}
 			]
 		},
+		"order-items": {
+			"primaryKey": "id",
+			"fields": [
+				{
+					"name": "id",
+					"constraints": {
+						"unique": true,
+						"autoincrement": true
+					}
+				},
+				{
+					"name": "order_id",
+					"constraints": {
+						"required": true
+					}
+				},
+				{
+					"name": "event_id",
+					"constraints": {
+						"required": true
+					}
+				},
+				{
+					"name": "vendor_id",
+					"constraints": {
+						"required": true
+					}
+				},
+				{
+					"name": "item_id",
+					"constraints": {
+						"required": true
+					}
+				},
+				{
+					"name": "title",
+					"constraints": {
+						"required": true
+					}
+				},
+				{
+					"name": "options"
+				},
+				{
+					"name": "quantity",
+					"constraints": {
+						"required": true
+					}
+				},
+				{
+					"name": "deliveredEmailSent",
+					"type": "boolean",
+					"default": false
+				},
+				{
+					"name": "deliveredEmailSendError",
+					"type": "string"
+				},
+				{
+					"name": "deliveredSmsSent",
+					"type": "boolean",
+					"default": false
+				},
+				{
+					"name": "deliveredSmsSendError",
+					"type": "string"
+				}
+			]
+		},
 		"menus": {
 			"primaryKey": "id",
 			"fields": [
@@ -380,48 +449,32 @@
 					}
 				},
 				{
-					"name": "event_id",
-					"constraints": {
-						"required": true
-					}
-				},
-				{
-					"name": "event",
-					"constraints": {
-						"required": true
-					}
-				},
-				{
-					"name": "vendor_ids",
-					"constraints": {
-						"required": true
-					}
-				},
-				{
-					"name": "orderFrom",
-					"constraints": {
-						"required": true
-					}
-				},
-				{
-					"name": "deliveryStartTime",
-					"type": "timestamp",
-					"constraints": {
-						"required": true
-					}
-				},
-				{
-					"name": "pickupEndTime",
-					"type": "timestamp",
-					"constraints": {
-						"required": true
-					}
-				},
-				{
 					"name": "paymentToken"
 				},
 				{
 					"name": "paymentCharge"
+				},
+
+				
+				{
+					"name": "event_id"
+				},
+				{
+					"name": "event"
+				},
+				{
+					"name": "vendor_ids"
+				},
+				{
+					"name": "orderFrom"
+				},
+				{
+					"name": "deliveryStartTime",
+					"type": "timestamp"
+				},
+				{
+					"name": "pickupEndTime",
+					"type": "timestamp"
 				},
 				{
 					"name": "deliveredEmailSent",
@@ -440,38 +493,6 @@
 				{
 					"name": "deliveredSmsSendError",
 					"type": "string"
-				}
-			]
-		},
-		"order-status": {
-			"primaryKey": "id",
-			"fields": [
-				{
-					"name": "id",
-					"constraints": {
-						"unique": true,
-						"autoincrement": true
-					}
-				},
-				{
-					"name": "orderHashId",
-					"constraints": {
-						"required": true
-					}
-				},
-				{
-					"name": "status",
-					"constraints": {
-						"required": true
-					}
-				},
-				{
-					"name": "time",
-					"type": "timestamp",
-					"default": "Date.now()",
-					"constraints": {
-						"required": true
-					}
 				}
 			]
 		},
