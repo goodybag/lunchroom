@@ -84,11 +84,16 @@ exports.resolveForeignKeys = function (store, records, keys, wait, options) {
 		}).then(function (foreignStore) {
 			Object.keys(key_ids[key]).forEach(function (foreign_key) {
 				key_ids[key][foreign_key].forEach(function (i) {
+					
 					if (!store._byId[records[i].get(idFieldName)]) {
-						console.error("callerStack", callerStack);
+
+						console.error("key", key);
+						console.error("foreign_key", foreign_key);
 						console.log("idFieldName", idFieldName);
 						console.log("records[i].get(idFieldName)", records[i].get(idFieldName));
 						console.error("store._byId", store._byId);
+						console.error("store", store);
+						console.error("callerStack", callerStack);
 						throw new Error("Record by " + idFieldName + " '" + records[i].get(idFieldName) + "' not found!");
 					}
 					if (!records[i].__model) {

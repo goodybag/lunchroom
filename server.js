@@ -27,6 +27,9 @@ const EMAILS = require("./server/emails");
 const REQUEST = require("request");
 const MOMENT = require("moment");
 const MOMENT_TZ = require("moment-timezone");
+const WINSTON = require("winston");
+require("winston-loggly");
+
 
 const APP_CONTEXT_MODEL = require("./stores/ui.AppContext.model");
 
@@ -64,6 +67,67 @@ var MOMENTS = {
 
 
 require('org.pinf.genesis.lib').forModule(require, module, function (API, exports) {
+
+
+
+	var transports = [
+		new (WINSTON.transports.Console)({
+			level: 'trace',
+			prettyPrint: true,
+			colorize: true,
+			silent: false,
+			timestamp: false
+	    })
+	];
+
+	if (
+		API.config.services &&
+		API.config.services.loggly
+	) {
+		transports.push(new (WINSTON.transports.Loggly)(API.config.services.loggly));
+	}
+
+	var logger = new (WINSTON.Logger)({
+		levels: {
+			trace: 0,
+			input: 1,
+			verbose: 2,
+			prompt: 3,
+			debug: 4,
+			info: 5,
+			data: 6,
+			help: 7,
+			warn: 8,
+			error: 9
+		},
+		colors: {
+			trace: 'magenta',
+			input: 'grey',
+			verbose: 'cyan',
+			prompt: 'grey',
+			debug: 'blue',
+			info: 'green',
+			data: 'grey',
+			help: 'cyan',
+			warn: 'yellow',
+			error: 'red'
+		},
+		transports: transports
+	});
+
+	if (API.config.dev !== true) {
+
+		console.log = function () {
+			var args = Array.prototype.slice.call(arguments);
+			logger.verbose.apply(logger, args);
+		}
+		console.error = function () {
+			var args = Array.prototype.slice.call(arguments);
+			logger.error.apply(logger, args);
+		}
+	}
+
+
 
 	function initPublicApp (app) {
 
@@ -296,6 +360,12 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
 					/\{\{encodedContext\}\}/g,
 					encodeURIComponent(JSON.stringify(clientContext))
 				);
+
+				content = content.replace(
+					/\{\{serializedData\}\}/g,
+					JSON.stringify(req._FireNodeContext.data || {})
+				);
+
 				res.writeHead(200, {
 					"Content-Type": "text/html"
 				});
@@ -403,7 +473,7 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
 				return JOBS.monitorDatabase(db, appContext);
 			});
 
-		}).fail(function (err) {
+		}).catch(function (err) {
 			throw err;
 		});
 
@@ -427,6 +497,14 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
 				"07-lunchroom/event-router/0": API["event-router"],
 				"07-lunchroom/consumer-group-router/0": API["consumer-group-router"],
 				"07-lunchroom/consumer-group-subscription-router/0": API["consumer-group-subscription-router"]
+			},
+			contextFactory: function (config) {
+				return {
+					appContext: APP_CONTEXT_MODEL.makeContextForClient(config.clientContext, {
+						MOMENT: MOMENTS.MOMENT,
+						MOMENT_CT: MOMENTS.MOMENT_CT
+					})
+				};
 			}
 		});
 

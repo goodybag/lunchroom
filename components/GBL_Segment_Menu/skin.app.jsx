@@ -37,46 +37,43 @@ function startTimer (duration, display) {
 
 require("./component.jsx")['for'](module, {
 
-	getTemplateData: function (Context) {
 
-		var data = {};
-
-		var event = Context.appContext.get('stores').events.getModeledForDay(Context.appContext.get('selectedDayId'));
-		if (event.length > 0) {
-			if (event.length > 1) {
-				throw new Error("Only one event should be found!");
-			}
-			event = event[0];
-			data['deliveryTime'] = event.get("format.deliveryTime");
-			data['timeLeftToOrder'] = event.get("format.orderTimer") || "Too late for today!";
-			data['secondsLeftToOrder'] = parseInt(event.get("format.orderTimerSeconds") || 0);
-			data['deliverTo'] = event.get("consumerGroup.deliverLocation");
-			data['cartItemCount'] = Context.cartItemCount;
-			data['day_id'] = event.get("day_id");
-		}
-
-		data["tabs"] = Context.days.map(function (item) {
-			return {
-				"id": item.get('id'),
-				"tabDay": item.get("format.ddd"),
-				"tabDate": item.get("format.MMM-D")
-			};
-		});
-
-		return data;
+	mapData: function (Context, data) {
+		return {
+			'canOrder': data.connect("page/loaded/selectedEvent/canOrder"),
+			'isPastDeadline': data.connect("page/loaded/selectedEvent/isPastDeadline"),
+			'deliveryTime': data.connect("page/loaded/selectedEvent/format.deliveryTime"),
+			'timeLeftToOrder': data.connect("page/loaded/selectedEvent/format.orderTimer", {
+				ifNot: "Too late for today!"
+			}),
+			'secondsLeftToOrder': data.connect("page/loaded/selectedEvent/format.orderTimerSeconds", {
+				ifNot: 0
+			}),
+			'deliverTo': data.connect("page/loaded/selectedEvent/consumer_group_id/deliverLocation"),
+			'cartItemCount': data.connect("cart/itemCount()"),
+			'day_id': data.connect("page/loaded/selectedEvent/day_id"),
+			'tabs': data.connect("days/*", function (data) {
+				return {
+					"id": data.connect("id"),
+					"tabDay": data.connect("format.ddd"),
+					"tabDate": data.connect("format.MMM-D")
+				};
+			})
+		};
 	},
 
 	getTemplate: function (Context) {
 
 		return new Context.Template({
 			impl: require("../../www/lunchroom-landing~0/components/AppMenu/navbar.cjs.jsx"),
-			markup: function (element) {
+			markup: function (element, data) {
 				var self = this;
 
 				self.liftSections(element);
 
 				$('[data-component-elm="checkoutButton"]', element).click(function () {
-				    if (Context.appContext.get('stores').cart.getItemCount() > 0) {
+
+				    if (data.cartItemCount > 0) {
 						Context.appContext.set('selectedView', "Checkout");
 					}
 					return false;
@@ -113,26 +110,27 @@ require("./component.jsx")['for'](module, {
 
 
 			    var views = [];
-		    	if (Context.appContext.get("forceAllowOrder")) {
-		    		views.push("not-on-checkout");
-		    	}
+
+			    if (data.cartItemCount > 0) {
+			    	views.push("offer-checkout");
+			    }
 			    if (data['day_id']) {
 			    	views.push("menuAvailable");
-			    	if (
-			    		data['day_id'] === Context.appContext.get('todayId')
-			    	) {
+
+			    	if (data['day_id'] === Context.appContext.get('todayId')) {
 			    		views.push("orderCountdown");
-						if (
-							Context.appContext.get('selectedView') !== "Checkout" &&
-			    			data['secondsLeftToOrder'] > 0
-			    		) {
-							views.push("not-on-checkout");
-						}
 			    	}
-					self.showViews(element, views);
-			    } else {
-					self.showViews(element, views);
+
+			    	if (
+			    		data.canOrder &&
+			    		!data.isPastDeadline
+			    	) {
+				    	views.push("offer-checkout");
+			    	}
 			    }
+
+				self.showViews(element, views);
+
 
 			    if (
 			    	data['secondsLeftToOrder'] > 0 &&

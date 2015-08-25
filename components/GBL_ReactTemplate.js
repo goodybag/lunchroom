@@ -11,6 +11,15 @@ exports['for'] = function (Component) {
 		var self = this;
 		var Context = Component.getRenderContext();
 		self.impl = options.impl(Context);
+
+		function getTemplateDataForComponent () {
+			if (!Component._template_data_consumer) {
+				return null;
+			}
+			self.setData(Component._template_data_consumer.getData());
+			return self.getData();
+		}
+
 		self.comp = Context.REACT.createClass({
 			componentDidMount: function () {
 				self.elm = $(this.getDOMNode());
@@ -22,15 +31,18 @@ exports['for'] = function (Component) {
 				});
 				if (self._markup) {
 					try {
-						self._markup(self.elm);
+						self._markup(self.elm, getTemplateDataForComponent());
 					} catch (err) {
 						console.error("Error marking up component!", err.stack);
 					}
 				}
 				if (self._fill) {
-					var Context = Component.getRenderContext();
 					try {
-						self._fill(self.elm, Context, Context);
+						self._fill(
+							self.elm,
+							getTemplateDataForComponent(),
+							Component.getRenderContext()
+						);
 					} catch (err) {
 						console.error("Error filling component!", err.stack);
 					}
@@ -39,9 +51,12 @@ exports['for'] = function (Component) {
 			componentDidUpdate: function () {
 				self.elm = $(this.getDOMNode());			
 				if (self._fill) {
-					var Context = Component.getRenderContext();
 					try {
-						self._fill(self.elm, Context, Context);
+						self._fill(
+							self.elm,
+							getTemplateDataForComponent(),
+							Component.getRenderContext()
+						);
 					} catch (err) {
 						console.error("Error filling component!", err.stack);
 					}
@@ -59,6 +74,15 @@ exports['for'] = function (Component) {
 		self.sections = {};
 
 		self.data = null;
+	}
+
+	Template.prototype.setData = function (data) {
+		if (!this.data) this.data = {};
+		// NOTE: We update the properties so that anyone who has a reference gets updates as well
+		for (var name in data) {
+			this.data[name] = data[name];
+		}
+		// TODO: Remove properties that no longer exist
 	}
 
 	Template.prototype.getData = function () {
@@ -96,7 +120,7 @@ exports['for'] = function (Component) {
 			var propertyElement = $(this);
 			var propertyName = propertyElement.attr("data-component-prop");
 			if (typeof data[propertyName] === "undefined") {
-				console.warn("Property '" + propertyName + "' not set for component: " + Context._implName);
+//				console.warn("Property '" + propertyName + "' not set for component: " + Context._implName);
 				data[propertyName] = "?";
 			}
 

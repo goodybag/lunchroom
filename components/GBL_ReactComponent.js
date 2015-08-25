@@ -5,6 +5,7 @@ var API = exports.API = {
 	REACT: require("react"),
 	EXTEND: require("extend"),
 	MOMENT: require("moment"),
+	NUMERAL: require("numeral"),
 	Q: require("q"),
 	GBL_TEMPLATE: require('./GBL_ReactTemplate')
 };
@@ -72,6 +73,8 @@ exports.create = function (Context, implementation) {
 
 		var element = $(component.getDOMNode());
 
+		component._render_Context.componentElement = element;
+
 		function universalMarkup (element) {
 
 			ctx.ensureForNodes(
@@ -95,23 +98,79 @@ exports.create = function (Context, implementation) {
 
 	function callTemplate (component, method) {
 		// New template-based logic.
-		if (!component._render_Context._template) return;
-		if (!component._render_Context._template["_" + method]) return;
 
 		try {
 
+			function getData () {
+				if (!component._template_data_consumer) return null;
+				if (!component._render_Context._template) return null;
+				data = component._template_data_consumer.getData();
+				component._render_Context._template.setData(data);
+				return component._render_Context._template.getData();
+			}
+
 			if (method === "markup") {
+
+//console.log("MARKUP", implementation);
+
+				if (typeof Context.mapData === "function") {
+
+					var consumer = new (component._render_Context.appContext.get("data").Consumer)();
+
+					consumer.mapData(Context.mapData(component._render_Context, consumer));
+
+					component._template_data_consumer = consumer;
+
+//console.log("MARKUP CONSUMER", implementation);
+
+					consumer.on("change", function () {
+
+//console.info("CONSUMER RESOLVED DATA CHANGED BASED on changed event from consumer (template)");
+
+
+					});
+				}
+
 				// Called once per mount.
-				component._render_Context._template["_" + method](
-					$(component.getDOMNode())
-				);
+				if (
+					component._render_Context._template &&
+					component._render_Context._template["_" + method]
+				) {
+					component._render_Context._template["_" + method](
+						$(component.getDOMNode()),
+						getData()
+					);
+				}
+
 			} else
 			if (method === "fill") {
 				// Called multiple times per mount.
-				if (implementation.getTemplateData || Context.getTemplateData) {
+
+//console.log("FILL", implementation);
+
+				if (
+					component._render_Context._template &&
+					component._render_Context._template["_" + method]
+				) {
+
+					var data = null;
+
+					if (component._template_data_consumer) {
+//	console.log("LOAD VIA CONSUMER", implementation);
+
+						data = getData();
+
+					} else
+					if (implementation.getTemplateData || Context.getTemplateData) {
+
+						console.error("DEPRECATED getTemplateData for:", implementation);
+
+						data = (implementation.getTemplateData || Context.getTemplateData).call(component, component._render_Context);
+					}
+
 					component._render_Context._template["_" + method](
 						$(component.getDOMNode()),
-						(implementation.getTemplateData || Context.getTemplateData).call(component, component._render_Context),
+						data,
 						component._render_Context
 					);
 				}
@@ -164,8 +223,11 @@ exports.create = function (Context, implementation) {
 				implementation.onUnmount.call(this);
 			}
 			this.props.appContext.off("change", this._trigger_forceUpdate);
-	    },
 
+			if (this._template_data_consumer) {
+				this._template_data_consumer.destroy();
+			}
+	    },
 
 	    modelRecordsWithStore: function (store, records) {
 
@@ -201,13 +263,21 @@ exports.create = function (Context, implementation) {
 	    				<div/>
 	    			);
 	    		}
-
-		    	console.info("Render component: " + implName);
+//		    	console.info("Render component: " + implName);
 	    	} else {
-		    	console.info("Render component: " + implName);
+//		    	console.info("Render component: " + implName);
 	    	}
 
-	    	self._render_Context = implementation.render.call(self);
+	    	var renderContext = implementation.render.call(self);
+	    	// NOTE: We update the object if it already exists so that anyone who was given
+	    	//       a reference to the context gets the updated properties.
+	    	if (self._render_Context) {
+	    		for (var name in renderContext) {
+		    		self._render_Context[name] = renderContext[name];
+	    		}
+	    	} else {
+	    		self._render_Context = renderContext;
+	    	}
 
 	    	self._render_Context.forceUpdate = function () {
 	    		self._trigger_forceUpdate();
@@ -217,6 +287,9 @@ exports.create = function (Context, implementation) {
 
 	    	self._render_Context.Template = API.GBL_TEMPLATE.for(self);
 
+	    	self._render_Context.UNDERSCORE = API.UNDERSCORE;
+	    	self._render_Context.MOMENT = API.MOMENT;
+	    	self._render_Context.NUMERAL = API.NUMERAL;
 	    	self._render_Context.REACT = API.REACT;
 	    	self._render_Context.Q = API.Q;
 	    	self._render_Context.appContext = self.props.appContext;
@@ -240,7 +313,6 @@ exports.create = function (Context, implementation) {
 	    		});
 	    	}
 
-
 	    	// New sub-template logic.
 	    	if (implementation.singleton || Context.singleton) {
 	    		callOnceForId(self._render_Context._implName, function () {
@@ -248,16 +320,51 @@ exports.create = function (Context, implementation) {
 			        	implementation.singleton ||
 			        	Context.singleton
 			        ).call(self, self._render_Context);
-
 	    		});
 	    	}
+
+			var data = {};
+
+	    	if (implementation.component || Context.component) {
+	    		if (!self._render_Context._componentInstanciated) {
+	    			self._render_Context._componentInstanciated = true;
+		    		(
+			        	implementation.component ||
+			        	Context.component
+			        ).call(self, self._render_Context, data);
+			    }
+	    	}
+
 	    	if (implementation.getTemplates || Context.getTemplates) {
+
+//console.log("GET TENMPLATEs0", Context, implementation);
 
 	    		if (!self._templateInstances) {
 					self._templateInstances = (
 			        	implementation.getTemplates ||
 			        	Context.getTemplates
 			        ).call(self, self._render_Context);
+
+//console.log("GET TENMPLATEs1", Context);
+//console.log("GET TENMPLATEs2", implementation);
+
+					if (typeof Context.mapData === "function") {
+
+						var consumer = new (self._render_Context.appContext.get("data").Consumer)();
+
+						consumer.mapData(Context.mapData(self._render_Context, consumer));
+
+						self._template_data_consumer = consumer;
+
+	//console.log("MARKUP CONSUMER", implementation);
+
+						consumer.on("change", function () {
+
+//	console.info("CONSUMER RESOLVED DATA CHANGED BASED on changed event from consumer (templates)");
+
+
+						});
+					}
 			    }
 
 		        self._render_Context.templates = self._templateInstances;
@@ -265,10 +372,20 @@ exports.create = function (Context, implementation) {
 
 
 	    	if (implementation.getHTML || Context.getHTML) {
+
+	    		if (self._template_data_consumer) {
+	    			var dataSnapshot = self._template_data_consumer.getData();
+	    			// NOTE: We update the data object so that anyone who already has
+	    			//       a reference gets the updated properties.
+	    			for (var name in dataSnapshot) {
+		    			data[name] = dataSnapshot[name];
+	    			}
+	    		}
+
 		        var tags = (
 		        	implementation.getHTML ||
 		        	Context.getHTML
-		        ).call(self, self._render_Context);
+		        ).call(self, self._render_Context, data);
 
 		    	console.info("Hand off to react: " + implName);
 

@@ -9,10 +9,12 @@ module.exports = function (Context) {
       <h3 className="section-title">Your Info</h3>
       <div className="form-group">
         <label for="">Name</label>
+        <div className="form-group-indicator state-success"></div>
         <input type="text" className="form-control" name="name" data-component-elm="info[name]"/>
       </div>
       <div className="form-group">
         <label for="">Email</label>
+        <div className="form-group-indicator state-error"></div>
         <input type="email" className="form-control" name="email" data-component-elm="info[email]"/>
       </div>
       <div className="form-group">

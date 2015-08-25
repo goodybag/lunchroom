@@ -81,19 +81,17 @@ exports.init = function (config, options) {
 
 							if (existingFields[field.name]) {
 
-								// Remove constraints if no longer in schema
-								if (field.constraints) {
-									if (
-										schema.primaryKey !== field.name &&
-										field.constraints.required !== true &&
-										existingFields[field.name].is_nullable === 'NO'
-									) {
-										console.log("[db] Drop 'required' from field '" + field.name + "' for table '" + tableName + "'");
+								// Remove constraints if no longer in schema or constraint removed
+								if (
+									schema.primaryKey !== field.name &&
+									(!field.constraints || field.constraints.required !== true) &&
+									existingFields[field.name].is_nullable === 'NO'
+								) {
+									console.log("[db] Drop 'required' from field '" + field.name + "' for table '" + tableName + "'");
 
-										knex.raw('ALTER TABLE "' + tableName + '" ALTER COLUMN "' + field.name + '" DROP NOT NULL;').catch(function (err) {
-											console.error("SQL Error:", err.stack);
-										});
-									}
+									knex.raw('ALTER TABLE "' + tableName + '" ALTER COLUMN "' + field.name + '" DROP NOT NULL;').catch(function (err) {
+										console.error("SQL Error:", err.stack);
+									});
 								}
 								return;
 							}
@@ -395,3 +393,27 @@ exports.getKnex = function () {
 	}
 	return knex;
 }
+
+
+exports.getQKnex = function () {
+	return function (tableName, query) {
+		if (typeof query === "undefined" && typeof tableName === "function") {
+			query = tableName;
+			tableName = null;
+		}
+		return Q.fcall(function () {
+			var table = ((tableName) ? knex(tableName) : knex);
+			return query(table).then(function (resp) {
+
+	console.log("RESPONSE:", resp);
+
+				return resp;
+			});
+		}).catch(function (err) {
+			console.error(err.stack);
+			throw err;
+		});
+	}
+}
+
+

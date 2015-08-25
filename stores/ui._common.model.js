@@ -33,6 +33,9 @@ exports.forContext = function (context) {
 		)
 	) || API.MOMENT_CT || MOMENT;
 
+	exports.MOMENT = MOMENT;
+	exports.MOMENT_CT = MOMENT_CT;
+
 	exports.makeFormatter = function (type) {
 
 		if (type === "deliveryTime") {

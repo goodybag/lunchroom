@@ -83,6 +83,28 @@ exports.forContext = function (context) {
 	            	return common.MOMENT_CT().isAfter(this.orderByTime);
 	            }
 		    },
+		    "isPastDeadline": {
+				deps: [
+					"orderByTime"
+				],
+				cache: false,
+	            fn: function () {
+	            	var orderByTime = common.MOMENT_CT(this.orderByTime);
+	            	if (orderByTime.format("ddd") === common.MOMENT_CT().format("ddd")) {
+	            		// Event for today. Now see if order deadline has passed.
+		            	if (orderByTime.isBefore(common.MOMENT_CT())) {
+		            		// After deadline
+		            		return true;
+		            	}
+		            	return false;
+	            	} else
+	            	// Check if before today
+	            	if (orderByTime.isBefore(common.MOMENT_CT().subtract(1, 'day').endOf('day'))) {
+		            	return true;
+	            	}
+	            	return false;
+	            }
+		    },
 		    "canOrder": {
 				deps: [
 					"orderByTime"
@@ -90,18 +112,22 @@ exports.forContext = function (context) {
 				cache: false,
 	            fn: function () {
 	            	var orderByTime = common.MOMENT_CT(this.orderByTime);
-	            	if (!orderByTime.isSame(common.MOMENT_CT(), 'day')) {
-	            		// Not today
-	            		return false;
+	            	if (orderByTime.format("ddd") === common.MOMENT_CT().format("ddd")) {
+	            		// Event for today. Now see if order deadline has passed.
+		            	if (orderByTime.isBefore(common.MOMENT_CT())) {
+		            		// After deadline
+		            		return false;
+		            	}
+		            	return true;
+	            	} else
+	            	// Check if before today
+	            	if (orderByTime.isBefore(common.MOMENT_CT().subtract(1, 'day').endOf('day'))) {
+		            	return false;
 	            	}
-	            	if (orderByTime.isBefore(common.MOMENT_CT())) {
-	            		// After deadline
-	            		return false;
-	            	}
-	            	// TODO: Monitor quantities.
 	            	return true;
 	            }
 		    },
+
 		    "format.deliveryDate": common.makeFormatter("deliveryDate"),
 		    "format.deliveryTime": common.makeFormatter("deliveryTime"),
 		    "format.orderByTime": common.makeFormatter("orderByTime"),

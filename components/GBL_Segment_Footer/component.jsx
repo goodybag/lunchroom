@@ -10,9 +10,6 @@ exports['for'] = function (module, Context) {
 	    render: function () {
 	    	var self = this;
 
-
-console.log("render footer comp");
-
 	        return {};
 	    }
 	});

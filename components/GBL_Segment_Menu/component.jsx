@@ -9,21 +9,19 @@ exports['for'] = function (module, Context) {
 
 	    onMount: function () {
 			this.props.appContext.get('stores').cart.on("update", this._trigger_forceUpdate);
-			this.props.appContext.get('stores').events.on("update", this._trigger_forceUpdate);
+//			this.props.appContext.get('stores').events.on("update", this._trigger_forceUpdate);
 	    },
 
 	    onUnmount: function () {
-	    	if (this.eventsCheckInterval) {
-	    		clearInterval(this.eventsCheckInterval);
-	    		this.eventsCheckInterval = null;
-	    	}
 			this.props.appContext.get('stores').cart.off("update", this._trigger_forceUpdate);
-			this.props.appContext.get('stores').events.off("update", this._trigger_forceUpdate);
+//			this.props.appContext.get('stores').events.off("update", this._trigger_forceUpdate);
 	    },
 
 	    render: function () {
 	    	var self = this;
 
+return {};
+/*
 	        var days = self.props.appContext.get('stores').days;
 	        var cart = self.props.appContext.get('stores').cart;
 	        var events = self.props.appContext.get('stores').events;
@@ -45,6 +43,7 @@ exports['for'] = function (module, Context) {
 
 	        	eventToday: self.modelRecordsWithStore(events, events.getToday()).pop()
 	        };
+*/
 	    }
 
 	});

@@ -1,6 +1,36 @@
 
 require("./component.jsx")['for'](module, {
 
+
+	mapData: function (Context, data) {
+		return {
+			'event_id': data.connect("page/loaded/selectedEvent/id"),
+			'canOrder': data.connect("page/loaded/selectedEvent/canOrder"),
+			'isPastDeadline': data.connect("page/loaded/selectedEvent/isPastDeadline"),
+			'orderBy': data.connect("page/loaded/selectedEvent/format.orderByTime"),
+			'goodybagFee': data.connect("page/loaded/selectedEvent/format.goodybagFee"),
+			'restaurantTitle': data.connect("page/loaded/selectedEvent/vendor/title"),
+			'items': data.connect("page/loaded/selectedEventItems", function (data) {
+				return {
+					"id": data.connect("id"),
+					"item_id": data.connect("item_id/id"),
+					"photoUrl": data.connect("item_id/photo_url", {
+						suffix: "/convert?w=400&h=195&fit=crop"
+					}),
+					"modalPhotoUrl": data.connect("item_id/photo_url", {
+						suffix: "/convert?w=430&h=400&fit=crop"
+					}),
+					"title": data.connect("item_id/title"),
+					"price": data.connect("item_id/format.price"),
+					"description": data.connect("item_id/description"),
+					"tags": data.connect("item_id/tags"),
+					"quantity": data.connect("cartQuantity")
+				};
+			})
+		};
+	},
+
+
 	getTemplates: function (Context) {
 		return {
 			"menu_signup": new Context.Template({
@@ -49,8 +79,15 @@ require("./component.jsx")['for'](module, {
 				fill: function (element, data, Context) {
 
 					this.fillProperties(element, {
-						"orderBy": Context.eventToday.get('format.orderByTime')
+						"orderBy": data.orderBy
 					});
+				}
+			}),
+			"order_in_advance": new Context.Template({
+				impl: require("../../www/lunchroom-landing~0/components/AppMenu/order-in-advance.cjs.jsx"),
+				markup: function (element) {
+				},
+				fill: function (element, data, Context) {
 				}
 			}),
 			"menu_not_created": new Context.Template({
@@ -77,6 +114,7 @@ require("./component.jsx")['for'](module, {
 					});
 				},
 				fill: function (element, data, Context) {
+
 					this.fillProperties(element, data)
 
 					if (
@@ -114,47 +152,35 @@ require("./component.jsx")['for'](module, {
 				markup: function (element) {
 					this.liftSections(element);
 				},
-				fill: function (element, data, Context) {
+				fill: function (element, menuData, Context) {
 					var self = this;
 
-					var items = Context.items[Context.appContext.get('selectedDay')] || [];
+					self.fillProperties(element, {
+						"restaurantTitle": menuData.restaurantTitle,
+						"goodybagFee": menuData.goodybagFee
+					});
 
-					if (Context.selectedEvent) {
-						self.fillProperties(element, {
-							"restaurantTitle": Context.vendorTitlesForEvents[Context.selectedEvent.get("id")] || "",
-							"goodybagFee": Context.selectedEvent.get("format.goodybagFee")
-						});
-					}
-
-					self.renderSection(element, "items", items.map(function(item) {
-						return {
-							"id": item.get('id'),
-							"item_id": item.get('item_id'),
-							"photoUrl": item.get("item.photo_url") + "/convert?w=400&h=195&fit=crop",
-							"modalPhotoUrl": item.get("item.photo_url") + "/convert?w=430&h=400&fit=crop",
-							"title": item.get("item.title"),
-							"price": item.get("item.format.price"),
-							"description": item.get("item.description"),
-							"tags": item.get("item.tags"),
-							"quantity": item.get("cartQuantity")
-						};
-					}), function getView (data) {
+					self.renderSection(element, "items", menuData.items, function getView (data) {
 						return 'default';
-				    }, function hookEvents(elm, data) {
+				    }, function hookEvents(elm, itemData) {
 
-				    	if (data.quantity > 0) {
+				    	if (itemData.quantity > 0) {
 				    		elm.addClass("is-in-cart");
 				    	} else {
 				    		elm.removeClass("is-in-cart");
 				    	}
 
 						$('[data-component-elm="showDetailsLink"]', elm).click(function () {
-							Context.templates.popup.fill(data);
+							Context.templates.popup.fill(itemData);
 						});
 
 
 						$('[data-component-elm="removeButton"]', elm).click(function () {
-							Context.appContext.get('stores').cart.removeItem(data.item_id).then(function () {
+
+							Context.appContext.get('stores').cart.removeItemForEvent(
+								menuData.event_id,
+								itemData.item_id
+							).then(function () {
 								Context.forceUpdate();
 							});
 							return false;
@@ -185,20 +211,17 @@ require("./component.jsx")['for'](module, {
 							Context.appContext.get('stores').cart.addItem(itemBlock.attr("data-id"), options);
 */
 
-							Context.appContext.get('stores').cart.addItem(data.item_id, options).then(function () {
+							Context.appContext.get('stores').cart.addItemForEvent(
+								menuData.event_id,
+								itemData.item_id,
+								options
+							).then(function () {
 								Context.forceUpdate();
 							});
 							return false;
 						});
 
-						if (
-							Context.appContext.get("forceAllowOrder") ||
-							(
-								Context.selectedEvent &&
-								Context.selectedEvent.get("day_id") === Context.appContext.get('todayId') &&
-								parseInt(Context.selectedEvent.get("format.orderTimerSeconds") || 0)
-							)
-						) {
+						if (menuData.canOrder) {
 							self.showViews(elm, [
 								"orderable"
 							]);
@@ -209,7 +232,7 @@ require("./component.jsx")['for'](module, {
 
 						var tags = [];
 						try {
-							if (data.tags) tags = JSON.parse(data.tags);
+							if (itemData.tags) tags = JSON.parse(itemData.tags);
 						} catch (err) {}
 
 						self.renderSection(elm, "diet-tags", tags.map(function(tag) {
@@ -228,55 +251,22 @@ require("./component.jsx")['for'](module, {
 			})
 		};
 	},
-/*
-	afterRender: function (Context, element) {
 
-		$('.tab', element).removeClass('active');
-	    $('.tab[data-tab="' + Context.appContext.get('selectedDay') + '"]', element).addClass('active');
-
-	    Context.ensureForNodes(
-	    	$('a[data-link="action:show-detail"]', element),
-	    	'click',
-	    	function () {
-
-	    		var itemBlock = $(this).parentsUntil(element, '.item-block');
-
-		        $('.ui.modal[data-id="' + itemBlock.attr("data-id") + '"][data-day="' + itemBlock.attr("data-day") + '"]').modal({
-					onDeny: function() {
-						return true;
-					},
-					onApprove : function() {
-						return false;
-					}
-		        }).modal('show');
-	    	}
-	    );
-
-	},
-*/
-	getHTML: function (Context) {
-
+	getHTML: function (Context, data) {
 
 		// TODO: Remove this once we can inject 'React' automatically at build time.
 		var React = Context.REACT;
 
 		var Panel = "";
 
-		var items = Context.items[Context.appContext.get('selectedDay')] || [];
+		if (data.items) {
 
-		if (
-			Context.eventToday &&
-			items.length > 0
-		) {
-
-			if (
-				Context.appContext.get('selectedDayId') === Context.appContext.get('todayId') &&
-				parseInt(Context.eventToday.get("format.orderTimerSeconds") || 0) <= 0
-			) {
+			if (data.isPastDeadline) {
 
 				Panel = (
 					<div>
 						<Context.templates.too_late.comp />
+						<Context.templates.order_in_advance.comp />
 						<Context.templates.popup.comp />
 						<Context.templates.menu.comp />
 						<Context.templates.menu_signup.comp />
@@ -284,10 +274,12 @@ require("./component.jsx")['for'](module, {
 					</div>
 				);
 
-			} else {
+			} else
+			if (data.canOrder) {
 
 				Panel = (
 					<div>
+						<Context.templates.order_in_advance.comp />
 						<Context.templates.popup.comp />
 						<Context.templates.menu.comp />
 						<Context.templates.menu_signup.comp />
