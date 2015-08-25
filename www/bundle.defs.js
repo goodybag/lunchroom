@@ -20520,7 +20520,11 @@
 				data[name] = dataMap["@map"][name](dictionary);
 			});
 			if (typeof dataMap["@postprocess"] === "function") {
-				data = dataMap["@postprocess"](data);
+				try {
+					data = dataMap["@postprocess"](data);
+				} catch (err) {
+					console.error("Error during '@postprocess' but ignoring:", err.stack);
+				}
 			}
 			return data;
 		}
@@ -48243,7 +48247,11 @@
 
 					data.noItems = (data.itemsByDays.length === 0);
 
-					data.orderForm = JSON.parse(data.order.get("form"));
+					try {
+						data.orderForm = JSON.parse(data.order.get("form") || "{}");
+					} catch (err) {
+						console.warn("Could not unserialize 'form':", err.stack);
+					}
 
 					return data;
 				}
