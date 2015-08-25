@@ -265,7 +265,11 @@ console.log("PLACE ORDER", form);
 
 				data.noItems = (data.itemsByDays.length === 0);
 
-				data.orderForm = JSON.parse(data.order.get("form"));
+				try {
+					data.orderForm = JSON.parse(data.order.get("form") || "{}");
+				} catch (err) {
+					console.warn("Could not unserialize 'form':", err.stack);
+				}
 
 				return data;
 			}

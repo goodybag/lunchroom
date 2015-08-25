@@ -408,7 +408,11 @@ var Consumer = exports.Consumer = function (rootCollections, rootCollectionsOpti
 			data[name] = dataMap["@map"][name](dictionary);
 		});
 		if (typeof dataMap["@postprocess"] === "function") {
-			data = dataMap["@postprocess"](data);
+			try {
+				data = dataMap["@postprocess"](data);
+			} catch (err) {
+				console.error("Error during '@postprocess' but ignoring:", err.stack);
+			}
 		}
 		return data;
 	}

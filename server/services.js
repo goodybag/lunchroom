@@ -13,6 +13,10 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
 
                 console.log("Sending email '" + templateId + "' to '" + message.to[0].email + "'");
 
+                if (process.env.APP_DOMAIN === 'staging.lunchroom.goodybag.com') {
+                    message.from = "[TEST] " + message.from;
+                }
+
                 if (templateId === "Receipt") {
 
                     message = API.DEEPMERGE({
