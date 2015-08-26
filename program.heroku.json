@@ -220,6 +220,7 @@
                             "stripeSecretKey_TEST": "sk_test_XksbwDuLK1xbpOFaSVLVf9qZ",
                             "stripeSecretKey": "sk_test_XksbwDuLK1xbpOFaSVLVf9qZ",
                             "clientContext": {
+                                "stripePublishableKey_TEST": "pk_test_9N1srz1fVmWGyRAAhmzAA7aP",
                                 "stripePublishableKey": "pk_test_9N1srz1fVmWGyRAAhmzAA7aP"                                
                             }
                			}
@@ -235,6 +236,7 @@
                             "stripeSecretKey_TEST": "sk_test_XksbwDuLK1xbpOFaSVLVf9qZ",
                             "stripeSecretKey": "sk_test_XksbwDuLK1xbpOFaSVLVf9qZ",
                             "clientContext": {
+                                "stripePublishableKey_TEST": "pk_test_9N1srz1fVmWGyRAAhmzAA7aP",
                                 "stripePublishableKey": "pk_test_9N1srz1fVmWGyRAAhmzAA7aP"                                
                             }
                			}
