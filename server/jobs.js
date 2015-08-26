@@ -226,7 +226,7 @@ console.log("RESPONSE:", resp);
 						'menuEmailsSent': true
 					}).where('id', eventId);
 				}).then(function () {
-					// TODO: Still need this now that error are caught properly?
+					// TODO: Still need this now that errors are caught properly?
 					return API.Q.delay(15 * 1000);
 				});
 			}
@@ -242,9 +242,16 @@ console.log("RESPONSE:", resp);
 
     	function sendDeliveredEmailsForEventTo (eventId, ordersData) {
 
-			function sendEmails () {
+			var orderIds = Object.keys(ordersData);
+			var itemIds = [];
+			orderIds.forEach(function (orderId) {
+				ordersData[orderId].items.forEach(function (item) {
+					itemIds.push(item.id);
+				});
+			});
 
-				var orderIds = Object.keys(ordersData);
+
+			function sendEmails () {
 
 				// NOTE: We mark emails as sent because if it errors out we assume it
 				//       was sent anyway.
@@ -255,25 +262,30 @@ console.log("RESPONSE:", resp);
 				//       table should not be set until all emails have been
 				//       attempted to be sent/re-sent to a satisfactory tenacity.
 
-				return qknex('orders', function (table) {
+				return qknex('order-items', function (table) {
 					return table.update({
 						'deliveredEmailSent': true
-					}).whereIn('id', orderIds);
+					}).whereIn('id', itemIds);
 				}).fail(function (err) {
 					console.error("ERROR", err.stack);
-					console.error("ERROR setting 'deliveredEmailSent' on 'orders' table. We abort completely and let the next loop try again");
+					console.error("ERROR setting 'deliveredEmailSent' on 'order-items' table. We abort completely and let the next loop try again");
 					throw err;
 				}).then(function () {
 
-					// It is assumed that 'deliveredEmailsSent' is now set for the orders
+					// It is assumed that 'deliveredEmailsSent' is now set for the order-items
 					// we are about to send notifications for. So if anything breaks for now on
 					// the emails will not be re-sent unless the 'deliveredEmailSendError' flag is reset.
 
 					return API.Q.all(orderIds.map(function (orderId) {
 
-console.log("ordersData[orderId]", orderId, ordersData[orderId]);
-
-						if (ordersData[orderId].deliveredEmailSent !== false) {
+						// If any item was already indicated as sent we don't send another one.
+						var alreadySent = false;
+						ordersData[orderId].items.forEach(function (item) {
+							if (item.deliveredEmailSent) {
+								alreadySent = true;
+							}
+						});
+						if (alreadySent) {
 							console.log("SKIP: Sending delivered email to:", ordersData[orderId].email, "(already sent based on 'deliveredEmailSent')");
 							return API.Q.resolve();
 						}
@@ -298,13 +310,13 @@ console.log("ordersData[orderId]", orderId, ordersData[orderId]);
 
 							console.error("Error sending email to '" + ordersData[orderId].email + "' but ignoring:", err.stack);
 
-							return qknex('orders', function (table) {
+							return qknex('order-items', function (table) {
 								return table.update({
 									'deliveredEmailSendError': err.message
-								}).where('id', orderId);
+								}).where('id', itemIds);
 							}).fail(function (err) {
 								console.error("ERROR", err.stack);
-								console.error("ERROR setting 'deliveredEmailSendError' on 'orders' table. We ignore error so the other emails still go out since we already flagged them has having gone out.");
+								console.error("ERROR setting 'deliveredEmailSendError' on 'order-items' table. We ignore error so the other emails still go out since we already flagged them has having gone out.");
 							});
 						});
 					}));
@@ -316,22 +328,32 @@ console.log("ordersData[orderId]", orderId, ordersData[orderId]);
 
 				// NOTE: Same logic as documented in 'sendEmails' above.
 
-				var orderIds = Object.keys(ordersData);
-
-				return qknex('orders', function (table) {
+				return qknex('order-items', function (table) {
 					return table.update({
 						'deliveredSmsSent': true
-					}).whereIn('id', orderIds);
+					}).whereIn('id', itemIds);
 				}).fail(function (err) {
 					console.error("ERROR", err.stack);
-					console.error("ERROR setting 'deliveredSmsSent' on 'orders' table. We abort completely and let the next loop try again");
+					console.error("ERROR setting 'deliveredSmsSent' on 'order-items' table. We abort completely and let the next loop try again");
 					throw err;
 				}).then(function () {
 
 					return API.Q.all(orderIds.map(function (orderId) {
 
-						if (ordersData[orderId].deliveredEmailSent !== false) {
-							console.log("SKIP: Sending delivered sms to:", ordersData[orderId].phone, "(already sent based on 'deliveredSmsSent')");
+						if (!ordersData[orderId].phone) {
+							console.log("SKIP: Sending delivered sms to:", ordersData[orderId].phone, "(no 'phone' specified)");
+							return API.Q.resolve();
+						}
+
+						// If any item was already indicated as sent we don't send another one.
+						var alreadySent = false;
+						ordersData[orderId].items.forEach(function (item) {
+							if (item.deliveredSmsSent) {
+								alreadySent = true;
+							}
+						});
+						if (alreadySent) {
+							console.log("SKIP: Sending delivered sms to:", ordersData[orderId].phone, "(already sent based on 'deliveredEmailSent')");
 							return API.Q.resolve();
 						}
 
@@ -348,13 +370,13 @@ console.log("ordersData[orderId]", orderId, ordersData[orderId]);
 
 							console.error("Error sending sms to '" + ordersData[orderId].phone + "' but ignoring:", err.stack);
 
-							return qknex('orders', function (table) {
+							return qknex('order-items', function (table) {
 								return table.update({
 									'deliveredSmsSendError': err.message
-								}).where('id', orderId);
+								}).where('id', itemIds);
 							}).fail(function (err) {
 								console.error("ERROR", err.stack);
-								console.error("ERROR setting 'deliveredSmsSendError' on 'orders' table. We ignore error so the other smss still go out since we already flagged them has having gone out.");
+								console.error("ERROR setting 'deliveredSmsSendError' on 'order-items' table. We ignore error so the other smss still go out since we already flagged them has having gone out.");
 							});
 						});
 					}));
@@ -367,7 +389,7 @@ console.log("ordersData[orderId]", orderId, ordersData[orderId]);
 						'deliveredEmailsSent': true
 					}).where('id', eventId);
 				}).then(function () {
-					// TODO: Still need this now that error are caught properly?
+					// TODO: Still need this now that errors are caught properly?
 					return API.Q.delay(15 * 1000);
 				});
 			}
@@ -521,43 +543,93 @@ console.log("CHECK AGAINST", MOMENT_CT().second(0).minute(0).hour(8).format());
 	    	}
 
 
-			function fetchOrders (eventIds) {
-
-				return qknex('orders', function (table) {
+			function fetchOrderItems (eventIds) {
+				return qknex('order-items', function (table) {
 					return table.select(
 						'id',
+						'day_id',
+						'order_id',
 						'event_id',
-						'form',
-						'event',
-						'orderHashId',
+						'vendor_id',
+						'options',
 						'deliveredEmailSent',
 						'deliveredSmsSent'
 					)
 					.whereIn('event_id', eventIds);
 				}).then(function (result) {
 					var orders = {};
+					var orderIds = {};
+					var vendorIds = {};
 					result.forEach(function (row) {
 						if (!orders[row.event_id]) {
 							orders[row.event_id] = {};
 						}
-						try {
-							var form = JSON.parse(row.form);
-console.log("form", form);
-							var event = JSON.parse(row.event);
-							orders[row.event_id][row.id] = {
-								name: form['info[name]'],
-								email: form['info[email]'],
-								phone: form['info[phone]'],
-								pickupLocation: event["consumerGroup.pickupLocation"],
-								orderHashId: row.orderHashId,
-								deliveredEmailSent: row.deliveredEmailSent,
-								deliveredSmsSent: row.deliveredSmsSent
-							}
-						} catch (err) {
-							console.error("Ignoring error:", err.stack);
+						if (!orders[row.event_id][row.order_id]) {
+							orders[row.event_id][row.order_id] = {
+								items: []
+							};
 						}
+						if (!orderIds[row.order_id]) {
+							orderIds[row.order_id] = [];
+						}
+						orderIds[row.order_id].push(row.event_id);
+						vendorIds[row.vendor_id] = true;
+						orders[row.event_id][row.order_id].items.push(row);
 					});
-					return orders;
+
+					return qknex('orders', function (table) {
+						return table.whereIn('id', Object.keys(orderIds));
+					}).then(function (result) {
+						result.forEach(function (row) {
+							orderIds[row.id].forEach(function (eventId) {
+								try {
+									var form = JSON.parse(row.form);
+									orders[eventId][row.id].name = form['info[name]'];
+									orders[eventId][row.id].email = form['info[email]'];
+									orders[eventId][row.id].phone = form['info[phone]'];
+									orders[eventId][row.id].orderHashId = row.orderHashId;
+								} catch (err) {
+									console.error("Got error but ignoring:", err.stack);
+								}
+							});
+						});
+
+						return qknex('events', function (table) {
+							return table.select(
+								'id',
+								'consumer_group_id'
+							).whereIn('id', eventIds);
+						}).then(function (result) {
+							var consumerGroupsForEvents = {};
+							var consumerGroupIds = {};
+							result.forEach(function (row) {
+								consumerGroupsForEvents[row.id] = row.consumer_group_id;
+								consumerGroupIds[row.consumer_group_id] = true;
+							});
+
+							return qknex('consumer-groups', function (table) {
+								return table.select(
+									'id',
+									'pickupLocation'
+								).whereIn('id', Object.keys(consumerGroupIds));
+							}).then(function (result) {
+								var pickupLocations = {};
+								result.forEach(function (row) {
+									pickupLocations[row.id] = row.pickupLocation;
+								});
+
+								Object.keys(orders).forEach(function (eventId) {
+									Object.keys(orders[eventId]).forEach(function (orderId) {
+										orders[eventId][orderId].pickupLocation = pickupLocations[
+											consumerGroupsForEvents[eventId]
+										];
+									});
+								});
+
+								return orders;
+							});
+						});
+					});
 				});
 	    	}
 
@@ -572,14 +644,15 @@ console.log("form", form);
 						return;
 					}
 
-					return fetchOrders(eventIds).then(function (orders) {
+					return fetchOrderItems(eventIds).then(function (orderItems) {
+
 						return API.Q.all(Object.keys(events).map(function (eventId) {
 
-							if (!orders[eventId]) return API.Q.resolve();
+							if (!orderItems[eventId]) return API.Q.resolve();
 
 							return sendDeliveredEmailsForEventTo(
 								eventId,
-								orders[eventId]
+								orderItems[eventId]
 							);
 						}));
 					});
