@@ -12,7 +12,7 @@ module.exports = function (Context) {
       <div className="module" data-component-view="menuAvailable" data-toggle="tooltip" title="" data-original-title="We text you when your food arrives">
         Delivery Time: <small data-component-prop="deliveryTime">12:00-12:30 PM</small>
       </div>
-      <div className="module" data-component-view="orderCountdown">
+      <div className="module" data-component-view="orderCountdown" data-component-view-visibility="hidden">
         Time left to order:
         <small className="text-important" data-component-prop="timeLeftToOrder">1 hr 26min</small>
       </div>
