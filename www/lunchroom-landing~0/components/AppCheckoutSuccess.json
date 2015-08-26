@@ -7,23 +7,34 @@
             "tag": "LINK",
             "attributes": {
                 "rel": "stylesheet",
-                "href": "/lunchroom-landing~0/resources/ad9f552fd255c5d348748ac8ad8600cdf91e3413.css"
+                "href": "/lunchroom-landing~0/resources/ad9f552fd255c5d348748ac8ad8600cdf91e3413.css",
+                "component:bundle": "app.css"
             },
             "exportPath": "/pinf.genesis.consulting/GoodyBag/goodybag-core/07-lunchroom-landing/.sm.hoisted/lunchroom-landing~0/resources/ad9f552fd255c5d348748ac8ad8600cdf91e3413.css"
         },
         {
             "tag": "SCRIPT",
             "attributes": {
-                "src": "/lunchroom-landing~0/resources/dist~lib-fdbf4a9.js"
+                "src": "/lunchroom-landing~0/resources/dist~lib-fdbf4a9.js",
+                "component:bundle": "lib.js"
             },
             "exportPath": "/pinf.genesis.consulting/GoodyBag/goodybag-core/07-lunchroom-landing/.sm.hoisted/lunchroom-landing~0/resources/dist~lib-fdbf4a9.js"
         },
         {
             "tag": "SCRIPT",
             "attributes": {
-                "src": "/lunchroom-landing~0/resources/dist~app-bf98a07.js"
+                "src": "/lunchroom-landing~0/resources/dist~app-2cbe9af.js",
+                "component:bundle": "app.js"
             },
-            "exportPath": "/pinf.genesis.consulting/GoodyBag/goodybag-core/07-lunchroom-landing/.sm.hoisted/lunchroom-landing~0/resources/dist~app-bf98a07.js"
+            "exportPath": "/pinf.genesis.consulting/GoodyBag/goodybag-core/07-lunchroom-landing/.sm.hoisted/lunchroom-landing~0/resources/dist~app-2cbe9af.js"
+        },
+        {
+            "tag": "SCRIPT",
+            "attributes": {
+                "src": "/lunchroom-landing~0/resources/dist~utils-4d2ef55.js",
+                "component:bundle": "utils.js"
+            },
+            "exportPath": "/pinf.genesis.consulting/GoodyBag/goodybag-core/07-lunchroom-landing/.sm.hoisted/lunchroom-landing~0/resources/dist~utils-4d2ef55.js"
         },
         {
             "tag": "IMG",
