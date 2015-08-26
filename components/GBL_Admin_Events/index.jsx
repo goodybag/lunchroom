@@ -274,10 +274,11 @@ module.exports = COMPONENT.create({
           }
           if (
             !Context.selectedEvent.get("menuReady") ||
-            Context.appContext.get("context").dev
+            Context.appContext.get("context").dev ||
+            Context.appContext.get('testMode')
           ) {
             DeleteButton = (
-              <button data-link="action:delete" className="ui primary small button">
+              <button data-link="action:delete" className="ui small red button">
                   Delete
               </button>
             );
@@ -418,6 +419,8 @@ module.exports = COMPONENT.create({
               </div>
 
               {DeleteButton}
+
+              <p>WARNING: This delete button only shows for events set 'Ready' if test mode is enabled. DO NOT DELETE LIVE EVENTS as advance day orders associated with event will be lost! You can delete events that have NOT BEEN SET READY without any issues as there will be no orders. Leave test mode to work on live events to be safe!</p>
 
             </div>
           );

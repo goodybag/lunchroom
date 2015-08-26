@@ -97,11 +97,13 @@ try {
 
 		try {
 
-			window.attachSkinApp({
-				initSkinDev: false
-			}, function (helpers) {
-				appContext.set('skinHelpers', helpers);
-			});
+			if (typeof window.attachSkinApp === "function") {
+				window.attachSkinApp({
+					initSkinDev: false
+				}, function (helpers) {
+					appContext.set('skinHelpers', helpers);
+				});
+			}
 
 			var reactComponent = React.render(
 				<skin.RootView appContext={appContext}/>,
