@@ -34,6 +34,51 @@
                 }
             }
         },
+        "AppComponents": {
+            "resources": [
+                {
+                    "type": "css",
+                    "uriPath": "/lunchroom-landing~0/resources/c2c33c6a5ddf146804e1d148753890edf9a87e2f.css",
+                    "fsPath": "{{__DIRNAME__}}/resources/c2c33c6a5ddf146804e1d148753890edf9a87e2f.css",
+                    "bundle": ""
+                },
+                {
+                    "type": "js",
+                    "uriPath": "/lunchroom-landing~0/resources/dist~lib-fdbf4a9.js",
+                    "fsPath": "{{__DIRNAME__}}/resources/dist~lib-fdbf4a9.js",
+                    "bundle": ""
+                },
+                {
+                    "type": "js",
+                    "uriPath": "/lunchroom-landing~0/resources/dist~app-2cbe9af.js",
+                    "fsPath": "{{__DIRNAME__}}/resources/dist~app-2cbe9af.js",
+                    "bundle": ""
+                }
+            ],
+            "componentsDescriptorPath": "{{__DIRNAME__}}/components/AppComponents.json",
+            "components": {
+                "page": {
+                    "uriHtmlPath": "/lunchroom-landing~0/components/AppComponents/page.htm",
+                    "fsHtmlPath": "{{__DIRNAME__}}/components/AppComponents/page.htm"
+                },
+                "header": {
+                    "uriHtmlPath": "/lunchroom-landing~0/components/AppComponents/header.htm",
+                    "fsHtmlPath": "{{__DIRNAME__}}/components/AppComponents/header.htm"
+                },
+                "navbar": {
+                    "uriHtmlPath": "/lunchroom-landing~0/components/AppComponents/navbar.htm",
+                    "fsHtmlPath": "{{__DIRNAME__}}/components/AppComponents/navbar.htm"
+                },
+                "share": {
+                    "uriHtmlPath": "/lunchroom-landing~0/components/AppComponents/share.htm",
+                    "fsHtmlPath": "{{__DIRNAME__}}/components/AppComponents/share.htm"
+                },
+                "footer": {
+                    "uriHtmlPath": "/lunchroom-landing~0/components/AppComponents/footer.htm",
+                    "fsHtmlPath": "{{__DIRNAME__}}/components/AppComponents/footer.htm"
+                }
+            }
+        },
         "Landing": {
             "resources": [
                 {
@@ -122,48 +167,184 @@
                 }
             }
         },
-        "AppComponents": {
+        "AppCheckoutSuccess": {
             "resources": [
                 {
                     "type": "css",
-                    "uriPath": "/lunchroom-landing~0/resources/c2c33c6a5ddf146804e1d148753890edf9a87e2f.css",
-                    "fsPath": "{{__DIRNAME__}}/resources/c2c33c6a5ddf146804e1d148753890edf9a87e2f.css",
-                    "bundle": ""
+                    "uriPath": "/lunchroom-landing~0/resources/ad9f552fd255c5d348748ac8ad8600cdf91e3413.css",
+                    "fsPath": "{{__DIRNAME__}}/resources/ad9f552fd255c5d348748ac8ad8600cdf91e3413.css",
+                    "bundle": "app.css"
                 },
                 {
                     "type": "js",
                     "uriPath": "/lunchroom-landing~0/resources/dist~lib-fdbf4a9.js",
                     "fsPath": "{{__DIRNAME__}}/resources/dist~lib-fdbf4a9.js",
-                    "bundle": ""
+                    "bundle": "lib.js"
                 },
                 {
                     "type": "js",
                     "uriPath": "/lunchroom-landing~0/resources/dist~app-2cbe9af.js",
                     "fsPath": "{{__DIRNAME__}}/resources/dist~app-2cbe9af.js",
-                    "bundle": ""
+                    "bundle": "app.js"
+                },
+                {
+                    "type": "js",
+                    "uriPath": "/lunchroom-landing~0/resources/dist~utils-4d2ef55.js",
+                    "fsPath": "{{__DIRNAME__}}/resources/dist~utils-4d2ef55.js",
+                    "bundle": "utils.js"
                 }
             ],
-            "componentsDescriptorPath": "{{__DIRNAME__}}/components/AppComponents.json",
+            "componentsDescriptorPath": "{{__DIRNAME__}}/components/AppCheckoutSuccess.json",
             "components": {
                 "page": {
-                    "uriHtmlPath": "/lunchroom-landing~0/components/AppComponents/page.htm",
-                    "fsHtmlPath": "{{__DIRNAME__}}/components/AppComponents/page.htm"
+                    "uriHtmlPath": "/lunchroom-landing~0/components/AppCheckoutSuccess/page.htm",
+                    "fsHtmlPath": "{{__DIRNAME__}}/components/AppCheckoutSuccess/page.htm"
                 },
                 "header": {
-                    "uriHtmlPath": "/lunchroom-landing~0/components/AppComponents/header.htm",
-                    "fsHtmlPath": "{{__DIRNAME__}}/components/AppComponents/header.htm"
+                    "uriHtmlPath": "/lunchroom-landing~0/components/AppCheckoutSuccess/header.htm",
+                    "fsHtmlPath": "{{__DIRNAME__}}/components/AppCheckoutSuccess/header.htm"
                 },
-                "navbar": {
-                    "uriHtmlPath": "/lunchroom-landing~0/components/AppComponents/navbar.htm",
-                    "fsHtmlPath": "{{__DIRNAME__}}/components/AppComponents/navbar.htm"
+                "order-success": {
+                    "uriHtmlPath": "/lunchroom-landing~0/components/AppCheckoutSuccess/order-success.htm",
+                    "fsHtmlPath": "{{__DIRNAME__}}/components/AppCheckoutSuccess/order-success.htm"
                 },
-                "share": {
-                    "uriHtmlPath": "/lunchroom-landing~0/components/AppComponents/share.htm",
-                    "fsHtmlPath": "{{__DIRNAME__}}/components/AppComponents/share.htm"
+                "create-account": {
+                    "uriHtmlPath": "/lunchroom-landing~0/components/AppCheckoutSuccess/create-account.htm",
+                    "fsHtmlPath": "{{__DIRNAME__}}/components/AppCheckoutSuccess/create-account.htm"
+                },
+                "share-menu-link": {
+                    "uriHtmlPath": "/lunchroom-landing~0/components/AppCheckoutSuccess/share-menu-link.htm",
+                    "fsHtmlPath": "{{__DIRNAME__}}/components/AppCheckoutSuccess/share-menu-link.htm"
                 },
                 "footer": {
-                    "uriHtmlPath": "/lunchroom-landing~0/components/AppComponents/footer.htm",
-                    "fsHtmlPath": "{{__DIRNAME__}}/components/AppComponents/footer.htm"
+                    "uriHtmlPath": "/lunchroom-landing~0/components/AppCheckoutSuccess/footer.htm",
+                    "fsHtmlPath": "{{__DIRNAME__}}/components/AppCheckoutSuccess/footer.htm"
+                }
+            }
+        },
+        "AppMenu": {
+            "resources": [
+                {
+                    "type": "css",
+                    "uriPath": "/lunchroom-landing~0/resources/ad9f552fd255c5d348748ac8ad8600cdf91e3413.css",
+                    "fsPath": "{{__DIRNAME__}}/resources/ad9f552fd255c5d348748ac8ad8600cdf91e3413.css",
+                    "bundle": "app.css"
+                },
+                {
+                    "type": "js",
+                    "uriPath": "/lunchroom-landing~0/resources/dist~lib-fdbf4a9.js",
+                    "fsPath": "{{__DIRNAME__}}/resources/dist~lib-fdbf4a9.js",
+                    "bundle": "lib.js"
+                },
+                {
+                    "type": "js",
+                    "uriPath": "/lunchroom-landing~0/resources/dist~app-2cbe9af.js",
+                    "fsPath": "{{__DIRNAME__}}/resources/dist~app-2cbe9af.js",
+                    "bundle": "app.js"
+                },
+                {
+                    "type": "js",
+                    "uriPath": "/lunchroom-landing~0/resources/dist~utils-4d2ef55.js",
+                    "fsPath": "{{__DIRNAME__}}/resources/dist~utils-4d2ef55.js",
+                    "bundle": "utils.js"
+                }
+            ],
+            "componentsDescriptorPath": "{{__DIRNAME__}}/components/AppMenu.json",
+            "components": {
+                "page": {
+                    "uriHtmlPath": "/lunchroom-landing~0/components/AppMenu/page.htm",
+                    "fsHtmlPath": "{{__DIRNAME__}}/components/AppMenu/page.htm"
+                },
+                "header": {
+                    "uriHtmlPath": "/lunchroom-landing~0/components/AppMenu/header.htm",
+                    "fsHtmlPath": "{{__DIRNAME__}}/components/AppMenu/header.htm"
+                },
+                "navbar": {
+                    "uriHtmlPath": "/lunchroom-landing~0/components/AppMenu/navbar.htm",
+                    "fsHtmlPath": "{{__DIRNAME__}}/components/AppMenu/navbar.htm"
+                },
+                "menu-not-created": {
+                    "uriHtmlPath": "/lunchroom-landing~0/components/AppMenu/menu-not-created.htm",
+                    "fsHtmlPath": "{{__DIRNAME__}}/components/AppMenu/menu-not-created.htm"
+                },
+                "warning-section": {
+                    "uriHtmlPath": "/lunchroom-landing~0/components/AppMenu/warning-section.htm",
+                    "fsHtmlPath": "{{__DIRNAME__}}/components/AppMenu/warning-section.htm"
+                },
+                "order-in-advance": {
+                    "uriHtmlPath": "/lunchroom-landing~0/components/AppMenu/order-in-advance.htm",
+                    "fsHtmlPath": "{{__DIRNAME__}}/components/AppMenu/order-in-advance.htm"
+                },
+                "too-late": {
+                    "uriHtmlPath": "/lunchroom-landing~0/components/AppMenu/too-late.htm",
+                    "fsHtmlPath": "{{__DIRNAME__}}/components/AppMenu/too-late.htm"
+                },
+                "menu": {
+                    "uriHtmlPath": "/lunchroom-landing~0/components/AppMenu/menu.htm",
+                    "fsHtmlPath": "{{__DIRNAME__}}/components/AppMenu/menu.htm"
+                },
+                "menu-signup": {
+                    "uriHtmlPath": "/lunchroom-landing~0/components/AppMenu/menu-signup.htm",
+                    "fsHtmlPath": "{{__DIRNAME__}}/components/AppMenu/menu-signup.htm"
+                },
+                "feedback": {
+                    "uriHtmlPath": "/lunchroom-landing~0/components/AppMenu/feedback.htm",
+                    "fsHtmlPath": "{{__DIRNAME__}}/components/AppMenu/feedback.htm"
+                },
+                "menu-item-popup": {
+                    "uriHtmlPath": "/lunchroom-landing~0/components/AppMenu/menu-item-popup.htm",
+                    "fsHtmlPath": "{{__DIRNAME__}}/components/AppMenu/menu-item-popup.htm"
+                },
+                "footer": {
+                    "uriHtmlPath": "/lunchroom-landing~0/components/AppMenu/footer.htm",
+                    "fsHtmlPath": "{{__DIRNAME__}}/components/AppMenu/footer.htm"
+                }
+            }
+        },
+        "AppRegister": {
+            "resources": [
+                {
+                    "type": "css",
+                    "uriPath": "/lunchroom-landing~0/resources/ad9f552fd255c5d348748ac8ad8600cdf91e3413.css",
+                    "fsPath": "{{__DIRNAME__}}/resources/ad9f552fd255c5d348748ac8ad8600cdf91e3413.css",
+                    "bundle": "app.css"
+                },
+                {
+                    "type": "js",
+                    "uriPath": "/lunchroom-landing~0/resources/dist~lib-fdbf4a9.js",
+                    "fsPath": "{{__DIRNAME__}}/resources/dist~lib-fdbf4a9.js",
+                    "bundle": "lib.js"
+                },
+                {
+                    "type": "js",
+                    "uriPath": "/lunchroom-landing~0/resources/dist~app-2cbe9af.js",
+                    "fsPath": "{{__DIRNAME__}}/resources/dist~app-2cbe9af.js",
+                    "bundle": "app.js"
+                },
+                {
+                    "type": "js",
+                    "uriPath": "/lunchroom-landing~0/resources/dist~utils-4d2ef55.js",
+                    "fsPath": "{{__DIRNAME__}}/resources/dist~utils-4d2ef55.js",
+                    "bundle": "utils.js"
+                }
+            ],
+            "componentsDescriptorPath": "{{__DIRNAME__}}/components/AppRegister.json",
+            "components": {
+                "page": {
+                    "uriHtmlPath": "/lunchroom-landing~0/components/AppRegister/page.htm",
+                    "fsHtmlPath": "{{__DIRNAME__}}/components/AppRegister/page.htm"
+                },
+                "header": {
+                    "uriHtmlPath": "/lunchroom-landing~0/components/AppRegister/header.htm",
+                    "fsHtmlPath": "{{__DIRNAME__}}/components/AppRegister/header.htm"
+                },
+                "register": {
+                    "uriHtmlPath": "/lunchroom-landing~0/components/AppRegister/register.htm",
+                    "fsHtmlPath": "{{__DIRNAME__}}/components/AppRegister/register.htm"
+                },
+                "footer": {
+                    "uriHtmlPath": "/lunchroom-landing~0/components/AppRegister/footer.htm",
+                    "fsHtmlPath": "{{__DIRNAME__}}/components/AppRegister/footer.htm"
                 }
             }
         },
@@ -247,187 +428,6 @@
                 "footer": {
                     "uriHtmlPath": "/lunchroom-landing~0/components/AppCheckout/footer.htm",
                     "fsHtmlPath": "{{__DIRNAME__}}/components/AppCheckout/footer.htm"
-                }
-            }
-        },
-        "AppCheckoutSuccess": {
-            "resources": [
-                {
-                    "type": "css",
-                    "uriPath": "/lunchroom-landing~0/resources/ad9f552fd255c5d348748ac8ad8600cdf91e3413.css",
-                    "fsPath": "{{__DIRNAME__}}/resources/ad9f552fd255c5d348748ac8ad8600cdf91e3413.css",
-                    "bundle": "app.css"
-                },
-                {
-                    "type": "js",
-                    "uriPath": "/lunchroom-landing~0/resources/dist~lib-fdbf4a9.js",
-                    "fsPath": "{{__DIRNAME__}}/resources/dist~lib-fdbf4a9.js",
-                    "bundle": "lib.js"
-                },
-                {
-                    "type": "js",
-                    "uriPath": "/lunchroom-landing~0/resources/dist~app-2cbe9af.js",
-                    "fsPath": "{{__DIRNAME__}}/resources/dist~app-2cbe9af.js",
-                    "bundle": "app.js"
-                },
-                {
-                    "type": "js",
-                    "uriPath": "/lunchroom-landing~0/resources/dist~utils-4d2ef55.js",
-                    "fsPath": "{{__DIRNAME__}}/resources/dist~utils-4d2ef55.js",
-                    "bundle": "utils.js"
-                }
-            ],
-            "componentsDescriptorPath": "{{__DIRNAME__}}/components/AppCheckoutSuccess.json",
-            "components": {
-                "page": {
-                    "uriHtmlPath": "/lunchroom-landing~0/components/AppCheckoutSuccess/page.htm",
-                    "fsHtmlPath": "{{__DIRNAME__}}/components/AppCheckoutSuccess/page.htm"
-                },
-                "header": {
-                    "uriHtmlPath": "/lunchroom-landing~0/components/AppCheckoutSuccess/header.htm",
-                    "fsHtmlPath": "{{__DIRNAME__}}/components/AppCheckoutSuccess/header.htm"
-                },
-                "order-success": {
-                    "uriHtmlPath": "/lunchroom-landing~0/components/AppCheckoutSuccess/order-success.htm",
-                    "fsHtmlPath": "{{__DIRNAME__}}/components/AppCheckoutSuccess/order-success.htm"
-                },
-                "create-account": {
-                    "uriHtmlPath": "/lunchroom-landing~0/components/AppCheckoutSuccess/create-account.htm",
-                    "fsHtmlPath": "{{__DIRNAME__}}/components/AppCheckoutSuccess/create-account.htm"
-                },
-                "share-menu-link": {
-                    "uriHtmlPath": "/lunchroom-landing~0/components/AppCheckoutSuccess/share-menu-link.htm",
-                    "fsHtmlPath": "{{__DIRNAME__}}/components/AppCheckoutSuccess/share-menu-link.htm"
-                },
-                "footer": {
-                    "uriHtmlPath": "/lunchroom-landing~0/components/AppCheckoutSuccess/footer.htm",
-                    "fsHtmlPath": "{{__DIRNAME__}}/components/AppCheckoutSuccess/footer.htm"
-                }
-            }
-        },
-        "AppRegister": {
-            "resources": [
-                {
-                    "type": "css",
-                    "uriPath": "/lunchroom-landing~0/resources/ad9f552fd255c5d348748ac8ad8600cdf91e3413.css",
-                    "fsPath": "{{__DIRNAME__}}/resources/ad9f552fd255c5d348748ac8ad8600cdf91e3413.css",
-                    "bundle": "app.css"
-                },
-                {
-                    "type": "js",
-                    "uriPath": "/lunchroom-landing~0/resources/dist~lib-fdbf4a9.js",
-                    "fsPath": "{{__DIRNAME__}}/resources/dist~lib-fdbf4a9.js",
-                    "bundle": "lib.js"
-                },
-                {
-                    "type": "js",
-                    "uriPath": "/lunchroom-landing~0/resources/dist~app-2cbe9af.js",
-                    "fsPath": "{{__DIRNAME__}}/resources/dist~app-2cbe9af.js",
-                    "bundle": "app.js"
-                },
-                {
-                    "type": "js",
-                    "uriPath": "/lunchroom-landing~0/resources/dist~utils-4d2ef55.js",
-                    "fsPath": "{{__DIRNAME__}}/resources/dist~utils-4d2ef55.js",
-                    "bundle": "utils.js"
-                }
-            ],
-            "componentsDescriptorPath": "{{__DIRNAME__}}/components/AppRegister.json",
-            "components": {
-                "page": {
-                    "uriHtmlPath": "/lunchroom-landing~0/components/AppRegister/page.htm",
-                    "fsHtmlPath": "{{__DIRNAME__}}/components/AppRegister/page.htm"
-                },
-                "header": {
-                    "uriHtmlPath": "/lunchroom-landing~0/components/AppRegister/header.htm",
-                    "fsHtmlPath": "{{__DIRNAME__}}/components/AppRegister/header.htm"
-                },
-                "register": {
-                    "uriHtmlPath": "/lunchroom-landing~0/components/AppRegister/register.htm",
-                    "fsHtmlPath": "{{__DIRNAME__}}/components/AppRegister/register.htm"
-                },
-                "footer": {
-                    "uriHtmlPath": "/lunchroom-landing~0/components/AppRegister/footer.htm",
-                    "fsHtmlPath": "{{__DIRNAME__}}/components/AppRegister/footer.htm"
-                }
-            }
-        },
-        "AppMenu": {
-            "resources": [
-                {
-                    "type": "css",
-                    "uriPath": "/lunchroom-landing~0/resources/ad9f552fd255c5d348748ac8ad8600cdf91e3413.css",
-                    "fsPath": "{{__DIRNAME__}}/resources/ad9f552fd255c5d348748ac8ad8600cdf91e3413.css",
-                    "bundle": "app.css"
-                },
-                {
-                    "type": "js",
-                    "uriPath": "/lunchroom-landing~0/resources/dist~lib-fdbf4a9.js",
-                    "fsPath": "{{__DIRNAME__}}/resources/dist~lib-fdbf4a9.js",
-                    "bundle": "lib.js"
-                },
-                {
-                    "type": "js",
-                    "uriPath": "/lunchroom-landing~0/resources/dist~app-2cbe9af.js",
-                    "fsPath": "{{__DIRNAME__}}/resources/dist~app-2cbe9af.js",
-                    "bundle": "app.js"
-                },
-                {
-                    "type": "js",
-                    "uriPath": "/lunchroom-landing~0/resources/dist~utils-4d2ef55.js",
-                    "fsPath": "{{__DIRNAME__}}/resources/dist~utils-4d2ef55.js",
-                    "bundle": "utils.js"
-                }
-            ],
-            "componentsDescriptorPath": "{{__DIRNAME__}}/components/AppMenu.json",
-            "components": {
-                "page": {
-                    "uriHtmlPath": "/lunchroom-landing~0/components/AppMenu/page.htm",
-                    "fsHtmlPath": "{{__DIRNAME__}}/components/AppMenu/page.htm"
-                },
-                "header": {
-                    "uriHtmlPath": "/lunchroom-landing~0/components/AppMenu/header.htm",
-                    "fsHtmlPath": "{{__DIRNAME__}}/components/AppMenu/header.htm"
-                },
-                "navbar": {
-                    "uriHtmlPath": "/lunchroom-landing~0/components/AppMenu/navbar.htm",
-                    "fsHtmlPath": "{{__DIRNAME__}}/components/AppMenu/navbar.htm"
-                },
-                "menu-not-created": {
-                    "uriHtmlPath": "/lunchroom-landing~0/components/AppMenu/menu-not-created.htm",
-                    "fsHtmlPath": "{{__DIRNAME__}}/components/AppMenu/menu-not-created.htm"
-                },
-                "warning-section": {
-                    "uriHtmlPath": "/lunchroom-landing~0/components/AppMenu/warning-section.htm",
-                    "fsHtmlPath": "{{__DIRNAME__}}/components/AppMenu/warning-section.htm"
-                },
-                "order-in-advance": {
-                    "uriHtmlPath": "/lunchroom-landing~0/components/AppMenu/order-in-advance.htm",
-                    "fsHtmlPath": "{{__DIRNAME__}}/components/AppMenu/order-in-advance.htm"
-                },
-                "too-late": {
-                    "uriHtmlPath": "/lunchroom-landing~0/components/AppMenu/too-late.htm",
-                    "fsHtmlPath": "{{__DIRNAME__}}/components/AppMenu/too-late.htm"
-                },
-                "menu": {
-                    "uriHtmlPath": "/lunchroom-landing~0/components/AppMenu/menu.htm",
-                    "fsHtmlPath": "{{__DIRNAME__}}/components/AppMenu/menu.htm"
-                },
-                "menu-signup": {
-                    "uriHtmlPath": "/lunchroom-landing~0/components/AppMenu/menu-signup.htm",
-                    "fsHtmlPath": "{{__DIRNAME__}}/components/AppMenu/menu-signup.htm"
-                },
-                "feedback": {
-                    "uriHtmlPath": "/lunchroom-landing~0/components/AppMenu/feedback.htm",
-                    "fsHtmlPath": "{{__DIRNAME__}}/components/AppMenu/feedback.htm"
-                },
-                "menu-item-popup": {
-                    "uriHtmlPath": "/lunchroom-landing~0/components/AppMenu/menu-item-popup.htm",
-                    "fsHtmlPath": "{{__DIRNAME__}}/components/AppMenu/menu-item-popup.htm"
-                },
-                "footer": {
-                    "uriHtmlPath": "/lunchroom-landing~0/components/AppMenu/footer.htm",
-                    "fsHtmlPath": "{{__DIRNAME__}}/components/AppMenu/footer.htm"
                 }
             }
         }
