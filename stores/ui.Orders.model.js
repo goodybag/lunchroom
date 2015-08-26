@@ -99,7 +99,11 @@ exports.forContext = function (context) {
 				],
 	            fn: function () {
 	            	if (!this.items) return "";
-	            	return JSON.parse(this.items).length;
+	            	var count = 0;
+	            	JSON.parse(this.items).forEach(function (item) {
+	            		count += parseInt(item.quantity);
+	            	});
+	            	return count;
 	            }
 	    	}
 	    }
