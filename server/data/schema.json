@@ -304,6 +304,18 @@
 					}
 				},
 				{
+					"name": "day_id",
+					"constraints": {
+						"required": true
+					}
+				},
+				{
+					"name": "placed_day_id",
+					"constraints": {
+						"required": true
+					}
+				},
+				{
 					"name": "order_id",
 					"constraints": {
 						"required": true

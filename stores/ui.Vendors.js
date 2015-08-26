@@ -1,3 +1,4 @@
+var console = require("../app/lib/console");
 
 
 var COMMON = require("./ui._common");
@@ -22,6 +23,22 @@ exports['for'] = function (context) {
 
 		// Low-level
 		store: {
+
+			// Admin OK
+			loadAll: function () {
+				var self = this;
+				return COMMON.API.Q.denodeify(function (callback) {
+					self.fetch({
+						reset: false,
+						remove: false,
+						success: function () {
+							return callback(null);
+						}
+					});
+				})();
+			},
+
+
 // Admin
 			idForAdminAccessToken: function (adminAccessToken) {
 				var self = this;

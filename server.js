@@ -28,6 +28,7 @@ const REQUEST = require("request");
 const MOMENT = require("moment");
 const MOMENT_TZ = require("moment-timezone");
 const WINSTON = require("winston");
+const COOKIES = require("cookies");
 require("winston-loggly");
 
 
@@ -130,6 +131,28 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
 
 
 	function initPublicApp (app) {
+
+		app.use(function (req, res, next) {
+
+			req.cookies = new COOKIES(req, res);
+
+
+			// Enable or disable test mode.
+			if (
+				req.query &&
+				API.config.TEST_USER_KEY &&
+				typeof req.query.TEST_USER_KEY !== "undefined"
+			) {
+				if (req.query.TEST_USER_KEY === API.config.TEST_USER_KEY) {
+					req.cookies.set("GBL_TEST_ENABLED", "BA6AF253-337B-4CFF-834B-A97F8FDF12E1");
+				} else {
+					req.cookies.set("GBL_TEST_ENABLED", "");
+				}
+			}
+
+			return next();
+		});
+
 
 		app.use(COMPRESSION());
 
@@ -356,6 +379,10 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
 				var session = req._FireNodeContext.session;
 				clientContext.dbfilter = ((session && session.dbfilter) || {});
 
+				if (req.cookies.get("GBL_TEST_ENABLED") === "BA6AF253-337B-4CFF-834B-A97F8FDF12E1") {
+					clientContext.testMode = true;
+				}
+
 				content = content.replace(
 					/\{\{encodedContext\}\}/g,
 					encodeURIComponent(JSON.stringify(clientContext))
@@ -500,6 +527,7 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
 			},
 			contextFactory: function (config) {
 				return {
+					TEST_USER_KEY: API.config.TEST_USER_KEY,
 					appContext: APP_CONTEXT_MODEL.makeContextForClient(config.clientContext, {
 						MOMENT: MOMENTS.MOMENT,
 						MOMENT_CT: MOMENTS.MOMENT_CT

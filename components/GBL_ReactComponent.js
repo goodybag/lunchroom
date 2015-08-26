@@ -1,4 +1,5 @@
 
+var console = require("../app/lib/console");
 
 var API = exports.API = {
 	UNDERSCORE: require("underscore"),
@@ -23,6 +24,22 @@ function callOnceForId (id, handler) {
 exports.create = function (Context, implementation) {
 
 	var singletons = {};
+
+
+	function getData (component) {
+		if (!component._template_data_consumer) return null;
+		var data = component._template_data_consumer.getData();
+		if (!component._render_Context._data) {
+			component._render_Context._data = {};
+		}
+		for (var name in data) {
+			component._render_Context._data[name] = data[name];
+		}
+		if (component._render_Context._template) {
+			component._render_Context._template.setData(component._render_Context._data);
+		}
+		return component._render_Context._data;
+	}
 
 	function afterRender (component) {
 
@@ -91,8 +108,14 @@ exports.create = function (Context, implementation) {
 		universalMarkup(element);
 
 
-		if (!afterRender) return;
-		afterRender.call(component, ctx, element);
+		if (afterRender) {
+			afterRender.call(component, ctx, element);
+		}
+
+		var unveil = implementation.unveil || Context.unveil || null;
+		if (unveil) {
+			unveil.call(component, ctx, getData(component));
+		}
 	}
 
 
@@ -100,14 +123,6 @@ exports.create = function (Context, implementation) {
 		// New template-based logic.
 
 		try {
-
-			function getData () {
-				if (!component._template_data_consumer) return null;
-				if (!component._render_Context._template) return null;
-				data = component._template_data_consumer.getData();
-				component._render_Context._template.setData(data);
-				return component._render_Context._template.getData();
-			}
 
 			if (method === "markup") {
 
@@ -138,7 +153,7 @@ exports.create = function (Context, implementation) {
 				) {
 					component._render_Context._template["_" + method](
 						$(component.getDOMNode()),
-						getData()
+						getData(component)
 					);
 				}
 
@@ -158,7 +173,7 @@ exports.create = function (Context, implementation) {
 					if (component._template_data_consumer) {
 //	console.log("LOAD VIA CONSUMER", implementation);
 
-						data = getData();
+						data = getData(component);
 
 					} else
 					if (implementation.getTemplateData || Context.getTemplateData) {
@@ -293,6 +308,7 @@ exports.create = function (Context, implementation) {
 	    	self._render_Context.REACT = API.REACT;
 	    	self._render_Context.Q = API.Q;
 	    	self._render_Context.appContext = self.props.appContext;
+	    	self._render_Context.props = self.props;
 
 
 	    	// Setup sub-components for the page.

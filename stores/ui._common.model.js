@@ -1,3 +1,4 @@
+var console = require("../app/lib/console");
 
 
 // The API for models that works in client and on server.

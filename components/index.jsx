@@ -1,5 +1,6 @@
 'use strict'
 
+var console = require("../app/lib/console");
 
 require("./index.less");
 require("./index.css");
@@ -43,7 +44,8 @@ function initAppContext (skin) {
 			consumerGroups: require("../stores/ui.ConsumerGroups")['for'](storeContext),
 			consumerGroupSubscriptions: require("../stores/ui.ConsumerGroupSubscriptions")['for'](storeContext),
 			cart: require("../stores/ui.Cart")['for'](storeContext),
-			orders: require("../stores/ui.Orders")['for'](storeContext)
+			orders: require("../stores/ui.Orders")['for'](storeContext),
+			orderItems: require("../stores/ui.OrderItems")['for'](storeContext)
 		},
 		skin: skin,
 		data: DATA
@@ -57,28 +59,6 @@ function initAppContext (skin) {
 		if (!appContext.get('context').dev) return;
 
 		setTimeout(function () {
-
-	//		if (appContext.get('selectedView') === 'Checkout') {
-
-				// DEV: Init order form
-				var order = appContext.get('stores').orders.getOrder(appContext.get('todayId'));
-				var form = order.get("form");
-				if (form) form = JSON.parse(form);
-
-
-				if (!form || !form['info[name]']) {
-					order.set("form", JSON.stringify({
-					 	"info[name]": "Bill Smith",
-					 	"info[email]": "cadorn.test@gmail.com",
-					 	"info[phone]": "+17788219208",
-					 	"card[name]": "Bill Smith",
-					 	"card[cvc]": "123",
-					 	"card[number]": "4242424242424242",
-					 	"card[expire-month]": "12",
-					 	"card[expire-year]": "2016"
-					}));
-				}
-	//		}
 
 			$('#form-subscribe input[type="email"]').val("cadorn.test@gmail.com");
 
@@ -110,11 +90,8 @@ try {
 
 	var skin = getSkin();
 	var appContext = initAppContext(skin);
-/*
-	window.console = require("../stores/ui.Logging")['for']({
-		appContext: appContext
-	}).getConsole();
-*/
+
+
 	appContext.set('initialized', true);
 
 	$(function () {

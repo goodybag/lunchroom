@@ -1,4 +1,7 @@
 
+var console = require("../../app/lib/console");
+
+
 require("./component.jsx")['for'](module, {
 
 	getTemplate: function (Context) {

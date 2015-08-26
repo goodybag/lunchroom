@@ -1,4 +1,3 @@
-
 var console = require("../app/lib/console");
 
 
@@ -11,14 +10,10 @@ exports.forContext = function (context) {
 
 	// @see http://ampersandjs.com/docs#ampersand-state
 	var Model = COMMON.API.AMPERSAND_STATE.extend({
-		name: "menus",
+		name: "order-items",
 		props: {
-			id: "string",
-			event_id: "integer",
-	        item_id: "integer",
-	        options: "string",
-	        quantity: "integer"
-		}
+			id: "string"
+	    }
 	});
 
 	return Model;

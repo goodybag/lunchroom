@@ -1,4 +1,6 @@
 
+var console = require("../app/lib/console");
+
 /*
 	props: {
 		sessionToken: "string"

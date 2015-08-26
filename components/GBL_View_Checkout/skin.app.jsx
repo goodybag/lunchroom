@@ -1,4 +1,6 @@
 
+var console = require("../../app/lib/console");
+
 require("./component.jsx")['for'](module, {
 
 
@@ -9,21 +11,20 @@ require("./component.jsx")['for'](module, {
 	singleton: function (Context) {
 
 		// @see https://stripe.com/docs/stripe.js
-		head.load("https://js.stripe.com/v2/", function() {
-			
-			Stripe.setPublishableKey(
-				Context.appContext.get('context').stripePublishableKey
-			);
-		});
+		head.load("https://js.stripe.com/v2/");
 	},
 
 
 	// TODO: Move into docs at: https://github.com/LogicCores/0-component
 	// Called ONCE per component instanciation.
 	// We can attach methods to 'Context' that will be available to all calls below.
+	// This runs BEFORE the component is mounted to the DOM.
 	component: function (Context, data) {
 
 		Context.saveForm = function () {
+
+			Context.startedEditing = true;
+
         	var values = {};
 			$(':input[data-component-elm]', Context.componentElement).each(function() {
 				values[$(this).attr("data-component-elm")] = $(this).val();
@@ -100,6 +101,16 @@ console.log("PLACE ORDER", form);
 					try {
 
 						console.log("Authorize card", form["card[name]"]);
+
+						if (form["card[number]"] === "4242424242424242") {
+							Stripe.setPublishableKey(
+								Context.appContext.get('context').stripePublishableKey_TEST
+							);
+						} else {
+							Stripe.setPublishableKey(
+								Context.appContext.get('context').stripePublishableKey
+							);
+						}
 
 						Stripe.card.createToken({
 							number: form["card[number]"],
@@ -358,8 +369,13 @@ console.log("PLACE ORDER", form);
 				},
 				fill: function (element, data, Context) {
 
-					this.fillProperties(element, data.orderForm);
-					this.fillElements(element, data.orderForm);
+					if (!Context.startedEditing) {
+						this.fillProperties(element, data.orderForm);
+						this.fillElements(element, data.orderForm);
+					} else {
+console.log("SKIP UPDATING FROM AS WE STARTED EDITING");
+
+					}
 
 					this.showViews(element, [
 						"default"
@@ -422,6 +438,16 @@ console.log("PLACE ORDER", form);
 						Context.placeOrder();
 						return false;
 					});
+
+					if (Context.appContext.get('testMode')) {
+						var elm = $('[data-component-elm="placeOrderButton"]', element).clone();
+						elm.html("Show: Order Placed");
+						elm.attr("data-component-elm", "");
+						elm.appendTo($('[data-component-elm="placeOrderButton"]', element).parent());
+						elm.click(function () {
+							Context.appContext.set("selectedView", "Order_Placed");
+						});
+					}
 				},
 				fill: function (element, data, Context) {
 
@@ -460,8 +486,6 @@ console.log("PLACE ORDER", form);
 
 		var Panel = null;
 
-console.log("CHECKOUT data", JSON.stringify(data, null, 4));
-
 		if (data.noItems) {
 
 			Panel = (
@@ -498,5 +522,34 @@ console.log("CHECKOUT data", JSON.stringify(data, null, 4));
 
 	        </div>
 		);
+	},
+
+
+	// TODO: Move into docs at: https://github.com/LogicCores/0-component
+	// This runs after every time the component is re-rendered/updated to the DOM.
+	unveil: function (Context, data) {
+
+		// In test mode we pre-fill the form.
+		if (Context.appContext.get('testMode')) {
+
+			var form = data.order.get("form");
+			if (form) {
+				form = JSON.parse(form);
+			}
+
+			if (!form || !form["info[name]"]) {
+				data.order.set("form", JSON.stringify({
+				 	"info[name]": "Bill Smith",
+				 	"info[email]": "cadorn.test@gmail.com",
+				 	"info[phone]": "",
+				 	"card[name]": "Bill Smith",
+				 	"card[cvc]": "123",
+				 	"card[number]": "4242424242424242",
+				 	"card[expire-month]": "12",
+				 	"card[expire-year]": "2016"
+				}));
+			}
+		}
 	}
+
 });

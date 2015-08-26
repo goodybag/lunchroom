@@ -25,6 +25,9 @@ var classProps = {
         },
         day_id: function (qb, value) {
             return qb.where('day_id', value);
+        },
+        placed_day_id: function (qb, value) {
+            return qb.where('placed_day_id', value);
         }
     },
     relations: [

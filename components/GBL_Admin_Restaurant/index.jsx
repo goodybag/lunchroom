@@ -5,6 +5,62 @@ var COMPONENT = require("../GBL_ReactComponent");
 
 module.exports = COMPONENT.create({
 
+
+    mapData: function (Context, data) {
+
+        var LODASH = require("lodash");
+
+        var todayId = Context.appContext.get('todayId');
+
+        Context.appContext.get('stores').vendors.loadAll().then(function () {
+            Context.forceUpdate();
+        });
+
+        return {
+            "@query": {
+                "vendor_id": function () {
+                    return (
+                        Context.appContext.get('context').vendor_id ||
+                        Context.props.selectedRestaurant ||
+                        0
+                    );
+                }
+            },
+            "@map": {
+              'vendors': data.connect('vendors/*'),
+              'items': data.connect('order-items/*[day_id="' + todayId + '"][vendor_id="{vendor_id}"]', function (data) {
+                return {
+                  "id": data.connect("id"),
+                  "title": data.connect("title"),
+                  "options": data.connect("options"),
+                  "quantity": data.connect("quantity")
+                };
+              })
+            },
+            "@postprocess": function (data) {
+                data.itemsTally = {};
+                (data.items || []).forEach(function (item) {
+                    var key = item.title + ":" + item.options;
+                    if (!data.itemsTally[key]) {
+                        data.itemsTally[key] = {
+                            id: key,
+                            title: item.title,
+                            options: item.options,
+                            quantity: parseInt(item.quantity)
+                        };
+                    } else {
+                        data.itemsTally[key].quantity += parseInt(item.quantity);
+                    }
+                });
+                data.itemsTally = Object.keys(data.itemsTally).map(function (id) {
+                    return data.itemsTally[id];
+                });
+                return data;
+            }
+        };
+    },
+
+
     afterRender: function (Context, element) {
         var self = this;
 
@@ -13,7 +69,12 @@ module.exports = COMPONENT.create({
             'dropdown()',
             {
                 onChange: function(value, text, $selectedItem) {
-                    self.selectRestaurant(value);
+
+                    self.props.selectedRestaurant = value;
+
+                    self.props.appContext.get('stores').orderItems.loadAllForVendorToday(value).then(function () {
+                        self._trigger_forceUpdate();
+                    });
                 }
             }
         );
@@ -34,14 +95,25 @@ module.exports = COMPONENT.create({
         );
     },
 
-    getHTML: function (Context) {
+    getHTML: function (Context, data) {
 
         var React = Context.REACT;
 
         var externalVendorAdminLink = "";
-        if (Context.activeVendor) {
-            externalVendorAdminLink = window.location.origin + "/vendor-" + Context.activeVendor.get("adminAccessToken") + "#Admin_Restaurant";
-        }
+//        if (Context.activeVendor) {
+//            externalVendorAdminLink = window.location.origin + "/vendor-" + Context.activeVendor.get("adminAccessToken") + "#Admin_Restaurant";
+//        }
+//console.log("DATA", data);
+
+/*
+                          <div className="field">
+
+                            <div className="ui corner labeled input">
+                              <a href={externalVendorAdminLink} target="_blank">External link to give to Restaurant</a>
+                            </div>
+
+                          </div>
+*/
 
         var MasterAdmin = "";
         if (!this.props.appContext.get('context').type) {
@@ -62,7 +134,7 @@ module.exports = COMPONENT.create({
                                   <input type="text"/>
                                 </div>
                                 <div className="scrolling menu">
-                                    {Context.vendors.map(function(item) {
+                                    {(data.vendors || []).map(function(item) {
                                         return (
                                             <div className="item" data-value={item.get("id")}>
                                               {item.get("title")}
@@ -71,13 +143,6 @@ module.exports = COMPONENT.create({
                                     })}
                                 </div>
                               </div>
-                            </div>
-
-                          </div>
-                          <div className="field">
-
-                            <div className="ui corner labeled input">
-                              <a href={externalVendorAdminLink} target="_blank">External link to give to Restaurant</a>
                             </div>
 
                           </div>
@@ -94,96 +159,31 @@ module.exports = COMPONENT.create({
             Context.activeVendor.get("title")
         ) || "Please select!";
 
+//            <h1>Orders for Today for: {vendorTitle}</h1>
         return (
           <div>
-            <h1>Orders for Today for: {vendorTitle}</h1>
 
             {MasterAdmin}
 
             <table className="ui celled table">
               <thead>
                 <tr>
-                    <th>Code</th>
-                    <th>Order Time</th>
-                    <th>Delivery Time</th>
-                    <th>Location</th>
-                    <th>Customer</th>
+                    <th>Item</th>
+                    <th>Options</th>
+                    <th>Quantity</th>
                 </tr>
               </thead>
               <tbody>
 
-                {Context.orders.map(function(item) {
+                {(data.itemsTally || []).map(function(item) {
 
-                    var Row = (
-                        <tr key={item.get('id')}>
-                          <td>{item.get("referenceCode3")}</td>
-                          <td>{item.get("format.orderPlacedTime")}</td>
-                          <td>{item.get("format.deliveryTime")}</td>
-                          <td>{item.get("pickupLocation")}</td>
-                          <td>{item.get("customer")}</td>
+                    return (
+                        <tr key={item.id}>
+                          <td>{item.title}</td>
+                          <td>{item.options}</td>
+                          <td>{item.quantity}</td>
                         </tr>
                     );
-
-                    var key = item.get('id') + "-items";
-                    var items = item.get("items");
-
-                    if (items) {
-                        items = JSON.parse(items);
-                    } else {
-                        items = [];
-                    }
-
-                    var Items = (
-                        <tr key={key}>
-                            <td colSpan="5">
-                                <table className="ui very basic table">
-                                  <tbody>
-                                    {items.map(function (item) {
-                                        return (
-                                            <tr>
-                                              <td>{item['title']}</td>
-                                              <td>{item['options']}</td>
-                                              <td>{item['quantity']}</td>
-                                            </tr>
-                                        );
-                                    })}
-                                  </tbody>
-                                </table>
-                            </td>
-                        </tr>
-                    );
-
-                    var Actions = null;
-/*
-                    if (item.get("status.id") !== "delivered") {
-                        var key = item.get('id') + "-actions";
-                        Actions = (
-                            <tr key={key}>
-                                <td colSpan="5">
-
-                                    <button data-link="action:set-status" data-value="confirmed" data-id={item.get('orderHashId')} className="ui primary button">
-                                        Confirmed
-                                    </button>
-
-                                    <button data-link="action:set-status" data-value="delivered" data-id={item.get('orderHashId')} className="ui primary button">
-                                        Delivered
-                                    </button>
-
-                                </td>
-                            </tr>
-                        );
-                    }
-*/
-                    var Rows = [
-                        Row,
-                        Items
-                    ];
-
-                    if (Actions) {
-                        Rows.push(Actions);
-                    }
-
-                    return Rows;
                 })}
 
               </tbody>
@@ -195,12 +195,20 @@ module.exports = COMPONENT.create({
 }, {
 
     methods: {
-
+/*
         selectRestaurant: function (id) {
-            this.props.selectedRestaurant = id;
-            this.fetchForActiveRestaurant();
-        },
+            var self = this;
 
+            self.props.selectedRestaurant = id;
+            Context.selectedRestaurant
+
+//              self.props.appContext.get('stores').orderItems.loadAllForVendorToday(id).then(function () {
+                self._trigger_forceUpdate();
+//              });            
+//            this.fetchForActiveRestaurant();
+        }
+*/        
+/*
         fetchForActiveRestaurant: function () {
             if (this.props.selectedRestaurant) {
                 this.props.appContext.get('stores').orders.loadForVendorIdAndDayId(
@@ -209,37 +217,46 @@ module.exports = COMPONENT.create({
                 );
             }
         }
+*/
     },
 
     onMount: function () {
         var self = this;
 
-        self.props.appContext.get('stores').orders.on("sync", self._trigger_forceUpdate);
-        self.props.appContext.get('stores').vendors.on("sync", self._trigger_forceUpdate);
+//        self.props.appContext.get('stores').orders.on("sync", self._trigger_forceUpdate);
+//        self.props.appContext.get('stores').vendors.on("sync", self._trigger_forceUpdate);
 
-        if (self.props.appContext.get('context').type === "vendor") {
-            self.selectRestaurant(self.props.appContext.get('context').vendor_id);
-        } else {
-            self.fetchForActiveRestaurant();
-        }
+//        if (self.props.appContext.get('context').type === "vendor") {
+//            self.selectRestaurant(self.props.appContext.get('context').vendor_id);
+//        } else {
+//            self.fetchForActiveRestaurant();
+//        }
 
-        self.props.appContext.get('stores').vendors.reset();
-        self.props.appContext.get('stores').vendors.fetch();
+//        self.props.appContext.get('stores').vendors.reset();
+//        self.props.appContext.get('stores').vendors.fetch();
 
         // Reload every 60 seconds.
         setInterval(function () {
-            self.props.appContext.get('stores').vendors.reset();
-            self.props.appContext.get('stores').vendors.fetch();
+
+            if (self.props.selectedRestaurant) {
+                self.props.appContext.get('stores').orderItems.loadAllForVendorToday(self.props.selectedRestaurant).then(function () {
+                    self._trigger_forceUpdate();
+                });
+            }
+//            self.props.appContext.get('stores').vendors.reset();
+//            self.props.appContext.get('stores').vendors.fetch();
         }, 60 * 1000);
     },
 
     onUnmount: function () {
-        this.props.appContext.get('stores').orders.off("sync", this._trigger_forceUpdate);
-        this.props.appContext.get('stores').vendors.off("sync", this._trigger_forceUpdate);
+//        this.props.appContext.get('stores').orders.off("sync", this._trigger_forceUpdate);
+//        this.props.appContext.get('stores').vendors.off("sync", this._trigger_forceUpdate);
     },
 
     render: function() {
         var self = this;
+
+return {};
 
         var orders = self.props.appContext.get('stores').orders;
 

@@ -1,4 +1,6 @@
 
+var console = require("../app/lib/console");
+
 var COMMON = require("./ui._common");
 var DATA = require("./ui._data");
 
@@ -36,14 +38,14 @@ exports['for'] = function (context) {
 
 				var daysWithItems = {};
 				var tax = null;
-				var goodybagFee = null;
+				var goodybagFee = 0;
 				self.where().forEach(function (record) {
 					// NOTE: We grab the tax rate and goodybagFee from the event of the first item
 					//       and assume it is the same for all other items.
 					if (tax === null) {
 						tax = record.get("event_id/consumer_group_id/orderTax");
 					}
-					if (goodybagFee === null) {
+					if (goodybagFee === 0) {
 						goodybagFee = record.get("event_id/goodybagFee");
 					}
 					daysWithItems[record.get("event_id/day_id")] = true;
@@ -64,7 +66,7 @@ exports['for'] = function (context) {
 					"format.total": "$0.00"
 				};
 
-				summary["format.goodybagFee"] = COMMON.API.NUMERAL(summary.goodybagFee).format('$0.00');
+				summary["format.goodybagFee"] = COMMON.API.NUMERAL(summary.goodybagFee / 100).format('$0.00');
 
 				if (
 					summary.amount &&

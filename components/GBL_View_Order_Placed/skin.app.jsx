@@ -1,10 +1,13 @@
 
+var console = require("../../app/lib/console");
+
+
 require("./component.jsx")['for'](module, {
 
 	getTemplates: function (Context) {
 
 		return {
-			"orderPlaced": new Context.Template({
+			"order_placed": new Context.Template({
 				impl: require("../../www/lunchroom-landing~0/components/AppCheckoutSuccess/order-success.cjs.jsx"),
 				markup: function (element) {
 
@@ -15,6 +18,14 @@ require("./component.jsx")['for'](module, {
 						"pickupTime": Context.eventToday.get("format.deliveryTime"),
 						"deliveryLocation": Context.eventToday.get("consumerGroup.pickupLocation")
 					});
+				}
+			}),
+			"share_menu_link": new Context.Template({
+				impl: require("../../www/lunchroom-landing~0/components/AppCheckoutSuccess/share-menu-link.cjs.jsx"),
+				markup: function (element) {
+
+				},
+				fill: function (element, data, Context) {
 
 					this.fillElements(element, {
 						"shareUrl": Context.lunchroom.get("lunchroomUrl")
@@ -30,11 +41,12 @@ require("./component.jsx")['for'](module, {
 		var React = Context.REACT;
 
 		return (
-        	<div>
+        	<div className="page page-order-submitted">
 
 	        	{Context.components.Header}
 
-				<Context.templates.orderPlaced.comp />
+				<Context.templates.order_placed.comp />
+				<Context.templates.share_menu_link.comp />
 
 	        	{Context.components.Footer}
 

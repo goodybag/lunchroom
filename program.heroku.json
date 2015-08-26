@@ -44,6 +44,7 @@
             "jobAppContext[APP_DOMAIN='staging.lunchroom.goodybag.com']": {
                 "windowOrigin": "http://staging.lunchroom.goodybag.com"
             },
+            "TEST_USER_KEY": "3FEB7109-9F4B-4757-A530-7FE7FD6E3130",
             "firenode": {
 				"config": {
 	                "adminSkinCssUrl": "//lunchroom-stage.goodybag.com:8083/lunchroom/assets/semantic-ui-css/semantic.css",
@@ -216,6 +217,7 @@
                             "cater": {
                                 "host": "staging.goodybag.com"
                             },
+                            "stripeSecretKey_TEST": "sk_test_XksbwDuLK1xbpOFaSVLVf9qZ",
                             "stripeSecretKey": "sk_test_XksbwDuLK1xbpOFaSVLVf9qZ",
                             "clientContext": {
                                 "stripePublishableKey": "pk_test_9N1srz1fVmWGyRAAhmzAA7aP"                                
@@ -230,6 +232,7 @@
                             "cater": {
                                 "host": "staging.goodybag.com"
                             },
+                            "stripeSecretKey_TEST": "sk_test_XksbwDuLK1xbpOFaSVLVf9qZ",
                             "stripeSecretKey": "sk_test_XksbwDuLK1xbpOFaSVLVf9qZ",
                             "clientContext": {
                                 "stripePublishableKey": "pk_test_9N1srz1fVmWGyRAAhmzAA7aP"                                
@@ -244,8 +247,10 @@
                             "cater": {
                                 "host": "goodybag.com"
                             },
+                            "stripeSecretKey_TEST": "sk_test_XksbwDuLK1xbpOFaSVLVf9qZ",
                             "stripeSecretKey": "sk_live_kjAFUHK2tYc6BRHRyeMlZPON",
                             "clientContext": {
+                                "stripePublishableKey_TEST": "pk_test_9N1srz1fVmWGyRAAhmzAA7aP",
                                 "stripePublishableKey": "pk_live_kShOkv0NSx9Lj1qWGqxAXotN"                                
                             }
                			}
@@ -258,8 +263,10 @@
                             "cater": {
                                 "host": "goodybag.com"
                             },
+                            "stripeSecretKey_TEST": "sk_test_XksbwDuLK1xbpOFaSVLVf9qZ",
                             "stripeSecretKey": "sk_live_kjAFUHK2tYc6BRHRyeMlZPON",
                             "clientContext": {
+                                "stripePublishableKey_TEST": "pk_test_9N1srz1fVmWGyRAAhmzAA7aP",
                                 "stripePublishableKey": "pk_live_kShOkv0NSx9Lj1qWGqxAXotN"                                
                             }
                			}

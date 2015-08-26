@@ -1,4 +1,5 @@
 
+var console = require("../../app/lib/console");
 
 
 function startTimer (duration, display) {
@@ -110,8 +111,12 @@ require("./component.jsx")['for'](module, {
 
 
 			    var views = [];
+			    var onCheckoutPage = (Context.appContext.get('selectedView') === "Checkout");
 
-			    if (data.cartItemCount > 0) {
+			    if (
+			    	data.cartItemCount > 0 &&
+			    	!onCheckoutPage
+			    ) {
 			    	views.push("offer-checkout");
 			    }
 			    if (data['day_id']) {
@@ -123,14 +128,14 @@ require("./component.jsx")['for'](module, {
 
 			    	if (
 			    		data.canOrder &&
-			    		!data.isPastDeadline
+			    		!data.isPastDeadline &&
+			    		!onCheckoutPage
 			    	) {
 				    	views.push("offer-checkout");
 			    	}
 			    }
 
 				self.showViews(element, views);
-
 
 			    if (
 			    	data['secondsLeftToOrder'] > 0 &&

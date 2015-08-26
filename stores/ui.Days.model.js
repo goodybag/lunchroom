@@ -1,3 +1,4 @@
+var console = require("../app/lib/console");
 
 
 var COMMON = require("./ui._common.model");

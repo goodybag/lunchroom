@@ -1,3 +1,4 @@
+var console = require("../app/lib/console");
 
 
 var COMMON = require("./ui._common.model");
@@ -83,34 +84,6 @@ exports.forContext = function (context) {
 	            	return ""+this.id;
 	            }
 	    	},
-	    	"status.id": {
-	    		deps: [
-		    		"id",
-		    		"orderHashId",
-					"statusInfo"
-				],
-	            fn: function () {
-	            	if (
-	            		!this.statusInfo &&
-	            		this.orderHashId
-	            	) {
-	            		loadStatusInfoForOrder(this.orderHashId)
-	            	}
-	            	return (this.statusInfo && this.statusInfo.active) || "new";
-	            }
-	    	},
-	    	"status.format": {
-	    		deps: [
-					"statusInfo"
-				],
-	            fn: function () {
-	            	if (
-	            		!this.statusInfo ||
-	            		!this.statusInfo.active
-	            	) return "New";
-	            	return this.statusInfo.active.substring(0, 1).toUpperCase() + this.statusInfo.active.substring(1);
-	            }
-	    	},
 	    	"customer": {
 	    		deps: [
 					"form"
@@ -120,13 +93,13 @@ exports.forContext = function (context) {
 	            	return form["info[name]"];
 	            }
 	    	},
-	    	"pickupLocation": {
+	    	"items.count": {
 	    		deps: [
 					"event"
 				],
 	            fn: function () {
-	            	var event = JSON.parse(this.event);
-	            	return event["consumerGroup.pickupLocation"];
+	            	if (!this.items) return "";
+	            	return JSON.parse(this.items).length;
 	            }
 	    	}
 	    }

@@ -1,3 +1,4 @@
+var console = require("../app/lib/console");
 
 
 // The API for the data stores running in the UI.

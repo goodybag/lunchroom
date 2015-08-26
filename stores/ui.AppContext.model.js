@@ -1,3 +1,4 @@
+var console = require("../app/lib/console");
 
 var COMMON = require("./ui._common.model");
 
@@ -26,7 +27,8 @@ exports.makeContextForClient = function (overrides, API) {
 	    stores: null,
 	    skin: null,
 	    forceAllowOrder: false,
-	    data: null
+	    data: null,
+	    testMode: false
 	};
 
 //	Object.keys(overrides).forEach(function (name) {
@@ -52,6 +54,7 @@ exports.makeContextForClient = function (overrides, API) {
 	        windowOrigin: "string",
 	        forceAllowOrder: "boolean",
 	        data: "object",
+	        testMode: "boolean",
 //		},
 //	    session: {
 	        selectedView: "string",

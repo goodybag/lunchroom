@@ -5,6 +5,34 @@ var COMPONENT = require("../GBL_ReactComponent");
 
 module.exports = COMPONENT.create({
 
+
+    mapData: function (Context, data) {
+
+      var LODASH = require("lodash");
+
+      Context.appContext.get('stores').orderItems.loadAllPlacedToday().then(function () {
+        Context.forceUpdate();
+      });
+
+      return {
+        "@map": {
+          'items': data.connect('order-items/*[placed_day_id="' + Context.appContext.get('todayId') + '"]', function (data) {
+            return {
+              "id": data.connect("id"),
+              "order_id": data.connect("order_id"),
+              "day_id": data.connect("day_id"),
+              "day": data.connect("event_id/day.format.ddd"),
+              "restaurant": data.connect("vendor_id/title"),
+              "title": data.connect("title"),
+              "options": data.connect("options"),
+              "quantity": data.connect("quantity")
+            };
+          })
+        }
+      };
+    },
+
+
     afterRender: function (Context, element) {
         var self = this;
 
@@ -27,7 +55,7 @@ module.exports = COMPONENT.create({
         );
     },
 
-    getHTML: function (Context) {
+    getHTML: function (Context, data) {
 
         var React = Context.REACT;
 
@@ -68,61 +96,52 @@ module.exports = COMPONENT.create({
                     <th>Code</th>
                     <th>Placed</th>
                     <th>Delivery</th>
-                    <th>Vendor</th>
+                    <th>Items</th>
                     <th>Customer</th>
-                    <th>Pickup Location</th>
                     <th>Actions</th>
                 </tr>
               </thead>
               <tbody>
 
-                {Context.orders.map(function(item) {
+                {Context.orders.map(function(order) {
 
                     var Row = (
-                        <tr key={item.get('id')}>
-                          <td>{item.get("referenceCode3")}</td>
-                          <td>{item.get("format.orderPlacedDateTime")}</td>
-                          <td>{item.get("format.deliveryDay")}</td>
-                          <td>{item.get("orderFrom")}</td>
-                          <td>{item.get("customer")}</td>
-                          <td>{item.get("pickupLocation")}</td>
+                        <tr key={order.get('id')}>
+                          <td>{order.get("referenceCode3")}</td>
+                          <td>{order.get("format.orderPlacedDateTime")}</td>
+                          <td>{order.get("format.deliveryDay")}</td>
+                          <td>{order.get("items.count")}</td>
+                          <td>{order.get("customer")}</td>
                           <td>
-                            <button data-component-value-id={item.get('id')} data-component-action="remove" className="ui compact icon red button">
+                            <button data-component-value-id={order.get('id')} data-component-action="remove" className="ui compact icon red button">
                               <i className="remove icon"></i>
                             </button>
                           </td>
                         </tr>
                     );
 
-                    var Actions = null;
-/*
-                    if (item.get("status.id") !== "delivered") {
-                        var key = item.get('id') + "-actions";
-                        Actions = (
-                            <tr key={key}>
-                                <td colSpan="5">
+                    var itemsRowId = order.get('id') + "i";
 
-                                    <button data-link="action:set-status" data-value="confirmed" data-id={item.get('orderHashId')} className="ui primary button">
-                                        Confirmed
-                                    </button>
+                    var ItemsRow = (
+                        <tr key={itemsRowId}>
+                          <td colSpan="6">
+                            <div className="ui celled list">
+                              {data.items.filter(function (item) {
+                                return (item.order_id === order.get('id'))
+                              }).map(function (item) {
+                                return (
+                                  <div className="item">On <span className="ui blue label">{item.day}</span> <span className="ui orange label">{item.quantity}</span> <b>{item.title}</b> <span className="ui yellow label">{item.options}</span> from <span className="ui brown label">{item.restaurant}</span></div>
+                                );
+                              })}
+                            </div>
+                          </td>
+                        </tr>
+                    );
 
-                                    <button data-link="action:set-status" data-value="delivered" data-id={item.get('orderHashId')} className="ui primary button">
-                                        Delivered
-                                    </button>
-
-                                </td>
-                            </tr>
-                        );
-                    }
-*/
-                    if (Actions) {
-                        return [
-                            Row,
-                            Actions
-                        ];
-                    } else {
-                        return Row;
-                    }
+                    return [
+                        Row,
+                        ItemsRow
+                    ];
                 })}
 
               </tbody>

@@ -1,4 +1,7 @@
 
+var console = require("../app/lib/console");
+
+
 exports['for'] = function (Component) {
 
 	var index = 0;
@@ -183,11 +186,23 @@ exports['for'] = function (Component) {
 			var e = $(this);
 			if (typeof e.attr("data-component-section") !== "undefined") return;
 //			e.hide();
-			e.addClass("hidden");
+
+			if (e.attr("data-component-view-visibility") === "hidden") {
+				e.css("visibility", "hidden");
+			} else {
+				e.addClass("hidden");
+			}
 		});
 		views.forEach(function (view) {
 //			$('[data-component-view="' + view + '"]', element).show();
-			$('[data-component-view="' + view + '"]', element).removeClass("hidden");
+
+			var e = $('[data-component-view="' + view + '"]', element);
+			if (e.attr("data-component-view-visibility") === "hidden") {
+				e.css("visibility", "");
+			} else {
+				e.removeClass("hidden");
+			}
+
 		});
 	}
 

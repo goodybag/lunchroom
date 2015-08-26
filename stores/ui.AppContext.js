@@ -1,4 +1,7 @@
 
+var console = require("../app/lib/console");
+
+
 var COMMON = require("./ui._common");
 var UNDERSCORE = require('underscore');
 var PAGE = require('page');
@@ -17,8 +20,12 @@ exports['for'] = function (overrides) {
 	    selectedDay: MOMENT().format("ddd"),
 	    selectedDayId: MOMENT().format("YYYY-MM-DD"),
 	    windowOrigin: window.location.origin || (window.location.protocol + "//" + window.location.host),
-	    forceAllowOrder: false
+	    forceAllowOrder: false,
+	    testMode: false
 	};
+	if (config.context.testMode) {
+		config.testMode = config.context.testMode;
+	}
 
 	COMMON.API.UNDERSCORE.extend(config, overrides || {});
 
@@ -26,6 +33,9 @@ exports['for'] = function (overrides) {
 	var appContext = Model.makeContextForClient(config);
 
 
+	require("../app/lib/console").loadLogger(
+		appContext.get("context").services || {}
+	);
 
 	COMMON.init(appContext.get('sessionToken'), appContext.get('context'));
 

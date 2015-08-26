@@ -1,4 +1,7 @@
 
+var console = require("../../app/lib/console");
+
+
 var COMPONENT = require("../GBL_ReactComponent");
 
 exports['for'] = function (module, Context) {

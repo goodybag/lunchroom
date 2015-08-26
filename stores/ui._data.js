@@ -1,3 +1,4 @@
+var console = require("../app/lib/console");
 
 // @source https://github.com/LogicCores/0-data
 // NOTE: This module is UNLICENSE.org by original author ChristophDorn.com
@@ -192,7 +193,7 @@ var Consumer = exports.Consumer = function (rootCollections, rootCollectionsOpti
 						// We may want to query more than one record with
 						// attribute-based filtering or get everything.
 //console.log("pointerSegment", pointerSegment);						
-						var query = pointerSegment.match(/^(\*)?(\[([^=]+)="([^"]+)"\])?$/);
+						var query = pointerSegment.match(/^(\*)?(\[.+\])?$/);
 //console.log("query", query);						
 						if (query) {
 
@@ -206,12 +207,12 @@ var Consumer = exports.Consumer = function (rootCollections, rootCollectionsOpti
 							}
 
 							var where = {};
-							if (query[2]) {
 
-								where[query[3]] = query[4];
-
+							var re = /(\[([^=]+)="([^"]+)"\])/g;
+							var match = null;
+							while (match = re.exec(query[2] || "")) {
+								where[match[2]] = match[3];
 							}
-//console.log("WHERE", where);
 
 							subscriptions.push({
 								_name: "query",
@@ -221,7 +222,20 @@ var Consumer = exports.Consumer = function (rootCollections, rootCollectionsOpti
 
 								get: function () {
 
-									var records = this.dictionary.where(where);
+									var whereInstance = JSON.stringify(where);
+									if (this.queryArgs) {
+										for (var name in this.queryArgs) {
+											// TODO: Replace multiple occurences.
+											whereInstance = whereInstance.replace("{" + name + "}", this.queryArgs[name]);
+										}
+									}
+									whereInstance = JSON.parse(whereInstance);
+
+//console.log("WHERE", where);
+//console.log("WHERE queryArgs", this.queryArgs);
+//console.log("WHERE", whereInstance);
+
+									var records = this.dictionary.where(whereInstance);
 
 									if (consumer) {
 										records = records.map(function (record) {
@@ -311,7 +325,7 @@ var Consumer = exports.Consumer = function (rootCollections, rootCollectionsOpti
 			var subscriptions = buildSubscriptions(collection, pointerParts);
 
 
-			var getter = function (dictionary) {
+			var getter = function (dictionary, queryArgs) {
 				try {
 					var result = null;
 
@@ -336,6 +350,7 @@ var Consumer = exports.Consumer = function (rootCollections, rootCollectionsOpti
 							}
 						}
 
+						subscription.queryArgs = queryArgs;
 						result = subscription.get.call(subscription);
 
 //console.log("RESULT FOR", result, i);
@@ -399,13 +414,28 @@ var Consumer = exports.Consumer = function (rootCollections, rootCollectionsOpti
 		if (!dataMap) {
 			throw new Error("Data has not yet been mapped!");
 		}
+		var query = {};
+		if (dataMap["@query"]) {
+			try {
+				Object.keys(dataMap["@query"]).forEach(function (name) {
+					if (typeof dataMap["@query"][name] !== "function") {
+						console.error('dataMap["@query"][name]', dataMap["@query"], name, dataMap["@query"][name]);
+						throw new Error("Value at '" + name + "' for '@query' is not a function!");
+					}
+					query[name] = dataMap["@query"][name](query);
+				});
+			} catch (err) {
+				console.error("Error during '@query' but ignoring:", err.stack);
+			}
+		}
+
 		var data = {};
 		Object.keys(dataMap["@map"]).forEach(function (name) {
 			if (typeof dataMap["@map"][name] !== "function") {
 				console.error("dataMap[name]", dataMap["@map"], name, dataMap["@map"][name]);
 				throw new Error("Value at '" + name + "' is not a function! Did you forget a 'linksTo' declaration?");
 			}
-			data[name] = dataMap["@map"][name](dictionary);
+			data[name] = dataMap["@map"][name](dictionary, query);
 		});
 		if (typeof dataMap["@postprocess"] === "function") {
 			try {
