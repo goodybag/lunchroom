@@ -91,12 +91,17 @@ try {
 	var skin = getSkin();
 	var appContext = initAppContext(skin);
 
-
 	appContext.set('initialized', true);
 
 	$(function () {
 
 		try {
+
+			window.attachSkinApp({
+				initSkinDev: false
+			}, function (helpers) {
+				appContext.set('skinHelpers', helpers);
+			});
 
 			var reactComponent = React.render(
 				<skin.RootView appContext={appContext}/>,

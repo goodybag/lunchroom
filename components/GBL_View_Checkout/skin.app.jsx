@@ -46,7 +46,7 @@ console.log("PLACE ORDER", form);
 			// Setup validator which we use to show any errors.
 			var orderInfoElm = $('.checkout-info', Context.componentElement);
 			$('[name="will_add_new_card"]', orderInfoElm).prop('checked', true);
-			var checkoutValidator = validators.createCheckoutValidator(orderInfoElm);
+			var checkoutValidator = Context.appContext.get("skinHelpers").validators.createCheckoutValidator(orderInfoElm);
 			function showError (error) {
 // TODO: Don't highlight card field by default?
 //       We need to set field right now or message does not show up.
@@ -366,23 +366,19 @@ console.log("PLACE ORDER", form);
 						$('[data-component-elm="card[name]"]', element).val(copyName.lastValue);
 				    });
 
+					Context.appContext.get("skinHelpers").monitors.createCheckoutMonitor(element);
+
 				},
 				fill: function (element, data, Context) {
 
 					if (!Context.startedEditing) {
 						this.fillProperties(element, data.orderForm);
 						this.fillElements(element, data.orderForm);
-					} else {
-console.log("SKIP UPDATING FROM AS WE STARTED EDITING");
-
 					}
 
 					this.showViews(element, [
 						"default"
 					]);
-
-// TODO: Enable this once phone number validation works.
-//					window.attachSkinApp();
 				}
 			}),
 			"items": new Context.Template({

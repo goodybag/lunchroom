@@ -289,35 +289,15 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
 
 		function getResourceMappingsForSkinPage (pageId) {
 			var descriptor = require("./www/lunchroom-landing~0/hoisted.json");
-			var resources = {
-				css: null,
-				js: {
-					lib: null,
-					app: null
-				}
-			};
+			var resources = {};
 			descriptor.pages[pageId].resources.forEach(function (resource) {
-
-				if (resource.type === "js") {
-					var bundle = resource.uriPath.match(/dist~([^-]+)-[^\.]+\.js$/)[1];
-					if (resources[resource.type][bundle]) {
-						throw new Error("Each resource type for bundle '" + bundle + "' should only exist once! Make sure everything is inlined.");
-					}
-					resources[resource.type][bundle] = resource.uriPath;
-
-				} else {
-					if (resources[resource.type]) {
-						throw new Error("Each resource type should only exist once! Make sure everything is inlined.");
-					}
-					resources[resource.type] = resource.uriPath;
-				}
+				resources[resource.bundle] = resource.uriPath;
 			});
 			return resources;
 		}
 
 		var landingResources = getResourceMappingsForSkinPage("Landing");
 		var appResources = getResourceMappingsForSkinPage("AppMenu");
-
 
 		app.get(/^(\/eventemail-[^\/]+)$/, function (req, res, next) {
 
@@ -366,9 +346,10 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
 //				content = content.replace(/\{\{landingSkinLibJsUrl\}\}/g, landingResources.js.lib);
 //				content = content.replace(/\{\{landingSkinAppJsUrl\}\}/g, landingResources.js.app);
 
-				content = content.replace(/\{\{skinCssUrl\}\}/g, appResources.css);
-				content = content.replace(/\{\{skinLibJsUrl\}\}/g, appResources.js.lib);
-				content = content.replace(/\{\{skinAppJsUrl\}\}/g, appResources.js.app);
+				content = content.replace(/\{\{skinCssUrl\}\}/g, appResources["app.css"]);
+				content = content.replace(/\{\{skinLibJsUrl\}\}/g, appResources["lib.js"]);
+				content = content.replace(/\{\{skinUtilJsUrl\}\}/g, appResources["utils.js"]);
+				content = content.replace(/\{\{skinAppJsUrl\}\}/g, appResources["app.js"]);
 
 				content = content.replace(
 					/\{\{sessionToken\}\}/g,

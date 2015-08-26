@@ -21,7 +21,8 @@ exports['for'] = function (overrides) {
 	    selectedDayId: MOMENT().format("YYYY-MM-DD"),
 	    windowOrigin: window.location.origin || (window.location.protocol + "//" + window.location.host),
 	    forceAllowOrder: false,
-	    testMode: false
+	    testMode: false,
+	    skinHelpers: null
 	};
 	if (config.context.testMode) {
 		config.testMode = config.context.testMode;

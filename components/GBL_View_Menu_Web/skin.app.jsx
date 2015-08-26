@@ -15,6 +15,7 @@ require("./component.jsx")['for'](module, {
 			'items': data.connect("page/loaded/selectedEventItems", function (data) {
 				return {
 					"id": data.connect("id"),
+					"event_id": data.connect("event_id"),
 					"item_id": data.connect("item_id/id"),
 					"photoUrl": data.connect("item_id/photo_url", {
 						suffix: "/convert?w=400&h=195&fit=crop"
@@ -101,14 +102,17 @@ require("./component.jsx")['for'](module, {
 			}),
 			"popup": new Context.Template({
 				impl: require("../../www/lunchroom-landing~0/components/AppMenu/menu-item-popup.cjs.jsx"),
-				markup: function (element) {
+				markup: function (element, data) {
 					var self = this;
 
 					self.liftSections(element);
 
 					$('[data-component-elm="addButton"]', element).click(function () {
-
-						Context.appContext.get('stores').cart.addItem(self.getData().item_id, {}).then(function () {
+						Context.appContext.get('stores').cart.addItemForEvent(
+							self.data.event_id,
+							self.data.item_id,
+							{}
+						).then(function () {
 							$('[data-dismiss="modal"]').click();
 							Context.forceUpdate();
 						});
