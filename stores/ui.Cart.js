@@ -66,7 +66,11 @@ exports['for'] = function (context) {
 					"format.total": "$0.00"
 				};
 
-				summary["format.goodybagFee"] = COMMON.API.NUMERAL(summary.goodybagFee / 100).format('$0.00');
+				if (summary.goodybagFee > 0) {
+					summary["format.goodybagFee"] = COMMON.API.NUMERAL(summary.goodybagFee / 100).format('$0.00');
+				} else {
+					summary["format.goodybagFee"] = '$0.00';
+				}
 
 				if (
 					summary.amount &&
@@ -83,7 +87,11 @@ exports['for'] = function (context) {
 						+ summary.taxAmount
 						+ summary.goodybagFee
 					);
-					summary["format.total"] = COMMON.API.NUMERAL(summary.total / 100).format('$0.00');
+					if (summary.total > 0) {
+						summary["format.total"] = COMMON.API.NUMERAL(summary.total / 100).format('$0.00');
+					} else {
+						summary["format.total"] = '$0.00';
+					}
 				}
 
 				return summary;
@@ -168,6 +176,17 @@ exports['for'] = function (context) {
 					self.remove(item.get("id"));
 					self.trigger("change", null);
 				}
+				return COMMON.API.Q.resolve();
+			},
+
+			removeAllItemsForEvent: function (event_id) {
+				var self = this;
+				self.where({
+					"event_id": parseInt(event_id)
+				}).forEach(function (item) {
+					self.remove(item.get("id"));
+				});
+				self.trigger("change", null);
 				return COMMON.API.Q.resolve();
 			},
 

@@ -253,6 +253,25 @@ exports['for'] = function (context) {
 			},
 
 
+			// App: Needed by timer
+			reloadAllLoaded: function () {
+				var self = this;
+				var ids = self.where().map(function (record) {
+					return record.get("id");
+				});
+				return COMMON.API.Q.denodeify(function (callback) {
+			        self.fetch({
+			            data: $.param({
+			                "filter[id]": ids
+			            }),
+			            success: function () {
+			            	return callback(null);
+			            }
+			        });
+				})();
+			},
+
+
 // App
 			getToday: function () {
 				var today = this.get(context.appContext.get('context').dbfilter.event_id);

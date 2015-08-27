@@ -39,6 +39,50 @@ function startTimer (duration, display) {
 require("./component.jsx")['for'](module, {
 
 
+	singleton: function (Context) {
+
+		function monitorOrderDeadline () {
+
+			var today = Context.appContext.get('stores').events.getToday();
+			if (today && today.length === 1) {
+				today = today[0];
+			} else {
+				today = null;
+			}
+
+			var ordersLocked = null;
+			var interval = setInterval(function () {
+				try {
+					if (!today) return;
+					if (ordersLocked === null) {
+						ordersLocked = today.get("ordersLocked");
+					} else
+					if (today.get("ordersLocked") !== ordersLocked) {
+						ordersLocked = today.get("ordersLocked");
+						// Status has changed so we reload to lock the UI.
+						console.log("Lock event due to ordersLocked");
+						Context.appContext.get('stores').events.reloadAllLoaded().then(function () {
+
+							return Context.appContext.get('stores').cart.removeAllItemsForEvent(today.get("id"));
+
+						}).fail(function (err) {
+							console.error("Error loading event or clearing cart for todays event", err.stack);
+						});
+					}
+					if (ordersLocked && interval) {
+						clearInterval(interval);
+						interval = null;
+					}
+				} catch (err) {
+					console.error("Error monitoring order deadline:", err.stack);
+				}
+			}, 5 * 1000);
+		}
+
+		monitorOrderDeadline();
+	},
+
+
 	mapData: function (Context, data) {
 		return {
 			'canOrder': data.connect("page/loaded/selectedEvent/canOrder"),
