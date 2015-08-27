@@ -31,21 +31,27 @@ METHODS.forEach(function (methodName) {
 	Console.prototype[methodName] = function () {
 		var args = Array.prototype.slice.call(arguments);
 
-		window.console[methodName].apply(window.console, args);
+		try {
+			window.console[methodName].apply(window.console, args);
 
-		// We only queue message for loader if we are in the process of loading it.
-		if (!self._loggerLoading) return;
+			// We only queue message for loader if we are in the process of loading it.
+			if (!self._loggerLoading) return;
 
-		if (
-			methodName === "error" ||
-			methodName === "log"
-		) {
-			this.getLogger().then(function (logger) {
+			if (
+				methodName === "error" ||
+				methodName === "log"
+			) {
+				this.getLogger().then(function (logger) {
 
-console.log("got logger", logger);
+	console.log("got logger", logger);
 
-				logger.log(args);
-			});
+					logger.log(args);
+				});
+			}
+		} catch (err) {
+			try {
+				window.console.log(args);
+			} catch (err) {}
 		}
 	};
 });

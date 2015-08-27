@@ -91,11 +91,15 @@ try {
 	var skin = getSkin();
 	var appContext = initAppContext(skin);
 
+	console.log("START INIT!");
+
 	appContext.set('initialized', true);
 
 	$(function () {
 
 		try {
+
+			console.log("START RENDER!");
 
 			if (typeof window.attachSkinApp === "function") {
 				window.attachSkinApp({
@@ -110,10 +114,21 @@ try {
 				$("#GBL_DEV_Views").get(0)
 			);
 
-			appContext.on("change:ready", function () {
+			function runReady () {
+				console.log("RUN READY!");
 				reactComponent._trigger_forceUpdate();
 				$('#page-loading-indicator').toggleClass('show', false);
-			});
+			}
+
+			if (appContext.get("ready")) {
+				console.log("ALREADY ready! TRIGGER runReady");
+				runReady();
+			} else {
+				appContext.on("change:ready", function () {
+					console.log("GOT READY!");
+					runReady();
+				});
+			}
 
 		} catch (err) {
 			console.error("Error while attaching to DOM:", err.stack || err.message || err);

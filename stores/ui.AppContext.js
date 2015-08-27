@@ -251,12 +251,16 @@ console.info("CHANEGD SELECETD DAY!", appContext.get("selectedDayId"));
 
 			function finalizeInit () {
 
-				var context = appContext.get('context');
-
-				if (context.initLiveNotify) {
-					initLiveNotify();
+				try {
+					var context = appContext.get('context');
+					if (context.initLiveNotify) {
+						initLiveNotify();
+					}
+				} catch (err) {
+					console.error(err.stack);
 				}
 
+				console.log("SET READY!");
 				appContext.set('ready', true);
 			}
 
