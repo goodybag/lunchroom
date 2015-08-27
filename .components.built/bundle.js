@@ -489,11 +489,15 @@
 		var skin = getSkin();
 		var appContext = initAppContext(skin);
 
+		console.log("START INIT!");
+
 		appContext.set('initialized', true);
 
 		$(function () {
 
 			try {
+
+				console.log("START RENDER!");
 
 				if (typeof window.attachSkinApp === "function") {
 					window.attachSkinApp({
@@ -508,10 +512,21 @@
 					$("#GBL_DEV_Views").get(0)
 				);
 
-				appContext.on("change:ready", function () {
+				function runReady () {
+					console.log("RUN READY!");
 					reactComponent._trigger_forceUpdate();
 					$('#page-loading-indicator').toggleClass('show', false);
-				});
+				}
+
+				if (appContext.get("ready")) {
+					console.log("ALREADY ready! TRIGGER runReady");
+					runReady();
+				} else {
+					appContext.on("change:ready", function () {
+						console.log("GOT READY!");
+						runReady();
+					});
+				}
 
 			} catch (err) {
 				console.error("Error while attaching to DOM:", err.stack || err.message || err);
@@ -562,21 +577,27 @@
 		Console.prototype[methodName] = function () {
 			var args = Array.prototype.slice.call(arguments);
 
-			window.console[methodName].apply(window.console, args);
+			try {
+				window.console[methodName].apply(window.console, args);
 
-			// We only queue message for loader if we are in the process of loading it.
-			if (!self._loggerLoading) return;
+				// We only queue message for loader if we are in the process of loading it.
+				if (!self._loggerLoading) return;
 
-			if (
-				methodName === "error" ||
-				methodName === "log"
-			) {
-				this.getLogger().then(function (logger) {
+				if (
+					methodName === "error" ||
+					methodName === "log"
+				) {
+					this.getLogger().then(function (logger) {
 
-	console.log("got logger", logger);
+		console.log("got logger", logger);
 
-					logger.log(args);
-				});
+						logger.log(args);
+					});
+				}
+			} catch (err) {
+				try {
+					window.console.log(args);
+				} catch (err) {}
 			}
 		};
 	});
@@ -66149,12 +66170,16 @@
 
 				function finalizeInit () {
 
-					var context = appContext.get('context');
-
-					if (context.initLiveNotify) {
-						initLiveNotify();
+					try {
+						var context = appContext.get('context');
+						if (context.initLiveNotify) {
+							initLiveNotify();
+						}
+					} catch (err) {
+						console.error(err.stack);
 					}
 
+					console.log("SET READY!");
 					appContext.set('ready', true);
 				}
 
