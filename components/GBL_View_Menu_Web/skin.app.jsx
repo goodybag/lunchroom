@@ -109,8 +109,8 @@ require("./component.jsx")['for'](module, {
 
 					$('[data-component-elm="addButton"]', element).click(function () {
 						Context.appContext.get('stores').cart.addItemForEvent(
-							self.data.event_id,
-							self.data.item_id,
+							self.data.itemData.event_id,
+							self.data.itemData.item_id,
 							{}
 						).then(function () {
 							$('[data-dismiss="modal"]').click();
@@ -121,13 +121,13 @@ require("./component.jsx")['for'](module, {
 				},
 				fill: function (element, data, Context) {
 
-					this.fillProperties(element, data)
+					data = data || {};
+					data.itemData = data.itemData || {};
+					data.menuData = data.menuData || {};
 
-					if (
-						Context.selectedEvent &&
-						Context.selectedEvent.get("day_id") === Context.appContext.get('todayId') &&
-						parseInt(Context.selectedEvent.get("format.orderTimerSeconds") || 0)
-					) {
+					this.fillProperties(element, data.itemData)
+
+					if (data.menuData.canOrder) {
 						this.showViews(element, [
 							"orderable"
 						]);
@@ -137,7 +137,7 @@ require("./component.jsx")['for'](module, {
 
 					var tags = [];
 					try {
-						if (data.tags) tags = JSON.parse(data.tags);
+						if (data.itemData.tags) tags = JSON.parse(data.itemData.tags);
 					} catch (err) {}
 
 					this.renderSection(element, "diet-tags", tags.map(function(tag) {
@@ -177,7 +177,10 @@ require("./component.jsx")['for'](module, {
 				    	}
 
 						$('[data-component-elm="showDetailsLink"]', elm).click(function () {
-							Context.templates.popup.fill(itemData);
+							Context.templates.popup.fill({
+								menuData: menuData,
+								itemData: itemData
+							});
 						});
 
 
