@@ -42944,6 +42944,50 @@
 	__webpack_require__(124)['for'](module, {
 
 
+		singleton: function (Context) {
+
+			function monitorOrderDeadline () {
+
+				var today = Context.appContext.get('stores').events.getToday();
+				if (today && today.length === 1) {
+					today = today[0];
+				} else {
+					today = null;
+				}
+
+				var ordersLocked = null;
+				var interval = setInterval(function () {
+					try {
+						if (!today) return;
+						if (ordersLocked === null) {
+							ordersLocked = today.get("ordersLocked");
+						} else
+						if (today.get("ordersLocked") !== ordersLocked) {
+							ordersLocked = today.get("ordersLocked");
+							// Status has changed so we reload to lock the UI.
+							console.log("Lock event due to ordersLocked");
+							Context.appContext.get('stores').events.reloadAllLoaded().then(function () {
+
+								return Context.appContext.get('stores').cart.removeAllItemsForEvent(today.get("id"));
+
+							}).fail(function (err) {
+								console.error("Error loading event or clearing cart for todays event", err.stack);
+							});
+						}
+						if (ordersLocked && interval) {
+							clearInterval(interval);
+							interval = null;
+						}
+					} catch (err) {
+						console.error("Error monitoring order deadline:", err.stack);
+					}
+				}, 5 * 1000);
+			}
+
+			monitorOrderDeadline();
+		},
+
+
 		mapData: function (Context, data) {
 			return {
 				'canOrder': data.connect("page/loaded/selectedEvent/canOrder"),
@@ -43954,8 +43998,8 @@
 
 						$('[data-component-elm="addButton"]', element).click(function () {
 							Context.appContext.get('stores').cart.addItemForEvent(
-								self.data.event_id,
-								self.data.item_id,
+								self.data.itemData.event_id,
+								self.data.itemData.item_id,
 								{}
 							).then(function () {
 								$('[data-dismiss="modal"]').click();
@@ -43966,13 +44010,13 @@
 					},
 					fill: function (element, data, Context) {
 
-						this.fillProperties(element, data)
+						data = data || {};
+						data.itemData = data.itemData || {};
+						data.menuData = data.menuData || {};
 
-						if (
-							Context.selectedEvent &&
-							Context.selectedEvent.get("day_id") === Context.appContext.get('todayId') &&
-							parseInt(Context.selectedEvent.get("format.orderTimerSeconds") || 0)
-						) {
+						this.fillProperties(element, data.itemData)
+
+						if (data.menuData.canOrder) {
 							this.showViews(element, [
 								"orderable"
 							]);
@@ -43982,7 +44026,7 @@
 
 						var tags = [];
 						try {
-							if (data.tags) tags = JSON.parse(data.tags);
+							if (data.itemData.tags) tags = JSON.parse(data.itemData.tags);
 						} catch (err) {}
 
 						this.renderSection(element, "diet-tags", tags.map(function(tag) {
@@ -44022,7 +44066,10 @@
 					    	}
 
 							$('[data-component-elm="showDetailsLink"]', elm).click(function () {
-								Context.templates.popup.fill(itemData);
+								Context.templates.popup.fill({
+									menuData: menuData,
+									itemData: itemData
+								});
 							});
 
 
@@ -75028,6 +75075,25 @@
 				},
 
 
+				// App: Needed by timer
+				reloadAllLoaded: function () {
+					var self = this;
+					var ids = self.where().map(function (record) {
+						return record.get("id");
+					});
+					return COMMON.API.Q.denodeify(function (callback) {
+				        self.fetch({
+				            data: $.param({
+				                "filter[id]": ids
+				            }),
+				            success: function () {
+				            	return callback(null);
+				            }
+				        });
+					})();
+				},
+
+
 	// App
 				getToday: function () {
 					var today = this.get(context.appContext.get('context').dbfilter.event_id);
@@ -76561,7 +76627,11 @@
 						"format.total": "$0.00"
 					};
 
-					summary["format.goodybagFee"] = COMMON.API.NUMERAL(summary.goodybagFee / 100).format('$0.00');
+					if (summary.goodybagFee > 0) {
+						summary["format.goodybagFee"] = COMMON.API.NUMERAL(summary.goodybagFee / 100).format('$0.00');
+					} else {
+						summary["format.goodybagFee"] = '$0.00';
+					}
 
 					if (
 						summary.amount &&
@@ -76578,7 +76648,11 @@
 							+ summary.taxAmount
 							+ summary.goodybagFee
 						);
-						summary["format.total"] = COMMON.API.NUMERAL(summary.total / 100).format('$0.00');
+						if (summary.total > 0) {
+							summary["format.total"] = COMMON.API.NUMERAL(summary.total / 100).format('$0.00');
+						} else {
+							summary["format.total"] = '$0.00';
+						}
 					}
 
 					return summary;
@@ -76663,6 +76737,17 @@
 						self.remove(item.get("id"));
 						self.trigger("change", null);
 					}
+					return COMMON.API.Q.resolve();
+				},
+
+				removeAllItemsForEvent: function (event_id) {
+					var self = this;
+					self.where({
+						"event_id": parseInt(event_id)
+					}).forEach(function (item) {
+						self.remove(item.get("id"));
+					});
+					self.trigger("change", null);
 					return COMMON.API.Q.resolve();
 				},
 
