@@ -15,17 +15,17 @@ var knex = KNEX({
         "user": "lunchroom_dev_preview",
         "password": "1E07DEEC-DE21-4E84-B47F-104C5070259A",
         "database": "lunchroom_dev_preview",
+        "ssl": true
 */
 
-/*
 // staging
-        "host": "ec2-107-21-240-156.compute-1.amazonaws.com",
+		"host": "ec2-107-21-240-156.compute-1.amazonaws.com",
         "port": 5732,
         "user": "u9e5uar8mdmlqt",
         "password": "p3m0t493t12oufb6shuj8q9saav",
         "database": "d6da1bd7tqk7k",
-*/
-
+        "ssl": true
+/*
 // live
 		"host": "ec2-107-21-253-234.compute-1.amazonaws.com",
         "port": 6002,
@@ -33,6 +33,7 @@ var knex = KNEX({
         "password": "p5i82eo3fhl5m0etr22uimc8cmk",
         "database": "ddn7dgetbsvnkc",
         "ssl": true
+*/
     }
 });
 
@@ -48,9 +49,23 @@ var day_id = MOMENT().format("YYYY-MM-DD");
 
 //knex('orders').where('form', 'like', '%jag@goodybag.com%').then(function (resp) {
 //knex('orders').select('id', 'form').where('day_id', day_id).then(function (resp) {
-knex('orders').where('day_id', day_id).then(function (resp) {
 
-	console.log("resp1", resp);
+knex('orders').select('id', 'form').then(function (resp) {
+
+	var newInfo = {};
+
+	resp.forEach(function (row) {
+		try {
+			var form = JSON.parse(row.form);
+
+			newInfo[row.id] = form;
+		} catch (err) {}
+	});
+
+
+console.log("newInfo", newInfo);
+
+
 
 /*
 //	if (!resp[0].menuEmailTime) {
@@ -72,7 +87,7 @@ console.log("res", res);
 });
 
 
-
+/*
 knex('orders').whereIn('id', [
 	24
 ]).delete().then(function (resp) {
@@ -80,7 +95,7 @@ knex('orders').whereIn('id', [
 console.log("resp2", resp);
 
 });
-
+*/
 
 
 /*
