@@ -273,6 +273,7 @@ console.log("PLACE ORDER", form);
 				data.onlyItemsForTodayAndTooLate = false;
 				if (data.items) {
 					data.items.forEach(function (item) {
+						item.goodybagFee = item.goodybagFee || 1;
 						if (!itemsByDays[item.day_id]) {
 							itemsByDays[item.day_id] = {
 								dayLabel: Context.MOMENT(item.day_id, "YYYY-MM-DD").format("dddd") + "'s",

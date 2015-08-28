@@ -67,7 +67,13 @@ exports['for'] = function (context) {
 					"format.total": "$0.00"
 				};
 
-				summary["format.goodybagFeePerDay"] = COMMON.API.NUMERAL(summary.goodybagFeePerDay / 100).format('$0.00');
+
+				if (summary.goodybagFeePerDay > 0) {
+					summary["format.goodybagFeePerDay"] = COMMON.API.NUMERAL(summary.goodybagFeePerDay / 100).format('$0.00');
+				} else {
+					summary["format.goodybagFeePerDay"] = '$0.00';
+
+				}
 				if (summary.goodybagFee > 0) {
 					summary["format.goodybagFee"] = COMMON.API.NUMERAL(summary.goodybagFee / 100).format('$0.00');
 				} else {
