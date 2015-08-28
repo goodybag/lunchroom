@@ -36,7 +36,7 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
                                     message.data.itemsByDay[dayId].items.map(function (item) {
                                         return "  * " + item.title + " (" + item.quantity + " x " + item['format.price'] + " = " + item['format.amount'] + ")";
                                     }).join("\n"),
-                                    "   (Goodybag Fee: " + message.data.summary["format.goodybagFee"] + ")",
+                                    "   (Goodybag Fee: " + message.data.summary["format.goodybagFeePerDay"] + ")",
                                     ""
                                 ].join("\n");
                             }).join("\n"),

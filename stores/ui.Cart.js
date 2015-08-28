@@ -61,11 +61,13 @@ exports['for'] = function (context) {
 					"taxAmount": 0,
 					"format.tax": "0%",
 					"format.taxAmount": "$0.00",
+					"goodybagFeePerDay": parseInt(goodybagFee),
 					"goodybagFee": parseInt(goodybagFee) * Object.keys(daysWithItems).length,
 					"total": 0,
 					"format.total": "$0.00"
 				};
 
+				summary["format.goodybagFeePerDay"] = COMMON.API.NUMERAL(summary.goodybagFeePerDay / 100).format('$0.00');
 				if (summary.goodybagFee > 0) {
 					summary["format.goodybagFee"] = COMMON.API.NUMERAL(summary.goodybagFee / 100).format('$0.00');
 				} else {

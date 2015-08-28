@@ -12,6 +12,21 @@ require("./component.jsx")['for'](module, {
 
 		// @see https://stripe.com/docs/stripe.js
 		head.load("https://js.stripe.com/v2/");
+
+		var cardInfo = null;
+		Context.stripCardInfoFromForm = function (form) {
+			cardInfo = {};
+			for (var name in form) {
+				if (/^card\[/.test(name)) {
+					cardInfo[name] = form[name];
+					delete form[name]
+				}
+			}
+			return form;
+		}
+		Context.getCardInfo = function () {
+			return cardInfo;
+		}
 	},
 
 
@@ -29,6 +44,17 @@ require("./component.jsx")['for'](module, {
 			$(':input[data-component-elm]', Context.componentElement).each(function() {
 				values[$(this).attr("data-component-elm")] = $(this).val();
 			});
+			delete values["placeOrderButton"];
+			delete values[""];
+
+			// NOTE: We do NOT store the CC info anywhere in any kind of persistent store.
+			//       We simply attach it to our local component state which will get
+			//       destroyed on reload.
+			//       This is to ensure the data does not leak to anywhere.
+			// TODO: Implement a container to hold the CC info in so no
+			//       external component can access it under any circumstances.
+			values = Context.stripCardInfoFromForm(values);
+
 			data.order.set("form", JSON.stringify(values));
 			return values;
 		}
@@ -59,20 +85,22 @@ console.log("PLACE ORDER", form);
 
 				return Context.Q.fcall(function () {
 
+					var cardInfo = Context.getCardInfo();
+
 					checkoutValidator.validate();
 					if (checkoutValidator.getErrors().length > 0) {
 						window.scrollTo(0, 0);
 						return false;
 					}
 
-					if (!Stripe.card.validateCardNumber(form["card[number]"])) {
+					if (!Stripe.card.validateCardNumber(cardInfo["card[number]"])) {
 						showError({
 							field: "card_number",
 							message: "Card number format not valid!"
 						});
 						throw new Error("Card number format not valid!");
 					}
-					if (!Stripe.card.validateExpiry(form["card[expire-month]"], form["card[expire-year]"])) {
+					if (!Stripe.card.validateExpiry(cardInfo["card[expire-month]"], cardInfo["card[expire-year]"])) {
 						showError({
 							field: "card_expiration_year",
 // TODO: Add second field to highlight
@@ -81,7 +109,7 @@ console.log("PLACE ORDER", form);
 						});
 						throw new Error("Card expiry format not valid!");
 					}
-					if (!Stripe.card.validateCVC(form["card[cvc]"])) {
+					if (!Stripe.card.validateCVC(cardInfo["card[cvc]"])) {
 						showError({
 							field: "card_cvv",
 							message: "Card CVC not valid!"
@@ -100,9 +128,11 @@ console.log("PLACE ORDER", form);
 				return Context.Q.denodeify(function (callback) {
 					try {
 
-						console.log("Authorize card", form["card[name]"]);
+						var cardInfo = Context.getCardInfo();
 
-						if (form["card[number]"] === "4242424242424242") {
+						console.log("Authorize card", cardInfo["card[name]"]);
+
+						if (cardInfo["card[number]"] === "4242424242424242") {
 							Stripe.setPublishableKey(
 								Context.appContext.get('context').stripePublishableKey_TEST
 							);
@@ -113,11 +143,11 @@ console.log("PLACE ORDER", form);
 						}
 
 						Stripe.card.createToken({
-							number: form["card[number]"],
-							cvc: form["card[cvc]"],
-							exp_month: form["card[expire-month]"],
-							exp_year: form["card[expire-year]"],
-							name: form["card[name]"]
+							number: cardInfo["card[number]"],
+							cvc: cardInfo["card[cvc]"],
+							exp_month: cardInfo["card[expire-month]"],
+							exp_year: cardInfo["card[expire-year]"],
+							name: cardInfo["card[name]"]
 						}, function (status, response) {
 							if (status !== 200) {
 								return callback(new Error("Got status '" + status + "' while calling 'stripe.com'"));
