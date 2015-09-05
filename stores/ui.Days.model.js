@@ -43,7 +43,7 @@ exports.forContext = function (context) {
 
 		// Initialize without loading data from server for now.
 		function makeStartOfWeek () {
-			var startOfWeek = common.MOMENT().startOf('week');
+			var startOfWeek = (common.MOMENT_CT || common.MOMENT)().startOf('week');
 			// If Saturday or Sunday, jump to next week.
 			if (
 				common.MOMENT().day() === 6
