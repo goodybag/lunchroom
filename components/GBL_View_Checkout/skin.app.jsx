@@ -59,7 +59,14 @@ require("./component.jsx")['for'](module, {
 			return values;
 		}
 
+		var placingOrder = false;
+
 		Context.placeOrder = function () {
+			if (placingOrder) {
+				console.warn("Order is being submitted. Ignoring request to submit again.");
+				return;
+			}
+			placingOrder = true;
 
 			// NOTE: We deal with user input validation and Stripe in the component here
 			//       and then hand things off to the order record to send the completed
@@ -189,7 +196,7 @@ console.log("PLACE ORDER", form);
 				//);
 			}
 
-			Context.Q.fcall(function () {
+			return Context.Q.fcall(function () {
 				return validateOrder(data.order).then(function (valid) {
 
 					if (!valid) {
@@ -219,6 +226,8 @@ console.log("PLACE ORDER", form);
 				showError({
 					message: err.message
 				});
+			}).then(function () {
+				placingOrder = false;
 			});
 		}
 	},
