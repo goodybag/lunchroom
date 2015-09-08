@@ -44444,8 +44444,8 @@
 
 	  React.createElement("div", {className: "warning-section", "data-component-id": "warning-section"}, 
 	    React.createElement("img", {src: "/lunchroom-landing~0/resources/assets/img~cupcake-shocked-2-4bc6fb3.png", alt: "", className: "warning-section-supporting-graphic"}), 
-	    React.createElement("h2", {className: "warning-section-header"}, "This menu has not been created yet!"), 
-	    React.createElement("p", null, "Either this is an error with Goodybag, or the menu hasn't been created yet. Please check again later.")
+	    React.createElement("h2", {className: "warning-section-header"}, "Sorry, we are closed today ... but feel free to order ahead for the rest of the week!"), 
+	    React.createElement("p", null, "I'm a cupcake; I can't do it! You can, though :)")
 	  )
 
 	    )
@@ -44746,7 +44746,14 @@
 				return values;
 			}
 
+			var placingOrder = false;
+
 			Context.placeOrder = function () {
+				if (placingOrder) {
+					console.warn("Order is being submitted. Ignoring request to submit again.");
+					return;
+				}
+				placingOrder = true;
 
 				// NOTE: We deal with user input validation and Stripe in the component here
 				//       and then hand things off to the order record to send the completed
@@ -44876,7 +44883,7 @@
 					//);
 				}
 
-				Context.Q.fcall(function () {
+				return Context.Q.fcall(function () {
 					return validateOrder(data.order).then(function (valid) {
 
 						if (!valid) {
@@ -44906,6 +44913,8 @@
 					showError({
 						message: err.message
 					});
+				}).then(function () {
+					placingOrder = false;
 				});
 			}
 		},
@@ -58069,6 +58078,14 @@
 
 	__webpack_require__(154)['for'](module, {
 
+		mapData: function (Context, data) {
+			return {
+				'orderBy': data.connect("page/loaded/todaysEvent/format.deliveryTime"),
+				'pickupLocation': data.connect("page/loaded/todaysEvent/consumer_group_id/pickupLocation"),
+				'lunchroomUrl': data.connect("page/loaded/todaysEvent/consumer_group_id/lunchroomUrl")
+			};
+		},
+
 		getTemplates: function (Context) {
 
 			return {
@@ -58078,10 +58095,9 @@
 
 					},
 					fill: function (element, data, Context) {
-
 						this.fillProperties(element, {
-							"pickupTime": Context.eventToday.get("format.deliveryTime"),
-							"deliveryLocation": Context.eventToday.get("consumerGroup.pickupLocation")
+							"pickupTime": data.orderBy,
+							"deliveryLocation": data.pickupLocation
 						});
 					}
 				}),
@@ -58091,9 +58107,8 @@
 
 					},
 					fill: function (element, data, Context) {
-
 						this.fillElements(element, {
-							"shareUrl": Context.lunchroom.get("lunchroomUrl")
+							"shareUrl": data.lunchroomUrl
 						});
 					}
 				})
@@ -58148,6 +58163,7 @@
 
 		    render: function() {
 		    	var self = this;
+	return {};	    	
 
 				var events = self.props.appContext.get('stores').events;
 
@@ -74839,7 +74855,7 @@
 
 			// Initialize without loading data from server for now.
 			function makeStartOfWeek () {
-				var startOfWeek = common.MOMENT().startOf('week');
+				var startOfWeek = (common.MOMENT_CT || common.MOMENT)().startOf('week');
 				// If Saturday or Sunday, jump to next week.
 				if (
 					common.MOMENT().day() === 6
@@ -75629,6 +75645,7 @@
 	// App
 				getLunchroom: function () {
 					var today = context.appContext.get("stores").events.getToday()[0];
+					if (!today) return [];
 					return [
 						this.get(today.get("consumer_group_id"))
 					];

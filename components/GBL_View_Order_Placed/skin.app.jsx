@@ -4,6 +4,14 @@ var console = require("../../app/lib/console");
 
 require("./component.jsx")['for'](module, {
 
+	mapData: function (Context, data) {
+		return {
+			'orderBy': data.connect("page/loaded/todaysEvent/format.deliveryTime"),
+			'pickupLocation': data.connect("page/loaded/todaysEvent/consumer_group_id/pickupLocation"),
+			'lunchroomUrl': data.connect("page/loaded/todaysEvent/consumer_group_id/lunchroomUrl")
+		};
+	},
+
 	getTemplates: function (Context) {
 
 		return {
@@ -13,10 +21,9 @@ require("./component.jsx")['for'](module, {
 
 				},
 				fill: function (element, data, Context) {
-
 					this.fillProperties(element, {
-						"pickupTime": Context.eventToday.get("format.deliveryTime"),
-						"deliveryLocation": Context.eventToday.get("consumerGroup.pickupLocation")
+						"pickupTime": data.orderBy,
+						"deliveryLocation": data.pickupLocation
 					});
 				}
 			}),
@@ -26,9 +33,8 @@ require("./component.jsx")['for'](module, {
 
 				},
 				fill: function (element, data, Context) {
-
 					this.fillElements(element, {
-						"shareUrl": Context.lunchroom.get("lunchroomUrl")
+						"shareUrl": data.lunchroomUrl
 					});
 				}
 			})

@@ -20,6 +20,7 @@ exports['for'] = function (module, Context) {
 
 	    render: function() {
 	    	var self = this;
+return {};	    	
 
 			var events = self.props.appContext.get('stores').events;
 

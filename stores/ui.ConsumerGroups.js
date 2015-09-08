@@ -109,6 +109,7 @@ exports['for'] = function (context) {
 // App
 			getLunchroom: function () {
 				var today = context.appContext.get("stores").events.getToday()[0];
+				if (!today) return [];
 				return [
 					this.get(today.get("consumer_group_id"))
 				];
