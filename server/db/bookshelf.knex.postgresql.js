@@ -344,11 +344,13 @@ exports.init = function (config, options) {
 
 				return ensureData("data.02").then(function () {
 
+/*
 					console.log('########################################');
 					console.log('# Ensuring triggers and function ...');
 					console.log('########################################');
 
 					return ensureTriggersAndFunctions();
+*/
 				});
 			});
 		});

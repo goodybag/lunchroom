@@ -158,6 +158,13 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
 
 		var fileCache = {};
 
+
+		app.get(/^\/lib\/semantic-ui-css\/(.+)$/, function (req, res, next) {
+			return SEND(req, req.params[0], {
+				root: PATH.join(__dirname, "node_modules/semantic-ui-css")
+			}).on("error", next).pipe(res);
+		});
+
 		app.get(/^\/lunchroom-landing~0\/(.+)$/, function (req, res, next) {
 			return SEND(req, req.params[0], {
 				root: PATH.join(__dirname, "www/lunchroom-landing~0")

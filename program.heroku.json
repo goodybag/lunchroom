@@ -47,7 +47,7 @@
             "TEST_USER_KEY": "3FEB7109-9F4B-4757-A530-7FE7FD6E3130",
             "firenode": {
 				"config": {
-	                "adminSkinCssUrl": "//lunchroom-stage.goodybag.com:8083/lunchroom/assets/semantic-ui-css/semantic.css",
+	                "adminSkinCssUrl": "/lib/semantic-ui-css/semantic.css",
                     "assetsCssUrl": "/assets.css",
                     "assetsJsUrl": "/assets.min.js",
                     "bundleJsUrl": "/bundle.min.js",
