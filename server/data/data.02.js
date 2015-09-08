@@ -784,3 +784,33 @@ data[123] = {
       tags: [] } ]
 };
 
+data[39] = {
+  title: 'Qdoba',
+  items:
+  [ { id: 97725,
+      restaurant: 'Qdoba',
+      restaurant_id: 39,
+      name: 'Steak Burrito Box Lunch',
+      description: 'Adobo-marinated grilled steak, cilantro-lime rice, slow-simmered black beans, cheese, and salsa. Comes with chips and salsa and a dessert.',
+      price: 925,
+      photo_url: 'https://www.filepicker.io/api/file/HfS7Z2fRT3iDBNG5g98L',
+      category_id: 11930,
+      tags: [] },
+    { id: 97724,
+      restaurant: 'Qdoba',
+      restaurant_id: 39,
+      name: 'Chicken Burrito Box Lunch',
+      description: 'Adobo-marinated grilled chicken, cilantro-lime rice, slow-simmered black beans, cheese, and salsa. Comes with chips and salsa and a dessert.',
+      price: 925,
+      photo_url: 'https://www.filepicker.io/api/file/MDOuFwkLSXmOUK7WZLVg',
+      category_id: 11930,
+      tags: [] },
+    { id: 97726,
+      restaurant: 'Qdoba',
+      restaurant_id: 39,
+      name: 'Veggie Burrito Box Lunch',
+      description: 'Slow-simmered black beans, cilantro-lime rice, guacamole, pico, and cheese. Comes with chips and salsa and a dessert.',
+      price: 925,
+      photo_url: 'https://www.filepicker.io/api/file/UhlD1XSsSpyID5h482LC',
+      category_id: 11930,
+      tags: [ 'vegetarian' ] } ] }
