@@ -201,10 +201,14 @@ exports['for'] = function (context) {
 			removeItemForEvent: function (event_id, item_id, all) {
 				var self = this;
 
+				console.log("removeItemForEvent", event_id, item_id, all);
+
 				var item = self.where({
 					"event_id": parseInt(event_id),
 					"item_id": parseInt(item_id)
 				});
+console.log("item", item);
+
 				if (item.length === 0) {
 					item = self.get(item_id);
 					if (!item) {
@@ -267,7 +271,14 @@ exports['for'] = function (context) {
 						var record = {};
 						self.Model.getFields().forEach(function (name) {
 							if (typeof model[name] !== "undefined") {
-								record[name] = model[name];
+								if (
+									name === "event_id" ||
+									name === "item_id"
+								) {
+									record[name] = parseInt(model[name]);
+								} else {
+									record[name] = model[name];
+								}
 							}
 						});
 						self.add(record);
