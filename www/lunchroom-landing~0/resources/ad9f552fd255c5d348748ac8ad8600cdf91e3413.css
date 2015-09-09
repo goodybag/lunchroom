@@ -1646,7 +1646,7 @@
   width: 20px;
   height: 15px;
   box-shadow: 0px 0px 1px 0px #888;
-  background-image: url("/404?url=http://localhost:3011/img/flags.png");
+  background-image: url("undefined");
   background-repeat: no-repeat;
   background-color: #DBDBDB;
   background-position: 20px 0;
@@ -1654,7 +1654,7 @@
 
 @media only screen and (-webkit-min-device-pixel-ratio: 2), only screen and (min--moz-device-pixel-ratio: 2), only screen and (-o-min-device-pixel-ratio: 2 / 1), only screen and (min-device-pixel-ratio: 2), only screen and (min-resolution: 192dpi), only screen and (min-resolution: 2dppx) {
   .iti-flag {
-    background-image: url("/404?url=http://localhost:3011/img/flags@2x.png");
+    background-image: url("undefined");
   }
 }
 
@@ -5807,6 +5807,11 @@ a:hover {
 
 .page-landing .page-section {
   text-align: center;
+}
+
+.page-kitchen-sink .page-section {
+  border: none;
+}xt-align: center;
 }
 
 .page-kitchen-sink .page-section {
