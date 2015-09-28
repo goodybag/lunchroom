@@ -44503,7 +44503,7 @@
 	    React.createElement("div", {className: "container items-container"}, 
 
 	  React.createElement("h1", {className: "menu-provider-name"}, React.createElement("span", {"data-component-prop": "restaurantTitle"}, "Dos Batos Wood Fired Tacos"), 
-	    React.createElement("span", {className: "no-tip-note"}, "No tips. Just a flat ", React.createElement("span", {"data-component-prop": "goodybagFee"}, "$2.99"), " fee")
+	    React.createElement("span", {className: "no-tip-note"}, "No tips. ", React.createElement("span", {className: "no-tip-note-flat"}, "Just a flat ", React.createElement("span", {"data-component-prop": "goodybagFee"}, "$2.99"), " fee"), " And no more fee")
 	  ), 
 	  React.createElement("div", {className: "tiles item-tiles", "data-component-section": "items"}, 
 	      React.createElement("div", {className: "tile item-tile", "data-component-section": "items", "data-component-view": "default"}, 
@@ -57880,16 +57880,8 @@
 	              )
 	            )
 	        )
-	      ), 
-
-	      React.createElement("div", {className: "order-summary-wrapper"}, 
-	        React.createElement("div", {className: "order-summary"}, 
-	          React.createElement("div", {className: "order-summary-item"}, 
-	            React.createElement("div", {className: "order-summary-col order-summary-key"}, "Goodybag Fee"), 
-	            React.createElement("div", {className: "order-summary-col order-summary-value", "data-component-prop": "goodybagFee"}, "$2.99")
-	          )
-	        )
 	      )
+
 
 	    ), 
 
@@ -57959,14 +57951,6 @@
 	    )
 	  ), 
 
-	  React.createElement("div", {className: "order-summary-wrapper", "data-component-view": "hidden"}, 
-	    React.createElement("div", {className: "order-summary"}, 
-	      React.createElement("div", {className: "order-summary-item"}, 
-	        React.createElement("div", {className: "order-summary-col order-summary-key"}, "Goodybag Fee"), 
-	        React.createElement("div", {className: "order-summary-col order-summary-value"}, "$2.99")
-	      )
-	    )
-	  ), 
 
 	  React.createElement("div", {className: "order-reviewer", "data-component-view": "hidden"}, 
 	    React.createElement("h3", {className: "order-reviewer-header"}, "Friday's order", 
@@ -58017,16 +58001,8 @@
 	          )
 	        )
 	    )
-	  ), 
-
-	  React.createElement("div", {className: "order-summary-wrapper", "data-component-view": "hidden"}, 
-	    React.createElement("div", {className: "order-summary"}, 
-	      React.createElement("div", {className: "order-summary-item"}, 
-	        React.createElement("div", {className: "order-summary-col order-summary-key"}, "Goodybag Fee"), 
-	        React.createElement("div", {className: "order-summary-col order-summary-value"}, "$2.99")
-	      )
-	    )
 	  )
+
 
 	    )
 	  );

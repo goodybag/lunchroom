@@ -60,14 +60,6 @@ module.exports = function (Context) {
         </div>
       </div>
 
-      <div className="order-summary-wrapper">
-        <div className="order-summary">
-          <div className="order-summary-item">
-            <div className="order-summary-col order-summary-key">Goodybag Fee</div>
-            <div className="order-summary-col order-summary-value" data-component-prop="goodybagFee">$2.99</div>
-          </div>
-        </div>
-      </div>
 
     </div>
 
@@ -137,14 +129,6 @@ module.exports = function (Context) {
     </div>
   </div>
 
-  <div className="order-summary-wrapper" data-component-view="hidden">
-    <div className="order-summary">
-      <div className="order-summary-item">
-        <div className="order-summary-col order-summary-key">Goodybag Fee</div>
-        <div className="order-summary-col order-summary-value">$2.99</div>
-      </div>
-    </div>
-  </div>
 
   <div className="order-reviewer" data-component-view="hidden">
     <h3 className="order-reviewer-header">Friday's order
@@ -197,14 +181,6 @@ module.exports = function (Context) {
     </div>
   </div>
 
-  <div className="order-summary-wrapper" data-component-view="hidden">
-    <div className="order-summary">
-      <div className="order-summary-item">
-        <div className="order-summary-col order-summary-key">Goodybag Fee</div>
-        <div className="order-summary-col order-summary-value">$2.99</div>
-      </div>
-    </div>
-  </div>
 
     </div>
   );
