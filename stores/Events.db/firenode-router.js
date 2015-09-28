@@ -15,13 +15,6 @@ exports['for'] = function (API) {
 
 	exports.processRequest = function (req, res, opts) {
 
-		req._FireNodeContext.addLayer({
-			config: {
-				externalRedirect: "http://lunchroom.goodybag.com/"
-			}
-		});
-		return false;
-
 		var session = req._FireNodeContext.session;
 
 		// For event email we just load the event id
