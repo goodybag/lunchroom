@@ -17,6 +17,15 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
                     message.from_name = "[TEST] Goodybag Staging";
                 }
 
+                if (
+                    process.env.APP_DOMAIN !== 'lunchroom.goodybag.com' &&
+                    !/@goodybag.com$/.test(message.to[0].email) &&
+                    message.to[0].email !== "cadorn.test@gmail.com"
+                ) {
+                    console.log("Ignore sending email to '" + message.to[0].email + "' as we are not on live system!");
+                    return;
+                }
+
                 if (templateId === "Receipt") {
 
                     message = API.DEEPMERGE({
@@ -144,6 +153,11 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
     //            message.to = "+" + message.to;
 
                 console.log("Sending SMS '" + templateId + "' to '" + message.to + "'");
+
+                if (process.env.APP_DOMAIN !== 'lunchroom.goodybag.com') {
+                    console.log("Ignore sending sms to '" + message.to + "' as we are not on live system!");
+                    return;
+                }
 
                 if (templateId === "Order_Arrived") {
 
