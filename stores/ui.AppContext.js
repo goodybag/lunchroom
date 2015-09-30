@@ -33,10 +33,11 @@ exports['for'] = function (overrides) {
 
 	var appContext = Model.makeContextForClient(config);
 
-
+/*
 	require("../app/lib/console").loadLogger(
 		appContext.get("context").services || {}
 	);
+*/
 
 	COMMON.init(appContext.get('sessionToken'), appContext.get('context'));
 
