@@ -69,7 +69,7 @@ module.exports = function (Context) {
 
 <div className="container items-container" data-component-id="menu">
   <h1 className="menu-provider-name"><span data-component-prop="restaurantTitle">Dos Batos Wood Fired Tacos</span>
-    <span className="no-tip-note">No tips. <span className="no-tip-note-flat">Just a flat <span data-component-prop="goodybagFee">$2.99</span> fee</span> And no more fee</span>
+    <span className="no-tip-note">No tips. <span className="no-tip-note-flat">Just a flat $2.99 fee</span> And no more fee</span>
   </h1>
   <div className="tiles item-tiles" data-component-section="items">
       <div className="tile item-tile" data-component-section="items" data-component-view="default">
@@ -306,9 +306,9 @@ module.exports = function (Context) {
           <li><a href="https://www.goodybag.com/privacy">Privacy policy</a></li>
         </ul>
 
-        <div className="loading-indicator">
+        <div className="loading-indicator" data-component-id="loading-indicator">
           <div className="loading-indicator-graphic">
-            <div className="image"></div>
+            <img src="/lunchroom-landing~0/resources/assets/img~cupcake-happy-9574e8b.png"/>
           </div>
           <div className="loading-indicator-text">Loading...</div>
         </div>

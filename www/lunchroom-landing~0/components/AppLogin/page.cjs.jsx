@@ -51,9 +51,9 @@ module.exports = function (Context) {
           <li><a href="https://www.goodybag.com/privacy">Privacy policy</a></li>
         </ul>
 
-        <div className="loading-indicator">
+        <div className="loading-indicator" data-component-id="loading-indicator">
           <div className="loading-indicator-graphic">
-            <div className="image"></div>
+            <img src="/lunchroom-landing~0/resources/assets/img~cupcake-happy-9574e8b.png"/>
           </div>
           <div className="loading-indicator-text">Loading...</div>
         </div>

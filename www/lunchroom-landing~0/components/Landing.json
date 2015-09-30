@@ -1,166 +1,170 @@
 {
-    "schemas": {
-        "DOCTYPE": "HTML"
-    },
-    "resources": [
-        {
-            "tag": "LINK",
-            "attributes": {
-                "rel": "stylesheet",
-                "href": "/lunchroom-landing~0/resources/ad9f552fd255c5d348748ac8ad8600cdf91e3413.css",
-                "component:bundle": "app.css"
-            },
-            "exportPath": "/pinf.genesis.consulting/GoodyBag/goodybag-core/07-lunchroom-landing/.sm.hoisted/lunchroom-landing~0/resources/ad9f552fd255c5d348748ac8ad8600cdf91e3413.css"
-        },
-        {
-            "tag": "SCRIPT",
-            "attributes": {
-                "src": "/lunchroom-landing~0/resources/dist~lib-fdbf4a9.js",
-                "component:bundle": "lib.js"
-            },
-            "exportPath": "/pinf.genesis.consulting/GoodyBag/goodybag-core/07-lunchroom-landing/.sm.hoisted/lunchroom-landing~0/resources/dist~lib-fdbf4a9.js"
-        },
-        {
-            "tag": "SCRIPT",
-            "attributes": {
-                "src": "/lunchroom-landing~0/resources/dist~app-2cbe9af.js",
-                "component:bundle": "app.js"
-            },
-            "exportPath": "/pinf.genesis.consulting/GoodyBag/goodybag-core/07-lunchroom-landing/.sm.hoisted/lunchroom-landing~0/resources/dist~app-2cbe9af.js"
-        },
-        {
-            "tag": "IMG",
-            "attributes": {
-                "src": "/lunchroom-landing~0/resources/assets/img~logo_goodybag_white-14f9e4c.png",
-                "alt": "Goodybag.com",
-                "class": "navbar-logo"
-            },
-            "exportPath": "/pinf.genesis.consulting/GoodyBag/goodybag-core/07-lunchroom-landing/.sm.hoisted/lunchroom-landing~0/resources/assets/img~logo_goodybag_white-14f9e4c.png"
-        },
-        {
-            "tag": "IMG",
-            "attributes": {
-                "src": "/lunchroom-landing~0/resources/assets/img~icons_step1-7706235.png",
-                "alt": "Restaurant rotation"
-            },
-            "exportPath": "/pinf.genesis.consulting/GoodyBag/goodybag-core/07-lunchroom-landing/.sm.hoisted/lunchroom-landing~0/resources/assets/img~icons_step1-7706235.png"
-        },
-        {
-            "tag": "IMG",
-            "attributes": {
-                "src": "/lunchroom-landing~0/resources/assets/img~icons_step2-c733bfa.png",
-                "alt": "Order deadline"
-            },
-            "exportPath": "/pinf.genesis.consulting/GoodyBag/goodybag-core/07-lunchroom-landing/.sm.hoisted/lunchroom-landing~0/resources/assets/img~icons_step2-c733bfa.png"
-        },
-        {
-            "tag": "IMG",
-            "attributes": {
-                "src": "/lunchroom-landing~0/resources/assets/img~icons_step3-e7ec2cb.png",
-                "alt": "Delivery notification"
-            },
-            "exportPath": "/pinf.genesis.consulting/GoodyBag/goodybag-core/07-lunchroom-landing/.sm.hoisted/lunchroom-landing~0/resources/assets/img~icons_step3-e7ec2cb.png"
-        },
-        {
-            "tag": "IMG",
-            "attributes": {
-                "src": "/lunchroom-landing~0/resources/assets/img~browsers_3mockups-de6a12d.png",
-                "class": "section-screenshot",
-                "alt": "Menu screenshot"
-            },
-            "exportPath": "/pinf.genesis.consulting/GoodyBag/goodybag-core/07-lunchroom-landing/.sm.hoisted/lunchroom-landing~0/resources/assets/img~browsers_3mockups-de6a12d.png"
-        },
-        {
-            "tag": "IMG",
-            "attributes": {
-                "src": "/lunchroom-landing~0/resources/assets/img~logo_trudys-d2b99e0.png",
-                "alt": "Trudy's"
-            },
-            "exportPath": "/pinf.genesis.consulting/GoodyBag/goodybag-core/07-lunchroom-landing/.sm.hoisted/lunchroom-landing~0/resources/assets/img~logo_trudys-d2b99e0.png"
-        },
-        {
-            "tag": "IMG",
-            "attributes": {
-                "src": "/lunchroom-landing~0/resources/assets/img~logo_micklethwait-b31ccde.png",
-                "alt": "Micklethwait"
-            },
-            "exportPath": "/pinf.genesis.consulting/GoodyBag/goodybag-core/07-lunchroom-landing/.sm.hoisted/lunchroom-landing~0/resources/assets/img~logo_micklethwait-b31ccde.png"
-        },
-        {
-            "tag": "IMG",
-            "attributes": {
-                "src": "/lunchroom-landing~0/resources/assets/img~logo_torchys-9bde0e3.png",
-                "alt": "Torchy's Tacos"
-            },
-            "exportPath": "/pinf.genesis.consulting/GoodyBag/goodybag-core/07-lunchroom-landing/.sm.hoisted/lunchroom-landing~0/resources/assets/img~logo_torchys-9bde0e3.png"
-        },
-        {
-            "tag": "IMG",
-            "attributes": {
-                "src": "/lunchroom-landing~0/resources/assets/img~logo_zoes-9a626ef.png",
-                "alt": "Zoe's Kitchen"
-            },
-            "exportPath": "/pinf.genesis.consulting/GoodyBag/goodybag-core/07-lunchroom-landing/.sm.hoisted/lunchroom-landing~0/resources/assets/img~logo_zoes-9a626ef.png"
-        },
-        {
-            "tag": "IMG",
-            "attributes": {
-                "src": "/lunchroom-landing~0/resources/assets/img~logo_madammams-addef91.png",
-                "alt": "Madam Mam's"
-            },
-            "exportPath": "/pinf.genesis.consulting/GoodyBag/goodybag-core/07-lunchroom-landing/.sm.hoisted/lunchroom-landing~0/resources/assets/img~logo_madammams-addef91.png"
-        }
-    ],
     "components": {
+        "footer": {
+            "attributes": {
+                "class": "footer"
+            },
+            "exportPath": "/pinf.genesis.consulting/GoodyBag/goodybag-core/07-lunchroom-landing/.sm.hoisted/lunchroom-landing~0/components/Landing/footer.htm",
+            "exportPaths": {
+                "cjs.jsx": "/pinf.genesis.consulting/GoodyBag/goodybag-core/07-lunchroom-landing/.sm.hoisted/lunchroom-landing~0/components/Landing/footer.cjs.jsx",
+                "htm": "/pinf.genesis.consulting/GoodyBag/goodybag-core/07-lunchroom-landing/.sm.hoisted/lunchroom-landing~0/components/Landing/footer.htm"
+            },
+            "innerHTML": "\n  <ul class=\"nav footer-nav\">\n    <li><a href=\"#\" data-toggle=\"modal\" data-target=\"#contact-us-modal\">Contact Us</a></li>\n    <li><a href=\"https://www.goodybag.com/legal\">Terms of service</a></li>\n    <li><a href=\"https://www.goodybag.com/privacy\">Privacy policy</a></li>\n  </ul>\n\n  <div class=\"modal fade\" id=\"contact-us-modal\">\n    <div class=\"modal-dialog\">\n      <div class=\"modal-content\">\n        <div class=\"modal-header\">\n          <h3 class=\"modal-title\">Contact Us</h3>\n        </div>\n        <form action=\"#\" class=\"form form-vertical contact-us-form\" id=\"contact-us-form\">\n          <div class=\"modal-body\">\n            <div class=\"form-group\">\n              <label for=\"name-input\">Name</label>\n              <input type=\"text\" name=\"name\" component:elm=\"name\">\n            </div>\n            <div class=\"form-group\">\n              <label for=\"name-input\">Email</label>\n              <input type=\"email\" name=\"email\" component:elm=\"email\">\n            </div>\n            <div class=\"form-group\">\n              <label for=\"message-input\">Message</label>\n              <textarea rows=\"6\" type=\"text\" name=\"message\" component:elm=\"message\"></textarea>\n            </div>\n          </div>\n          <div class=\"modal-footer\">\n            <button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\">Close</button>\n            <button type=\"submit\" class=\"btn btn-primary\">Submit</button>\n          </div>\n        </form>\n      </div>\n    </div>\n  </div>\n",
+            "originalInnerHTML": "\n  <ul class=\"nav footer-nav\">\n    <li><a href=\"#\" data-toggle=\"modal\" data-target=\"#contact-us-modal\">Contact Us</a></li>\n    <li><a href=\"https://www.goodybag.com/legal\">Terms of service</a></li>\n    <li><a href=\"https://www.goodybag.com/privacy\">Privacy policy</a></li>\n  </ul>\n\n  <div class=\"modal fade\" id=\"contact-us-modal\">\n    <div class=\"modal-dialog\">\n      <div class=\"modal-content\">\n        <div class=\"modal-header\">\n          <h3 class=\"modal-title\">Contact Us</h3>\n        </div>\n        <form action=\"#\" class=\"form form-vertical contact-us-form\" id=\"contact-us-form\">\n          <div class=\"modal-body\">\n            <div class=\"form-group\">\n              <label for=\"name-input\">Name</label>\n              <input type=\"text\" name=\"name\" component:elm=\"name\">\n            </div>\n            <div class=\"form-group\">\n              <label for=\"name-input\">Email</label>\n              <input type=\"email\" name=\"email\" component:elm=\"email\">\n            </div>\n            <div class=\"form-group\">\n              <label for=\"message-input\">Message</label>\n              <textarea rows=\"6\" type=\"text\" name=\"message\" component:elm=\"message\"></textarea>\n            </div>\n          </div>\n          <div class=\"modal-footer\">\n            <button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\">Close</button>\n            <button type=\"submit\" class=\"btn btn-primary\">Submit</button>\n          </div>\n        </form>\n      </div>\n    </div>\n  </div>\n",
+            "tag": "FOOTER"
+        },
         "page": {
-            "tag": "DIV",
             "attributes": {
                 "class": "page page-landing"
             },
-            "innerHTML": "\n      \n<header class=\"navbar navbar-transparent navbar-transparent-dark\">\n  <div class=\"container\">\n    <a href=\"/\">\n      <img src=\"/img/logo_goodybag_white.png\" alt=\"Goodybag.com\" class=\"navbar-logo\">\n    </a>\n\n    <ul class=\"nav navbar-nav navbar-right\">\n      <li>\n        <a href=\"#\" data-toggle=\"modal\" data-target=\"#contact-us-modal\">Contact Us</a>\n      </li>\n    </ul>\n  </div>\n</header>\n\n<section class=\"page-section hero-unit primary-section\" id=\"email-signup-cta\" component:id=\"subscription\">\n  <div class=\"container\">\n    <h1 class=\"section-header\">Get your lunch delivered every day.</h1>\n    <p>Your choice of meal brought to you at work. Starts August 17th, 2015.</p>\n    <form action=\"#\" class=\"cta-form form\" component:id=\"subscribe\">\n      <div class=\"form-group\">\n        <div class=\"email-wrapper\">\n          <input type=\"email\" name=\"email\" component:elm=\"email\">\n        </div>\n        <div class=\"submit-wrapper\">\n          <button class=\"btn btn-primary\" component:elm=\"subscribeButton\">Get notified</button>\n        </div>\n      </div>\n      <p class=\"form-explanation\">Enter your email to receive daily menus when we launch!</p>\n    </form>\n    <h2 class=\"outro-header\">Share the love! Send this page to your coworkers.</h2>\n  </div>\n</section>\n\n<section class=\"page-section\" id=\"how-it-works\">\n  <div class=\"container\">\n    <h1 class=\"section-title\">How it'll work</h1>\n    <div class=\"marketing-points\">\n      <div class=\"point\">\n        <img src=\"/img/icons_step1.png\" alt=\"Restaurant rotation\">\n        <p>One restaurant featured each day.</p>\n      </div>\n      <div class=\"point\">\n        <img src=\"/img/icons_step2.png\" alt=\"Order deadline\">\n        <p>Order by 10 AM.</p>\n      </div>\n      <div class=\"point\">\n        <img src=\"/img/icons_step3.png\" alt=\"Delivery notification\">\n        <p>We'll deliver your food at 12 and text you when it arrives!</p>\n      </div>\n    </div>\n  </div>\n</section>\n\n<section class=\"page-section section-dark\" id=\"new-menu-everyday\">\n  <div class=\"container\">\n    <h1 class=\"section-title\">A new menu every day</h1>\n    <img src=\"/img/browsers_3mockups.png\" class=\"section-screenshot\" alt=\"Menu screenshot\">\n  </div>\n</section>\n\n<section class=\"page-section\" id=\"restaurants\">\n  <div class=\"container\">\n    <h1 class=\"section-title\">A few restaurants you can expect</h1>\n    <ul class=\"logo-list\">\n      <li><img src=\"/img/logo_trudys.png\" alt=\"Trudy's\"></li>\n      <li><img src=\"/img/logo_micklethwait.png\" alt=\"Micklethwait\"></li>\n      <li><img src=\"/img/logo_torchys.png\" alt=\"Torchy's Tacos\"></li>\n      <li><img src=\"/img/logo_zoes.png\" alt=\"Zoe's Kitchen\"></li>\n      <li><img src=\"/img/logo_madammams.png\" alt=\"Madam Mam's\"></li>\n    </ul>\n  </div>\n</section>\n\n\n<footer class=\"footer\" component:id=\"footer\">\n  <ul class=\"nav footer-nav\">\n    <li><a href=\"#\" data-toggle=\"modal\" data-target=\"#contact-us-modal\">Contact Us</a></li>\n    <li><a href=\"https://www.goodybag.com/legal\">Terms of service</a></li>\n    <li><a href=\"https://www.goodybag.com/privacy\">Privacy policy</a></li>\n  </ul>\n\n  <div class=\"modal fade\" id=\"contact-us-modal\">\n    <div class=\"modal-dialog\">\n      <div class=\"modal-content\">\n        <div class=\"modal-header\">\n          <h3 class=\"modal-title\">Contact Us</h3>\n        </div>\n        <form action=\"#\" class=\"form form-vertical contact-us-form\" id=\"contact-us-form\">\n          <div class=\"modal-body\">\n            <div class=\"form-group\">\n              <label for=\"name-input\">Name</label>\n              <input type=\"text\" name=\"name\" component:elm=\"name\">\n            </div>\n            <div class=\"form-group\">\n              <label for=\"name-input\">Email</label>\n              <input type=\"email\" name=\"email\" component:elm=\"email\">\n            </div>\n            <div class=\"form-group\">\n              <label for=\"message-input\">Message</label>\n              <textarea rows=\"6\" type=\"text\" name=\"message\" component:elm=\"message\"></textarea>\n            </div>\n          </div>\n          <div class=\"modal-footer\">\n            <button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\">Close</button>\n            <button type=\"submit\" class=\"btn btn-primary\">Submit</button>\n          </div>\n        </form>\n      </div>\n    </div>\n  </div>\n</footer>\n\n\n    ",
+            "exportPath": "/pinf.genesis.consulting/GoodyBag/goodybag-core/07-lunchroom-landing/.sm.hoisted/lunchroom-landing~0/components/Landing/page.htm",
             "exportPaths": {
-                "htm": "/pinf.genesis.consulting/GoodyBag/goodybag-core/07-lunchroom-landing/.sm.hoisted/lunchroom-landing~0/components/Landing/page.htm",
-                "cjs.jsx": "/pinf.genesis.consulting/GoodyBag/goodybag-core/07-lunchroom-landing/.sm.hoisted/lunchroom-landing~0/components/Landing/page.cjs.jsx"
+                "cjs.jsx": "/pinf.genesis.consulting/GoodyBag/goodybag-core/07-lunchroom-landing/.sm.hoisted/lunchroom-landing~0/components/Landing/page.cjs.jsx",
+                "htm": "/pinf.genesis.consulting/GoodyBag/goodybag-core/07-lunchroom-landing/.sm.hoisted/lunchroom-landing~0/components/Landing/page.htm"
             },
-            "exportPath": "/pinf.genesis.consulting/GoodyBag/goodybag-core/07-lunchroom-landing/.sm.hoisted/lunchroom-landing~0/components/Landing/page.htm"
-        },
-        "subscription": {
-            "tag": "SECTION",
-            "attributes": {
-                "class": "page-section hero-unit primary-section",
-                "id": "email-signup-cta"
-            },
-            "innerHTML": "\n  <div class=\"container\">\n    <h1 class=\"section-header\">Get your lunch delivered every day.</h1>\n    <p>Your choice of meal brought to you at work. Starts August 17th, 2015.</p>\n    <form action=\"#\" class=\"cta-form form\" component:id=\"subscribe\">\n      <div class=\"form-group\">\n        <div class=\"email-wrapper\">\n          <input type=\"email\" name=\"email\" component:elm=\"email\">\n        </div>\n        <div class=\"submit-wrapper\">\n          <button class=\"btn btn-primary\" component:elm=\"subscribeButton\">Get notified</button>\n        </div>\n      </div>\n      <p class=\"form-explanation\">Enter your email to receive daily menus when we launch!</p>\n    </form>\n    <h2 class=\"outro-header\">Share the love! Send this page to your coworkers.</h2>\n  </div>\n",
-            "exportPaths": {
-                "htm": "/pinf.genesis.consulting/GoodyBag/goodybag-core/07-lunchroom-landing/.sm.hoisted/lunchroom-landing~0/components/Landing/subscription.htm",
-                "cjs.jsx": "/pinf.genesis.consulting/GoodyBag/goodybag-core/07-lunchroom-landing/.sm.hoisted/lunchroom-landing~0/components/Landing/subscription.cjs.jsx"
-            },
-            "exportPath": "/pinf.genesis.consulting/GoodyBag/goodybag-core/07-lunchroom-landing/.sm.hoisted/lunchroom-landing~0/components/Landing/subscription.htm"
+            "innerHTML": "\n      \n<header class=\"navbar navbar-transparent navbar-transparent-dark\">\n  <div class=\"container\">\n    <a href=\"/\">\n      <img src=\"/lunchroom-landing~0/resources/assets/img~logo_goodybag_white-14f9e4c.png\" alt=\"Goodybag.com\" class=\"navbar-logo\">\n    </a>\n\n    <ul class=\"nav navbar-nav navbar-right\">\n      <li>\n        <a href=\"#\" data-toggle=\"modal\" data-target=\"#contact-us-modal\">Contact Us</a>\n      </li>\n    </ul>\n  </div>\n</header>\n\n<section class=\"page-section hero-unit primary-section\" id=\"email-signup-cta\" component:id=\"subscription\">\n  <div class=\"container\">\n    <h1 class=\"section-header\">Get your lunch delivered every day.</h1>\n    <p>Your choice of meal brought to you at work. Starts August 17th, 2015.</p>\n    <form action=\"#\" class=\"cta-form form\" component:id=\"subscribe\">\n      <div class=\"form-group\">\n        <div class=\"email-wrapper\">\n          <input type=\"email\" name=\"email\" component:elm=\"email\">\n        </div>\n        <div class=\"submit-wrapper\">\n          <button class=\"btn btn-primary\" component:elm=\"subscribeButton\">Get notified</button>\n        </div>\n      </div>\n      <p class=\"form-explanation\">Enter your email to receive daily menus when we launch!</p>\n    </form>\n    <h2 class=\"outro-header\">Share the love! Send this page to your coworkers.</h2>\n  </div>\n</section>\n\n<section class=\"page-section\" id=\"how-it-works\">\n  <div class=\"container\">\n    <h1 class=\"section-title\">How it'll work</h1>\n    <div class=\"marketing-points\">\n      <div class=\"point\">\n        <img src=\"/lunchroom-landing~0/resources/assets/img~icons_step1-7706235.png\" alt=\"Restaurant rotation\">\n        <p>One restaurant featured each day.</p>\n      </div>\n      <div class=\"point\">\n        <img src=\"/lunchroom-landing~0/resources/assets/img~icons_step2-c733bfa.png\" alt=\"Order deadline\">\n        <p>Order by 10 AM.</p>\n      </div>\n      <div class=\"point\">\n        <img src=\"/lunchroom-landing~0/resources/assets/img~icons_step3-e7ec2cb.png\" alt=\"Delivery notification\">\n        <p>We'll deliver your food at 12 and text you when it arrives!</p>\n      </div>\n    </div>\n  </div>\n</section>\n\n<section class=\"page-section section-dark\" id=\"new-menu-everyday\">\n  <div class=\"container\">\n    <h1 class=\"section-title\">A new menu every day</h1>\n    <img src=\"/lunchroom-landing~0/resources/assets/img~browsers_3mockups-de6a12d.png\" class=\"section-screenshot\" alt=\"Menu screenshot\">\n  </div>\n</section>\n\n<section class=\"page-section\" id=\"restaurants\">\n  <div class=\"container\">\n    <h1 class=\"section-title\">A few restaurants you can expect</h1>\n    <ul class=\"logo-list\">\n      <li><img src=\"/lunchroom-landing~0/resources/assets/img~logo_trudys-d2b99e0.png\" alt=\"Trudy's\"></li>\n      <li><img src=\"/lunchroom-landing~0/resources/assets/img~logo_micklethwait-b31ccde.png\" alt=\"Micklethwait\"></li>\n      <li><img src=\"/lunchroom-landing~0/resources/assets/img~logo_torchys-9bde0e3.png\" alt=\"Torchy's Tacos\"></li>\n      <li><img src=\"/lunchroom-landing~0/resources/assets/img~logo_zoes-9a626ef.png\" alt=\"Zoe's Kitchen\"></li>\n      <li><img src=\"/lunchroom-landing~0/resources/assets/img~logo_madammams-addef91.png\" alt=\"Madam Mam's\"></li>\n    </ul>\n  </div>\n</section>\n\n\n<footer class=\"footer\" component:id=\"footer\">\n  <ul class=\"nav footer-nav\">\n    <li><a href=\"#\" data-toggle=\"modal\" data-target=\"#contact-us-modal\">Contact Us</a></li>\n    <li><a href=\"https://www.goodybag.com/legal\">Terms of service</a></li>\n    <li><a href=\"https://www.goodybag.com/privacy\">Privacy policy</a></li>\n  </ul>\n\n  <div class=\"modal fade\" id=\"contact-us-modal\">\n    <div class=\"modal-dialog\">\n      <div class=\"modal-content\">\n        <div class=\"modal-header\">\n          <h3 class=\"modal-title\">Contact Us</h3>\n        </div>\n        <form action=\"#\" class=\"form form-vertical contact-us-form\" id=\"contact-us-form\">\n          <div class=\"modal-body\">\n            <div class=\"form-group\">\n              <label for=\"name-input\">Name</label>\n              <input type=\"text\" name=\"name\" component:elm=\"name\">\n            </div>\n            <div class=\"form-group\">\n              <label for=\"name-input\">Email</label>\n              <input type=\"email\" name=\"email\" component:elm=\"email\">\n            </div>\n            <div class=\"form-group\">\n              <label for=\"message-input\">Message</label>\n              <textarea rows=\"6\" type=\"text\" name=\"message\" component:elm=\"message\"></textarea>\n            </div>\n          </div>\n          <div class=\"modal-footer\">\n            <button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\">Close</button>\n            <button type=\"submit\" class=\"btn btn-primary\">Submit</button>\n          </div>\n        </form>\n      </div>\n    </div>\n  </div>\n</footer>\n\n\n    ",
+            "originalInnerHTML": "\n      \n<header class=\"navbar navbar-transparent navbar-transparent-dark\">\n  <div class=\"container\">\n    <a href=\"/\">\n      <img src=\"/img/logo_goodybag_white.png\" alt=\"Goodybag.com\" class=\"navbar-logo\">\n    </a>\n\n    <ul class=\"nav navbar-nav navbar-right\">\n      <li>\n        <a href=\"#\" data-toggle=\"modal\" data-target=\"#contact-us-modal\">Contact Us</a>\n      </li>\n    </ul>\n  </div>\n</header>\n\n<section class=\"page-section hero-unit primary-section\" id=\"email-signup-cta\" component:id=\"subscription\">\n  <div class=\"container\">\n    <h1 class=\"section-header\">Get your lunch delivered every day.</h1>\n    <p>Your choice of meal brought to you at work. Starts August 17th, 2015.</p>\n    <form action=\"#\" class=\"cta-form form\" component:id=\"subscribe\">\n      <div class=\"form-group\">\n        <div class=\"email-wrapper\">\n          <input type=\"email\" name=\"email\" component:elm=\"email\">\n        </div>\n        <div class=\"submit-wrapper\">\n          <button class=\"btn btn-primary\" component:elm=\"subscribeButton\">Get notified</button>\n        </div>\n      </div>\n      <p class=\"form-explanation\">Enter your email to receive daily menus when we launch!</p>\n    </form>\n    <h2 class=\"outro-header\">Share the love! Send this page to your coworkers.</h2>\n  </div>\n</section>\n\n<section class=\"page-section\" id=\"how-it-works\">\n  <div class=\"container\">\n    <h1 class=\"section-title\">How it'll work</h1>\n    <div class=\"marketing-points\">\n      <div class=\"point\">\n        <img src=\"/img/icons_step1.png\" alt=\"Restaurant rotation\">\n        <p>One restaurant featured each day.</p>\n      </div>\n      <div class=\"point\">\n        <img src=\"/img/icons_step2.png\" alt=\"Order deadline\">\n        <p>Order by 10 AM.</p>\n      </div>\n      <div class=\"point\">\n        <img src=\"/img/icons_step3.png\" alt=\"Delivery notification\">\n        <p>We'll deliver your food at 12 and text you when it arrives!</p>\n      </div>\n    </div>\n  </div>\n</section>\n\n<section class=\"page-section section-dark\" id=\"new-menu-everyday\">\n  <div class=\"container\">\n    <h1 class=\"section-title\">A new menu every day</h1>\n    <img src=\"/img/browsers_3mockups.png\" class=\"section-screenshot\" alt=\"Menu screenshot\">\n  </div>\n</section>\n\n<section class=\"page-section\" id=\"restaurants\">\n  <div class=\"container\">\n    <h1 class=\"section-title\">A few restaurants you can expect</h1>\n    <ul class=\"logo-list\">\n      <li><img src=\"/img/logo_trudys.png\" alt=\"Trudy's\"></li>\n      <li><img src=\"/img/logo_micklethwait.png\" alt=\"Micklethwait\"></li>\n      <li><img src=\"/img/logo_torchys.png\" alt=\"Torchy's Tacos\"></li>\n      <li><img src=\"/img/logo_zoes.png\" alt=\"Zoe's Kitchen\"></li>\n      <li><img src=\"/img/logo_madammams.png\" alt=\"Madam Mam's\"></li>\n    </ul>\n  </div>\n</section>\n\n\n<footer class=\"footer\" component:id=\"footer\">\n  <ul class=\"nav footer-nav\">\n    <li><a href=\"#\" data-toggle=\"modal\" data-target=\"#contact-us-modal\">Contact Us</a></li>\n    <li><a href=\"https://www.goodybag.com/legal\">Terms of service</a></li>\n    <li><a href=\"https://www.goodybag.com/privacy\">Privacy policy</a></li>\n  </ul>\n\n  <div class=\"modal fade\" id=\"contact-us-modal\">\n    <div class=\"modal-dialog\">\n      <div class=\"modal-content\">\n        <div class=\"modal-header\">\n          <h3 class=\"modal-title\">Contact Us</h3>\n        </div>\n        <form action=\"#\" class=\"form form-vertical contact-us-form\" id=\"contact-us-form\">\n          <div class=\"modal-body\">\n            <div class=\"form-group\">\n              <label for=\"name-input\">Name</label>\n              <input type=\"text\" name=\"name\" component:elm=\"name\">\n            </div>\n            <div class=\"form-group\">\n              <label for=\"name-input\">Email</label>\n              <input type=\"email\" name=\"email\" component:elm=\"email\">\n            </div>\n            <div class=\"form-group\">\n              <label for=\"message-input\">Message</label>\n              <textarea rows=\"6\" type=\"text\" name=\"message\" component:elm=\"message\"></textarea>\n            </div>\n          </div>\n          <div class=\"modal-footer\">\n            <button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\">Close</button>\n            <button type=\"submit\" class=\"btn btn-primary\">Submit</button>\n          </div>\n        </form>\n      </div>\n    </div>\n  </div>\n</footer>\n\n\n    ",
+            "tag": "DIV"
         },
         "subscribe": {
-            "tag": "FORM",
             "attributes": {
                 "action": "#",
                 "class": "cta-form form"
             },
+            "exportPath": "/pinf.genesis.consulting/GoodyBag/goodybag-core/07-lunchroom-landing/.sm.hoisted/lunchroom-landing~0/components/Landing/subscribe.htm",
+            "exportPaths": {
+                "cjs.jsx": "/pinf.genesis.consulting/GoodyBag/goodybag-core/07-lunchroom-landing/.sm.hoisted/lunchroom-landing~0/components/Landing/subscribe.cjs.jsx",
+                "htm": "/pinf.genesis.consulting/GoodyBag/goodybag-core/07-lunchroom-landing/.sm.hoisted/lunchroom-landing~0/components/Landing/subscribe.htm"
+            },
             "innerHTML": "\n      <div class=\"form-group\">\n        <div class=\"email-wrapper\">\n          <input type=\"email\" name=\"email\" component:elm=\"email\">\n        </div>\n        <div class=\"submit-wrapper\">\n          <button class=\"btn btn-primary\" component:elm=\"subscribeButton\">Get notified</button>\n        </div>\n      </div>\n      <p class=\"form-explanation\">Enter your email to receive daily menus when we launch!</p>\n    ",
-            "exportPaths": {
-                "htm": "/pinf.genesis.consulting/GoodyBag/goodybag-core/07-lunchroom-landing/.sm.hoisted/lunchroom-landing~0/components/Landing/subscribe.htm",
-                "cjs.jsx": "/pinf.genesis.consulting/GoodyBag/goodybag-core/07-lunchroom-landing/.sm.hoisted/lunchroom-landing~0/components/Landing/subscribe.cjs.jsx"
-            },
-            "exportPath": "/pinf.genesis.consulting/GoodyBag/goodybag-core/07-lunchroom-landing/.sm.hoisted/lunchroom-landing~0/components/Landing/subscribe.htm"
+            "originalInnerHTML": "\n      <div class=\"form-group\">\n        <div class=\"email-wrapper\">\n          <input type=\"email\" name=\"email\" component:elm=\"email\">\n        </div>\n        <div class=\"submit-wrapper\">\n          <button class=\"btn btn-primary\" component:elm=\"subscribeButton\">Get notified</button>\n        </div>\n      </div>\n      <p class=\"form-explanation\">Enter your email to receive daily menus when we launch!</p>\n    ",
+            "tag": "FORM"
         },
-        "footer": {
-            "tag": "FOOTER",
+        "subscription": {
             "attributes": {
-                "class": "footer"
+                "class": "page-section hero-unit primary-section",
+                "id": "email-signup-cta"
             },
-            "innerHTML": "\n  <ul class=\"nav footer-nav\">\n    <li><a href=\"#\" data-toggle=\"modal\" data-target=\"#contact-us-modal\">Contact Us</a></li>\n    <li><a href=\"https://www.goodybag.com/legal\">Terms of service</a></li>\n    <li><a href=\"https://www.goodybag.com/privacy\">Privacy policy</a></li>\n  </ul>\n\n  <div class=\"modal fade\" id=\"contact-us-modal\">\n    <div class=\"modal-dialog\">\n      <div class=\"modal-content\">\n        <div class=\"modal-header\">\n          <h3 class=\"modal-title\">Contact Us</h3>\n        </div>\n        <form action=\"#\" class=\"form form-vertical contact-us-form\" id=\"contact-us-form\">\n          <div class=\"modal-body\">\n            <div class=\"form-group\">\n              <label for=\"name-input\">Name</label>\n              <input type=\"text\" name=\"name\" component:elm=\"name\">\n            </div>\n            <div class=\"form-group\">\n              <label for=\"name-input\">Email</label>\n              <input type=\"email\" name=\"email\" component:elm=\"email\">\n            </div>\n            <div class=\"form-group\">\n              <label for=\"message-input\">Message</label>\n              <textarea rows=\"6\" type=\"text\" name=\"message\" component:elm=\"message\"></textarea>\n            </div>\n          </div>\n          <div class=\"modal-footer\">\n            <button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\">Close</button>\n            <button type=\"submit\" class=\"btn btn-primary\">Submit</button>\n          </div>\n        </form>\n      </div>\n    </div>\n  </div>\n",
+            "exportPath": "/pinf.genesis.consulting/GoodyBag/goodybag-core/07-lunchroom-landing/.sm.hoisted/lunchroom-landing~0/components/Landing/subscription.htm",
             "exportPaths": {
-                "htm": "/pinf.genesis.consulting/GoodyBag/goodybag-core/07-lunchroom-landing/.sm.hoisted/lunchroom-landing~0/components/Landing/footer.htm",
-                "cjs.jsx": "/pinf.genesis.consulting/GoodyBag/goodybag-core/07-lunchroom-landing/.sm.hoisted/lunchroom-landing~0/components/Landing/footer.cjs.jsx"
+                "cjs.jsx": "/pinf.genesis.consulting/GoodyBag/goodybag-core/07-lunchroom-landing/.sm.hoisted/lunchroom-landing~0/components/Landing/subscription.cjs.jsx",
+                "htm": "/pinf.genesis.consulting/GoodyBag/goodybag-core/07-lunchroom-landing/.sm.hoisted/lunchroom-landing~0/components/Landing/subscription.htm"
             },
-            "exportPath": "/pinf.genesis.consulting/GoodyBag/goodybag-core/07-lunchroom-landing/.sm.hoisted/lunchroom-landing~0/components/Landing/footer.htm"
+            "innerHTML": "\n  <div class=\"container\">\n    <h1 class=\"section-header\">Get your lunch delivered every day.</h1>\n    <p>Your choice of meal brought to you at work. Starts August 17th, 2015.</p>\n    <form action=\"#\" class=\"cta-form form\" component:id=\"subscribe\">\n      <div class=\"form-group\">\n        <div class=\"email-wrapper\">\n          <input type=\"email\" name=\"email\" component:elm=\"email\">\n        </div>\n        <div class=\"submit-wrapper\">\n          <button class=\"btn btn-primary\" component:elm=\"subscribeButton\">Get notified</button>\n        </div>\n      </div>\n      <p class=\"form-explanation\">Enter your email to receive daily menus when we launch!</p>\n    </form>\n    <h2 class=\"outro-header\">Share the love! Send this page to your coworkers.</h2>\n  </div>\n",
+            "originalInnerHTML": "\n  <div class=\"container\">\n    <h1 class=\"section-header\">Get your lunch delivered every day.</h1>\n    <p>Your choice of meal brought to you at work. Starts August 17th, 2015.</p>\n    <form action=\"#\" class=\"cta-form form\" component:id=\"subscribe\">\n      <div class=\"form-group\">\n        <div class=\"email-wrapper\">\n          <input type=\"email\" name=\"email\" component:elm=\"email\">\n        </div>\n        <div class=\"submit-wrapper\">\n          <button class=\"btn btn-primary\" component:elm=\"subscribeButton\">Get notified</button>\n        </div>\n      </div>\n      <p class=\"form-explanation\">Enter your email to receive daily menus when we launch!</p>\n    </form>\n    <h2 class=\"outro-header\">Share the love! Send this page to your coworkers.</h2>\n  </div>\n",
+            "tag": "SECTION"
         }
+    },
+    "resources": [
+        {
+            "attributes": {
+                "component:bundle": "app.css",
+                "href": "/lunchroom-landing~0/resources/ad9f552fd255c5d348748ac8ad8600cdf91e3413.css",
+                "rel": "stylesheet"
+            },
+            "exportPath": "/pinf.genesis.consulting/GoodyBag/goodybag-core/07-lunchroom-landing/.sm.hoisted/lunchroom-landing~0/resources/ad9f552fd255c5d348748ac8ad8600cdf91e3413.css",
+            "tag": "LINK"
+        },
+        {
+            "attributes": {
+                "component:bundle": "lib.js",
+                "src": "/lunchroom-landing~0/resources/dist~lib-fdbf4a9.js"
+            },
+            "exportPath": "/pinf.genesis.consulting/GoodyBag/goodybag-core/07-lunchroom-landing/.sm.hoisted/lunchroom-landing~0/resources/dist~lib-fdbf4a9.js",
+            "tag": "SCRIPT"
+        },
+        {
+            "attributes": {
+                "component:bundle": "app.js",
+                "src": "/lunchroom-landing~0/resources/dist~app-2cbe9af.js"
+            },
+            "exportPath": "/pinf.genesis.consulting/GoodyBag/goodybag-core/07-lunchroom-landing/.sm.hoisted/lunchroom-landing~0/resources/dist~app-2cbe9af.js",
+            "tag": "SCRIPT"
+        },
+        {
+            "attributes": {
+                "alt": "Goodybag.com",
+                "class": "navbar-logo",
+                "src": "/lunchroom-landing~0/resources/assets/img~logo_goodybag_white-14f9e4c.png"
+            },
+            "exportPath": "/pinf.genesis.consulting/GoodyBag/goodybag-core/07-lunchroom-landing/.sm.hoisted/lunchroom-landing~0/resources/assets/img~logo_goodybag_white-14f9e4c.png",
+            "tag": "IMG"
+        },
+        {
+            "attributes": {
+                "alt": "Restaurant rotation",
+                "src": "/lunchroom-landing~0/resources/assets/img~icons_step1-7706235.png"
+            },
+            "exportPath": "/pinf.genesis.consulting/GoodyBag/goodybag-core/07-lunchroom-landing/.sm.hoisted/lunchroom-landing~0/resources/assets/img~icons_step1-7706235.png",
+            "tag": "IMG"
+        },
+        {
+            "attributes": {
+                "alt": "Order deadline",
+                "src": "/lunchroom-landing~0/resources/assets/img~icons_step2-c733bfa.png"
+            },
+            "exportPath": "/pinf.genesis.consulting/GoodyBag/goodybag-core/07-lunchroom-landing/.sm.hoisted/lunchroom-landing~0/resources/assets/img~icons_step2-c733bfa.png",
+            "tag": "IMG"
+        },
+        {
+            "attributes": {
+                "alt": "Delivery notification",
+                "src": "/lunchroom-landing~0/resources/assets/img~icons_step3-e7ec2cb.png"
+            },
+            "exportPath": "/pinf.genesis.consulting/GoodyBag/goodybag-core/07-lunchroom-landing/.sm.hoisted/lunchroom-landing~0/resources/assets/img~icons_step3-e7ec2cb.png",
+            "tag": "IMG"
+        },
+        {
+            "attributes": {
+                "alt": "Menu screenshot",
+                "class": "section-screenshot",
+                "src": "/lunchroom-landing~0/resources/assets/img~browsers_3mockups-de6a12d.png"
+            },
+            "exportPath": "/pinf.genesis.consulting/GoodyBag/goodybag-core/07-lunchroom-landing/.sm.hoisted/lunchroom-landing~0/resources/assets/img~browsers_3mockups-de6a12d.png",
+            "tag": "IMG"
+        },
+        {
+            "attributes": {
+                "alt": "Trudy's",
+                "src": "/lunchroom-landing~0/resources/assets/img~logo_trudys-d2b99e0.png"
+            },
+            "exportPath": "/pinf.genesis.consulting/GoodyBag/goodybag-core/07-lunchroom-landing/.sm.hoisted/lunchroom-landing~0/resources/assets/img~logo_trudys-d2b99e0.png",
+            "tag": "IMG"
+        },
+        {
+            "attributes": {
+                "alt": "Micklethwait",
+                "src": "/lunchroom-landing~0/resources/assets/img~logo_micklethwait-b31ccde.png"
+            },
+            "exportPath": "/pinf.genesis.consulting/GoodyBag/goodybag-core/07-lunchroom-landing/.sm.hoisted/lunchroom-landing~0/resources/assets/img~logo_micklethwait-b31ccde.png",
+            "tag": "IMG"
+        },
+        {
+            "attributes": {
+                "alt": "Torchy's Tacos",
+                "src": "/lunchroom-landing~0/resources/assets/img~logo_torchys-9bde0e3.png"
+            },
+            "exportPath": "/pinf.genesis.consulting/GoodyBag/goodybag-core/07-lunchroom-landing/.sm.hoisted/lunchroom-landing~0/resources/assets/img~logo_torchys-9bde0e3.png",
+            "tag": "IMG"
+        },
+        {
+            "attributes": {
+                "alt": "Zoe's Kitchen",
+                "src": "/lunchroom-landing~0/resources/assets/img~logo_zoes-9a626ef.png"
+            },
+            "exportPath": "/pinf.genesis.consulting/GoodyBag/goodybag-core/07-lunchroom-landing/.sm.hoisted/lunchroom-landing~0/resources/assets/img~logo_zoes-9a626ef.png",
+            "tag": "IMG"
+        },
+        {
+            "attributes": {
+                "alt": "Madam Mam's",
+                "src": "/lunchroom-landing~0/resources/assets/img~logo_madammams-addef91.png"
+            },
+            "exportPath": "/pinf.genesis.consulting/GoodyBag/goodybag-core/07-lunchroom-landing/.sm.hoisted/lunchroom-landing~0/resources/assets/img~logo_madammams-addef91.png",
+            "tag": "IMG"
+        }
+    ],
+    "schemas": {
+        "DOCTYPE": "HTML"
     }
 }

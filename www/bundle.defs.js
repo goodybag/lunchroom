@@ -43343,9 +43343,9 @@
 	          React.createElement("li", null, React.createElement("a", {href: "https://www.goodybag.com/privacy"}, "Privacy policy"))
 	        ), 
 
-	        React.createElement("div", {className: "loading-indicator"}, 
+	        React.createElement("div", {className: "loading-indicator", "data-component-id": "loading-indicator"}, 
 	          React.createElement("div", {className: "loading-indicator-graphic"}, 
-	            React.createElement("div", {className: "image"})
+	            React.createElement("img", {src: "/lunchroom-landing~0/resources/assets/img~cupcake-happy-9574e8b.png"})
 	          ), 
 	          React.createElement("div", {className: "loading-indicator-text"}, "Loading...")
 	        ), 
@@ -44503,7 +44503,7 @@
 	    React.createElement("div", {className: "container items-container"}, 
 
 	  React.createElement("h1", {className: "menu-provider-name"}, React.createElement("span", {"data-component-prop": "restaurantTitle"}, "Dos Batos Wood Fired Tacos"), 
-	    React.createElement("span", {className: "no-tip-note"}, "No tips. ", React.createElement("span", {className: "no-tip-note-flat"}, "Just a flat ", React.createElement("span", {"data-component-prop": "goodybagFee"}, "$2.99"), " fee"), " And no more fee")
+	    React.createElement("span", {className: "no-tip-note"}, "No tips. ", React.createElement("span", {className: "no-tip-note-flat"}, "Just a flat $2.99 fee"), " And no more fee")
 	  ), 
 	  React.createElement("div", {className: "tiles item-tiles", "data-component-section": "items"}, 
 	      React.createElement("div", {className: "tile item-tile", "data-component-section": "items", "data-component-view": "default"}, 
@@ -74833,11 +74833,11 @@
 			// Initialize without loading data from server for now.
 			function makeStartOfWeek () {
 
-	console.log("common", common);
-	console.log("common.MOMENT", common.MOMENT.toString());
-	if (common.MOMENT_CT) {
-		console.log("common.MOMENT_CT", common.MOMENT_CT.toString());
-	}
+	//console.log("common", common);
+	//console.log("common.MOMENT", common.MOMENT.toString());
+	//if (common.MOMENT_CT) {
+	//	console.log("common.MOMENT_CT", common.MOMENT_CT.toString());
+	//}
 				var startOfWeek = (common.MOMENT_CT || common.MOMENT)().startOf('week');
 				// If Saturday or Sunday, jump to next week.
 				if (

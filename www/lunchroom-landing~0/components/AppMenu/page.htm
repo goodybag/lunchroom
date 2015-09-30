@@ -71,7 +71,7 @@
 
 <div class="container items-container" component:id="menu">
   <h1 class="menu-provider-name"><span component:prop="restaurantTitle">Dos Batos Wood Fired Tacos</span>
-    <span class="no-tip-note">No tips. <span class="no-tip-note-flat">Just a flat <span component:prop="goodybagFee">$2.99</span> fee</span> And no more fee</span>
+    <span class="no-tip-note">No tips. <span class="no-tip-note-flat">Just a flat $2.99 fee</span> And no more fee</span>
   </h1>
   <div class="tiles item-tiles" component:section="items">
       <div class="tile item-tile" component:section="items" component:view="default">
@@ -308,9 +308,9 @@
           <li><a href="https://www.goodybag.com/privacy">Privacy policy</a></li>
         </ul>
 
-        <div class="loading-indicator">
+        <div class="loading-indicator" component:id="loading-indicator">
           <div class="loading-indicator-graphic">
-            <div class="image"></div>
+            <img src="/lunchroom-landing~0/resources/assets/img~cupcake-happy-9574e8b.png">
           </div>
           <div class="loading-indicator-text">Loading...</div>
         </div>

@@ -5530,12 +5530,10 @@ a:hover {
   animation-timing-function: ease-out;
 }
 
-.loading-indicator .loading-indicator-graphic > .image {
+.loading-indicator .loading-indicator-graphic > img {
+  width: 100%;
   max-width: 100%;
   border: none;
-  background-image: url("/lunchroom-landing~0/resources/assets/img~cupcake-happy-9574e8b.png");
-  min-width: 111px;
-  min-height: 119px;
 }
 
 .loading-indicator .loading-indicator-text {
