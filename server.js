@@ -302,6 +302,12 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
 			return resources;
 		}
 
+		function getLoadingIndicatorCode () {
+			var descriptor = require("./www/lunchroom-landing~0/hoisted.json");
+			var componentsDescriptor = require(descriptor.pages.AppMenu.componentsDescriptorPath.replace(/\{\{__DIRNAME__\}\}/, PATH.join(__dirname, "www/lunchroom-landing~0")));
+			return componentsDescriptor.components["loading-indicator"].innerHTML;
+		}
+
 		var landingResources = getResourceMappingsForSkinPage("Landing");
 		var appResources = getResourceMappingsForSkinPage("AppMenu");
 
@@ -351,6 +357,8 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
 //				content = content.replace(/\{\{landingSkinCssUrl\}\}/g, landingResources.css);
 //				content = content.replace(/\{\{landingSkinLibJsUrl\}\}/g, landingResources.js.lib);
 //				content = content.replace(/\{\{landingSkinAppJsUrl\}\}/g, landingResources.js.app);
+
+				content = content.replace(/\{\{loadingIndicatorCode\}\}/g, getLoadingIndicatorCode());
 
 				content = content.replace(/\{\{skinCssUrl\}\}/g, appResources["app.css"]);
 				content = content.replace(/\{\{skinLibJsUrl\}\}/g, appResources["lib.js"]);
