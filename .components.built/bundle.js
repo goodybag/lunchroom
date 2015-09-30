@@ -65975,11 +65975,11 @@
 
 		var appContext = Model.makeContextForClient(config);
 
-	/*
-		require("../app/lib/console").loadLogger(
+
+		__webpack_require__(7).loadLogger(
 			appContext.get("context").services || {}
 		);
-	*/
+
 
 		COMMON.init(appContext.get('sessionToken'), appContext.get('context'));
 
