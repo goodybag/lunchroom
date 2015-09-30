@@ -136,8 +136,6 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
 
 			req.cookies = new COOKIES(req, res);
 
-console.log("headers", req.headers);
-
 			// Enable or disable test mode.
 			if (
 				req.query &&
@@ -528,6 +526,18 @@ console.log("headers", req.headers);
 		var server = HTTP.createServer(function (req, res) {
 
 			try {
+
+
+				// Redirect to HTTPS if request was via HTTP
+				if (
+					req.headers['x-forwarded-proto'] === "http" &&
+					process.env.APP_DOMAIN
+				) {
+					var url = "https://" + process.env.APP_DOMAIN + req.url;
+console.log("REDIRECT TO HTTPS URL:", url);
+					return res.redirect(url);
+				}
+
 
 				publicApp(req, res, function (err) {
 					if (err) {
