@@ -25,7 +25,8 @@ exports['for'] = function (API) {
 			return qknex('events', function (table) {
 				return table
 					.where({
-						"token": opts.arg
+						"token": opts.arg,
+						'deleted': false
 					}).select(
 						'id',
 						'consumer_group_id'
@@ -94,7 +95,8 @@ exports['for'] = function (API) {
 		return qknex('events', function (table) {
 			return table
 				.where({
-					"token": opts.arg
+					"token": opts.arg,
+					'deleted': false
 				}).select(
 					'id',
 					'consumer_group_id'
@@ -124,7 +126,8 @@ exports['for'] = function (API) {
 					return table
 						.where({
 							"day_id": MOMENT_TZ.tz("America/Chicago").format("YYYY-MM-DD"),
-							"consumer_group_id": result[0].consumer_group_id
+							"consumer_group_id": result[0].consumer_group_id,
+							'deleted': false
 						})
 						.select('id');
 				}).then(function (result2) {
@@ -190,7 +193,8 @@ function loadDataForConsumerGroup (DB, context, consumer_group_id) {
 			return table
 				.where({
 					'consumer_group_id': consumer_group_id,
-					'menuReady': true
+					'menuReady': true,
+					'deleted': false
 				})
 				.whereIn('day_id', dayIds);
 		}).then(function (result) {
