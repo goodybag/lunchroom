@@ -146,6 +146,8 @@ console.log("ORDER RECEIVED", data.attributes);
 
 						var stripe = null;
 
+console.log("paymentToken", paymentToken);
+
 						if (form["card[number]"] === "4242424242424242") {
 							stripe = STRIPE(request._FireNodeContext.config.stripeSecretKey_TEST);
 						} else {
