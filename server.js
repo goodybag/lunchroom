@@ -136,6 +136,7 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
 
 			req.cookies = new COOKIES(req, res);
 
+console.log("headers", req.headers);
 
 			// Enable or disable test mode.
 			if (
