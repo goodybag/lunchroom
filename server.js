@@ -535,7 +535,11 @@ require('org.pinf.genesis.lib').forModule(require, module, function (API, export
 				) {
 					var url = "https://" + process.env.APP_DOMAIN + req.url;
 console.log("REDIRECT TO HTTPS URL:", url);
-					return res.redirect(url);
+					res.writeHead(302, {
+						"Location": url
+					});
+					res.end();
+					return;
 				}
 
 
