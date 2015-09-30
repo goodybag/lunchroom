@@ -146,9 +146,8 @@ console.log("ORDER RECEIVED", data.attributes);
 
 						var stripe = null;
 
-console.log("paymentToken", paymentToken);
-
-						if (form["card[number]"] === "4242424242424242") {
+						if (paymentToken.livemode === false) {
+							console.log("process paymentToken in TEST mode:", paymentToken);
 							stripe = STRIPE(request._FireNodeContext.config.stripeSecretKey_TEST);
 						} else {
 							stripe = STRIPE(request._FireNodeContext.config.stripeSecretKey);
