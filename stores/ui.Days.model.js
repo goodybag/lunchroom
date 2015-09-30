@@ -44,11 +44,11 @@ exports.forContext = function (context) {
 		// Initialize without loading data from server for now.
 		function makeStartOfWeek () {
 
-console.log("common", common);
-console.log("common.MOMENT", common.MOMENT.toString());
-if (common.MOMENT_CT) {
-	console.log("common.MOMENT_CT", common.MOMENT_CT.toString());
-}
+//console.log("common", common);
+//console.log("common.MOMENT", common.MOMENT.toString());
+//if (common.MOMENT_CT) {
+//	console.log("common.MOMENT_CT", common.MOMENT_CT.toString());
+//}
 			var startOfWeek = (common.MOMENT_CT || common.MOMENT)().startOf('week');
 			// If Saturday or Sunday, jump to next week.
 			if (
