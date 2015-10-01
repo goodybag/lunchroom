@@ -1,6 +1,26 @@
 
 var console = require("../../app/lib/console");
 
+
+// @see https://stripe.com/docs/stripe.js
+head.load("https://js.stripe.com/v2/");
+
+var cardInfo = null;
+function stripCardInfoFromForm (form) {
+	cardInfo = {};
+	for (var name in form) {
+		if (/^card\[/.test(name)) {
+			cardInfo[name] = form[name];
+			delete form[name]
+		}
+	}
+	return form;
+}
+function getCardInfo () {
+	return cardInfo;
+}
+
+
 require("./component.jsx")['for'](module, {
 
 
@@ -10,23 +30,6 @@ require("./component.jsx")['for'](module, {
 	// Intended to initiate the loading of all resources the component needs.
 	singleton: function (Context) {
 
-		// @see https://stripe.com/docs/stripe.js
-		head.load("https://js.stripe.com/v2/");
-
-		var cardInfo = null;
-		Context.stripCardInfoFromForm = function (form) {
-			cardInfo = {};
-			for (var name in form) {
-				if (/^card\[/.test(name)) {
-					cardInfo[name] = form[name];
-					delete form[name]
-				}
-			}
-			return form;
-		}
-		Context.getCardInfo = function () {
-			return cardInfo;
-		}
 	},
 
 
@@ -53,7 +56,7 @@ require("./component.jsx")['for'](module, {
 			//       This is to ensure the data does not leak to anywhere.
 			// TODO: Implement a container to hold the CC info in so no
 			//       external component can access it under any circumstances.
-			values = Context.stripCardInfoFromForm(values);
+			values = stripCardInfoFromForm(values);
 
 			data.order.set("form", JSON.stringify(values));
 			return values;
@@ -92,7 +95,7 @@ console.log("PLACE ORDER", form);
 
 				return Context.Q.fcall(function () {
 
-					var cardInfo = Context.getCardInfo();
+					var cardInfo = getCardInfo();
 
 					checkoutValidator.validate();
 					if (checkoutValidator.getErrors().length > 0) {
@@ -135,7 +138,7 @@ console.log("PLACE ORDER", form);
 				return Context.Q.denodeify(function (callback) {
 					try {
 
-						var cardInfo = Context.getCardInfo();
+						var cardInfo = getCardInfo();
 
 						console.log("Authorize card", cardInfo["card[name]"]);
 
