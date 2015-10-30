@@ -118,7 +118,8 @@ console.log("Lookup event for", {
 
 				return DB.getKnex()('events').where({
 					"day_id": MOMENT_TZ.tz("America/Chicago").format("YYYY-MM-DD"),
-					"consumer_group_id": result[0].id
+					"consumer_group_id": result[0].id,
+					"deleted": false
 				}).select('token').then(function (result2) {
 
 console.log("result2a", result2);
