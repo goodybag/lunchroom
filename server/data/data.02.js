@@ -479,15 +479,6 @@ data[60] = {
           photo_url: 'https://www.filepicker.io/api/file/k0kri57RQ2GbmQntmv9F',
           category_id: 11691,
           tags: [ 'vegetarian' ] },
-        { id: 96010,
-          restaurant: 'ZEN Japanese Food Fast',
-          restaurant_id: 60,
-          name: 'Singapore Noodles',
-          description: 'Steak and shrimp tossed with bok choy, carrots, scallions, red bell peppers, tossed with Yellow Dragon sauce, finished with cilantro and lime with bean thread.',
-          price: 925,
-          photo_url: 'https://www.filepicker.io/api/file/3hIXTMGSak1D26nWHdQs',
-          category_id: 11691,
-          tags: [] },
         { id: 96009,
           restaurant: 'ZEN Japanese Food Fast',
           restaurant_id: 60,
@@ -515,6 +506,15 @@ data[60] = {
           photo_url: 'https://www.filepicker.io/api/file/3yTtExyISdqORBt0DZsi',
           category_id: 11691,
           tags: [] },
+        { id: 122243,
+          restaurant: 'ZEN Japanese Food Fast',
+          restaurant_id: 60,
+          name: 'Kale Crunch Salad',
+          description: 'Kale, carrots, water chestnuts, tamari almonds, dried cranberries in our honey citrus vinaigrette.',
+          price: 275,
+          photo_url: 'https://www.filepicker.io/api/file/eoJtHNNzTqTIStCe6xsz',
+          category_id: 11691,
+          tags: [ 'glutenFree' ] },
         { id: 117376,
           restaurant: 'ZEN Japanese Food Fast',
           restaurant_id: 60,
@@ -523,7 +523,7 @@ data[60] = {
           price: 475,
           photo_url: 'https://www.filepicker.io/api/file/bmW9LyySS278meCWHFTQ',
           category_id: 11691,
-          tags: [ 'glutenFree', 'vegan' ] } ]
+          tags: [ 'glutenFree' ] } ]
 };
 
 data[425] = {
