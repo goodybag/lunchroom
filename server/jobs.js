@@ -427,6 +427,7 @@ console.log("Day ID", MOMENT_CT().format("YYYY-MM-DD"));
 console.log("NOW to compare menuEmailTime", MOMENT().format());
 
 		    			query = query.where({
+                            'deleted': false,
 							'menuReady': true,
 							'menuEmailsSent': false
 						})
@@ -439,6 +440,7 @@ console.log("NOW to compare menuEmailTime", MOMENT().format());
 		    		} else
 		    		if (type === "deliveries") {
 		    			query = query.where({
+                            'deleted': false,
 							'menuReady': true,
 							'delivered': true,
 							'deliveredEmailsSent': false
