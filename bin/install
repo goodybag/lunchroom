@@ -1,0 +1,36 @@
+#!/usr/bin/env node
+
+if (
+	process.env.NODE &&
+	/\/\.heroku\//.test(process.env.NODE)
+) {
+
+	// When installing on heroku we have to provision some expected
+    // dependencies before running the app.
+
+    const PATH = require("path");
+    const SM_EXPAND = require("sm.expand");
+
+    process.env.VERBOSE=";sm.expand;";
+    process.env.DEBUG=";sm.expand;";
+
+    function install (callback) {
+
+    	return SM_EXPAND.api({
+		    // TODO: Export 'sm.deploy.json' into deploy branch on publish automatically.
+    		filename: PATH.join(__dirname, "sm.deploy.json")
+    	})().then(function () {
+
+			return callback(null);
+    	}).fail(callback);
+	}
+
+	install(function (err) {
+		if (err) {
+			console.error(err.stack);
+			process.exit(1);
+		}
+		console.log("Installed!");
+		process.exit(0);
+	});
+}
