@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+function install_firenode_for_jsonapi () {
+  git clone https://github.com/firenode/firenode-for-jsonapi node_modules/firenode-for-jsonapi
+  cd node_modules/firenode-for-jsonapi
+  npm install
+  cd ../..
+}
+
+main () {
+  install_firenode_for_jsonapi
+}
+
+main

@@ -3,7 +3,8 @@
   "private": true,
   "main": "server.js",
   "scripts": {
-    "install": "./install"
+    "install": "./bin/install",
+    "postinstall": "./bin/postinstall"
   },
   "dependencies": {
     "ampersand-model": "^5.0.3",
@@ -60,7 +61,8 @@
     "underscore": "^1.8.3",
     "uuid": "^2.0.1",
     "winston": "^1.0.1",
-    "winston-loggly": "^1.1.0"
+    "winston-loggly": "^1.1.0",
+    "endpoints": "cadorn/endpoints"
   },
   "expectedDependencies": [
     "endpoints",
