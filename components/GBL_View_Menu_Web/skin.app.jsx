@@ -141,6 +141,7 @@ require("./component.jsx")['for'](module, {
 					} catch (err) {}
 
 					this.renderSection(element, "diet-tags", tags.map(function(tag) {
+						if (tag === "dairyFree") tag = "dairy-free";
 						if (tag === "glutenFree") tag = "gluten-free";
 						return {
 							"tag": tag
@@ -245,6 +246,7 @@ require("./component.jsx")['for'](module, {
 						} catch (err) {}
 
 						self.renderSection(elm, "diet-tags", tags.map(function(tag) {
+							if (tag === "dairyFree") tag = "dairy-free";
 							if (tag === "glutenFree") tag = "gluten-free";
 							return {
 								"tag": tag
