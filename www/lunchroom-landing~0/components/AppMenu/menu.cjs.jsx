@@ -73,8 +73,12 @@ module.exports = function (Context) {
         <div className="tile-info">
           <h3 className="tile-title" data-component-prop="title">Poop Taco Box but this one is a really long title</h3>
           <ul className="diet-tags" data-component-section="diet-tags">
+              <li className="diet-tag diet-tag-dairy-free" data-component-section="diet-tags" data-component-view="default"></li>
               <li className="diet-tag diet-tag-gluten-free" data-component-section="diet-tags" data-component-view="default"></li>
               <li className="diet-tag diet-tag-spicy" data-component-section="diet-tags" data-component-view="default"></li>
+              <li className="diet-tag diet-tag-kosher" data-component-section="diet-tags" data-component-view="default"></li>
+              <li className="diet-tag diet-tag-halal" data-component-section="diet-tags" data-component-view="default"></li>
+              <li className="diet-tag diet-tag-nuts" data-component-section="diet-tags" data-component-view="default"></li>
           </ul>
           <div className="item-price" data-component-prop="price">$12.00</div>
           <div className="item-tile-actions">
